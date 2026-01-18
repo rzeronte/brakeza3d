@@ -3,242 +3,242 @@ import ComponentCreator from '@docusaurus/ComponentCreator';
 
 export default [
   {
-    path: '/brakeza3d/blog',
-    component: ComponentCreator('/brakeza3d/blog', '1cd'),
+    path: '/blog',
+    component: ComponentCreator('/blog', 'ef3'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/archive',
-    component: ComponentCreator('/brakeza3d/blog/archive', 'abc'),
+    path: '/blog/archive',
+    component: ComponentCreator('/blog/archive', '182'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/authors',
-    component: ComponentCreator('/brakeza3d/blog/authors', '4f8'),
+    path: '/blog/authors',
+    component: ComponentCreator('/blog/authors', '0b7'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/bienvenida',
-    component: ComponentCreator('/brakeza3d/blog/bienvenida', '249'),
+    path: '/blog/bienvenida',
+    component: ComponentCreator('/blog/bienvenida', '05a'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/tags',
-    component: ComponentCreator('/brakeza3d/blog/tags', '2d6'),
+    path: '/blog/tags',
+    component: ComponentCreator('/blog/tags', '287'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/tags/brakeza-3-d',
-    component: ComponentCreator('/brakeza3d/blog/tags/brakeza-3-d', '2e4'),
+    path: '/blog/tags/brakeza-3-d',
+    component: ComponentCreator('/blog/tags/brakeza-3-d', '615'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/tags/news',
-    component: ComponentCreator('/brakeza3d/blog/tags/news', '8d9'),
+    path: '/blog/tags/news',
+    component: ComponentCreator('/blog/tags/news', '7df'),
     exact: true
   },
   {
-    path: '/brakeza3d/blog/tags/welcome',
-    component: ComponentCreator('/brakeza3d/blog/tags/welcome', 'b2b'),
+    path: '/blog/tags/welcome',
+    component: ComponentCreator('/blog/tags/welcome', '583'),
     exact: true
   },
   {
-    path: '/brakeza3d/contact',
-    component: ComponentCreator('/brakeza3d/contact', 'c1c'),
+    path: '/contact',
+    component: ComponentCreator('/contact', '7ad'),
     exact: true
   },
   {
-    path: '/brakeza3d/downloads',
-    component: ComponentCreator('/brakeza3d/downloads', '033'),
+    path: '/downloads',
+    component: ComponentCreator('/downloads', 'af8'),
     exact: true
   },
   {
-    path: '/brakeza3d/gallery',
-    component: ComponentCreator('/brakeza3d/gallery', '39c'),
+    path: '/gallery',
+    component: ComponentCreator('/gallery', '14e'),
     exact: true
   },
   {
-    path: '/brakeza3d/markdown-page',
-    component: ComponentCreator('/brakeza3d/markdown-page', 'a27'),
+    path: '/markdown-page',
+    component: ComponentCreator('/markdown-page', '3d7'),
     exact: true
   },
   {
-    path: '/brakeza3d/docs',
-    component: ComponentCreator('/brakeza3d/docs', 'ee1'),
+    path: '/docs',
+    component: ComponentCreator('/docs', 'a0a'),
     routes: [
       {
-        path: '/brakeza3d/docs',
-        component: ComponentCreator('/brakeza3d/docs', '49e'),
+        path: '/docs',
+        component: ComponentCreator('/docs', 'f40'),
         routes: [
           {
-            path: '/brakeza3d/docs',
-            component: ComponentCreator('/brakeza3d/docs', 'e5e'),
+            path: '/docs',
+            component: ComponentCreator('/docs', '1a1'),
             routes: [
               {
-                path: '/brakeza3d/docs/advanced/building-from-sources',
-                component: ComponentCreator('/brakeza3d/docs/advanced/building-from-sources', '6c9'),
+                path: '/docs/advanced/building-from-sources',
+                component: ComponentCreator('/docs/advanced/building-from-sources', 'ca4'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/advanced/core-shaders',
-                component: ComponentCreator('/brakeza3d/docs/advanced/core-shaders', 'cfa'),
+                path: '/docs/advanced/core-shaders',
+                component: ComponentCreator('/docs/advanced/core-shaders', '1a7'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/editor/layout-modes',
-                component: ComponentCreator('/brakeza3d/docs/editor/layout-modes', 'c30'),
+                path: '/docs/editor/layout-modes',
+                component: ComponentCreator('/docs/editor/layout-modes', '477'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/editor/overview',
-                component: ComponentCreator('/brakeza3d/docs/editor/overview', 'a6e'),
+                path: '/docs/editor/overview',
+                component: ComponentCreator('/docs/editor/overview', '73d'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/editor/projects',
-                component: ComponentCreator('/brakeza3d/docs/editor/projects', 'e07'),
+                path: '/docs/editor/projects',
+                component: ComponentCreator('/docs/editor/projects', '015'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/editor/scenes',
-                component: ComponentCreator('/brakeza3d/docs/editor/scenes', 'f52'),
+                path: '/docs/editor/scenes',
+                component: ComponentCreator('/docs/editor/scenes', '85b'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/editor/scripts',
-                component: ComponentCreator('/brakeza3d/docs/editor/scripts', '8aa'),
+                path: '/docs/editor/scripts',
+                component: ComponentCreator('/docs/editor/scripts', 'f38'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/editor/shaders',
-                component: ComponentCreator('/brakeza3d/docs/editor/shaders', '575'),
+                path: '/docs/editor/shaders',
+                component: ComponentCreator('/docs/editor/shaders', 'f1a'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/engine-concepts/assets-folder',
-                component: ComponentCreator('/brakeza3d/docs/engine-concepts/assets-folder', '0de'),
+                path: '/docs/engine-concepts/assets-folder',
+                component: ComponentCreator('/docs/engine-concepts/assets-folder', '75c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/engine-concepts/collisions',
-                component: ComponentCreator('/brakeza3d/docs/engine-concepts/collisions', 'df1'),
+                path: '/docs/engine-concepts/collisions',
+                component: ComponentCreator('/docs/engine-concepts/collisions', 'cdc'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/engine-concepts/components',
-                component: ComponentCreator('/brakeza3d/docs/engine-concepts/components', '43e'),
+                path: '/docs/engine-concepts/components',
+                component: ComponentCreator('/docs/engine-concepts/components', '637'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/engine-concepts/global-illumination',
-                component: ComponentCreator('/brakeza3d/docs/engine-concepts/global-illumination', '8b9'),
+                path: '/docs/engine-concepts/global-illumination',
+                component: ComponentCreator('/docs/engine-concepts/global-illumination', '28b'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/engine-concepts/script-controls',
-                component: ComponentCreator('/brakeza3d/docs/engine-concepts/script-controls', '75c'),
+                path: '/docs/engine-concepts/script-controls',
+                component: ComponentCreator('/docs/engine-concepts/script-controls', 'c4f'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/getting-started/download-and-install',
-                component: ComponentCreator('/brakeza3d/docs/getting-started/download-and-install', 'c7c'),
+                path: '/docs/getting-started/download-and-install',
+                component: ComponentCreator('/docs/getting-started/download-and-install', '6e8'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/getting-started/intro',
-                component: ComponentCreator('/brakeza3d/docs/getting-started/intro', '37c'),
+                path: '/docs/getting-started/intro',
+                component: ComponentCreator('/docs/getting-started/intro', 'a4c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/2d-objects',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/2d-objects', '085'),
+                path: '/docs/scripting-api/2d-objects',
+                component: ComponentCreator('/docs/scripting-api/2d-objects', '62c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/3d-objects',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/3d-objects', '2ff'),
+                path: '/docs/scripting-api/3d-objects',
+                component: ComponentCreator('/docs/scripting-api/3d-objects', 'e87'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/basic-object-types',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/basic-object-types', '102'),
+                path: '/docs/scripting-api/basic-object-types',
+                component: ComponentCreator('/docs/scripting-api/basic-object-types', '5f8'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/camera-object',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/camera-object', '681'),
+                path: '/docs/scripting-api/camera-object',
+                component: ComponentCreator('/docs/scripting-api/camera-object', 'ee3'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/collision-system',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/collision-system', 'e91'),
+                path: '/docs/scripting-api/collision-system',
+                component: ComponentCreator('/docs/scripting-api/collision-system', 'e77'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/components',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/components', 'a42'),
+                path: '/docs/scripting-api/components',
+                component: ComponentCreator('/docs/scripting-api/components', '6d9'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/grid-and-octree',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/grid-and-octree', '46d'),
+                path: '/docs/scripting-api/grid-and-octree',
+                component: ComponentCreator('/docs/scripting-api/grid-and-octree', '086'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/index',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/index', '7a6'),
+                path: '/docs/scripting-api/index',
+                component: ComponentCreator('/docs/scripting-api/index', '00c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/input-system',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/input-system', '1a5'),
+                path: '/docs/scripting-api/input-system',
+                component: ComponentCreator('/docs/scripting-api/input-system', '784'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/lighting-system',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/lighting-system', '168'),
+                path: '/docs/scripting-api/lighting-system',
+                component: ComponentCreator('/docs/scripting-api/lighting-system', '13c'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/particle-emitter',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/particle-emitter', 'fff'),
+                path: '/docs/scripting-api/particle-emitter',
+                component: ComponentCreator('/docs/scripting-api/particle-emitter', 'c36'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/shaders-system',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/shaders-system', 'e89'),
+                path: '/docs/scripting-api/shaders-system',
+                component: ComponentCreator('/docs/scripting-api/shaders-system', 'faf'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
               {
-                path: '/brakeza3d/docs/scripting-api/sound-system',
-                component: ComponentCreator('/brakeza3d/docs/scripting-api/sound-system', 'a59'),
+                path: '/docs/scripting-api/sound-system',
+                component: ComponentCreator('/docs/scripting-api/sound-system', 'e83'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               }
@@ -249,8 +249,8 @@ export default [
     ]
   },
   {
-    path: '/brakeza3d/',
-    component: ComponentCreator('/brakeza3d/', '099'),
+    path: '/',
+    component: ComponentCreator('/', '2e1'),
     exact: true
   },
   {

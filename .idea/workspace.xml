@@ -40,7 +40,21 @@
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(doc): improve doc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/blog-post-list-prop-default.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/blog-post-list-prop-default.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/blogMetadata-default.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/blogMetadata-default.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/p/blog-archive-f05.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/p/blog-archive-f05.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/p/blog-tags-df9.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/p/blog-tags-df9.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/site-blog-2025-01-07-welcome-md-16e.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-blog/default/site-blog-2025-01-07-welcome-md-16e.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-docs/default/__mdx-loader-dependency.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-docs/default/__mdx-loader-dependency.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-docs/default/p/docs-175.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-docs/default/p/docs-175.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-pages/default/site-src-pages-downloads-md-da5.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-pages/default/site-src-pages-downloads-md-da5.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-pages/default/site-src-pages-markdown-page-md-393.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-pages/default/site-src-pages-markdown-page-md-393.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/i18n.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/i18n.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -493,7 +507,7 @@
       <workItem from="1768703997619" duration="334000" />
       <workItem from="1768704344878" duration="1514000" />
       <workItem from="1768743354705" duration="763000" />
-      <workItem from="1768746165897" duration="6621000" />
+      <workItem from="1768746165897" duration="9180000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>

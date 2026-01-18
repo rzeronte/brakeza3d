@@ -1,5 +1,5 @@
 {
-  "/brakeza3d/blog-1cd": {
+  "/blog-ef3": {
     "__comp": "a6aa9e1f",
     "__context": {
       "plugin": "36994c47"
@@ -10,16 +10,16 @@
         "content": "9f2b0632"
       }
     ],
-    "__props": "ba749375"
+    "__props": "c15d9823"
   },
-  "/brakeza3d/blog/archive-abc": {
+  "/blog/archive-182": {
     "__comp": "9e4087bc",
     "__context": {
       "plugin": "36994c47"
     },
-    "__props": "c6c300ba"
+    "__props": "f81c1134"
   },
-  "/brakeza3d/blog/authors-4f8": {
+  "/blog/authors-0b7": {
     "__comp": "621db11d",
     "__context": {
       "data": {
@@ -28,9 +28,9 @@
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
-    "__props": "e29cef36"
+    "__props": "ef8b811a"
   },
-  "/brakeza3d/blog/bienvenida-249": {
+  "/blog/bienvenida-05a": {
     "__comp": "ccc49370",
     "__context": {
       "data": {
@@ -41,15 +41,15 @@
     "sidebar": "814f3328",
     "content": "16e9bfe7"
   },
-  "/brakeza3d/blog/tags-2d6": {
+  "/blog/tags-287": {
     "__comp": "01a85c17",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
-    "__props": "c5891377"
+    "__props": "3a2db09e"
   },
-  "/brakeza3d/blog/tags/brakeza-3-d-2e4": {
+  "/blog/tags/brakeza-3-d-615": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -60,9 +60,9 @@
         "content": "9f2b0632"
       }
     ],
-    "__props": "6ba1339a"
+    "__props": "96aba2d4"
   },
-  "/brakeza3d/blog/tags/news-8d9": {
+  "/blog/tags/news-7df": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -73,9 +73,9 @@
         "content": "9f2b0632"
       }
     ],
-    "__props": "9d878f36"
+    "__props": "4f033264"
   },
-  "/brakeza3d/blog/tags/welcome-b2b": {
+  "/blog/tags/welcome-583": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
@@ -86,162 +86,162 @@
         "content": "9f2b0632"
       }
     ],
-    "__props": "aaaec1ba"
+    "__props": "436029cc"
   },
-  "/brakeza3d/contact-c1c": {
+  "/contact-7ad": {
     "__comp": "a1a65def",
     "__context": {
       "plugin": "a7456010"
     },
     "config": "5e9f5e1a"
   },
-  "/brakeza3d/downloads-033": {
+  "/downloads-af8": {
     "__comp": "1f391b9e",
     "__context": {
       "plugin": "a7456010"
     },
     "content": "da5fc804"
   },
-  "/brakeza3d/gallery-39c": {
+  "/gallery-14e": {
     "__comp": "a7da46a6",
     "__context": {
       "plugin": "a7456010"
     },
     "config": "5e9f5e1a"
   },
-  "/brakeza3d/markdown-page-a27": {
+  "/markdown-page-3d7": {
     "__comp": "1f391b9e",
     "__context": {
       "plugin": "a7456010"
     },
     "content": "393be207"
   },
-  "/brakeza3d/docs-ee1": {
+  "/docs-a0a": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/brakeza3d/docs-49e": {
+  "/docs-f40": {
     "__comp": "a7bd4aaa",
-    "__props": "dcd64b35"
+    "__props": "0058b4c6"
   },
-  "/brakeza3d/docs-e5e": {
+  "/docs-1a1": {
     "__comp": "a94703ab"
   },
-  "/brakeza3d/docs/advanced/building-from-sources-6c9": {
+  "/docs/advanced/building-from-sources-ca4": {
     "__comp": "17896441",
     "content": "cd149761"
   },
-  "/brakeza3d/docs/advanced/core-shaders-cfa": {
+  "/docs/advanced/core-shaders-1a7": {
     "__comp": "17896441",
     "content": "669c000e"
   },
-  "/brakeza3d/docs/editor/layout-modes-c30": {
+  "/docs/editor/layout-modes-477": {
     "__comp": "17896441",
     "content": "33ea2db4"
   },
-  "/brakeza3d/docs/editor/overview-a6e": {
+  "/docs/editor/overview-73d": {
     "__comp": "17896441",
     "content": "a0708922"
   },
-  "/brakeza3d/docs/editor/projects-e07": {
+  "/docs/editor/projects-015": {
     "__comp": "17896441",
     "content": "2b0078d8"
   },
-  "/brakeza3d/docs/editor/scenes-f52": {
+  "/docs/editor/scenes-85b": {
     "__comp": "17896441",
     "content": "17da6cb7"
   },
-  "/brakeza3d/docs/editor/scripts-8aa": {
+  "/docs/editor/scripts-f38": {
     "__comp": "17896441",
     "content": "d6bb92cf"
   },
-  "/brakeza3d/docs/editor/shaders-575": {
+  "/docs/editor/shaders-f1a": {
     "__comp": "17896441",
     "content": "9e6cb0f0"
   },
-  "/brakeza3d/docs/engine-concepts/assets-folder-0de": {
+  "/docs/engine-concepts/assets-folder-75c": {
     "__comp": "17896441",
     "content": "dfee648e"
   },
-  "/brakeza3d/docs/engine-concepts/collisions-df1": {
+  "/docs/engine-concepts/collisions-cdc": {
     "__comp": "17896441",
     "content": "adc21ecc"
   },
-  "/brakeza3d/docs/engine-concepts/components-43e": {
+  "/docs/engine-concepts/components-637": {
     "__comp": "17896441",
     "content": "5ab59bae"
   },
-  "/brakeza3d/docs/engine-concepts/global-illumination-8b9": {
+  "/docs/engine-concepts/global-illumination-28b": {
     "__comp": "17896441",
     "content": "b63f749b"
   },
-  "/brakeza3d/docs/engine-concepts/script-controls-75c": {
+  "/docs/engine-concepts/script-controls-c4f": {
     "__comp": "17896441",
     "content": "d26697f2"
   },
-  "/brakeza3d/docs/getting-started/download-and-install-c7c": {
+  "/docs/getting-started/download-and-install-6e8": {
     "__comp": "17896441",
     "content": "f0326e27"
   },
-  "/brakeza3d/docs/getting-started/intro-37c": {
+  "/docs/getting-started/intro-a4c": {
     "__comp": "17896441",
     "content": "39d1df33"
   },
-  "/brakeza3d/docs/scripting-api/2d-objects-085": {
+  "/docs/scripting-api/2d-objects-62c": {
     "__comp": "17896441",
     "content": "36ec7162"
   },
-  "/brakeza3d/docs/scripting-api/3d-objects-2ff": {
+  "/docs/scripting-api/3d-objects-e87": {
     "__comp": "17896441",
     "content": "d437b706"
   },
-  "/brakeza3d/docs/scripting-api/basic-object-types-102": {
+  "/docs/scripting-api/basic-object-types-5f8": {
     "__comp": "17896441",
     "content": "995a250f"
   },
-  "/brakeza3d/docs/scripting-api/camera-object-681": {
+  "/docs/scripting-api/camera-object-ee3": {
     "__comp": "17896441",
     "content": "247e1b09"
   },
-  "/brakeza3d/docs/scripting-api/collision-system-e91": {
+  "/docs/scripting-api/collision-system-e77": {
     "__comp": "17896441",
     "content": "4c3b16ac"
   },
-  "/brakeza3d/docs/scripting-api/components-a42": {
+  "/docs/scripting-api/components-6d9": {
     "__comp": "17896441",
     "content": "60a2b713"
   },
-  "/brakeza3d/docs/scripting-api/grid-and-octree-46d": {
+  "/docs/scripting-api/grid-and-octree-086": {
     "__comp": "17896441",
     "content": "af161579"
   },
-  "/brakeza3d/docs/scripting-api/index-7a6": {
+  "/docs/scripting-api/index-00c": {
     "__comp": "17896441",
     "content": "6bb807c6"
   },
-  "/brakeza3d/docs/scripting-api/input-system-1a5": {
+  "/docs/scripting-api/input-system-784": {
     "__comp": "17896441",
     "content": "10b7bde0"
   },
-  "/brakeza3d/docs/scripting-api/lighting-system-168": {
+  "/docs/scripting-api/lighting-system-13c": {
     "__comp": "17896441",
     "content": "52ce65c2"
   },
-  "/brakeza3d/docs/scripting-api/particle-emitter-fff": {
+  "/docs/scripting-api/particle-emitter-c36": {
     "__comp": "17896441",
     "content": "30d8cacc"
   },
-  "/brakeza3d/docs/scripting-api/shaders-system-e89": {
+  "/docs/scripting-api/shaders-system-faf": {
     "__comp": "17896441",
     "content": "b11467dc"
   },
-  "/brakeza3d/docs/scripting-api/sound-system-a59": {
+  "/docs/scripting-api/sound-system-e83": {
     "__comp": "17896441",
     "content": "1260a475"
   },
-  "/brakeza3d/-099": {
+  "/-2e1": {
     "__comp": "c4f5d8e4",
     "__context": {
       "plugin": "a7456010"

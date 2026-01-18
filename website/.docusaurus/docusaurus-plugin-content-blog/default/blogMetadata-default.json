@@ -1,5 +1,5 @@
 {
-  "blogBasePath": "/brakeza3d/blog",
+  "blogBasePath": "/blog",
   "blogTitle": "Blog",
-  "authorsListPath": "/brakeza3d/blog/authors"
+  "authorsListPath": "/blog/authors"
 }

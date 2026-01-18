@@ -1,153 +1,153 @@
 {
   "docusaurus-plugin-content-docs": {
     "default": {
-      "path": "/brakeza3d/docs",
+      "path": "/docs",
       "versions": [
         {
           "name": "current",
           "label": "Next",
           "isLast": true,
-          "path": "/brakeza3d/docs",
+          "path": "/docs",
           "mainDocId": "getting-started/intro",
           "docs": [
             {
               "id": "advanced/building-from-sources",
-              "path": "/brakeza3d/docs/advanced/building-from-sources",
+              "path": "/docs/advanced/building-from-sources",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "advanced/core-shaders",
-              "path": "/brakeza3d/docs/advanced/core-shaders",
+              "path": "/docs/advanced/core-shaders",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "editor/layout-modes",
-              "path": "/brakeza3d/docs/editor/layout-modes",
+              "path": "/docs/editor/layout-modes",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "editor/overview",
-              "path": "/brakeza3d/docs/editor/overview",
+              "path": "/docs/editor/overview",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "editor/projects",
-              "path": "/brakeza3d/docs/editor/projects",
+              "path": "/docs/editor/projects",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "editor/scenes",
-              "path": "/brakeza3d/docs/editor/scenes",
+              "path": "/docs/editor/scenes",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "editor/scripts",
-              "path": "/brakeza3d/docs/editor/scripts",
+              "path": "/docs/editor/scripts",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "editor/shaders",
-              "path": "/brakeza3d/docs/editor/shaders",
+              "path": "/docs/editor/shaders",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "engine-concepts/assets-folder",
-              "path": "/brakeza3d/docs/engine-concepts/assets-folder",
+              "path": "/docs/engine-concepts/assets-folder",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "engine-concepts/collisions",
-              "path": "/brakeza3d/docs/engine-concepts/collisions",
+              "path": "/docs/engine-concepts/collisions",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "engine-concepts/components",
-              "path": "/brakeza3d/docs/engine-concepts/components",
+              "path": "/docs/engine-concepts/components",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "engine-concepts/global-illumination",
-              "path": "/brakeza3d/docs/engine-concepts/global-illumination",
+              "path": "/docs/engine-concepts/global-illumination",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "engine-concepts/script-controls",
-              "path": "/brakeza3d/docs/engine-concepts/script-controls",
+              "path": "/docs/engine-concepts/script-controls",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "getting-started/download-and-install",
-              "path": "/brakeza3d/docs/getting-started/download-and-install",
+              "path": "/docs/getting-started/download-and-install",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "getting-started/intro",
-              "path": "/brakeza3d/docs/getting-started/intro",
+              "path": "/docs/getting-started/intro",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/4-2d-objects",
-              "path": "/brakeza3d/docs/scripting-api/2d-objects",
+              "path": "/docs/scripting-api/2d-objects",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/5-3d-objects",
-              "path": "/brakeza3d/docs/scripting-api/3d-objects",
+              "path": "/docs/scripting-api/3d-objects",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/basic-object-types",
-              "path": "/brakeza3d/docs/scripting-api/basic-object-types",
+              "path": "/docs/scripting-api/basic-object-types",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/camera-object",
-              "path": "/brakeza3d/docs/scripting-api/camera-object",
+              "path": "/docs/scripting-api/camera-object",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/collision-system",
-              "path": "/brakeza3d/docs/scripting-api/collision-system",
+              "path": "/docs/scripting-api/collision-system",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/components",
-              "path": "/brakeza3d/docs/scripting-api/components",
+              "path": "/docs/scripting-api/components",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/grid-and-octree",
-              "path": "/brakeza3d/docs/scripting-api/grid-and-octree",
+              "path": "/docs/scripting-api/grid-and-octree",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/index",
-              "path": "/brakeza3d/docs/scripting-api/index",
+              "path": "/docs/scripting-api/index",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/input-system",
-              "path": "/brakeza3d/docs/scripting-api/input-system",
+              "path": "/docs/scripting-api/input-system",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/lighting-system",
-              "path": "/brakeza3d/docs/scripting-api/lighting-system",
+              "path": "/docs/scripting-api/lighting-system",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/particle-emitter",
-              "path": "/brakeza3d/docs/scripting-api/particle-emitter",
+              "path": "/docs/scripting-api/particle-emitter",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/shaders-system",
-              "path": "/brakeza3d/docs/scripting-api/shaders-system",
+              "path": "/docs/scripting-api/shaders-system",
               "sidebar": "tutorialSidebar"
             },
             {
               "id": "scripting-api/sound-system",
-              "path": "/brakeza3d/docs/scripting-api/sound-system",
+              "path": "/docs/scripting-api/sound-system",
               "sidebar": "tutorialSidebar"
             }
           ],
@@ -155,7 +155,7 @@
           "sidebars": {
             "tutorialSidebar": {
               "link": {
-                "path": "/brakeza3d/docs/getting-started/intro",
+                "path": "/docs/getting-started/intro",
                 "label": "getting-started/intro"
               }
             }

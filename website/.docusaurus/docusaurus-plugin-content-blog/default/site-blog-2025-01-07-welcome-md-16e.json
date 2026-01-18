@@ -1,5 +1,5 @@
 {
-  "permalink": "/brakeza3d/blog/bienvenida",
+  "permalink": "/blog/bienvenida",
   "source": "@site/blog/2025-01-07-welcome.md",
   "title": "¡Welcome to Brakeza3D!",
   "description": "The Brakeza3D website has been completely relaunched as a site dedicated to providing solid and up-to-date documentation.",
@@ -8,20 +8,20 @@
     {
       "inline": true,
       "label": "brakeza3d",
-      "permalink": "/brakeza3d/blog/tags/brakeza-3-d"
+      "permalink": "/blog/tags/brakeza-3-d"
     },
     {
       "inline": true,
       "label": "news",
-      "permalink": "/brakeza3d/blog/tags/news"
+      "permalink": "/blog/tags/news"
     },
     {
       "inline": true,
       "label": "welcome",
-      "permalink": "/brakeza3d/blog/tags/welcome"
+      "permalink": "/blog/tags/welcome"
     }
   ],
-  "readingTime": 0.5,
+  "readingTime": 0.41,
   "hasTruncateMarker": true,
   "authors": [
     {
