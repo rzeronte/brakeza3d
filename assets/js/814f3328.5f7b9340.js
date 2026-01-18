@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkmi_sitio=globalThis.webpackChunkmi_sitio||[]).push([[7472],{5513(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"\xa1Welcome to Brakeza3D!","permalink":"/brakeza3d/blog/bienvenida","unlisted":false,"date":"2025-01-07T00:00:00.000Z"}]}')}}]);
