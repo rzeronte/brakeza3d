@@ -1,7 +1,0 @@
-{
-  "codeFile":	"../assets/scripts/Demos/ObjectScripts/ObjectCollisionExample.lua",
-  "typesFile": "../assets/scripts/Demos/ObjectScripts/ObjectCollisionExample.json",
-  "name":	"Object collision detection demo",
-    "types":	[
-    ]
-}
