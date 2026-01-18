@@ -1,1 +1,0 @@
-"use strict";(globalThis.webpackChunkmi_sitio=globalThis.webpackChunkmi_sitio||[]).push([[6657],{3673(a){a.exports=JSON.parse('{"metadata":{"permalink":"/brakeza3d/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
