@@ -7,8 +7,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(CMAKE_CXX_FLAGS "-O0 -Wall -g")
     add_compile_definitions(ENABLE_LOGGING_BUILD)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(CMAKE_CXX_FLAGS "-O0 -g")
-    #set(CMAKE_CXX_FLAGS "-O3 -w")
+    set(CMAKE_CXX_FLAGS "-O3 -w")
     add_compile_definitions(ENABLE_LOGGING_BUILD)
 endif()
 
@@ -267,8 +266,8 @@ add_executable(Brakeza3D
         src/GUI/Objects/ScriptLuaGUI.cpp
         src/GUI/Objects/ShadersGUI.cpp
         include/GUI/Objects/ShadersGUI.h
-        src/GUI/Objects/FilesystemGUI.cpp
-        include/GUI/Objects/FilesystemGUI.h
+        src/GUI/Objects/FileSystemGUI.cpp
+        include/GUI/Objects/FileSystemGUI.h
         src/3D/Cone3D.cpp                   include/3D/Cone3D.h
         include/Render/Profiler.cpp
         include/Render/Profiler.h
