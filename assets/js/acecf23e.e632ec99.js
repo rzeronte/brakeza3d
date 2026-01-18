@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkmi_sitio=globalThis.webpackChunkmi_sitio||[]).push([[1903],{1912(a){a.exports=JSON.parse('{"blogBasePath":"/brakeza3d/blog","blogTitle":"Blog","authorsListPath":"/brakeza3d/blog/authors"}')}}]);
