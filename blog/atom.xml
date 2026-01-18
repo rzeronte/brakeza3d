@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="atom.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://rzeronte.github.io/brakeza3d/blog</id>
+    <id>https://brakeza.com/blog</id>
     <title>Brakeza3D Engine Blog</title>
     <updated>2025-01-07T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://rzeronte.github.io/brakeza3d/blog"/>
+    <link rel="alternate" href="https://brakeza.com/blog"/>
     <subtitle>Brakeza3D Engine Blog</subtitle>
-    <icon>https://rzeronte.github.io/brakeza3d/img/favicon.ico</icon>
+    <icon>https://brakeza.com/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[¡Welcome to Brakeza3D!]]></title>
-        <id>https://rzeronte.github.io/brakeza3d/blog/bienvenida</id>
-        <link href="https://rzeronte.github.io/brakeza3d/blog/bienvenida"/>
+        <id>https://brakeza.com/blog/bienvenida</id>
+        <link href="https://brakeza.com/blog/bienvenida"/>
         <updated>2025-01-07T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[The Brakeza3D website has been completely relaunched as a site dedicated to providing solid and up-to-date documentation.]]></summary>
         <content type="html"><![CDATA[<p>The <strong>Brakeza3D</strong> website has been completely relaunched as a site dedicated to providing <strong>solid and up-to-date documentation</strong>.</p>
 <p>We’ve redesigned the website from the ground up to make it easier for developers to find tutorials, API references, download links, and more.</p>
 <p>The goal is to help both new and experienced users get the most out of the Brakeza3D engine efficiently.</p>
-<p>Stay tuned for updates, tutorials, and examples that will guide you in creating amazing 2D and 3D games with Brakeza3D!mpletely rewritten in English. You will find new multimedia content and a wide variety of code examples!</p>]]></content>
+<p>Stay tuned for updates, tutorials, and examples that will guide you in creating amazing 2D and 3D games with Brakeza3D!.</p>]]></content>
         <author>
             <name>Eduardo</name>
             <uri>https://github.com/rzeronte</uri>
