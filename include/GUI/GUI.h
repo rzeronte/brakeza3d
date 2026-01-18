@@ -338,7 +338,8 @@ namespace GUIType
     X(NODE_EDITOR_TAB, 0, 0) \
     X(PROJECT_SETUP_SCENES, 0, 0) \
     X(IMAGE_FILE, 0, 0) \
-    X(PROJECT_INFO, 0, 0)
+    X(PROJECT_INFO, 0, 0) \
+    X(MNU_RESOURCESHUB, 0, 0)
 
 // Icons Objects
 namespace IconObject {

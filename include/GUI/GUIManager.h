@@ -10,6 +10,7 @@
 #include "../Loaders/SceneChecker.h"
 #include "../Misc/TextureAtlas.h"
 #include "../Misc/TexturePackage.h"
+#include "AddOns/GUIAddonResourceHub.h"
 #include "AddOns/GUIConsole.h"
 #include "Editable/EditableOpenBaseResource.h"
 
@@ -64,6 +65,8 @@ class GUIManager
     TextureAtlas *textureAtlas;
     Image *splashImage = nullptr;
 
+    GUIAddonResourceHub* resourceHub = nullptr;
+
     void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
     void DrawWinKeyboardMouse();
@@ -107,6 +110,7 @@ public:
     [[nodiscard]] SceneChecker &getSceneChecker()                                       { return sceneChecker; }
     [[nodiscard]] ProjectChecker &getProjectChecker()                                   { return projectChecker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
+    [[nodiscard]] GUIAddonResourceHub * getResourcesHub() const                         { return resourceHub; }
 
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
 

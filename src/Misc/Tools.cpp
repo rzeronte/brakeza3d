@@ -459,7 +459,7 @@ std::string Tools::ExtractJsonStringFieldFromDisk(const std::string &path, const
     return cJSON_GetObjectItemCaseSensitive(json, field.c_str())->valuestring;
 }
 
-bool Tools::CopyFile(const std::string& origen, const std::string& destino)
+bool Tools::CopyFileTo(const std::string& origen, const std::string& destino)
 {
     std::ifstream archivoOrigen(origen, std::ios::binary);
     std::ofstream archivoDestino(destino, std::ios::binary);

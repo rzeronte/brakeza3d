@@ -625,6 +625,13 @@ void GUIAddonMenu::DrawItemsToLoad(
     }
 }
 
+void GUIAddonMenu::MenuResourcesHub()
+{
+    if (ImGui::MenuItem("Browse Hub")) {
+        Brakeza::get()->GUI()->getResourcesHub()->showBrowser();
+    }
+}
+
 void GUIAddonMenu::MenuWorkers()
 {
     if (ImGui::BeginTabBar("WorkerPoolsTabs"))

@@ -45,6 +45,12 @@ endif()
 if(UNIX)
     set(GLEW_LIBRARY "GLEW")
 endif()
+if(WIN32)
+    set(CURL_LIBRARY "curl")
+endif()
+if(UNIX)
+    set(CURL_LIBRARY "curl")
+endif()
 
 if(WIN32)
     set(SDL2_INCLUDE_DIRS "${CMAKE_CXX_COMPILER}/../../include/SDL2")
@@ -53,6 +59,7 @@ if(WIN32)
     set(LUA_INCLUDE_DIR "${CMAKE_CXX_COMPILER}/../../include/")
     set(OPENGL_INCLUDE_DIR "${CMAKE_CXX_COMPILER}/../../include/")
     set(GLEW_INCLUDE_DIRS "${CMAKE_CXX_COMPILER}/../../include/")
+    set(CURL_INCLUDE_DIRS "${CMAKE_CXX_COMPILER}/../../include/")
 endif()
 
 if(UNIX AND NOT APPLE)
@@ -62,6 +69,7 @@ if(UNIX AND NOT APPLE)
     set(LUA_INCLUDE_DIR "/usr/include/")
     set(OPENGL_INCLUDE_DIR "/usr/include/")
     set(GLEW_INCLUDE_DIRS "/usr/include/")
+    set(CURL_INCLUDE_DIRS "/usr/include/")
 endif()
 
 set(DEARIMGUI_INCLUDE_DIRS imgui)
@@ -359,6 +367,10 @@ add_executable(Brakeza3D
         src/GUI/ImGuiLayoutHelpers.h
         include/Loaders/ProjectChecker.cpp
         include/Loaders/ProjectChecker.h
+        include/HttpClient/ResourceHubClient.h
+        src/HttpClient/ResourceHubClient.cpp
+        include/GUI/AddOns/GUIAddonResourceHub.h
+        include/GUI/AddOns/GUIAddonResourceHub.cpp
 )
 
 target_link_libraries(Brakeza3D
@@ -375,4 +387,5 @@ target_link_libraries(Brakeza3D
         ${LUA_LIBRARY}
         ${OPENGL_LIBRARY}
         ${GLEW_LIBRARY}
+        ${CURL_LIBRARY}
 )

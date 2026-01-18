@@ -28,7 +28,7 @@ public:
     static bool checkRectangleAABBOverlap(Point2D l1, Point2D r1, Point2D l2, Point2D r2);
     static bool isValidVector(Vertex3D &v);
     static bool RemoveFile(const std::string &filePath);
-    static bool CopyFile(const std::string &origen, const std::string &destino);
+    static bool CopyFileTo(const std::string &origen, const std::string &destino);
     static void SurfacePutPixel(const SDL_Surface *surface, int x, int y, Uint32 pixel);
     static void WriteToFile(const std::string& file, const char *content);
     static Color alphaBlend(Uint32 color1, Uint32 color2, Uint32 alpha);

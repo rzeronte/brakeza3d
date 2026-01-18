@@ -39,6 +39,8 @@ void GUIManager::OnStart()
 
     splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
 
+    resourceHub = new GUIAddonResourceHub();
+
     LoadBrowserFolders();
 
 
@@ -181,6 +183,7 @@ void GUIManager::RegisterMenu()
         {"Logging",         IconGUI::MNU_LOGGING,           [&] { GUIAddonMenu::MenuLogging(); }},
         {"Layouts",         IconGUI::MNU_LAYOUTS,           [&] { GUIAddonMenu::MenuLayout(); }},
         {"Workers",         IconGUI::MNU_WORKERS,           [&] { GUIAddonMenu::MenuWorkers(); }},
+        {"Resouces Hub",    IconGUI::MNU_RESOURCESHUB,      [&] { GUIAddonMenu::MenuResourcesHub(); }},
         {"Windows",         IconGUI::MNU_WINDOWS,           [&] { GUIAddonMenu::MenuWindow(this); }},
     };
 }
@@ -197,6 +200,7 @@ void GUIManager::DrawGUI()
 
     DrawRegisteredWindows();
     DrawSplashWindow();
+    resourceHub->render();
 
     CloseRemovedEditableOpenFiles();
 

@@ -35,6 +35,7 @@ public:
 
     static void DrawItemsToLoad(std::string &folder, std::string &ext, GUIType::Sheet icon, const std::function<void(const std::string &)> &cb );
 
+    static void MenuResourcesHub();
 };
 
 #endif //BRAKEZA3D_GUIWIDGETMENU_H

@@ -7,4 +7,3 @@ experience:
     - add effects node shader demos
 
 
-feat(project): project info popup / doc links based / tool extract docusaurus doc tree to json

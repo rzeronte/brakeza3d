@@ -32,55 +32,25 @@
   </component>
   <component name="CMakeSettings">
     <configurations>
-      <configuration PROFILE_NAME="Release" ENABLED="true" CONFIG_NAME="Release" />
+      <configuration PROFILE_NAME="Release-MinGW" ENABLED="true" CONFIG_NAME="Release" TOOLCHAIN_NAME="MinGW" />
       <configuration PROFILE_NAME="Debug-Coverage" ENABLED="true" CONFIG_NAME="Debug" GENERATION_OPTIONS="-DCMAKE_CXX_FLAGS=--coverage -DCMAKE_C_FLAGS=--coverage" />
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): imguilink / improved win images / project context improved">
-      <change afterPath="$PROJECT_DIR$/include/Loaders/ProjectChecker.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Loaders/ProjectChecker.h" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="fix(adm): fix glsl compiling shader with feedbackbuffer">
+      <change afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/documentation.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/documentation.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentScripting.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentScripting.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonDocumentation.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonDocumentation.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonMenu.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/SceneChecker.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobClearScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobClearScene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/Tools.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/Tools.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonMenu.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/InternalTextureNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/InternalTextureNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/01-index.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/1-index.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/02-basic-object-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/2-basic-object-types.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/03-camera-object.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/3-camera-object.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/04-2d-objects.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/4-2d-objects.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/05-3d-objects.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/5-3d-objects.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/06-particle-emitter.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/6-particle-emitter.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/07-lighting-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/7-lighting-system.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/08-colliders-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/8-collision-system.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/09-input-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/9-input-system.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/10-sound-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/10-sound-system.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/11-shaders-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/11-shaders-system.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/12-scripting-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/12-grid-and-octree.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/13-components.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/13-components.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +61,7 @@
     <option name="formatViaClangd" value="false" />
     <option name="clangWarnings" value="-Wno-unused-variable,-Wno-infinite-recursion,-Wno-array-bounds,-Werror=implicit-function-declaration,-Wno-shadow-field-in-constructor-modified,-Wno-shadow-ivar,-Wuninitialized,-Wunused-label,-Wunused-lambda-capture,-Wno-shadow" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Release-MinGW" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
@@ -118,38 +88,14 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/rzeronte/brakeza3d.git&quot;,
-    &quot;accountId&quot;: &quot;276939e3-1deb-4e2e-8e27-4d3f542a0da5&quot;
+    &quot;accountId&quot;: &quot;540aec5e-6e49-4dde-a5e0-e6ebffe3abba&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///dummy.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightPoint.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/3D/LightSpot.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/GUI/GUI.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/GUI/GUIManager.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/GUI/Objects/FileSystemGUI.h" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/include/Misc/TexturePackage.h" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Components/ComponentWindow.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUI.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/GUIManager.cpp" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/AddOns/GUIAddonProjectSetup.cpp" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/Objects/FileSystemGUI.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/Misc/TexturePackage.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="EqPVdzzu" />
@@ -193,14 +139,14 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Eduardo/CLionProjects/BrakezaGitHub/website&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/darkh/CLionProjects/BrakezaGitHub/include/GUI/AddOns&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CMakeSettings&quot;,
     &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -208,24 +154,24 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\darkh\CLionProjects\BrakezaGitHub\include\GUI\AddOns" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\website" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons\ChangeMouseIcon" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc\GUI" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\darkh\CLionProjects\BrakezaGitHub\src\HttpClient" />
+      <recent name="C:\Users\darkh\CLionProjects\BrakezaGitHub\include\HttpClient" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Nodes" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\GUI\Editable" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Nodes" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\src\OpenGL\Quad" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\include\OpenGL\Quad" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release-MinGW" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
@@ -233,7 +179,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -548,7 +494,11 @@
       <workItem from="1768173806413" duration="19112000" />
       <workItem from="1768271486452" duration="23911000" />
       <workItem from="1768429941017" duration="5064000" />
-      <workItem from="1768436532433" duration="7336000" />
+      <workItem from="1768436532433" duration="10812000" />
+      <workItem from="1768524822105" duration="1957000" />
+      <workItem from="1768598808784" duration="1514000" />
+      <workItem from="1768672528412" duration="5305000" />
+      <workItem from="1768699739601" duration="1528000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -598,38 +548,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00120" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766147088413</created>
-      <option name="number" value="00120" />
-      <option name="presentableId" value="LOCAL-00120" />
-      <option name="project" value="LOCAL" />
-      <updated>1766147088413</updated>
-    </task>
-    <task id="LOCAL-00121" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766204092594</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1766204092597</updated>
-    </task>
-    <task id="LOCAL-00122" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766205206679</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
-      <option name="project" value="LOCAL" />
-      <updated>1766205206679</updated>
-    </task>
-    <task id="LOCAL-00123" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766274086516</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1766274086516</updated>
     </task>
     <task id="LOCAL-00124" summary="feat(code): code editor improvements">
       <option name="closed" value="true" />
@@ -935,7 +853,39 @@
       <option name="project" value="LOCAL" />
       <updated>1768362257790</updated>
     </task>
-    <option name="localTasksCounter" value="162" />
+    <task id="LOCAL-00162" summary="feat(gui): imguilink / improved win images / project context improved">
+      <option name="closed" value="true" />
+      <created>1768445024971</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1768445024973</updated>
+    </task>
+    <task id="LOCAL-00163" summary="feat(gui): imguilink / improved win images / project context improved">
+      <option name="closed" value="true" />
+      <created>1768445046595</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1768445046595</updated>
+    </task>
+    <task id="LOCAL-00164" summary="feat(gui): imguilink / improved win images / project context improved">
+      <option name="closed" value="true" />
+      <created>1768445616757</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1768445616757</updated>
+    </task>
+    <task id="LOCAL-00165" summary="fix(adm): fix glsl compiling shader with feedbackbuffer">
+      <option name="closed" value="true" />
+      <created>1768526788331</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1768526788331</updated>
+    </task>
+    <option name="localTasksCounter" value="166" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -969,7 +919,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(gui): ui fine tuning" />
     <MESSAGE value="feat(threads): wip threads queue" />
     <MESSAGE value="fix(picking): Fix colorpicking / feat take screenshots" />
     <MESSAGE value="feat(code): code editor improvements" />
@@ -994,7 +943,8 @@
     <MESSAGE value="feat(nodes): switch popup/tab" />
     <MESSAGE value="feat(gui): improved images window" />
     <MESSAGE value="feat(gui): imguilink / improved win images / project context improved" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): imguilink / improved win images / project context improved" />
+    <MESSAGE value="fix(adm): fix glsl compiling shader with feedbackbuffer" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(adm): fix glsl compiling shader with feedbackbuffer" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

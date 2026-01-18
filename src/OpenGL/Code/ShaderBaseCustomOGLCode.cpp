@@ -767,15 +767,15 @@ void ShaderBaseCustomOGLCode::WriteEmptyCustomShaderToDisk(const std::string& na
     switch(type) {
         case SHADER_POSTPROCESSING : {
             // vs y fs
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, vsfile);
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, fsFile);
+            Tools::CopyFileTo(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_VS, vsfile);
+            Tools::CopyFileTo(Config::get()->TEMPLATE_SHADER_POSTPROCESSING_FS, fsFile);
             break;
         }
         default:
         case SHADER_OBJECT : {
             // vs y fs
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_VS, vsfile);
-            Tools::CopyFile(Config::get()->TEMPLATE_SHADER_OBJECT_FS, fsFile);
+            Tools::CopyFileTo(Config::get()->TEMPLATE_SHADER_OBJECT_VS, vsfile);
+            Tools::CopyFileTo(Config::get()->TEMPLATE_SHADER_OBJECT_FS, fsFile);
             break;
         }
     }
