@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <title>Brakeza3D Engine Blog</title>
-        <link>https://brakeza.com/blog</link>
+        <link>https://brakeza.com/brakeza3d/blog</link>
         <description>Brakeza3D Engine Blog</description>
         <lastBuildDate>Tue, 07 Jan 2025 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
@@ -10,8 +10,8 @@
         <language>en</language>
         <item>
             <title><![CDATA[¡Welcome to Brakeza3D!]]></title>
-            <link>https://brakeza.com/blog/bienvenida</link>
-            <guid>https://brakeza.com/blog/bienvenida</guid>
+            <link>https://brakeza.com/brakeza3d/blog/bienvenida</link>
+            <guid>https://brakeza.com/brakeza3d/blog/bienvenida</guid>
             <pubDate>Tue, 07 Jan 2025 00:00:00 GMT</pubDate>
             <description><![CDATA[The Brakeza3D website has been completely relaunched as a site dedicated to providing solid and up-to-date documentation.]]></description>
             <content:encoded><![CDATA[<p>The <strong>Brakeza3D</strong> website has been completely relaunched as a site dedicated to providing <strong>solid and up-to-date documentation</strong>.</p>
