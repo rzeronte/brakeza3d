@@ -8,7 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="BackendCodeEditorMiscSettings">
-    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="3" type="long" />
+    <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="16" type="long" />
     <option name="/Default/Environment/UserInterface/HierarchyView/ViewStyle/@EntryValue" value="SubTypes" type="string" />
     <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
     <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
@@ -38,10 +38,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="fix(adm): fix glsl compiling shader with feedbackbuffer">
-      <change afterPath="$PROJECT_DIR$/extraer_cambios_mingw.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(doc): improve doc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +130,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "C:/Users/darkh/CLionProjects/brakeza3d",
+    "last_opened_file_path": "C:/Users/darkh/CLionProjects/brakeza3d/website",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -146,11 +145,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\darkh\CLionProjects\brakeza3d\website" />
       <recent name="C:\Users\darkh\CLionProjects\BrakezaGitHub\include\GUI\AddOns" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\website" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons\ChangeMouseIcon" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\doc\GUI" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\darkh\CLionProjects\BrakezaGitHub\src\HttpClient" />
@@ -494,7 +493,7 @@
       <workItem from="1768703997619" duration="334000" />
       <workItem from="1768704344878" duration="1514000" />
       <workItem from="1768743354705" duration="763000" />
-      <workItem from="1768746165897" duration="5266000" />
+      <workItem from="1768746165897" duration="6621000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -544,14 +543,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00125" summary="feat(code): code editor improvements">
-      <option name="closed" value="true" />
-      <created>1766281975805</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1766281975805</updated>
     </task>
     <task id="LOCAL-00126" summary="fix(examples): recover examples after big renaming functions">
       <option name="closed" value="true" />
@@ -881,7 +872,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768704355735</updated>
     </task>
-    <option name="localTasksCounter" value="167" />
+    <task id="LOCAL-00167" summary="feat(doc): improve doc">
+      <option name="closed" value="true" />
+      <created>1768752718989</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1768752718990</updated>
+    </task>
+    <option name="localTasksCounter" value="168" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -915,7 +914,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(threads): wip threads queue" />
     <MESSAGE value="fix(picking): Fix colorpicking / feat take screenshots" />
     <MESSAGE value="feat(code): code editor improvements" />
     <MESSAGE value="fix(examples): recover examples after big renaming functions" />
@@ -940,7 +938,8 @@
     <MESSAGE value="feat(gui): improved images window" />
     <MESSAGE value="feat(gui): imguilink / improved win images / project context improved" />
     <MESSAGE value="fix(adm): fix glsl compiling shader with feedbackbuffer" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix(adm): fix glsl compiling shader with feedbackbuffer" />
+    <MESSAGE value="feat(doc): improve doc" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(doc): improve doc" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

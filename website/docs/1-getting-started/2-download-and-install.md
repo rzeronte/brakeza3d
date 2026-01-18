@@ -47,5 +47,5 @@ sudo apt update && sudo apt install -y \
 | Brakeza3D (Windows) | Precompiled Windows libraries ready to use                        | [Precompiled libraries](https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/brakeza-win-x86_64-mingw.zip)                                                                                                                                                                |
 
 :::note
-Although you may download and compile the source code of each dependency individually, we recommend using the precompiled Windows libraries package to get started.
+Unzip `Precompiled libraries` into same directory of MinGW compiler
 :::
