@@ -49,3 +49,11 @@ sudo apt update && sudo apt install -y \
 :::note
 Unzip `Precompiled libraries` into same directory of MinGW compiler
 :::
+
+#### CLion Toolchain setup
+
+![CLion Toolchain setup](/img/getting-started/clion-toolchain-demo.png)
+
+#### CLion CMake setup
+
+![CLion Cmake setup](/img/getting-started/clion-cmake-demo.png)
