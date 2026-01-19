@@ -82,20 +82,24 @@ https://github.com/rzeronte/brakeza3d/blob/master/doc/index.md
 
 ## Brakeza3D - Screenshots
 
-![Screenshoot01](/doc/screenshots/01.png)
+![Screenshoot01](/website/static/img/editor/01.png)
 
-![Screenshoot02](/doc/screenshots/02.png)
+![Screenshoot02](/website/static/img/editor/02.png)
 
-![Screenshoot03](/doc/screenshots/03.png)
+![Screenshoot03](/website/static/img/editor/03.png)
 
-![Screenshoot04](/doc/screenshots/04.png)
+![Screenshoot04](/website/static/img/editor/04.png)
 
-![Screenshoot05](/doc/screenshots/05.png)
+![Screenshoot05](/website/static/img/editor/05.png)
 
-![Screenshoot06](/doc/screenshots/06.png)
+![Screenshoot06](/website/static/img/editor/06.png)
 
-![Screenshoot07](/doc/screenshots/07.png)
+![Screenshoot07](/website/static/img/editor/07.png)
 
-![Screenshoot07](/doc/screenshots/08.png)
+![Screenshoot08](/website/static/img/editor/08.png)
 
-![Screenshoot07](/doc/screenshots/09.png)
+![Screenshoot09](/website/static/img/editor/09.png)
+
+![Screenshoot10](/website/static/img/editor/10.png)
+
+![Screenshoot11](/website/static/img/editor/11.png)
