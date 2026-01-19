@@ -9,16 +9,11 @@ You can install **Brakeza3D** either by downloading the precompiled binaries or 
 
 ## Precompiled Versions
 
-| Platform   | Version | Download                   |
-|------------|---------|----------------------------|
-| 🪟 Windows | v.1.0.1 | [Brakeza3D for Windows](#) |
-| 🐧 Linux   | v.1.0.1 | [Brakeza3D for Linux](#)   |
-
+Go to the [downloads](../../downloads) section to get a ready-to-use installer for Windows or Linux.
 
 ---
 
 ## Build from Source
----
 
 The project has been successfully built using the [CLion IDE](https://www.jetbrains.com/clion/download/download-thanks.html) on both Linux and Windows. As a CMake-based project, it can be built from the command line or with any CMake-compatible IDE.
 

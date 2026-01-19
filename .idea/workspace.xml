@@ -53,12 +53,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(doc): improve doc">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-debug/default/p/docusaurus-debug-content-0d5.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-debug/default/p/docusaurus-debug-content-0d5.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -513,7 +507,7 @@
       <workItem from="1768776815506" duration="1532000" />
       <workItem from="1768779905645" duration="233000" />
       <workItem from="1768780173952" duration="533000" />
-      <workItem from="1768781268783" duration="10000" />
+      <workItem from="1768781268783" duration="1434000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -563,30 +557,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00126" summary="fix(examples): recover examples after big renaming functions">
-      <option name="closed" value="true" />
-      <created>1766287528931</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
-      <option name="project" value="LOCAL" />
-      <updated>1766287528936</updated>
-    </task>
-    <task id="LOCAL-00127" summary="fix(colliders): fix crashing when debug physics / ui improvements">
-      <option name="closed" value="true" />
-      <created>1766332660520</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1766332660523</updated>
-    </task>
-    <task id="LOCAL-00128" summary="fix(filesystem): fix creating and removing scripts/shaders">
-      <option name="closed" value="true" />
-      <created>1766341969418</created>
-      <option name="number" value="00128" />
-      <option name="presentableId" value="LOCAL-00128" />
-      <option name="project" value="LOCAL" />
-      <updated>1766341969418</updated>
     </task>
     <task id="LOCAL-00129" summary="fix(filesystem): fix creating and removing scripts/shaders">
       <option name="closed" value="true" />
@@ -900,7 +870,31 @@
       <option name="project" value="LOCAL" />
       <updated>1768752718990</updated>
     </task>
-    <option name="localTasksCounter" value="168" />
+    <task id="LOCAL-00168" summary="feat(doc): improve doc">
+      <option name="closed" value="true" />
+      <created>1768781408856</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1768781408856</updated>
+    </task>
+    <task id="LOCAL-00169" summary="feat(doc): improve doc">
+      <option name="closed" value="true" />
+      <created>1768781581464</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1768781581464</updated>
+    </task>
+    <task id="LOCAL-00170" summary="feat(doc): improve doc">
+      <option name="closed" value="true" />
+      <created>1768782634564</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1768782634564</updated>
+    </task>
+    <option name="localTasksCounter" value="171" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

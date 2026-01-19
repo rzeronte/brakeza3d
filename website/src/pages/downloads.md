@@ -5,18 +5,9 @@ title: Downloads
 # Downloads
 ---
 
-Get the latest version of **Brakeza3D** and start creating amazing 3D experiences.
+Download the latest version of **Brakeza3D** and unleash your creativity in 3D!
 
-## 📦 Platform-Specific
----
-
-### Windows
-- **Windows 10/11 (x64)** - [Download](https://github.com/yourengine/releases/download/v1.2.0/engine-windows-x64.zip) (125 MB)
-
-### Linux
-- **Ubuntu/Debian (x64)** - [Download .deb](https://github.com/yourengine/releases/download/v1.2.0/engine-linux-x64.deb) (89 MB)
-
-
-## 🔨 Build from Source
----
-Want to compile the engine yourself? Check out our [build guide](/docs/building-from-source).
+| ![Windows Logo](/img/logo_windows.png)                                                                                                     | ![Linux Logo](/img/logo_linux.png)                                                                                                     | ![GitHub Logo](/img/logo_github.png)                                                          |
+|--------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
+| Windows 10/11 (x64)                                                                                                                        | Ubuntu/Debian (x64)                                                                                                                    | Source Code                                                                                   |
+| [Download .exe](https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/Brakeza3D-x86-64-Windows-installer.exe) (66.7 MB) | [Download .deb](https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/Brakeza3D-x86-64-Linux-installer.deb) (89 MB) | [Download .zip](https://github.com/rzeronte/brakeza3d/archive/refs/heads/master.zip) (44.7MB) |
