@@ -1,86 +1,35 @@
-# Brakeza3D - Free OpenSource 3D Engine
+# Brakeza3D - Free Open-Source 3D Engine
 
-Brakeza3D is an open source 3D engine written from scratch in C++
-
+**Brakeza3D** is an open source 3D engine written from scratch in C++
 
 - Cross Platform (Windows/Linux/OSX checked)
-- Easy and simple architecture (Based in components easily maintainable)
+- Easy and simple architecture
 - Render Forward/Deferred
 - ADS light system
-- Physics World Integration (Bullet)
-- ImGui Docking Integration
+- Physics World Integration
+- GUI with docking integration
 - Assimp library for loading models
-- Scene management (JSON based files)
-- 2D / 3D features 
+- Scene management
+- 2D / 3D features
 - Profiler
 - Shadow mapping
 - LUA Scripting
-- Extensible GLSL Shaders
-- Code editor with LUA/GLSL syntaxis Integration
+- Extensible GLSL Shaders / Nodes editor
+- Code editor with LUA/GLSL syntaxis integration
 - Sound system integration
-- Multi-Thread (Thread pool based)
 - Interface for XBOX/Playstation controller
+- Multi-Thread (Thread pool based)
 
 ---
 
-## Dependences
-
-- SDL2
-- SDL2_image
-- SDL2_ttf
-- SDL2_mixer
-- Bullet Physics
-- Assimp
-- OpenGL
-- GLM
-- LUA5.2
+### [Download and install](https://brakeza.com/downloads)
+### [Documentation](https://brakeza.com/docs/getting-started/intro)
 
 ---
 
-## Linux compilation
+### Screenshots
 
-This project has been checked on Ubuntu 20.10 from CLI
-
-In Unix systems we will only have to make sure that we have installed the development packages of the libraries that we need
-
-``` 
-apt-get install libsdl2-2.0-0 libsdl2-dev libsdl2-image-dev libsdl2-image-2.0-0 libsdl2-ttf-dev \
-libsdl2-ttf-2.0-0 libsdl2-mixer-dev libsdl2-mixer-2.0-0 libbullet-dev libbullet3.06 libassimp-dev \
-libassimp5 assimp-utils libglm-dev liblua5.2-dev \
-liblua5.2-dev liblua5.2-0
-```
-
-``` 
-git clone https://github.com/rzeronte/brakeza3d.git brakeza3D
-cd brakeza3D
-mkdir build && cd build
-cmake ..
-make
-```
----
-
-## Windows compilation
-
-We have precompiled libraries for compiling with MinGW tested with CLion.
-
-https://github.com/rzeronte/brakeza-mingw-precompiled-libraries
-
----
-
-## OSX compilation
-
-Currently, I do not compile for Mac, but the project was started on it, so that it shouldn't vary much compared to compiling with Linux, once the dependencies are satisfied.
-
----
-## Documentation
-
-Here you can find some documentation for starting:
-
-https://github.com/rzeronte/brakeza3d/blob/master/doc/index.md
-
----
-
-## Brakeza3D - Screenshots
+Some snapshots from the development:
 
 ![Screenshoot01](/website/static/img/editor/01.png)
 
