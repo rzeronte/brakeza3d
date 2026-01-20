@@ -49,6 +49,7 @@ public:
     std::string SCENES_FOLDER         = ASSETS_FOLDER + "scenes/";
     std::string CUSTOM_SHADERS_FOLDER = ASSETS_FOLDER + "shaders/";
     std::string SCREENSHOTS_FOLDER    = ASSETS_FOLDER + "screenshots/";
+    std::string DOWNLOADS_FOLDER      = ASSETS_FOLDER + "downloads/";
     std::string DEFAULT_SOUNDS_FILE   = "sounds.json";
     std::string DEFAULT_SCENE         = "brakeza.json";
     std::string DOCUMENTATION_CONFIG  = "documentation.json";
@@ -97,6 +98,9 @@ public:
     bool ENABLE_LOGGING_STD = true;
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;
+    bool ENABLE_IMGUI_STATUSBAR = true;
+    float STATUS_BAR_HEIGHT = 27.0f;
+    float TOOL_BAR_HEIGHT = 50.0f;
     bool ENABLE_GRID_BACKGROUND = true;
 
     // Render options
@@ -184,6 +188,10 @@ public:
 
     // SCRIPT TEMPLATE
     std::string TEMPLATE_SCRIPT = TEMPLATES_FOLDER + "script-template.lua";
+
+    // API ENDPOINT
+    std::string URL_ASSETS_HUB_API = "http://localhost:3000";
+    std::string URL_ASSETS_HUB_URL = "https://hub.brakeza.com";
 
     // GLOBAL ENUMS
     enum SoundChannels {

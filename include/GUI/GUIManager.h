@@ -92,8 +92,11 @@ public:
     void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
     void setLayoutToDefault(Config::ImGUIConfigs config);
     void setIndexCodeEditorTab(const std::string &label);
+
+    void RenderStatusBar() const;
+
     void CloseRemovedEditableOpenFiles();
-    void DrawWinEditableOpenResources();
+    void DrawWinEditableOpenResources() const;
     void OpenEditableFile(EditableOpenBaseResource *openFile);
     void CloseEditableFile(EditableOpenBaseResource *openFile) const;
     void ResetIndexCodeEditor();
@@ -117,6 +120,7 @@ public:
     virtual void DrawGUI();
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
+    static void DrawGradientLine(ImGuiViewport* viewport, float yPosition, float lineHeight = 3.0f);
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;

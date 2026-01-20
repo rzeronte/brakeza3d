@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../../Config.h"
 #include "../../HttpClient/ResourceHubClient.h"
 
 class GUIAddonResourceHub {
@@ -49,7 +50,15 @@ private:
     // Detalle de recurso
     cJSON* selectedResourceDetail;
     bool showResourceDetail;
-    
+
+
+    // Variables para descarga
+    std::string downloadPath = Config::get()->DOWNLOADS_FOLDER;;
+    std::map<std::string, bool> downloadingFiles;
+    std::map<std::string, bool> downloadSuccess;
+    std::map<std::string, std::string> downloadErrors;
+    bool downloadingAll = false;
+
     // Métodos privados
     void renderLoginWindow();
     void renderBrowserWindow();
@@ -71,7 +80,10 @@ public:
     void render();
     void showLogin();
     void showBrowser();
-    bool isAuthenticated() const { return isLoggedIn; }
+    [[nodiscard]] bool isAuthenticated() const { return isLoggedIn; }
+
+    void downloadFile(int resourceId, const std::string& filename);
+    void downloadAllFiles(int resourceId, cJSON* files);
 };
 
 #endif //BRAKEZA3D_GUIADDONRESOURCEHUB_H

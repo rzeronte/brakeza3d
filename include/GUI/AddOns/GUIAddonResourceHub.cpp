@@ -2,11 +2,18 @@
 #include "imgui.h"
 #include <cstring>
 #include <iostream>
+#include <thread>
+#include <chrono>
+#include <map>
 
+#include "../GUI.h"
+#include "../../Config.h"
 #include "../../HttpClient/ResourceHubClient.h"
+#include "../Objects/FileSystemGUI.h"
 
-GUIAddonResourceHub::GUIAddonResourceHub() {
-    client = new ResourceHubClient("http://localhost:3000");
+GUIAddonResourceHub::GUIAddonResourceHub()
+{
+    client = new ResourceHubClient(Config::get()->URL_ASSETS_HUB_API);
     
     isLoggedIn = false;
     showLoginWindow = false;
@@ -64,15 +71,11 @@ void GUIAddonResourceHub::render() {
 }
 
 void GUIAddonResourceHub::renderLoginWindow() {
-    ImGui::SetNextWindowSize(ImVec2(400, 250), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f), 
                             ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
     
-    if (ImGui::Begin("Resource Hub - Login", &showLoginWindow, ImGuiWindowFlags_NoResize)) {
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "Resource Hub");
-        ImGui::Separator();
-        ImGui::Spacing();
-        
+    if (ImGui::Begin("Assets Hub - Login", &showLoginWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking)) {
         // Username
         ImGui::Text("Username:");
         ImGui::SetNextItemWidth(-1);
@@ -116,14 +119,15 @@ void GUIAddonResourceHub::renderLoginWindow() {
 void GUIAddonResourceHub::renderBrowserWindow() {
     ImGui::SetNextWindowSize(ImVec2(900, 600), ImGuiCond_FirstUseEver);
     
-    if (ImGui::Begin("Resource Hub Browser", &showBrowserWindow)) {
+    if (ImGui::Begin("Assets Hub Browser", &showBrowserWindow, ImGuiWindowFlags_NoDocking)) {
         // Header
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "Resource Hub Browser");
+        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), Config::get()->URL_ASSETS_HUB_URL.c_str());
         ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-        if (ImGui::Button("Logout")) {
+
+        GUI::DrawButton("Logout", IconGUI::SESSION_CLOSE, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, false,[&]() {
             performLogout();
-        }
-        
+        });
+
         ImGui::Separator();
         ImGui::Spacing();
         
@@ -193,9 +197,9 @@ void GUIAddonResourceHub::renderSearchFilters() {
     ImGui::SameLine();
     
     // Refresh button
-    if (ImGui::Button("Refresh")) {
+    GUI::DrawButton("Refresh", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, false,[&]() {
         loadResources();
-    }
+    });
 }
 
 void GUIAddonResourceHub::renderResourceList() {
@@ -217,7 +221,8 @@ void GUIAddonResourceHub::renderResourceList() {
         ImGui::TableSetupColumn("Author", ImGuiTableColumnFlags_WidthFixed, 120.0f);
         ImGui::TableSetupColumn("Rating", ImGuiTableColumnFlags_WidthFixed, 80.0f);
         ImGui::TableHeadersRow();
-        
+
+
         for (size_t i = 0; i < resources.size(); i++) {
             const ResourceInfo& res = resources[i];
             
@@ -253,108 +258,6 @@ void GUIAddonResourceHub::renderResourceList() {
         
         ImGui::EndTable();
     }
-}
-
-void GUIAddonResourceHub::renderResourceDetail() {
-    if (!selectedResourceDetail) return;
-    
-    ImGui::SetNextWindowSize(ImVec2(600, 500), ImGuiCond_FirstUseEver);
-    
-    if (ImGui::Begin("Resource Details", &showResourceDetail)) {
-        cJSON* name = cJSON_GetObjectItem(selectedResourceDetail, "name");
-        cJSON* description = cJSON_GetObjectItem(selectedResourceDetail, "description");
-        cJSON* type = cJSON_GetObjectItem(selectedResourceDetail, "type");
-        cJSON* author = cJSON_GetObjectItem(selectedResourceDetail, "author");
-        cJSON* rating = cJSON_GetObjectItem(selectedResourceDetail, "average_rating");
-        cJSON* ratingCount = cJSON_GetObjectItem(selectedResourceDetail, "rating_count");
-        cJSON* files = cJSON_GetObjectItem(selectedResourceDetail, "files");
-        
-        // Title
-        if (name) {
-            ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", name->valuestring);
-        }
-        ImGui::Separator();
-        ImGui::Spacing();
-        
-        // Type and author
-        ImGui::Text("Type:");
-        ImGui::SameLine();
-        if (type) {
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", type->valuestring);
-        }
-        
-        ImGui::SameLine(300);
-        ImGui::Text("Author:");
-        ImGui::SameLine();
-        if (author) {
-            ImGui::Text("%s", author->valuestring);
-        }
-        
-        ImGui::Spacing();
-        
-        // Rating
-        ImGui::Text("Rating:");
-        ImGui::SameLine();
-        if (rating && ratingCount) {
-            ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.0f, 1.0f), "%.1f / 5.0 (%d ratings)", 
-                             rating->valuedouble, ratingCount->valueint);
-        }
-        
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-        
-        // Description
-        ImGui::Text("Description:");
-        ImGui::Spacing();
-        if (description) {
-            ImGui::TextWrapped("%s", description->valuestring);
-        }
-        
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-        
-        // Files
-        ImGui::Text("Files:");
-        if (files && cJSON_IsArray(files)) {
-            int fileCount = cJSON_GetArraySize(files);
-            for (int i = 0; i < fileCount; i++) {
-                cJSON* file = cJSON_GetArrayItem(files, i);
-                cJSON* filename = cJSON_GetObjectItem(file, "filename");
-                if (filename) {
-                    ImGui::BulletText("%s", filename->valuestring);
-                }
-            }
-        }
-        
-        ImGui::Spacing();
-        ImGui::Separator();
-        ImGui::Spacing();
-        
-        // Actions
-        if (ImGui::Button("Download", ImVec2(120, 0))) {
-            // TODO: Implementar descarga
-            std::cout << "Download functionality not implemented yet" << std::endl;
-        }
-        
-        ImGui::SameLine();
-        
-        static int userRating = 5;
-        ImGui::Text("Rate:");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(100);
-        ImGui::SliderInt("##rating", &userRating, 1, 5);
-        ImGui::SameLine();
-        if (ImGui::Button("Submit Rating")) {
-            cJSON* id = cJSON_GetObjectItem(selectedResourceDetail, "id");
-            if (id) {
-                client->rateResource(id->valueint, userRating);
-                loadResourceDetail(id->valueint);  // Reload to see updated rating
-            }
-        }
-    }
-    ImGui::End();
 }
 
 // ============ MÉTODOS DE LÓGICA ============
@@ -475,4 +378,282 @@ void GUIAddonResourceHub::clearResourceDetail() {
         selectedResourceDetail = nullptr;
     }
     showResourceDetail = false;
+}
+
+void GUIAddonResourceHub::renderResourceDetail() {
+    if (!selectedResourceDetail) return;
+
+    ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiCond_FirstUseEver);
+
+    if (ImGui::Begin("Resource Details", &showResourceDetail,  ImGuiWindowFlags_NoDocking)) {
+        cJSON* name = cJSON_GetObjectItem(selectedResourceDetail, "name");
+        cJSON* description = cJSON_GetObjectItem(selectedResourceDetail, "description");
+        cJSON* type = cJSON_GetObjectItem(selectedResourceDetail, "type");
+        cJSON* author = cJSON_GetObjectItem(selectedResourceDetail, "author");
+        cJSON* rating = cJSON_GetObjectItem(selectedResourceDetail, "average_rating");
+        cJSON* ratingCount = cJSON_GetObjectItem(selectedResourceDetail, "rating_count");
+        cJSON* files = cJSON_GetObjectItem(selectedResourceDetail, "files");
+        cJSON* id = cJSON_GetObjectItem(selectedResourceDetail, "id");
+
+        // Title
+        if (name) {
+            ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Si tienes fuentes custom
+            ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", name->valuestring);
+            ImGui::PopFont();
+        }
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // Type and author
+        ImGui::Text("Type:");
+        ImGui::SameLine();
+        if (type) {
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", type->valuestring);
+        }
+
+        ImGui::SameLine(300);
+        ImGui::Text("Author:");
+        ImGui::SameLine();
+        if (author) {
+            ImGui::Text("%s", author->valuestring);
+        }
+
+        ImGui::Spacing();
+
+        ImGui::Text("Rating:");
+        ImGui::SameLine();
+        if (rating && ratingCount) {
+            float ratingValue = static_cast<float>(rating->valuedouble);
+            auto starOn = FileSystemGUI::Icon(IconGUI::STAR_ON);
+            auto starOff = FileSystemGUI::Icon(IconGUI::STAR_OFF);
+
+            // Tamaño de las estrellas (ajusta según tus imágenes)
+            ImVec2 starSize = ImVec2(16, 16);  // o GUIType::Sizes::ICON_SIZE_MENUS
+
+            // Mostrar estrellas visuales
+            for (int i = 0; i < 5; i++) {
+                if (i > 0) ImGui::SameLine();
+
+                if (i < (int)ratingValue) {
+                    ImGui::Image(starOn, starSize);
+                } else {
+                    ImGui::Image(starOff, starSize);
+                }
+            }
+
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%d ratings)", ratingCount->valueint);
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // Description
+        ImGui::Text("Description:");
+        ImGui::Spacing();
+        if (description) {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.9f, 0.9f, 0.9f, 1.0f));
+            ImGui::TextWrapped("%s", description->valuestring);
+            ImGui::PopStyleColor();
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+
+        // Files list with individual download buttons
+        ImGui::Text("Files:");
+
+        if (files && cJSON_IsArray(files)) {
+            int fileCount = cJSON_GetArraySize(files);
+
+            // Download All button
+            if (fileCount > 1) {
+                if (downloadingAll) {
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+                    ImGui::Button("Downloading...", ImVec2(150, 0));
+                    ImGui::PopStyleColor();
+                } else {
+                    if (ImGui::Button("Download All", ImVec2(150, 0))) {
+                        downloadAllFiles(id->valueint, files);
+                    }
+                }
+                ImGui::Spacing();
+            }
+
+            // Lista de archivos con botones individuales
+            ImGui::BeginChild("FilesList", ImVec2(0, 150), true);
+
+            for (int i = 0; i < fileCount; i++) {
+                cJSON* file = cJSON_GetArrayItem(files, i);
+                cJSON* filename = cJSON_GetObjectItem(file, "filename");
+
+                if (filename) {
+                    std::string fname = filename->valuestring;
+
+                    // Nombre del archivo
+                    ImGui::BulletText("%s", fname.c_str());
+                    ImGui::SameLine();
+
+                    // Espaciado dinámico
+                    float textWidth = ImGui::CalcTextSize(fname.c_str()).x;
+                    ImGui::SameLine(300);
+
+                    // Estado de descarga
+                    std::string buttonId = "##download_" + std::to_string(i);
+
+                    if (downloadingFiles[fname]) {
+                        // Downloading...
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+                        ImGui::Button("Downloading...", ImVec2(100, 0));
+                        ImGui::PopStyleColor();
+
+                    } else if (downloadSuccess.count(fname) && downloadSuccess[fname]) {
+                        // Success
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.7f, 0.0f, 1.0f));
+                        ImGui::Button("Downloaded", ImVec2(100, 0));
+                        ImGui::PopStyleColor();
+
+                    } else if (downloadErrors.count(fname)) {
+                        // Error
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
+                        if (ImGui::Button("Error", ImVec2(100, 0))) {
+                            // Mostrar error en tooltip
+                        }
+                        ImGui::PopStyleColor();
+
+                        if (ImGui::IsItemHovered()) {
+                            ImGui::SetTooltip("%s", downloadErrors[fname].c_str());
+                        }
+
+                        // Botón de reintentar
+                        ImGui::SameLine();
+                        if (ImGui::Button(("Retry" + buttonId).c_str(), ImVec2(60, 0))) {
+                            downloadFile(id->valueint, fname);
+                        }
+
+                    } else {
+                        // Download button
+                        if (ImGui::Button(("Download" + buttonId).c_str(), ImVec2(100, 0))) {
+                            downloadFile(id->valueint, fname);
+                        }
+                    }
+                }
+            }
+
+            ImGui::EndChild();
+        } else {
+            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No files available");
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // ============================================
+        // RATING
+        // ============================================
+
+        static int userRating = 5;
+        ImGui::Text("Rate this resource:");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(150);
+        ImGui::SliderInt("##rating", &userRating, 1, 5, "%d stars");
+        ImGui::SameLine();
+        if (ImGui::Button("Submit Rating", ImVec2(120, 0))) {
+            if (id) {
+                if (client->rateResource(id->valueint, userRating)) {
+                    std::cout << "Rating submitted successfully!" << std::endl;
+                    loadResourceDetail(id->valueint);  // Reload to see updated rating
+                } else {
+                    std::cout << "Failed to submit rating" << std::endl;
+                }
+            }
+        }
+
+        ImGui::Spacing();
+
+        // Close button
+        if (ImGui::Button("Close", ImVec2(100, 0))) {
+            showResourceDetail = false;
+        }
+    }
+    ImGui::End();
+}
+
+// ============================================
+// FUNCIÓN HELPER: Descargar un archivo individual
+// ============================================
+
+void GUIAddonResourceHub::downloadFile(int resourceId, const std::string& filename) {
+    // Marcar como descargando
+    downloadingFiles[filename] = true;
+    downloadSuccess[filename] = false;
+    downloadErrors.erase(filename);
+
+    // Construir ruta de salida
+    std::string outputPath = downloadPath + filename;
+
+    std::cout << "Downloading: " << filename << " to " << outputPath << std::endl;
+
+    // Realizar descarga en thread separado para no bloquear UI
+    std::thread([this, resourceId, filename, outputPath]() {
+        bool success = client->downloadResourceFile(resourceId, filename, outputPath);
+
+        // Actualizar estado
+        downloadingFiles[filename] = false;
+
+        if (success) {
+            downloadSuccess[filename] = true;
+            std::cout << "✓ Downloaded: " << filename << std::endl;
+        } else {
+            downloadErrors[filename] = "Download failed. Check console for details.";
+            std::cout << "✗ Failed: " << filename << std::endl;
+        }
+    }).detach();
+}
+
+// ============================================
+// FUNCIÓN HELPER: Descargar todos los archivos
+// ============================================
+
+void GUIAddonResourceHub::downloadAllFiles(int resourceId, cJSON* files) {
+    if (!files || !cJSON_IsArray(files)) return;
+
+    downloadingAll = true;
+
+    int fileCount = cJSON_GetArraySize(files);
+
+    std::cout << "Downloading all files (" << fileCount << ")..." << std::endl;
+
+    // Descargar todos en thread separado
+    std::thread([this, resourceId, files, fileCount]() {
+        for (int i = 0; i < fileCount; i++) {
+            cJSON* file = cJSON_GetArrayItem(files, i);
+            cJSON* filename = cJSON_GetObjectItem(file, "filename");
+
+            if (filename) {
+                std::string fname = filename->valuestring;
+                std::string outputPath = downloadPath + fname;
+
+                downloadingFiles[fname] = true;
+
+                bool success = client->downloadResourceFile(resourceId, fname, outputPath);
+
+                downloadingFiles[fname] = false;
+
+                if (success) {
+                    downloadSuccess[fname] = true;
+                } else {
+                    downloadErrors[fname] = "Download failed";
+                }
+
+                // Pequeña pausa entre descargas
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        }
+
+        downloadingAll = false;
+        std::cout << "✓ All downloads completed" << std::endl;
+    }).detach();
 }

@@ -7,7 +7,6 @@
 
 #include "../GUI.h"
 #include "../GUIManager.h"
-#include "../../Render/ThreadPool.h"
 
 class GUIManager;
 
@@ -27,8 +26,6 @@ public:
     static void MenuSound();
     static void MenuLogging();
     static void MenuLayout();
-    static void MenuWorkers();
-    static void MenuWorker(ThreadPool &pool, std::string title);
 
     static void MenuWindow(GUIManager *gui);
     static void AboutMeModal();

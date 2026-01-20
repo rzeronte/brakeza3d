@@ -12,7 +12,28 @@ void GUIAddonToolbar::Draw()
 {
     if (!Config::get()->ENABLE_IMGUI_TOOLBAR) return;
 
-    if (ImGui::Begin("MainToolBar")) {
+    // Solo si está activada, configurar la ventana
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    const float toolbar_height = Config::get()->TOOL_BAR_HEIGHT;
+    const float menu_bar_height = ImGui::GetFrameHeight();
+
+    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + menu_bar_height));
+    ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, toolbar_height));
+    ImGui::SetNextWindowViewport(viewport->ID);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove |
+                             ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoSavedSettings |
+                             ImGuiWindowFlags_NoDocking;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+
+    if (ImGui::Begin("MainToolBar", nullptr, flags)) {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 6));
         LUAStatusIcons();
         VerticalSeparator();
@@ -32,6 +53,9 @@ void GUIAddonToolbar::Draw()
         ImGui::PopStyleVar();
     }
     ImGui::End();
+
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar(3);
 }
 
 void GUIAddonToolbar::LayoutIcons()
@@ -144,7 +168,16 @@ void GUIAddonToolbar::Helpers()
     GUI::DrawButton("Documentation", IconGUI::WIN_DOCUMENTATION, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen,[&]() {
         Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen;
     });
-
+    ImGui::SameLine();
+    if (!Brakeza::get()->GUI()->getResourcesHub()->isAuthenticated()) {
+        GUI::DrawButton("Assets Hub - Login", IconGUI::SESSION_OPEN, GUIType::Sizes::ICONS_TOOLBAR, false,[&]() {
+            Brakeza::get()->GUI()->getResourcesHub()->showLogin();
+        });
+    } else {
+       GUI::DrawButton("Assets Hub - Logout", IconGUI::SESSION_CLOSE, GUIType::Sizes::ICONS_TOOLBAR, false,[&]() {
+            //Brakeza::get()->GUI()->getResourcesHub()->lo();
+       });
+    }
 }
 
 void GUIAddonToolbar::RenderTriangleModes()

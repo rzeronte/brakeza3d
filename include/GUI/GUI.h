@@ -11,7 +11,6 @@
 #include "imgui.h"
 #include "../SceneObjectTypes.h"
 #include "../Misc/Timer.h"
-#include "../Misc/TexturePackage.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 
 namespace GUIType
@@ -113,7 +112,8 @@ namespace GUIType
         DOCUMENTATION,
         SCENE_INFO,
         SHADER_NODES_EDITOR,
-        PROJECT_INFO
+        PROJECT_INFO,
+        THREADS
     };
 
     struct WindowData {
@@ -339,7 +339,19 @@ namespace GUIType
     X(PROJECT_SETUP_SCENES, 0, 0) \
     X(IMAGE_FILE, 0, 0) \
     X(PROJECT_INFO, 0, 0) \
-    X(MNU_RESOURCESHUB, 0, 0)
+    X(MNU_RESOURCESHUB, 0, 0) \
+    X(SESSION_ON, 0, 0) \
+    X(SESSION_OFF, 0, 0) \
+    X(LAYOUTS_ENABLE_STATUSBAR, 0, 0) \
+    X(WIN_THREADS, 0, 0) \
+    X(STAR_ON, 0, 0) \
+    X(STAR_OFF, 0, 0) \
+    X(LIGHT_ON, 0, 0) \
+    X(LIGHT_OFF, 0, 0) \
+    X(SESSION_CLOSE, 0, 0) \
+    X(DOWNLOAD_RESOURCE, 0, 0) \
+    X(HUB_URL_LINK, 0, 0) \
+    X(SESSION_OPEN, 0, 0)
 
 // Icons Objects
 namespace IconObject {

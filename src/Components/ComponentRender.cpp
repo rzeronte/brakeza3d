@@ -102,10 +102,6 @@ void ComponentRender::onUpdate()
 
     onUpdateSceneObjects();
 
-    if (SETUP->DRAW_FPS_RENDER) {
-        DrawFPS();
-    }
-
     if (Brakeza::get()->GUI()->isWindowOpen(GUIType::DEPTH_LIGHTS_MAPS)) {
         shaders.shaderShadowPassDebugLight->CreateFramebuffer();
         shaders.shaderShadowPassDebugLight->createArrayTextures(numSpotLights);

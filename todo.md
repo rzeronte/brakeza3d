@@ -1,9 +1,12 @@
 # Road Map
 ----------
 features:
+    - Detect Project/Scene loaded
+        - Its save buttons
+        - StatusBar info about that
 fixes:
-    - improve node editor autofit when open popup/tab is not working
-experience:
-    - add effects node shader demos
+    - Set default light not 100% dark! :D
+    - AutoFix NodesEditor some scenarios fail
+
 
 

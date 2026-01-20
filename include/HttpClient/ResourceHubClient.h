@@ -7,6 +7,7 @@
 #include <curl/curl.h>
 #include "../Misc/cJSON.h"
 
+
 class ResourceHubClient {
 private:
     std::string baseUrl;
@@ -61,8 +62,9 @@ public:
     bool rateResource(int resourceId, int rating);
     
     // Getters
-    bool isAuthenticated() const { return !accessToken.empty(); }
-    std::string getAccessToken() const { return accessToken; }
+    [[nodiscard]] bool isAuthenticated() const { return !accessToken.empty(); }
+    [[nodiscard]] std::string getAccessToken() const { return accessToken; }
+    bool downloadResourceFile(int resourceId, const std::string& filename, const std::string& outputPath);
 };
 
 #endif // RESOURCE_HUB_CLIENT_H

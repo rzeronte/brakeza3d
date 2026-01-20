@@ -17,6 +17,7 @@
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/AddOns/GUIAddonDocumentation.h"
+#include "../../include/GUI/Objects/ThreadGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
 
 #define ADD_WIN(title, type, icon, visible, internal, dockable, func) \
@@ -73,12 +74,12 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Logging/Console",     GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true, widgetConsole->DrawWinLogging());
     ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true, DrawWinDepthLightsMap());
     ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, true, Profiler::get()->DrawWinProfiler());
-    ADD_WIN("Code nodeEditor",     GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinEditableOpenResources());
+    ADD_WIN("Code/Nodes editor",   GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinEditableOpenResources());
     ADD_WIN("Debug GUI Icons",     GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, true, IconsGUI::DrawWinDebugIcons(this));
     ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  true, GUIAddonDocumentation::DrawWinDocumentation(documentationTree));
     ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, sceneChecker.DrawWinSceneInfo());
     ADD_WIN("Project Detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          false, true,  false, projectChecker.DrawWinProjectInfo());
-    //ADD_WIN("Shader Nodes Editor", GUIType::SHADER_NODES_EDITOR, IconGUI::WIN_SHADER_NODES,    false, false, true, nodeEditor->Render(););
+    ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           false, false, false, ThreadGUI::MenuWorkers());
 
     RegisterDefaultLayoutWindows();
 }
@@ -105,6 +106,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEBUG_ICONS, false },
         { GUIType::CODE_EDITOR, false},
         { GUIType::SCENE_INFO, false},
+        { GUIType::THREADS, false},
     };
 
     devsLayoutWindowsConfig =  {
@@ -127,6 +129,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEBUG_ICONS, false },
         { GUIType::CODE_EDITOR, true},
         { GUIType::SCENE_INFO, false},
+        { GUIType::THREADS, false},
     };
 
     designLayoutWindowsConfig =  {
@@ -149,6 +152,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::DEBUG_ICONS, false },
         { GUIType::CODE_EDITOR, false },
         { GUIType::SCENE_INFO, false},
+        { GUIType::THREADS, false},
     };
 }
 
@@ -182,8 +186,7 @@ void GUIManager::RegisterMenu()
         {"Sound",           IconGUI::MNU_SOUND,             [&] { GUIAddonMenu::MenuSound(); }},
         {"Logging",         IconGUI::MNU_LOGGING,           [&] { GUIAddonMenu::MenuLogging(); }},
         {"Layouts",         IconGUI::MNU_LAYOUTS,           [&] { GUIAddonMenu::MenuLayout(); }},
-        {"Workers",         IconGUI::MNU_WORKERS,           [&] { GUIAddonMenu::MenuWorkers(); }},
-        {"Resouces Hub",    IconGUI::MNU_RESOURCESHUB,      [&] { GUIAddonMenu::MenuResourcesHub(); }},
+        {"Assets Hub",      IconGUI::MNU_RESOURCESHUB,      [&] { GUIAddonMenu::MenuResourcesHub(); }},
         {"Windows",         IconGUI::MNU_WINDOWS,           [&] { GUIAddonMenu::MenuWindow(this); }},
     };
 }
@@ -193,7 +196,11 @@ void GUIManager::DrawGUI()
     UpdateImGuiDocking();
 
     GUIAddonMenu::Draw(this);
+
     GUIAddonToolbar::Draw();
+
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    DrawGradientLine(viewport, viewport->Pos.y + ImGui::GetFrameHeight() + Config::get()->TOOL_BAR_HEIGHT, 2.0f);
 
     Object3DGUI::DrawSelectedObjectGuizmo();
     Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(this);
@@ -201,6 +208,7 @@ void GUIManager::DrawGUI()
     DrawRegisteredWindows();
     DrawSplashWindow();
     resourceHub->render();
+    RenderStatusBar();
 
     CloseRemovedEditableOpenFiles();
 
@@ -268,7 +276,7 @@ void GUIManager::CloseRemovedEditableOpenFiles()
     }
 }
 
-void GUIManager::DrawWinEditableOpenResources()
+void GUIManager::DrawWinEditableOpenResources() const
 {
     if (ImGui::BeginTabBar("FileTabs")) {
         int i = 0;
@@ -306,17 +314,20 @@ void GUIManager::DrawRegisteredWindows()
 
 void GUIManager::UpdateImGuiDocking()
 {
-    //bool show_demo_window = true;
-    //ImGui::ShowDemoWindow(&show_demo_window);
     static bool opt_fullscreen_persistant = true;
     bool opt_fullscreen = opt_fullscreen_persistant;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
+    const float toolbar_height = Config::get()->ENABLE_IMGUI_TOOLBAR ? Config::get()->TOOL_BAR_HEIGHT : 0;
+    const float status_bar_height = Config::get()->ENABLE_IMGUI_STATUSBAR ? Config::get()->STATUS_BAR_HEIGHT : 0;
+
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
     if (opt_fullscreen) {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(viewport->Size);
+
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + toolbar_height));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - toolbar_height - status_bar_height));
+
         ImGui::SetNextWindowViewport(viewport->ID);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -614,4 +625,129 @@ void GUIManager::setIndexCodeEditorTab(const std::string &label)
     }
 
     indexCodeEditorTab = 0;
+}
+
+void GUIManager::DrawGradientLine(ImGuiViewport* viewport, float yPosition, float lineHeight)
+{
+    ImDrawList* drawList = ImGui::GetForegroundDrawList(viewport);
+
+    // Posición de la línea
+    const ImVec2 lineStart = ImVec2(viewport->Pos.x, yPosition);
+    const ImVec2 lineEnd = ImVec2(viewport->Pos.x + viewport->Size.x, yPosition + lineHeight);
+
+    // Colores lime y cyan
+    const ImU32 colorLime = IM_COL32(132, 204, 22, 255);   // lime-500
+    const ImU32 colorCyan = IM_COL32(6, 182, 212, 255);    // cyan-500
+
+    // Degradado en 3 segmentos: lime → cyan → lime
+    const float width = viewport->Size.x;
+    const float segment = width / 3.0f;
+
+    // Segmento izquierdo: lime → cyan
+    drawList->AddRectFilledMultiColor(
+        ImVec2(lineStart.x, lineStart.y),
+        ImVec2(lineStart.x + segment, lineEnd.y),
+        colorLime, colorCyan, colorCyan, colorLime
+    );
+
+    // Segmento central: cyan puro
+    drawList->AddRectFilled(
+        ImVec2(lineStart.x + segment, lineStart.y),
+        ImVec2(lineStart.x + segment * 2.0f, lineEnd.y),
+        colorCyan
+    );
+
+    // Segmento derecho: cyan → lime
+    drawList->AddRectFilledMultiColor(
+        ImVec2(lineStart.x + segment * 2.0f, lineStart.y),
+        ImVec2(lineEnd.x, lineEnd.y),
+        colorCyan, colorLime, colorLime, colorCyan
+    );
+}
+
+void GUIManager::RenderStatusBar() const
+{
+    if (!Config::get()->ENABLE_IMGUI_STATUSBAR) return;
+
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+    DrawGradientLine(viewport, viewport->Pos.y + viewport->Size.y - 2.0f, 2.0f);
+
+    const float status_bar_height = Config::get()->STATUS_BAR_HEIGHT;
+
+    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + viewport->Size.y - status_bar_height));
+    ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, status_bar_height));
+    ImGui::SetNextWindowViewport(viewport->ID);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove |
+                             ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoSavedSettings |
+                             ImGuiWindowFlags_NoDocking;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 5));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));  // ← Gris suave
+
+    ImGui::Begin("StatusBar", nullptr, flags);
+
+    // ========== CONTENIDO DE LA STATUS BAR ==========
+    ImGui::Text("Brakeza3D %s", Config::get()->ENGINE_VERSION.c_str());
+    ImGui::SameLine();
+
+    if (Config::get()->DRAW_FPS_RENDER) {
+        ImGui::Text(" |  FPS: %.1f  |  Frame time: %.3f ms",
+                    ImGui::GetIO().Framerate,
+                    1000.0f / ImGui::GetIO().Framerate);
+        ImGui::SameLine();
+    }
+
+    ImGui::Text(" |  ");
+    ImGui::SameLine();
+
+    // Session status
+    if (!resourceHub->isAuthenticated()) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_OFF), GUIType::Sizes::ICON_SIZE_MENUS);
+        ImGui::SameLine();
+        ImGui::Text("Not signed in");
+    } else {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_ON), GUIType::Sizes::ICON_SIZE_MENUS);
+        ImGui::SameLine();
+        ImGui::Text("Signed in");
+    }
+
+    ImGui::SameLine();
+    ImGui::Text("  |  ");
+    ImGui::SameLine();
+
+    // Lights system
+    if (!Config::get()->ENABLE_LIGHTS) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::LIGHT_OFF), GUIType::Sizes::ICON_SIZE_MENUS);
+        ImGui::SameLine();
+    } else {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::LIGHT_ON), GUIType::Sizes::ICON_SIZE_MENUS);
+        ImGui::SameLine();
+    }
+    ImGui::Text("Lights");
+    ImGui::SameLine();
+
+    ImGui::Text("  |  ");
+    ImGui::SameLine();
+
+    // Scripts status
+    bool isStop = Components::get()->Scripting()->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
+    auto icon = !isStop ? IconGUI::LUA_PLAY : IconGUI::LUA_STOP;
+    auto label = isStop ? "Scripts stopped" : "Scripts running...";
+
+    ImGui::Image(FileSystemGUI::Icon(icon), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    ImGui::Text("%s", label);
+
+    ImGui::End();
+
+    ImGui::PopStyleColor(2);
+    ImGui::PopStyleVar(3);
 }

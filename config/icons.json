@@ -617,8 +617,8 @@
 			"y":	37
 		}, {
 			"name":	"MNU_WORKERS",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	19
 		}, {
 			"name":	"WIN_CODE_EDITOR",
 			"x":	15,
@@ -711,6 +711,58 @@
 			"name":	"PROJECT_INFO",
 			"x":	13,
 			"y":	28
+		}, {
+			"name":	"MNU_RESOURCESHUB",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"SESSION_ON",
+			"x":	6,
+			"y":	0
+		}, {
+			"name":	"SESSION_OFF",
+			"x":	7,
+			"y":	0
+		}, {
+			"name":	"LAYOUTS_ENABLE_STATUSBAR",
+			"x":	4,
+			"y":	39
+		}, {
+			"name":	"WIN_THREADS",
+			"x":	5,
+			"y":	19
+		}, {
+			"name":	"STAR_ON",
+			"x":	6,
+			"y":	6
+		}, {
+			"name":	"STAR_OFF",
+			"x":	5,
+			"y":	6
+		}, {
+			"name":	"LIGHT_ON",
+			"x":	1,
+			"y":	13
+		}, {
+			"name":	"LIGHT_OFF",
+			"x":	1,
+			"y":	13
+		}, {
+			"name":	"SESSION_CLOSE",
+			"x":	7,
+			"y":	0
+		}, {
+			"name":	"DOWNLOAD_RESOURCE",
+			"x":	0,
+			"y":	0
+		}, {
+			"name":	"HUB_URL_LINK",
+			"x":	12,
+			"y":	1
+		}, {
+			"name":	"SESSION_OPEN",
+			"x":	6,
+			"y":	0
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

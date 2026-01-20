@@ -7,6 +7,7 @@
 
 #include "../GUI.h"
 #include "../Editable/EditableOpenFile.h"
+#include "../include/Misc/TexturePackage.h"
 
 class GUIManager;
 class EditableOpenFile;

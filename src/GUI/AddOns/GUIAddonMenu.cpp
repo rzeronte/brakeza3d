@@ -514,7 +514,9 @@ void GUIAddonMenu::MenuLayout()
     ImGui::MenuItem("Enable/Disable GUI (F4)", nullptr, &setup->ENABLE_IMGUI);
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_TOOLBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("GUI Toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
+    ImGui::MenuItem("Show toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_STATUSBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Show StatusBar", nullptr, &setup->ENABLE_IMGUI_STATUSBAR);
 
     ImGui::SeparatorText("Layout modes");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEFAULT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -627,142 +629,30 @@ void GUIAddonMenu::DrawItemsToLoad(
 
 void GUIAddonMenu::MenuResourcesHub()
 {
-    if (ImGui::MenuItem("Browse Hub")) {
-        Brakeza::get()->GUI()->getResourcesHub()->showBrowser();
-    }
-}
+        auto hub = Brakeza::get()->GUI()->getResourcesHub();
 
-void GUIAddonMenu::MenuWorkers()
-{
-    if (ImGui::BeginTabBar("WorkerPoolsTabs"))
-    {
-        if (ImGui::BeginTabItem("Pool Compute"))
-        {
-            MenuWorker(Brakeza::get()->PoolCompute(), "Pool Compute");
-            ImGui::EndTabItem();
+        if (!hub->isAuthenticated()) {
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_OPEN), GUIType::Sizes::ICON_SIZE_MENUS);
+            ImGui::SameLine();
+            if (ImGui::MenuItem("Login")) {
+                hub->showLogin();
+            }
+        } else {
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::MNU_RESOURCESHUB), GUIType::Sizes::ICON_SIZE_MENUS);
+            ImGui::SameLine();
+            if (ImGui::MenuItem("Browse Assets")) {
+                hub->showBrowser();
+            }
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_CLOSE), GUIType::Sizes::ICON_SIZE_MENUS);
+            ImGui::SameLine();
+            if (ImGui::MenuItem("Logout")) {
+                //hub->performLogout();
+            }
         }
 
-        if (ImGui::BeginTabItem("Pool Images"))
-        {
-            MenuWorker(Brakeza::get()->PoolImages(), "Pool Images");
-            ImGui::EndTabItem();
-        }
-
-        ImGui::EndTabBar();
-    }
-}
-
-void GUIAddonMenu::MenuWorker(ThreadPool &pool, std::string title)
-{
-    ImGui::PushID(title.c_str());
-
-    // Título y separador
-    ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", title.c_str());
-    ImGui::Separator();
-    ImGui::Spacing();
-
-    // ===== INFORMACIÓN ACTUAL =====
-    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Estado Actual:");
-    ImGui::Indent();
-
-    ImGui::Text("Tareas Activas: %d", pool.getActiveTasks());
-    ImGui::Text("Tareas Pendientes: %zu", pool.getPendingTasks());
-    ImGui::Text("Callbacks Pendientes: %zu", pool.getPendingCallbacks());
-    ImGui::Text("Contador Total: %d", pool.getCont());
-
-    ImGui::Unindent();
-    ImGui::Spacing();
-    ImGui::Separator();
-    ImGui::Spacing();
-
-    // ===== CONFIGURACIÓN =====
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.5f, 1.0f), "Configuración:");
-    ImGui::Spacing();
-
-    // Max Callbacks Per Frame
-    {
-        static int maxCallbacks = static_cast<int>(pool.getMaxCallbacksPerFrame());
-        ImGui::Text("Max Callbacks Por Frame:");
-        ImGui::SetNextItemWidth(200);
-
-        if (ImGui::SliderInt("##maxCallbacks", &maxCallbacks, 1, 100)) {
-            pool.setMaxCallbacksPerFrame(static_cast<size_t>(maxCallbacks));
-        }
+        ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::HUB_URL_LINK), GUIType::Sizes::ICON_SIZE_MENUS);
         ImGui::SameLine();
-        ImGui::TextDisabled("(?)");
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Número máximo de callbacks que se procesan\ncada frame en el hilo principal");
-        }
+        Drawable::ImGuiLink("Assets Online Hub", Config::get()->URL_ASSETS_HUB_URL.c_str());
 
-        ImGui::SetNextItemWidth(100);
-        if (ImGui::InputInt("##inputCallbacks", &maxCallbacks, 1, 10)) {
-            maxCallbacks = std::max(1, maxCallbacks);
-            pool.setMaxCallbacksPerFrame(static_cast<size_t>(maxCallbacks));
-        }
-        ImGui::Spacing();
-    }
-
-    // Max Concurrent Tasks
-    {
-        static int maxConcurrent = static_cast<int>(pool.getMaxConcurrentTasks());
-        ImGui::Text("Max Tareas Concurrentes:");
-        ImGui::SetNextItemWidth(200);
-
-        if (ImGui::SliderInt("##maxConcurrent", &maxConcurrent, 1, 32)) {
-            pool.setMaxConcurrentTasks(static_cast<size_t>(maxConcurrent));
-        }
-        ImGui::SameLine();
-        ImGui::TextDisabled("(?)");
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Número máximo de tareas que pueden\nejecutarse simultáneamente");
-        }
-
-        ImGui::SetNextItemWidth(100);
-        if (ImGui::InputInt("##inputConcurrent", &maxConcurrent, 1, 4)) {
-            maxConcurrent = std::max(1, maxConcurrent);
-            pool.setMaxConcurrentTasks(static_cast<size_t>(maxConcurrent));
-        }
-        ImGui::Spacing();
-    }
-
-    // Max Enqueued Tasks
-    {
-        static int maxEnqueued = static_cast<int>(pool.getMaxEnqueuedTasks());
-        ImGui::Text("Max Tareas En Cola:");
-        ImGui::SetNextItemWidth(200);
-
-        if (ImGui::SliderInt("##maxEnqueued", &maxEnqueued, 1, 1000)) {
-            pool.setMaxEnqueuedTasks(static_cast<size_t>(maxEnqueued));
-        }
-        ImGui::SameLine();
-        ImGui::TextDisabled("(?)");
-        if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("Número máximo de tareas que pueden\nestar esperando en la cola");
-        }
-
-        ImGui::SetNextItemWidth(100);
-        if (ImGui::InputInt("##inputEnqueued", &maxEnqueued, 10, 100)) {
-            maxEnqueued = std::max(1, maxEnqueued);
-            pool.setMaxEnqueuedTasks(static_cast<size_t>(maxEnqueued));
-        }
-        ImGui::Spacing();
-    }
-
-    ImGui::Separator();
-    ImGui::Spacing();
-
-    // ===== BOTONES DE CONTROL =====
-    if (ImGui::Button("Restaurar Valores por Defecto", ImVec2(250, 0))) {
-        pool.setMaxCallbacksPerFrame(10);
-        pool.setMaxConcurrentTasks(4);
-        pool.setMaxEnqueuedTasks(100);
-    }
-
-    ImGui::SameLine();
-
-    if (ImGui::Button("Esperar Todas las Tareas", ImVec2(200, 0))) {
-        pool.waitAll();
-    }
-
-    ImGui::PopID();
 }
