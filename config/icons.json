@@ -641,7 +641,7 @@
 			"y":	21
 		}, {
 			"name":	"EMPTY",
-			"x":	6,
+			"x":	8,
 			"y":	0
 		}, {
 			"name":	"WIN_DOCUMENTATION",

@@ -20,7 +20,7 @@ export default function Contact() {
                   <div style={{marginTop: '2rem'}}>
                     <h3>📧 Email</h3>
                     <p>
-                      General inquiries: <a href="mailto:eduardo@brakeza3d.com">Send me a email!</a><br/>
+                      General inquiries: <a href="mailto:eduardo@brakeza.com">Send me a email!</a><br/>
                     </p>
                   </div>
 

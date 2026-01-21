@@ -52,7 +52,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): native toolbar, colors, icons...">
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,8 +97,6 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/CMakeLists.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/Components/ComponentWindow.cpp" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/AddOns/GUIAddonProjectSetup.cpp" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Eduardo/CLionProjects/BrakezaGitHub/src/GUI/Objects/FileSystemGUI.cpp" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MacroExpansionManager">
     <option name="directoryName" value="EqPVdzzu" />
@@ -172,11 +171,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release-MinGW" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -517,7 +511,9 @@
       <workItem from="1768838872242" duration="10834000" />
       <workItem from="1768859570059" duration="1130000" />
       <workItem from="1768861925954" duration="2970000" />
-      <workItem from="1768937984347" duration="20709000" />
+      <workItem from="1768937984347" duration="21023000" />
+      <workItem from="1768961801993" duration="12000" />
+      <workItem from="1769005707324" duration="10000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -567,14 +563,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00131" summary="fix(filesystem): fix creating and removing scripts/shaders">
-      <option name="closed" value="true" />
-      <created>1766592002278</created>
-      <option name="number" value="00131" />
-      <option name="presentableId" value="LOCAL-00131" />
-      <option name="project" value="LOCAL" />
-      <updated>1766592002279</updated>
     </task>
     <task id="LOCAL-00132" summary="feat(checker): added scene info/checker">
       <option name="closed" value="true" />
@@ -904,7 +892,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768960715376</updated>
     </task>
-    <option name="localTasksCounter" value="173" />
+    <task id="LOCAL-00173" summary="feat(gui): native toolbar, colors, icons...">
+      <option name="closed" value="true" />
+      <created>1768961712850</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1768961712850</updated>
+    </task>
+    <option name="localTasksCounter" value="174" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
