@@ -15,7 +15,6 @@ h1 {
   text-align: center;
   position: relative;
   overflow: hidden;
-  background-image: url('/img/hero.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

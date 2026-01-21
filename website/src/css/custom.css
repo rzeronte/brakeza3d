@@ -80,7 +80,7 @@
 
   --ifm-font-color-base: #0f172a;
   --ifm-font-color-secondary: #475569;
-  --ifm-heading-color: #042f2e;
+  --ifm-heading-color: #ccfbf1;
 
   --ifm-link-color: #0d9488;
   --ifm-link-hover-color: #0f766e;
@@ -119,7 +119,7 @@
 .hero__title {
   font-size: 3rem;
   font-weight: 800;
-  color: white;
+  color: var(--ifm-color-primary-darkest);
   position: relative;
   z-index: 1;
   text-shadow: 0 4px 20px rgba(20, 184, 166, 0.4);
@@ -127,16 +127,15 @@
 
 .hero__subtitle {
   font-size: 1.5rem;
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--ifm-color-primary-darker);
   position: relative;
   z-index: 1;
 }
 
 /* Buttons - Transición Cyan-Verde-Cyan */
 .button--primary {
-  background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 50%, #22d3ee 100%);
-  border: none;
-  color: white;
+  background-color: var(--ifm-color-primary-dark);
+  color: ghostwhite;
   font-weight: 600;
   transition: all 0.3s ease;
   position: relative;
@@ -471,17 +470,6 @@ tbody tr:hover {
 /* Headers con gradiente */
 h1, h2, h3 {
   position: relative;
-}
-
-h1::after, h2::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: linear-gradient(90deg, #06b6d4, #14b8a6, #22d3ee);
-  border-radius: 2px;
 }
 
 /* Search bar */

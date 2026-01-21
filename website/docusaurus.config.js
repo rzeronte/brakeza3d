@@ -106,8 +106,20 @@ const config = {
             title: 'Docs',
             items: [
               {
-                label: 'Documentation',
-                to: '/docs/1-getting-started',
+                label: 'Getting started',
+                to: '/docs/getting-started/intro',
+              },
+              {
+                label: 'Editor manual',
+                to: '/docs/editor/overview',
+              },
+              {
+                label: 'Engine Concepts',
+                to: '/docs/engine-concepts/script-controls',
+              },
+              {
+                label: 'Scripting API',
+                to: '/docs/scripting-api/index',
               },
             ],
           },
@@ -115,12 +127,16 @@ const config = {
             title: 'Community',
             items: [
               {
-                label: 'Discord',
-                href: 'https://discord.gg/your-invite',
+                label: 'Twitter',
+                href: 'https://twitter.com/brakeza3d',
               },
               {
-                label: 'Twitter',
-                href: 'https://twitter.com/your-handle',
+                label: 'Youtube',
+                href: 'https://youtube.com/@brakeza3d',
+              },
+              {
+                label: 'Linkedin',
+                href: 'https://www.linkedin.com/in/eduardo-rodr%C3%ADguez-1796b8172/',
               },
             ],
           },
@@ -133,12 +149,12 @@ const config = {
               },
               {
                 label: 'GitHub',
-                href: 'https://github.com/your-org/brakeza3d',
+                href: 'https://github.com/rzeronte/brakeza3d',
               },
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Brakeza3D Engine. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Brakeza3D Game Engine - By Eduardo Rodríguez Álvarez`,
       },
       prism: {
         theme: prismThemes.github,
