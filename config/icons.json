@@ -85,8 +85,8 @@
 			"y":	0
 		}, {
 			"name":	"MNU_ADD_OBJECT",
-			"x":	0,
-			"y":	0
+			"x":	14,
+			"y":	14
 		}, {
 			"name":	"MNU_VIDEO",
 			"x":	0,
@@ -746,7 +746,7 @@
 		}, {
 			"name":	"LIGHT_OFF",
 			"x":	1,
-			"y":	13
+			"y":	14
 		}, {
 			"name":	"SESSION_CLOSE",
 			"x":	7,

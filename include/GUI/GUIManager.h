@@ -75,31 +75,26 @@ class GUIManager
 public:
 
     explicit GUIManager();
-
-    void LoadBrowserFolders();
-
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;
     bool isEditableFileAlreadyOpen(const std::string &label) const;
     void LoadDocumentation();
     void OnStart();
+    void ResetIndexCodeEditor();
     void RegisterWindows();
     void RegisterDefaultLayoutWindows();
     void RegisterAllowedItemsForViewer();
     void RegisterMenu();
     void OpenBoneInfoDialog();
-    void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
-    void setLayoutToDefault(Config::ImGUIConfigs config);
-    void setIndexCodeEditorTab(const std::string &label);
-
-    void RenderStatusBar() const;
-
+    void LoadBrowserFolders();
     void CloseRemovedEditableOpenFiles();
     void DrawWinEditableOpenResources() const;
     void OpenEditableFile(EditableOpenBaseResource *openFile);
     void CloseEditableFile(EditableOpenBaseResource *openFile) const;
-    void ResetIndexCodeEditor();
+    void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
+    void setLayoutToDefault(Config::ImGUIConfigs config);
+    void setIndexCodeEditorTab(const std::string &label);
 
     [[nodiscard]] TextureAtlas * getTextureAtlas() const                                { return textureAtlas; }
     [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const                       { return browserScripts; }
@@ -114,13 +109,11 @@ public:
     [[nodiscard]] ProjectChecker &getProjectChecker()                                   { return projectChecker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
     [[nodiscard]] GUIAddonResourceHub * getResourcesHub() const                         { return resourceHub; }
-
     GUIType::WindowData *getWindowStatus(GUIType::Window window);
 
     virtual void DrawGUI();
     static void SetNextWindowSize(int w, int h);
     static void UpdateImGuiDocking();
-    static void DrawGradientLine(ImGuiViewport* viewport, float yPosition, float lineHeight = 3.0f);
 
     friend class Object3DGUI;
     friend class ScriptLuaGUI;

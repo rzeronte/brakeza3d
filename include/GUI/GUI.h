@@ -84,10 +84,10 @@ namespace GUIType
     };
 
     struct Colors {
-        static constexpr ImVec4 BTN_OFF = ImVec4(0.20f, 0.22f, 0.24f, 1.0f);  // Gris oscuro
-        static constexpr ImVec4 BTN_ON = ImVec4(0.15f, 0.35f, 0.65f, 1.0f);   // Azul oscuro profundo
-        static constexpr ImVec4 LUA_COLOR = ImVec4(0.33f, 0.35f, 0.37f, 1.0f); // Gris medio
-        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.20f, 0.72f, 0.45f, 1.0f); // Verde profesional
+        static constexpr ImVec4 BTN_OFF = ImVec4(0.20f, 0.22f, 0.24f, 1.0f);  // Gris oscuro neutro
+        static constexpr ImVec4 BTN_ON = ImVec4(0.28f, 0.38f, 0.32f, 1.0f);   // Gris verdoso sutil 🟢
+        static constexpr ImVec4 LUA_COLOR = ImVec4(0.25f, 0.35f, 0.30f, 1.0f); // Verde grisáceo (como tab inactiva)
+        static constexpr ImVec4 PLAY_COLOR = ImVec4(0.35f, 0.55f, 0.42f, 1.0f); // Verde apagado profesional
     };
 
     enum Window {
@@ -410,7 +410,7 @@ public:
     static void DrawButtonConfirm(const std::string &title, const std::string &question, GUIType::Sheet icon, ImVec2 size, const std::function<void()>& cb);
     static void Toggle(bool &value);
     static void ImGuiSetColors();
-    static void WelcomeMessage();
+    static void CLIWelcomeMessage();
     static void ShowLoadTime(const std::string &text, const Timer &t);
     static GUIType::BrowserCache CreateBrowserCache(std::string folder, const std::string &extension, std::function<void()> functionCallBack);
 };

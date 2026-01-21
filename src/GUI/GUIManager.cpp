@@ -17,6 +17,7 @@
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/AddOns/GUIAddonDocumentation.h"
+#include "../../include/GUI/Objects/StatusBarGUI.h"
 #include "../../include/GUI/Objects/ThreadGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
 
@@ -26,33 +27,35 @@ windows.push_back({ title, type, icon, visible, internal, dockable, [&] { func; 
 GUIManager::GUIManager()
 :
     widgetConsole(new GuiAddonConsole()),
-    textureAtlas(new TextureAtlas())
+    textureAtlas(new TextureAtlas()),
+    resourceHub(new GUIAddonResourceHub())
 {
 }
 
 void GUIManager::OnStart()
 {
-    textureAtlas->CreateFromSheet(Config::get()->ICONS_FOLDER + Config::get()->GUI_ICON_SHEET, 32, 32);
-    IconsGUI::ImportIconsFromJSON(Config::get()->CONFIG_FOLDER + Config::get()->ICONS_CONFIG);
+    auto config = Config::get();
+
+    // Load texture sheet icons
+    textureAtlas->CreateFromSheet(
+        config->ICONS_FOLDER + config->GUI_ICON_SHEET,
+        config->GUI_ICON_SHEET_W,
+        config->GUI_ICON_SHEET_H
+    );
+    IconsGUI::ImportIconsFromJSON(config->CONFIG_FOLDER + config->ICONS_CONFIG);
     Profiler::get()->CaptureGUIMemoryUsage();
 
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
 
-    splashImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
-
-    resourceHub = new GUIAddonResourceHub();
+    // Load splash
+    splashImage = new Image(config->IMAGES_FOLDER + config->SPLASH_FILENAME);
 
     LoadBrowserFolders();
-
-
     RegisterAllowedItemsForViewer();
     RegisterMenu();
     RegisterWindows();
-
     LoadDocumentation();
-
     FileSystemGUI::LoadImagesFolder(browserImages, browserImagesTextures);
-
     GUI::ShowLoadTime("Time until GUIManager get ready", *Brakeza::get()->getTimer());
 }
 
@@ -196,11 +199,7 @@ void GUIManager::DrawGUI()
     UpdateImGuiDocking();
 
     GUIAddonMenu::Draw(this);
-
     GUIAddonToolbar::Draw();
-
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-    DrawGradientLine(viewport, viewport->Pos.y + ImGui::GetFrameHeight() + Config::get()->TOOL_BAR_HEIGHT, 2.0f);
 
     Object3DGUI::DrawSelectedObjectGuizmo();
     Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(this);
@@ -208,7 +207,9 @@ void GUIManager::DrawGUI()
     DrawRegisteredWindows();
     DrawSplashWindow();
     resourceHub->render();
-    RenderStatusBar();
+
+    StatusBarGUI::Render(resourceHub);
+    //RenderStatusBar();
 
     CloseRemovedEditableOpenFiles();
 
@@ -625,129 +626,4 @@ void GUIManager::setIndexCodeEditorTab(const std::string &label)
     }
 
     indexCodeEditorTab = 0;
-}
-
-void GUIManager::DrawGradientLine(ImGuiViewport* viewport, float yPosition, float lineHeight)
-{
-    ImDrawList* drawList = ImGui::GetForegroundDrawList(viewport);
-
-    // Posición de la línea
-    const ImVec2 lineStart = ImVec2(viewport->Pos.x, yPosition);
-    const ImVec2 lineEnd = ImVec2(viewport->Pos.x + viewport->Size.x, yPosition + lineHeight);
-
-    // Colores lime y cyan
-    const ImU32 colorLime = IM_COL32(132, 204, 22, 255);   // lime-500
-    const ImU32 colorCyan = IM_COL32(6, 182, 212, 255);    // cyan-500
-
-    // Degradado en 3 segmentos: lime → cyan → lime
-    const float width = viewport->Size.x;
-    const float segment = width / 3.0f;
-
-    // Segmento izquierdo: lime → cyan
-    drawList->AddRectFilledMultiColor(
-        ImVec2(lineStart.x, lineStart.y),
-        ImVec2(lineStart.x + segment, lineEnd.y),
-        colorLime, colorCyan, colorCyan, colorLime
-    );
-
-    // Segmento central: cyan puro
-    drawList->AddRectFilled(
-        ImVec2(lineStart.x + segment, lineStart.y),
-        ImVec2(lineStart.x + segment * 2.0f, lineEnd.y),
-        colorCyan
-    );
-
-    // Segmento derecho: cyan → lime
-    drawList->AddRectFilledMultiColor(
-        ImVec2(lineStart.x + segment * 2.0f, lineStart.y),
-        ImVec2(lineEnd.x, lineEnd.y),
-        colorCyan, colorLime, colorLime, colorCyan
-    );
-}
-
-void GUIManager::RenderStatusBar() const
-{
-    if (!Config::get()->ENABLE_IMGUI_STATUSBAR) return;
-
-    ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-    DrawGradientLine(viewport, viewport->Pos.y + viewport->Size.y - 2.0f, 2.0f);
-
-    const float status_bar_height = Config::get()->STATUS_BAR_HEIGHT;
-
-    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + viewport->Size.y - status_bar_height));
-    ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, status_bar_height));
-    ImGui::SetNextWindowViewport(viewport->ID);
-
-    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar |
-                             ImGuiWindowFlags_NoResize |
-                             ImGuiWindowFlags_NoMove |
-                             ImGuiWindowFlags_NoScrollbar |
-                             ImGuiWindowFlags_NoSavedSettings |
-                             ImGuiWindowFlags_NoDocking;
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10, 5));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));  // ← Gris suave
-
-    ImGui::Begin("StatusBar", nullptr, flags);
-
-    // ========== CONTENIDO DE LA STATUS BAR ==========
-    ImGui::Text("Brakeza3D %s", Config::get()->ENGINE_VERSION.c_str());
-    ImGui::SameLine();
-
-    if (Config::get()->DRAW_FPS_RENDER) {
-        ImGui::Text(" |  FPS: %.1f  |  Frame time: %.3f ms",
-                    ImGui::GetIO().Framerate,
-                    1000.0f / ImGui::GetIO().Framerate);
-        ImGui::SameLine();
-    }
-
-    ImGui::Text(" |  ");
-    ImGui::SameLine();
-
-    // Session status
-    if (!resourceHub->isAuthenticated()) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_OFF), GUIType::Sizes::ICON_SIZE_MENUS);
-        ImGui::SameLine();
-        ImGui::Text("Not signed in");
-    } else {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_ON), GUIType::Sizes::ICON_SIZE_MENUS);
-        ImGui::SameLine();
-        ImGui::Text("Signed in");
-    }
-
-    ImGui::SameLine();
-    ImGui::Text("  |  ");
-    ImGui::SameLine();
-
-    // Lights system
-    if (!Config::get()->ENABLE_LIGHTS) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::LIGHT_OFF), GUIType::Sizes::ICON_SIZE_MENUS);
-        ImGui::SameLine();
-    } else {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::LIGHT_ON), GUIType::Sizes::ICON_SIZE_MENUS);
-        ImGui::SameLine();
-    }
-    ImGui::Text("Lights");
-    ImGui::SameLine();
-
-    ImGui::Text("  |  ");
-    ImGui::SameLine();
-
-    // Scripts status
-    bool isStop = Components::get()->Scripting()->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
-    auto icon = !isStop ? IconGUI::LUA_PLAY : IconGUI::LUA_STOP;
-    auto label = isStop ? "Scripts stopped" : "Scripts running...";
-
-    ImGui::Image(FileSystemGUI::Icon(icon), GUIType::Sizes::ICON_SIZE_MENUS);
-    ImGui::SameLine();
-    ImGui::Text("%s", label);
-
-    ImGui::End();
-
-    ImGui::PopStyleColor(2);
-    ImGui::PopStyleVar(3);
 }

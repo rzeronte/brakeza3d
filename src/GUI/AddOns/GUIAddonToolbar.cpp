@@ -8,11 +8,48 @@
 #include "../../../include/Config.h"
 #include "../../../include/Components/Components.h"
 
+void GUIAddonToolbar::DrawBaseLine() {
+    // DEGRADADO LIME → CYAN → LIME
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+    ImVec2 win_pos = ImGui::GetWindowPos();
+    ImVec2 win_size = ImGui::GetWindowSize();
+
+    const float lineHeight = 2.0f;
+    const float yPosition = win_pos.y + win_size.y - lineHeight;
+
+    // Colores lime y cyan
+    const ImU32 colorLime = IM_COL32(132, 204, 22, 255);   // lime-500
+    const ImU32 colorCyan = IM_COL32(6, 182, 212, 255);    // cyan-500
+
+    const float width = win_size.x;
+    const float segment = width / 3.0f;
+
+    // Segmento izquierdo: lime → cyan
+    drawList->AddRectFilledMultiColor(
+        ImVec2(win_pos.x, yPosition),
+        ImVec2(win_pos.x + segment, yPosition + lineHeight),
+        colorLime, colorCyan, colorCyan, colorLime
+    );
+
+    // Segmento central: cyan puro
+    drawList->AddRectFilled(
+        ImVec2(win_pos.x + segment, yPosition),
+        ImVec2(win_pos.x + segment * 2.0f, yPosition + lineHeight),
+        colorCyan
+    );
+
+    // Segmento derecho: cyan → lime
+    drawList->AddRectFilledMultiColor(
+        ImVec2(win_pos.x + segment * 2.0f, yPosition),
+        ImVec2(win_pos.x + win_size.x, yPosition + lineHeight),
+        colorCyan, colorLime, colorLime, colorCyan
+    );
+}
+
 void GUIAddonToolbar::Draw()
 {
     if (!Config::get()->ENABLE_IMGUI_TOOLBAR) return;
 
-    // Solo si está activada, configurar la ventana
     ImGuiViewport* viewport = ImGui::GetMainViewport();
     const float toolbar_height = Config::get()->TOOL_BAR_HEIGHT;
     const float menu_bar_height = ImGui::GetFrameHeight();
@@ -31,6 +68,9 @@ void GUIAddonToolbar::Draw()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));        // Añade esto
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));   // Y esto
+
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
 
     if (ImGui::Begin("MainToolBar", nullptr, flags)) {
@@ -51,11 +91,13 @@ void GUIAddonToolbar::Draw()
         VerticalSeparator();
         Helpers();
         ImGui::PopStyleVar();
+
+        DrawBaseLine();
     }
     ImGui::End();
 
     ImGui::PopStyleColor();
-    ImGui::PopStyleVar(3);
+    ImGui::PopStyleVar(5);
 }
 
 void GUIAddonToolbar::LayoutIcons()
@@ -205,4 +247,57 @@ void GUIAddonToolbar::VerticalSeparator()
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
     ImGui::Text("|");
     ImGui::SameLine();
+}
+
+void GUIAddonToolbar::DrawSeparatorLine()
+{
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    const float line_height = 2.0f;
+    const float toolbar_height = Config::get()->TOOL_BAR_HEIGHT;
+    const float menu_bar_height = ImGui::GetFrameHeight();
+
+    // Posicionar justo debajo del toolbar
+    float y_pos = viewport->Pos.y + menu_bar_height + toolbar_height;
+
+    ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, y_pos));
+    ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, line_height));
+    ImGui::SetNextWindowViewport(viewport->ID);
+
+    ImGuiWindowFlags flags = ImGuiWindowFlags_NoTitleBar |
+                             ImGuiWindowFlags_NoResize |
+                             ImGuiWindowFlags_NoMove |
+                             ImGuiWindowFlags_NoScrollbar |
+                             ImGuiWindowFlags_NoSavedSettings |
+                             ImGuiWindowFlags_NoDocking |
+                             ImGuiWindowFlags_NoInputs |
+                             ImGuiWindowFlags_NoFocusOnAppearing |
+                             ImGuiWindowFlags_NoBringToFrontOnFocus;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+
+    // Color de fondo de la línea (ajusta según tu gradiente)
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.3f, 0.3f, 0.3f, 1.0f));
+
+    if (ImGui::Begin("ToolbarSeparatorLine", nullptr, flags)) {
+        // Aquí puedes dibujar tu gradiente si quieres
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        ImVec2 win_pos = ImGui::GetWindowPos();
+        ImVec2 win_size = ImGui::GetWindowSize();
+
+        // Ejemplo de gradiente horizontal
+        draw_list->AddRectFilledMultiColor(
+            win_pos,
+            ImVec2(win_pos.x + win_size.x, win_pos.y + win_size.y),
+            IM_COL32(50, 50, 50, 255),   // Izquierda
+            IM_COL32(100, 100, 100, 255), // Derecha
+            IM_COL32(100, 100, 100, 255), // Abajo derecha
+            IM_COL32(50, 50, 50, 255)     // Abajo izquierda
+        );
+    }
+    ImGui::End();
+
+    ImGui::PopStyleColor();
+    ImGui::PopStyleVar(3);
 }

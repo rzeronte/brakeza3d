@@ -154,10 +154,6 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
 
     ImGui::Separator();
 
-    auto title = std::string("Number objects: ") + std::to_string(gameObjects.size());
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "%s", title.c_str());
-    ImGui::Separator();
-
     switch (type) {
         case GUIType::ViewerObjectsMode::TREE:
             DrawObjectsTree(gui, gameObjects, filterGUI);

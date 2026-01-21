@@ -7,6 +7,7 @@ features:
 fixes:
     - Set default light not 100% dark! :D
     - AutoFix NodesEditor some scenarios fail
+    - Review DrawEditBonesMappingWindow, make own window, review full func.
 
 
 

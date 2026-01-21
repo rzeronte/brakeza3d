@@ -55,7 +55,7 @@ void Brakeza::PreMainLoop()
     timer.start();
     GUI()->OnStart();
 
-    GUI::WelcomeMessage();
+    GUI::CLIWelcomeMessage();
     GUI::ShowLoadTime("Time until components initialization", timer);
 
     OnStartComponents();             // Starting componentes

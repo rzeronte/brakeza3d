@@ -2,9 +2,9 @@
 // Created by darkh on 19/01/2026.
 //
 
-#include "ThreadGUI.h"
+#include "../../../include/GUI/Objects/ThreadGUI.h"
 
-#include "../../Brakeza.h"
+#include "../../../include/Brakeza.h"
 
 void ThreadGUI::MenuWorkers()
 {

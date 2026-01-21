@@ -73,12 +73,17 @@ public:
     Vertex3D down = up.getInverse();
     Vertex3D backward = forward.getInverse();
 
-    // SCREEN RESOLUTION
+    // WINDOW RESOLUTION
     const int screenWidth = 1280;
     const int screenHeight = 720;
 
+    // RENDER SIZE
     const int renderWidth = 800;
     const int renderHeight = 600;
+
+    // SHEET ICONS SIZE
+    int GUI_ICON_SHEET_W = 32;
+    int GUI_ICON_SHEET_H = 32;
 
     // GRAVITY
     Vertex3D gravity = Vertex3D(0, -9.8f, 0);

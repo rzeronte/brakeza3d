@@ -159,8 +159,6 @@ void ComponentWindow::ResetOpenGLSettings()
 
 void ComponentWindow::CreateFramebuffer()
 {
-    //UpdateWindowSize();
-
     glGenFramebuffers(1, &openGLBuffers.globalFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.globalFBO);
 
@@ -191,14 +189,6 @@ void ComponentWindow::CreateFramebuffer()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.sceneTexture, 0);
     LOG_MESSAGE("[Render] Creating sceneTexture(%d, %d)", widthRender, heightRender);
 
-    /*glGenTextures(1, &openGLBuffers.sceneDepthTexture);
-    glBindTexture(GL_TEXTURE_2D, openGLBuffers.sceneDepthTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, widthRender, heightRender, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);*/
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, openGLBuffers.sceneDepthTexture, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gBuffer.depth, 0);
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {

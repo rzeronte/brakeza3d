@@ -370,8 +370,10 @@ add_executable(Brakeza3D
         src/HttpClient/ResourceHubClient.cpp
         include/GUI/AddOns/GUIAddonResourceHub.h
         include/GUI/AddOns/GUIAddonResourceHub.cpp
-        include/GUI/Objects/ThreadGUI.cpp
+        src/GUI/Objects/ThreadGUI.cpp
         include/GUI/Objects/ThreadGUI.h
+        src/GUI/Objects/StatusBarGUI.cpp
+        include/GUI/Objects/StatusBarGUI.h
 )
 
 target_link_libraries(Brakeza3D

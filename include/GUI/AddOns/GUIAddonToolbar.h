@@ -5,6 +5,8 @@ struct GUIAddonToolbar
 {
     explicit GUIAddonToolbar() = default;
 
+    static void DrawBaseLine();
+
     static void Draw();
     static void LayoutIcons();
     static void TransformationsToolsIcons();
@@ -15,6 +17,7 @@ struct GUIAddonToolbar
     static void RenderTriangleModes() ;
     static void Helpers() ;
     static void VerticalSeparator();
+    static void DrawSeparatorLine();
 };
 
 #endif //BRAKEZA3D_GUIWIDGETTOOLBAR_H
