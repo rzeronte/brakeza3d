@@ -209,7 +209,6 @@ void GUIManager::DrawGUI()
     resourceHub->render();
 
     StatusBarGUI::Render(resourceHub);
-    //RenderStatusBar();
 
     CloseRemovedEditableOpenFiles();
 

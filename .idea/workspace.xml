@@ -51,27 +51,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): improved gui styles, added icons...">
-      <change afterPath="$PROJECT_DIR$/include/GUI/Objects/StatusBarGUI.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/GUI/Objects/StatusBarGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/application.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/application.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonToolbar.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonToolbar.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/ThreadGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ThreadGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentWindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUI.cpp" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): native toolbar, colors, icons...">
       <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -536,7 +517,7 @@
       <workItem from="1768838872242" duration="10834000" />
       <workItem from="1768859570059" duration="1130000" />
       <workItem from="1768861925954" duration="2970000" />
-      <workItem from="1768937984347" duration="19835000" />
+      <workItem from="1768937984347" duration="20709000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -586,14 +567,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00130" summary="fix(filesystem): fix creating and removing scripts/shaders">
-      <option name="closed" value="true" />
-      <created>1766550483908</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1766550483910</updated>
     </task>
     <task id="LOCAL-00131" summary="fix(filesystem): fix creating and removing scripts/shaders">
       <option name="closed" value="true" />
@@ -923,7 +896,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768950207706</updated>
     </task>
-    <option name="localTasksCounter" value="172" />
+    <task id="LOCAL-00172" summary="feat(gui): native toolbar, colors, icons...">
+      <option name="closed" value="true" />
+      <created>1768960715376</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1768960715376</updated>
+    </task>
+    <option name="localTasksCounter" value="173" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -957,7 +938,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(code): code editor improvements" />
     <MESSAGE value="fix(examples): recover examples after big renaming functions" />
     <MESSAGE value="fix(colliders): fix crashing when debug physics / ui improvements" />
     <MESSAGE value="fix(filesystem): fix creating and removing scripts/shaders" />
@@ -982,7 +962,8 @@
     <MESSAGE value="fix(adm): fix glsl compiling shader with feedbackbuffer" />
     <MESSAGE value="feat(doc): improve doc" />
     <MESSAGE value="feat(gui): improved gui styles, added icons..." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): improved gui styles, added icons..." />
+    <MESSAGE value="feat(gui): native toolbar, colors, icons..." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): native toolbar, colors, icons..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
