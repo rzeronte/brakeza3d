@@ -771,6 +771,10 @@
 			"name":	"SCENE_SAVE",
 			"x":	4,
 			"y":	33
+		}, {
+			"name":	"WIN_BROWSER",
+			"x":	0,
+			"y":	30
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

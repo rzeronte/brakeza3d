@@ -21,6 +21,49 @@ void FileSystemGUI::DrawProjectCreator()
 
 }
 
+void FileSystemGUI::DrawMainBrowser()
+{
+    auto GUI = Brakeza::get()->GUI();
+    auto projectBrowser = GUI->getBrowserProjects();
+    auto scenesBrowser = GUI->getBrowserScenes();
+    auto scriptsBrowser = GUI->getBrowserScripts();
+    auto shadersBrowser = GUI->getBrowserShaders();
+
+    GUI::DrawButton("Browse Projects", IconGUI::PROJECT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+        type = GUIType::BROWSE_PROJECTS;
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+        type = GUIType::BROWSE_SCENES;
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+        type = GUIType::BROWSE_SCRIPTS;
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+        type = GUIType::BROWSE_SHADERS;
+    });
+
+    ImGui::Separator();
+
+    if (type == GUIType::BROWSE_PROJECTS) {
+        DrawProjectFiles(projectBrowser);
+    }
+
+    if (type == GUIType::BROWSE_SCENES) {
+        DrawSceneFiles(scenesBrowser);
+    }
+
+    if (type == GUIType::BROWSE_SCRIPTS) {
+        DrawScriptFiles(scriptsBrowser);
+    }
+
+    if (type == GUIType::BROWSE_SHADERS) {
+        DrawShaderFiles(shadersBrowser);
+    }
+}
+
 void FileSystemGUI::DrawProjectsTable(GUIType::BrowserCache &browser)
 {
     std::vector<std::string> files = browser.folderFiles;
@@ -85,9 +128,6 @@ void FileSystemGUI::DrawProjectRow(GUIType::BrowserCache &browser, const std::st
 
 void FileSystemGUI::DrawProjectFiles(GUIType::BrowserCache &browser)
 {
-    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::FILES_PROJECTS);
-    if (!windowStatus->isOpen) return;
-
     static bool openPopup = false;
     if (ImGui::BeginTable("ProjectHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
         ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
@@ -232,9 +272,6 @@ void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const st
 
 void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
 {
-    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::FILES_SCENES);
-    if (!windowStatus->isOpen) return;
-
     static bool openPopup = false;
     if (ImGui::BeginTable("SceneHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
         ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
@@ -593,10 +630,7 @@ void FileSystemGUI::DrawShaderCreator(int &item_current_idx, const std::vector<c
 
 void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
 {
-    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::FILES_SHADERS);
-    if (!windowStatus->isOpen) return;
-
-        static bool openPopup = false;
+    static bool openPopup = false;
     if (ImGui::BeginTable("ShaderHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
         ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
@@ -747,9 +781,6 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
 
 void FileSystemGUI::DrawScriptFiles(GUIType::BrowserCache &browser)
 {
-    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::FILES_SCRIPTS);
-    if (!windowStatus->isOpen) return;
-
     static bool openPopup = false;
     if (ImGui::BeginTable("ScriptHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
         ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);

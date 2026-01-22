@@ -22,6 +22,13 @@ namespace GUIType
         inline static const char* SCENE_ITEM = "SCENE_ITEM";
     };
 
+    enum BrowserFileType {
+        BROWSE_PROJECTS,
+        BROWSE_SCENES,
+        BROWSE_SHADERS,
+        BROWSE_SCRIPTS,
+    };
+
     struct Sheet {
         int x = -1;
         int y = -1;
@@ -112,17 +119,14 @@ namespace GUIType
         KEYBOARD_MOUSE,
         IMAGES,
         PROJECT_SETTINGS,
-        FILES_SCENES,
-        FILES_PROJECTS,
-        FILES_SHADERS,
-        FILES_SCRIPTS,
         DEBUG_ICONS,
         CODE_EDITOR,
         DOCUMENTATION,
         SCENE_INFO,
         SHADER_NODES_EDITOR,
         PROJECT_INFO,
-        THREADS
+        THREADS,
+        BROWSER,
     };
 
     struct WindowData {
@@ -363,6 +367,7 @@ namespace GUIType
     X(SESSION_OPEN, 0, 0) \
     X(PROJECT_SAVE, 0, 0) \
     X(SCENE_SAVE, 0, 0) \
+    X(WIN_BROWSER, 0, 0) \
 
 
 // Icons Objects

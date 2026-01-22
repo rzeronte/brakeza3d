@@ -12,9 +12,13 @@
 class GUIManager;
 class EditableOpenFile;
 
+static GUIType::BrowserFileType type;
+
 class FileSystemGUI
 {
 public:
+    static void DrawMainBrowser();
+
     // Projects
     static void DrawProjectFiles(GUIType::BrowserCache &browser);
     static void DrawProjectCreator();
@@ -29,6 +33,7 @@ public:
     static void DrawSceneRow(GUIType::BrowserCache &browser, const std::string &file, int index);
     static void DrawSceneRowActions(GUIType::BrowserCache &browser, const std::string &file);
     static void DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::string &title);
+
 
     // Shader
     static void DrawShaderFiles(GUIType::BrowserCache &browser);

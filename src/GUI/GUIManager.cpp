@@ -62,6 +62,7 @@ void GUIManager::OnStart()
 void GUIManager::RegisterWindows()
 {
     ADD_WIN("Project setup",       GUIType::PROJECT_SETTINGS,    IconGUI::WIN_PROJECT_SETTINGS,  true,  false, true, GUIAddonProjectSetup::DrawWinProjectSettings());
+    ADD_WIN("File browser",        GUIType::BROWSER,             IconGUI::WIN_BROWSER,           true,  false, true, FileSystemGUI::DrawMainBrowser());
     ADD_WIN("Scene Objects",       GUIType::SCENE_OBJECTS,       IconGUI::WIN_SCENE_OBJECTS,     true,  false, true, GUIAddonObjects3D::DrawWinSceneObjects(this));
     ADD_WIN("Object Properties",   GUIType::OBJECT_PROPS,        IconGUI::WIN_OBJECT_PROPS,      true,  false, true, GUIAddonObject3DProperties::DrawWinObjectProps(this));
     ADD_WIN("Object shaders",      GUIType::OBJECT_SHADERS,      IconGUI::WIN_OBJECT_SHADERS,    false, false, true, ShadersGUI::DrawWinObjectShaders());
@@ -70,10 +71,6 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Global variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       false, false, true, ScriptLuaGUI::DrawWinGlobalVars(this));
     ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true, DrawWinKeyboardMouse());
     ADD_WIN("Images",              GUIType::IMAGES,              IconGUI::WIN_IMAGES,            false, false, true, FileSystemGUI::DrawWinImages(browserImages, browserImagesTextures));
-    ADD_WIN("Projects",            GUIType::FILES_PROJECTS,      IconGUI::WIN_FILES_PROJECTS,    true,  false, true, FileSystemGUI::DrawProjectFiles(browserProjects));
-    ADD_WIN("Scenes",              GUIType::FILES_SCENES,        IconGUI::WIN_FILES_SCENES,      true,  false, true, FileSystemGUI::DrawSceneFiles(browserScenes));
-    ADD_WIN("Scripts",             GUIType::FILES_SCRIPTS,       IconGUI::WIN_FILES_SCRIPTS,     true,  false, true, FileSystemGUI::DrawScriptFiles(browserScripts));
-    ADD_WIN("Shaders",             GUIType::FILES_SHADERS,       IconGUI::WIN_FILES_SHADERS,     true,  false, true, FileSystemGUI::DrawShaderFiles(browserShaders));
     ADD_WIN("Logging/Console",     GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true, widgetConsole->DrawWinLogging());
     ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true, DrawWinDepthLightsMap());
     ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, true, Profiler::get()->DrawWinProfiler());
@@ -99,10 +96,6 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
         { GUIType::IMAGES, false },
-        { GUIType::FILES_PROJECTS, true },
-        { GUIType::FILES_SCENES, true },
-        { GUIType::FILES_SCRIPTS, true },
-        { GUIType::FILES_SHADERS, true },
         { GUIType::LOGGING, true },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
@@ -110,6 +103,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::CODE_EDITOR, false},
         { GUIType::SCENE_INFO, false},
         { GUIType::THREADS, false},
+        { GUIType::BROWSER, true},
     };
 
     devsLayoutWindowsConfig =  {
@@ -122,10 +116,6 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::GLOBAL_VARS, true },
         { GUIType::KEYBOARD_MOUSE,  false },
         { GUIType::IMAGES, false },
-        { GUIType::FILES_PROJECTS, false },
-        { GUIType::FILES_SCENES, false },
-        { GUIType::FILES_SCRIPTS, true },
-        { GUIType::FILES_SHADERS, true },
         { GUIType::LOGGING, true },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
@@ -133,22 +123,19 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::CODE_EDITOR, true},
         { GUIType::SCENE_INFO, false},
         { GUIType::THREADS, false},
+        { GUIType::BROWSER, true},
     };
 
     designLayoutWindowsConfig =  {
         { GUIType::PROJECT_SETTINGS, false },
-        { GUIType::SCENE_OBJECTS, true },
-        { GUIType::OBJECT_PROPS, true },
+        { GUIType::SCENE_OBJECTS, false },
+        { GUIType::OBJECT_PROPS, false },
         { GUIType::OBJECT_SHADERS, false },
         { GUIType::OBJECT_SCRIPTS, false },
         { GUIType::OBJECT_VARS, false },
         { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
         { GUIType::IMAGES, false },
-        { GUIType::FILES_PROJECTS, false },
-        { GUIType::FILES_SCENES, false },
-        { GUIType::FILES_SCRIPTS, false },
-        { GUIType::FILES_SHADERS, false },
         { GUIType::LOGGING, false },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
@@ -156,6 +143,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::CODE_EDITOR, false },
         { GUIType::SCENE_INFO, false},
         { GUIType::THREADS, false},
+        { GUIType::BROWSER, false},
     };
 }
 

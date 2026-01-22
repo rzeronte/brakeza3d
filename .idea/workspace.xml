@@ -51,72 +51,16 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): native toolbar, colors, icons...">
-      <change afterPath="$PROJECT_DIR$/include/Loaders/Project.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Loaders/Project.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Loaders/Scene.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Loaders/Scene.h" afterDir="false" />
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): add  ImageButton / Current Project-scene manager">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/MyProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/MyProject.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/brakeza.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/brakeza.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDesign.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDesign.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentScripting.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentScripting.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/StatusBarGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/StatusBarGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/ProjectChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/SceneChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseCustom.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Base/ShaderBaseCustom.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesMesh3D.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/OpenGL/Nodes/ShaderNodesPostProcessing.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobClearScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobClearScene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobReadFileScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobReadFileScene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObject3DProperties.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObject3DProperties.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ImGuiLayoutHelpers.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/ImGuiLayoutHelpers.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeEditorManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/NodeEditorManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/AddNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ColorNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/CosNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/GradientNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/ImageNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/InternalTextureNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/InternalTextureNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MeshTextureNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MeshTextureNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MixNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/MultiplyNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/OutputNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SinNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SmoothstepNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/SubtractNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/TimeNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVCoordsNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVOffsetNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVRotateNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/NodeTypes/UVScaleNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/StatusBarGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/StatusBarGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/ShaderNodeEditorManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesMesh3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesMesh3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesPostProcessing.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Nodes/ShaderNodesPostProcessing.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -581,7 +525,7 @@
       <workItem from="1768861925954" duration="2970000" />
       <workItem from="1768937984347" duration="21023000" />
       <workItem from="1768961801993" duration="12000" />
-      <workItem from="1769005707324" duration="16609000" />
+      <workItem from="1769005707324" duration="23239000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -631,14 +575,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00132" summary="feat(checker): added scene info/checker">
-      <option name="closed" value="true" />
-      <created>1766630713903</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1766630713903</updated>
     </task>
     <task id="LOCAL-00133" summary="feat(checker): added scene info/checker">
       <option name="closed" value="true" />
@@ -968,7 +904,15 @@
       <option name="project" value="LOCAL" />
       <updated>1768961712850</updated>
     </task>
-    <option name="localTasksCounter" value="174" />
+    <task id="LOCAL-00174" summary="feat(gui): add  ImageButton / Current Project-scene manager">
+      <option name="closed" value="true" />
+      <created>1769094427121</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1769094427121</updated>
+    </task>
+    <option name="localTasksCounter" value="175" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1002,7 +946,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix(examples): recover examples after big renaming functions" />
     <MESSAGE value="fix(colliders): fix crashing when debug physics / ui improvements" />
     <MESSAGE value="fix(filesystem): fix creating and removing scripts/shaders" />
     <MESSAGE value="feat(checker): added scene info/checker" />
@@ -1027,7 +970,8 @@
     <MESSAGE value="feat(doc): improve doc" />
     <MESSAGE value="feat(gui): improved gui styles, added icons..." />
     <MESSAGE value="feat(gui): native toolbar, colors, icons..." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): native toolbar, colors, icons..." />
+    <MESSAGE value="feat(gui): add  ImageButton / Current Project-scene manager" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): add  ImageButton / Current Project-scene manager" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
