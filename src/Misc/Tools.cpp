@@ -236,7 +236,7 @@ std::string Tools::getFilenameWithoutExtension(const std::string& filename)
 
 void Tools::WriteToFile(const std::string& fileName, const char *content)
 {
-    LOG_MESSAGE("Writing to file %s!", fileName.c_str());
+    LOG_MESSAGE("[Tools] Writing to file %s...", fileName.c_str());
 
     std::ofstream file(fileName, std::ios::trunc | std::ios::binary); // Abrir en modo binario
 

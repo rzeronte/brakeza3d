@@ -53,14 +53,16 @@
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): add  ImageButton / Current Project-scene manager">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDesign.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDesign.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -525,7 +527,7 @@
       <workItem from="1768861925954" duration="2970000" />
       <workItem from="1768937984347" duration="21023000" />
       <workItem from="1768961801993" duration="12000" />
-      <workItem from="1769005707324" duration="23239000" />
+      <workItem from="1769005707324" duration="34647000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -575,14 +577,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00133" summary="feat(checker): added scene info/checker">
-      <option name="closed" value="true" />
-      <created>1766638508669</created>
-      <option name="number" value="00133" />
-      <option name="presentableId" value="LOCAL-00133" />
-      <option name="project" value="LOCAL" />
-      <updated>1766638508673</updated>
     </task>
     <task id="LOCAL-00134" summary="feat(doc): update doc and screenshots">
       <option name="closed" value="true" />
@@ -912,7 +906,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769094427121</updated>
     </task>
-    <option name="localTasksCounter" value="175" />
+    <task id="LOCAL-00175" summary="feat(gui): add  ImageButton / Current Project-scene manager">
+      <option name="closed" value="true" />
+      <created>1769105082412</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1769105082412</updated>
+    </task>
+    <option name="localTasksCounter" value="176" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

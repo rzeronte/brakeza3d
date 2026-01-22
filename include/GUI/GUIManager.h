@@ -97,11 +97,11 @@ public:
     void setIndexCodeEditorTab(const std::string &label);
 
     [[nodiscard]] TextureAtlas * getTextureAtlas() const                                { return textureAtlas; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserScripts() const                       { return browserScripts; }
     [[nodiscard]] GuiAddonConsole *getConsole() const                                   { return widgetConsole; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserScenes() const                        { return browserScenes; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserProjects() const                      { return browserProjects; }
-    [[nodiscard]] GUIType::BrowserCache getBrowserShaders() const                       { return browserShaders; }
+    [[nodiscard]] GUIType::BrowserCache &getBrowserScripts()                            { return browserScripts; }
+    [[nodiscard]] GUIType::BrowserCache &getBrowserScenes()                             { return browserScenes; }
+    [[nodiscard]] GUIType::BrowserCache &getBrowserProjects()                           { return browserProjects; }
+    [[nodiscard]] GUIType::BrowserCache &getBrowserShaders()                            { return browserShaders; }
     [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const               { return viewerMode; }
     [[nodiscard]] std::vector<EditableOpenBaseResource *> getEditableOpenFiles() const  { return openFiles;}
     [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }

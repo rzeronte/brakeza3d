@@ -21,7 +21,6 @@ public:
 
     // Projects
     static void DrawProjectFiles(GUIType::BrowserCache &browser);
-    static void DrawProjectCreator();
     static void DrawProjectsTable(GUIType::BrowserCache &browser);
     static void DrawProjectRow(GUIType::BrowserCache &browser, const std::string &file, int index);
     static void DrawProjectRowActions(GUIType::BrowserCache &browser, const std::string &file);
@@ -37,7 +36,6 @@ public:
 
     // Shader
     static void DrawShaderFiles(GUIType::BrowserCache &browser);
-    static void DrawShaderCreator(int &selectedIndex, const std::vector<const char*> &items);
     static void DrawShaderTypeCombo(int &selectedIndex, const std::vector<const char *> &items);
     static void DrawShadersTable(GUIType::BrowserCache &browser);
     static void DrawShaderRow(GUIType::BrowserCache &browser, const std::string &file, int index);

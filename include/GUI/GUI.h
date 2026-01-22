@@ -368,7 +368,9 @@ namespace GUIType
     X(PROJECT_SAVE, 0, 0) \
     X(SCENE_SAVE, 0, 0) \
     X(WIN_BROWSER, 0, 0) \
-
+    X(FOLDER_CURRENT, 0, 0) \
+    X(SEARCH, 0, 0) \
+    X(FOLDER_BACK, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

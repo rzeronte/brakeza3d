@@ -124,7 +124,7 @@ void GUIAddonResourceHub::renderBrowserWindow() {
         ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), Config::get()->URL_ASSETS_HUB_URL.c_str());
         ImGui::SameLine(ImGui::GetWindowWidth() - 100);
 
-        GUI::DrawButton("Logout", IconGUI::SESSION_CLOSE, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, false,[&]() {
+        GUI::ImageButtonNormal(IconGUI::SESSION_CLOSE, "Logout", [&] {
             performLogout();
         });
 
@@ -176,11 +176,12 @@ void GUIAddonResourceHub::renderSearchFilters() {
         loadResources();
     }
     ImGui::SameLine();
-    if (ImGui::Button("Search")) {
+
+    GUI::ImageButtonNormal(IconGUI::SEARCH, "Search", [&] {
         currentPage = 1;
         loadResources();
-    }
-    
+    });
+
     ImGui::SameLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
     

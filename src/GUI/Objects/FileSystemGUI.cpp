@@ -16,32 +16,27 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Render/Drawable.h"
 
-void FileSystemGUI::DrawProjectCreator()
-{
-
-}
-
 void FileSystemGUI::DrawMainBrowser()
 {
     auto GUI = Brakeza::get()->GUI();
-    auto projectBrowser = GUI->getBrowserProjects();
-    auto scenesBrowser = GUI->getBrowserScenes();
-    auto scriptsBrowser = GUI->getBrowserScripts();
-    auto shadersBrowser = GUI->getBrowserShaders();
+    auto &projectBrowser = GUI->getBrowserProjects();
+    auto &scenesBrowser = GUI->getBrowserScenes();
+    auto &scriptsBrowser = GUI->getBrowserScripts();
+    auto &shadersBrowser = GUI->getBrowserShaders();
 
-    GUI::DrawButton("Browse Projects", IconGUI::PROJECT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+    GUI::DrawButton("Browse Projects", IconGUI::PROJECT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_PROJECTS, [] {
         type = GUIType::BROWSE_PROJECTS;
     });
     ImGui::SameLine();
-    GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+    GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_SCENES, [] {
         type = GUIType::BROWSE_SCENES;
     });
     ImGui::SameLine();
-    GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+    GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_SCRIPTS, [] {
         type = GUIType::BROWSE_SCRIPTS;
     });
     ImGui::SameLine();
-    GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, true, [&] {
+    GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_SHADERS, [] {
         type = GUIType::BROWSE_SHADERS;
     });
 
@@ -129,23 +124,7 @@ void FileSystemGUI::DrawProjectRow(GUIType::BrowserCache &browser, const std::st
 void FileSystemGUI::DrawProjectFiles(GUIType::BrowserCache &browser)
 {
     static bool openPopup = false;
-    if (ImGui::BeginTable("ProjectHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
-        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableNextRow();
 
-        // Izquierda
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Image(Icon(IconGUI::PROJECT_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
-        ImGui::SameLine();
-        ImGui::Text("%s", browser.currentFolder.c_str());
-        // Derecha
-        ImGui::TableSetColumnIndex(1);
-        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create project", [&] {
-            openPopup = true;
-        });
-        ImGui::EndTable();
-    }
     static std::string title = "Create project dialog";
     if (openPopup) {
         ImGui::OpenPopup(title.c_str());
@@ -153,8 +132,17 @@ void FileSystemGUI::DrawProjectFiles(GUIType::BrowserCache &browser)
     }
 
     DrawProjectCreatorDialog(browser, title);
+
+    ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+    ImGui::SameLine();
+    ImGui::Text("%s", browser.currentFolder.c_str());
+
     ImGui::Separator();
     DrawProjectsTable(browser);
+    ImGui::Separator();
+    GUI::ImageButtonNormal(IconGUI::PROJECT_FILE, "Create project", [&] {
+        openPopup = true;
+    });
 }
 
 void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
@@ -190,6 +178,11 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std
 void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
 {
     auto files = browser.folderFiles;
+
+    if (files.empty()) {
+        Drawable::WarningMessage("Empty directory");
+    }
+
     std::sort(files.begin(), files.end());
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
@@ -273,24 +266,6 @@ void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const st
 void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
 {
     static bool openPopup = false;
-    if (ImGui::BeginTable("SceneHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
-        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableNextRow();
-        // Izquierda
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Image(Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
-        ImGui::SameLine();
-        ImGui::Text("%s", browser.currentFolder.c_str());
-
-        // Derecha
-        ImGui::TableSetColumnIndex(1);
-        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create scene", [&] {
-            openPopup = true;
-        });
-
-        ImGui::EndTable();
-    }
     static std::string title = "Create scene dialog";
     if (openPopup) {
         ImGui::OpenPopup(title.c_str());
@@ -298,10 +273,14 @@ void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
     }
     DrawSceneCreatorDialog(browser, title);
 
-    ImGui::Separator();
     DrawBrowserFolders(Config::get()->SCENES_FOLDER, browser);
     ImGui::Separator();
     DrawScenesTable(browser);
+    ImGui::Separator();
+    GUI::ImageButtonNormal(IconGUI::SCENE_FILE, "Create scene", [&] {
+        openPopup = true;
+    });
+
 }
 
 void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
@@ -336,15 +315,18 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
 
 void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::BrowserCache &browser)
 {
+    ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::SameLine();
+    ImGui::Text("%s", browser.currentFolder.c_str());
+    ImGui::Separator();
+
     // only show ".." if we arent in browser's root folder
     if (browser.currentFolder != rootFolder) {
-        ImGui::AlignTextToFramePadding();
-        ImGui::Image(Icon(IconGUI::FOLDER), ImVec2(24, 24));
+        ImGui::Image(Icon(IconGUI::FOLDER_BACK), GUIType::Sizes::ICONS_BROWSERS);
         ImGui::SameLine();
         if (ImGui::Button("..")) {
             browser.currentFolder = Tools::NormalizePath(Tools::GoBackFromFolder(browser.currentFolder));
             browser.onChangeFolderCallback();
-            return;
         }
     }
 
@@ -372,7 +354,7 @@ void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::B
 
     // Cambiar de carpeta DESPUÉS de terminar la iteración
     if (!selectedFolder.empty()) {
-        LOG_MESSAGE(selectedFolder.c_str());
+        LOG_MESSAGE("Selected folder %s", selectedFolder.c_str());
         browser.currentFolder = selectedFolder;
         browser.onChangeFolderCallback();
     }
@@ -552,6 +534,10 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
 {
     auto files = browser.folderFiles;
 
+    if (files.empty()) {
+        Drawable::WarningMessage("Empty directory");
+    }
+
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptsFolderTable", 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
@@ -623,30 +609,9 @@ void FileSystemGUI::DrawShaderRowActions(GUIType::BrowserCache &browser, const s
     });
 }
 
-void FileSystemGUI::DrawShaderCreator(int &item_current_idx, const std::vector<const char*> &items)
-{
-
-}
-
 void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
 {
     static bool openPopup = false;
-    if (ImGui::BeginTable("ShaderHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
-        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableNextRow();
-        // Izquierda
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Image(Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
-        ImGui::SameLine();
-        ImGui::Text("%s", browser.currentFolder.c_str());
-        // Derecha
-        ImGui::TableSetColumnIndex(1);
-        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create shader", [&] {
-            openPopup = true;
-        });
-        ImGui::EndTable();
-    }
     static std::string title = "Create shader dialog";
     if (openPopup) {
         ImGui::OpenPopup(title.c_str());
@@ -654,10 +619,14 @@ void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
     }
 
     DrawShaderCreatorDialog(browser, title);
-    ImGui::Separator();
+
     DrawBrowserFolders(Config::get()->CUSTOM_SHADERS_FOLDER, browser);
     ImGui::Separator();
     DrawShadersTable(browser);
+    ImGui::Separator();
+    GUI::ImageButtonNormal(IconGUI::SHADER_FILE, "Create shader", [&] {
+        openPopup = true;
+    });
 }
 
 void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
@@ -699,6 +668,10 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
 void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
 {
     auto files = browser.folderFiles;
+
+    if (files.empty()) {
+        Drawable::WarningMessage("Empty directory");
+    }
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
     if (ImGui::BeginTable("ScriptsFolderTable", 3, flags)) {
@@ -782,30 +755,19 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
 void FileSystemGUI::DrawScriptFiles(GUIType::BrowserCache &browser)
 {
     static bool openPopup = false;
-    if (ImGui::BeginTable("ScriptHeader", 2, ImGuiTableFlags_SizingStretchProp)) {
-        ImGui::TableSetupColumn("Info", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableNextRow();
-        // Izquierda
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Image(Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
-        ImGui::SameLine();
-        ImGui::Text("%s", browser.currentFolder.c_str());
-        // Derecha
-        ImGui::TableSetColumnIndex(1);
-        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create script", [&] {
-            openPopup = true;
-        });
-        ImGui::EndTable();
-    }
     static std::string title = "Create script dialog";
     if (openPopup) {
         ImGui::OpenPopup(title.c_str());
         openPopup = false;
     }
+
     DrawScriptCreatorDialog(browser, title);
-    ImGui::Separator();
     DrawBrowserFolders(Config::get()->SCRIPTS_FOLDER, browser);
+
     ImGui::Separator();
     DrawScriptsTable(browser);
+    ImGui::Separator();
+    GUI::ImageButtonNormal(IconGUI::SCRIPT_FILE, "Create script", [&] {
+        openPopup = true;
+    });
 }
