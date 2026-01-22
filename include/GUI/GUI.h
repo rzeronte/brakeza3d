@@ -50,6 +50,15 @@ namespace GUIType
         std::function<void()> onChangeFolderCallback;
     };
 
+    struct ButtonSize {
+        static constexpr ImVec2 BUTTON_SMALL = ImVec2(-1, 20);
+        static constexpr ImVec2 BUTTON_NORMAL = ImVec2(-1, 28);
+        static constexpr ImVec2 BUTTON_BIG = ImVec2(-1, 36);
+        static constexpr ImVec2 BUTTON_SMALL_AUTO = ImVec2(0, 20);
+        static constexpr ImVec2 BUTTON_NORMAL_AUTO = ImVec2(0, 28);
+        static constexpr ImVec2 BUTTON_BIG_AUTO = ImVec2(0, 36);
+    };
+
     struct Sizes {
         static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(24, 24);
         static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(18, 18);
@@ -351,7 +360,10 @@ namespace GUIType
     X(SESSION_CLOSE, 0, 0) \
     X(DOWNLOAD_RESOURCE, 0, 0) \
     X(HUB_URL_LINK, 0, 0) \
-    X(SESSION_OPEN, 0, 0)
+    X(SESSION_OPEN, 0, 0) \
+    X(PROJECT_SAVE, 0, 0) \
+    X(SCENE_SAVE, 0, 0) \
+
 
 // Icons Objects
 namespace IconObject {
@@ -412,6 +424,16 @@ public:
     static void ImGuiSetColors();
     static void CLIWelcomeMessage();
     static void ShowLoadTime(const std::string &text, const Timer &t);
+    static bool ImageButtonSmall(GUIType::Sheet, const std::string &text, const std::function<void()> &onClick);
+    static bool ImageButtonNormal(GUIType::Sheet, const std::string &text, const std::function<void()> &onClick);
+    static bool ImageButtonBig(GUIType::Sheet, const std::string &text, const std::function<void()> &onClick);
+    static void ImageButtonSmallConfirm(GUIType::Sheet texture, const std::string &text, const std::string &title, const std::string &question, const std::function<void()> &onConfirm);
+    static void ImageButtonNormalConfirm(GUIType::Sheet texture, const std::string &text, const std::string &title, const std::string &question, const std::function<void()> &onConfirm);
+    static void ImageButtonBigConfirm(GUIType::Sheet texture, const std::string &text, const std::string &title, const std::string &question, const std::function<void()> &onConfirm);
+
+    static bool AutoImageButton(GUIType::Sheet, const char *label, const ImVec2 &imageSize, float height, float padding, const std::function<void()> &onClick);
+
+
     static GUIType::BrowserCache CreateBrowserCache(std::string folder, const std::string &extension, std::function<void()> functionCallBack);
 };
 

@@ -98,10 +98,10 @@ void FileSystemGUI::DrawProjectFiles(GUIType::BrowserCache &browser)
         ImGui::TableSetColumnIndex(0);
         ImGui::Image(Icon(IconGUI::PROJECT_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
         ImGui::SameLine();
-        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        ImGui::Text("%s", browser.currentFolder.c_str());
         // Derecha
         ImGui::TableSetColumnIndex(1);
-        GUI::DrawButton("Create Project", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create project", [&] {
             openPopup = true;
         });
         ImGui::EndTable();
@@ -127,31 +127,22 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std
         ImGui::InputText("Project name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
         ImGui::Separator();
 
-        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
-        float spacing = ImGui::GetStyle().ItemSpacing.x;
-        float totalWidth = buttonWidth * 2 + spacing;
-
-        float availWidth = ImGui::GetContentRegionAvail().x;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
-
-        GUI::DrawButton("Cancel create project", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true,[&] {
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
             ImGui::CloseCurrentPopup();
         });
-        ImGui::SameLine();
-        GUI::DrawButton(
-            "Create Project",
-            IconGUI::CREATE_FILE,
-            GUIType::Sizes::ICONS_BROWSERS,
-            true,
-            [&] {
-                if (localVarName[0] != '\0') {
-                    ProjectLoader::CreateProject(browser.currentFolder + localVarName);
-                    browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
-                    ImGui::CloseCurrentPopup();
-                }
+
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = 150.0f - buttonWidth * 2; // Ajusta este valor según necesites
+
+        ImGui::SameLine(0, spacing);
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
+            if (localVarName[0] != '\0') {
+                ProjectLoader::CreateProject(browser.currentFolder + localVarName);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->PROJECTS_EXT);
+                ImGui::CloseCurrentPopup();
             }
-        );
+        });
         ImGui::EndPopup();
     }
 }
@@ -253,11 +244,11 @@ void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
         ImGui::TableSetColumnIndex(0);
         ImGui::Image(Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
         ImGui::SameLine();
-        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        ImGui::Text("%s", browser.currentFolder.c_str());
 
         // Derecha
         ImGui::TableSetColumnIndex(1);
-        GUI::DrawButton("Create Scene", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create scene", [&] {
             openPopup = true;
         });
 
@@ -279,7 +270,6 @@ void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
 void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
 {
     if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-
         ImGui::SameLine();
         static char localVarName[256] = "";
 
@@ -287,33 +277,22 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
         ImGui::InputText("Scene name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
         ImGui::Separator();
 
-        // Calcular ancho de los botones
-        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
-        float spacing = ImGui::GetStyle().ItemSpacing.x;
-        float totalWidth = buttonWidth * 2 + spacing;
-
-        // Alinear a la derecha
-        float availWidth = ImGui::GetContentRegionAvail().x;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
-
-        GUI::DrawButton("Cancel create scene", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
             ImGui::CloseCurrentPopup();
         });
-        ImGui::SameLine();
-        GUI::DrawButton(
-            "Create scene",
-            IconGUI::CREATE_FILE,
-            GUIType::Sizes::ICONS_BROWSERS,
-            true,
-            [&] {
-                if (localVarName[0] != '\0') {
-                    SceneLoader::CreateScene(browser.currentFolder + localVarName);
-                    browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
-                    ImGui::CloseCurrentPopup();
-                }
+
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = 150.0f - buttonWidth * 2; // Ajusta este valor según necesites
+
+        ImGui::SameLine(0, spacing);
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
+            if (localVarName[0] != '\0') {
+                SceneLoader::CreateScene(browser.currentFolder + localVarName);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCENES_EXT);
+                ImGui::CloseCurrentPopup();
             }
-        );
+        });
         ImGui::EndPopup();
     }
 }
@@ -626,10 +605,10 @@ void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
         ImGui::TableSetColumnIndex(0);
         ImGui::Image(Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
         ImGui::SameLine();
-        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        ImGui::Text("%s", browser.currentFolder.c_str());
         // Derecha
         ImGui::TableSetColumnIndex(1);
-        GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create shader", [&] {
             openPopup = true;
         });
         ImGui::EndTable();
@@ -661,19 +640,16 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
 
         ImGui::Separator();
 
-        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
-        float spacing = ImGui::GetStyle().ItemSpacing.x;
-        float totalWidth = buttonWidth * 2 + spacing;
-
-        float availWidth = ImGui::GetContentRegionAvail().x;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
-
-        GUI::DrawButton("Cancel create shader", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
             ImGui::CloseCurrentPopup();
         });
-        ImGui::SameLine();
-        GUI::DrawButton("Create shader", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = 150.0f - buttonWidth * 2; // Ajusta este valor según necesites
+
+        ImGui::SameLine(0, spacing);
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
             if (localVarName[0] != '\0') {
                 auto type = ShaderBaseCustom::getShaderTypeFromString(items[item_current_idx]);
                 ShadersGUI::CreateShaderBaseCustom(type, browser.currentFolder, localVarName);
@@ -681,6 +657,7 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
                 ImGui::CloseCurrentPopup();
             }
         });
+
         ImGui::EndPopup();
     }
 }
@@ -749,21 +726,15 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
 
         ImGui::Separator();
 
-        // Calcular ancho de los botones
-        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
-        float spacing = ImGui::GetStyle().ItemSpacing.x;
-        float totalWidth = buttonWidth * 2 + spacing;
-
-        // Alinear a la derecha
-        float availWidth = ImGui::GetContentRegionAvail().x;
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availWidth - totalWidth);
-
-        GUI::DrawButton("Cancel create script", IconGUI::CANCEL, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
             ImGui::CloseCurrentPopup();
         });
-        ImGui::SameLine();
-        GUI::DrawButton("Create script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = 150.0f - buttonWidth * 2; // Ajusta este valor según necesites
+
+        ImGui::SameLine(0, spacing);
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
             if (localVarName[0] != '\0') {
                 ComponentScripting::CreateScriptLUAFile(browser.currentFolder + localVarName);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
@@ -788,10 +759,10 @@ void FileSystemGUI::DrawScriptFiles(GUIType::BrowserCache &browser)
         ImGui::TableSetColumnIndex(0);
         ImGui::Image(Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
         ImGui::SameLine();
-        ImGui::Text("Current: %s", browser.currentFolder.c_str());
+        ImGui::Text("%s", browser.currentFolder.c_str());
         // Derecha
         ImGui::TableSetColumnIndex(1);
-        GUI::DrawButton("Create Script", IconGUI::CREATE_FILE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create script", [&] {
             openPopup = true;
         });
         ImGui::EndTable();

@@ -73,6 +73,10 @@ void StatusBarGUI::RenderContent(GUIAddonResourceHub* resourceHub)
     DrawLightsStatus();
     DrawSeparator();
     DrawScriptsStatus();
+    DrawSeparator();
+    DrawSceneStatus();
+    DrawSeparator();
+    DrawProjectStatus();
 }
 
 void StatusBarGUI::DrawSeparator()
@@ -129,6 +133,20 @@ void StatusBarGUI::DrawScriptsStatus()
     auto label = isRunning ? "Scripts running..." : "Scripts stopped";
 
     DrawIconWithText(icon, label);
+}
+
+void StatusBarGUI::DrawProjectStatus()
+{
+    auto project = Components::get()->Scripting()->getCurrentProject();
+    auto label = project != nullptr ? project->getFilePath().c_str() : "None";
+    DrawIconWithText(IconGUI::PROJECT_FILE, label);
+}
+
+void StatusBarGUI::DrawSceneStatus()
+{
+    auto scene = Components::get()->Scripting()->getCurrentScene();
+    auto label = scene != nullptr ? scene->getFilePath().c_str() : "None";
+    DrawIconWithText(IconGUI::SCENE_FILE, label);
 }
 
 void StatusBarGUI::DrawIconWithText(GUIType::Sheet icon, const char* text)

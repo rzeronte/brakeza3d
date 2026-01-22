@@ -9,7 +9,7 @@
 #include <functional>
 #include <glm/fwd.hpp>
 
-#include "../../include/Render/Image.h"
+#include "../Render/Image.h"
 
 class ShaderNodeEditorManager;
 class NodeType;

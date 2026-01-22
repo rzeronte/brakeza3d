@@ -4,7 +4,7 @@
 
 #include "../../../include/OpenGL/Nodes/ShaderNodesPostProcessing.h"
 
-#include "../../GUI/ShaderNodeEditorManager.h"
+#include "../../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../../include/Components/Components.h"
 
 ShaderNodesPostProcessing::ShaderNodesPostProcessing(

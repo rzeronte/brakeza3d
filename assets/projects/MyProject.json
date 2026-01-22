@@ -1,4 +1,20 @@
 {
 	"name":	"Brakeza3D - By Eduardo Rodriguez Alvarez <eduardo@brakeza.com>",
-	"scripts":	[]
+	"gravity":	{
+		"x":	0,
+		"y":	-9.8000001907348633,
+		"z":	0
+	},
+	"scripts":	[],
+	"scenes":	[{
+			"path":	"../assets/scenes/DemoScene.json"
+		}],
+	"sound":	{
+		"volume_fx":	50,
+		"volume_music":	40
+	},
+	"resolution":	{
+		"width":	1920,
+		"height":	1009
+	}
 }

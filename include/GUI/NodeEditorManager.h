@@ -11,9 +11,9 @@
 #include <string>
 #include <memory>
 
-#include "../../include/GUI/GUI.h"
-#include "../../include/Misc/cJSON.h"
-#include "../../include/OpenGL/Base/SharedOpenGLStructs.h"
+#include "GUI.h"
+#include "../Misc/cJSON.h"
+#include "../OpenGL/Base/SharedOpenGLStructs.h"
 
 namespace ed = ax::NodeEditor;
 

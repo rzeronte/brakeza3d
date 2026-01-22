@@ -99,14 +99,14 @@ void GUIAddonResourceHub::renderLoginWindow() {
         if (isLoggingIn) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Logging in...");
         } else {
-            if (ImGui::Button("Login", ImVec2(120, 0))) {
+            GUI::ImageButtonNormal(IconGUI::SESSION_OPEN, "Login", [&] {
                 performLogin();
-            }
+            });
             ImGui::SameLine();
-            if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {
                 showLoginWindow = false;
                 loginError = "";
-            }
+            });
         }
         
         ImGui::Spacing();

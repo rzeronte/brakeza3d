@@ -24,7 +24,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
         Config::get()->ENGINE_TITLE = sceneName;
     }
 
-    // scripts
+    // sceneScripts
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
@@ -66,9 +66,11 @@ void ProjectLoader::LoadProject(const std::string &filename)
         auto soundJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "sound");
         Config::get()->SOUND_VOLUME_MUSIC = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_music")->valuedouble;;
         Config::get()->SOUND_VOLUME_FX = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_fx")->valuedouble;;
-        Mix_Volume(Config::SoundChannels::SND_GLOBAL, Config::get()->SOUND_VOLUME_FX);
-        Mix_VolumeMusic(Config::get()->SOUND_VOLUME_MUSIC);
+        Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) Config::get()->SOUND_VOLUME_FX);
+        Mix_VolumeMusic((int) Config::get()->SOUND_VOLUME_MUSIC);
     }
+
+    Components::get()->Scripting()->setCurrentProject(new Project(filename));
 }
 
 void ProjectLoader::SaveProject(const std::string &filename)
@@ -80,7 +82,7 @@ void ProjectLoader::SaveProject(const std::string &filename)
 
     // scripts
     cJSON *sceneScriptsArray = cJSON_CreateArray();
-    for (auto &script : Components::get()->Scripting()->getProjectLUAScripts()) {
+    for (auto &script : Components::get()->Scripting()->getProjectScripts()) {
         cJSON *scriptSceneSON = cJSON_CreateObject();
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
@@ -115,7 +117,7 @@ void ProjectLoader::SaveProject(const std::string &filename)
 void ProjectLoader::RemoveProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
-    for (auto o: scripting->getProjectLUAScripts()) {
+    for (auto o: scripting->getProjectScripts()) {
         scripting->RemoveProjectScript(o);
     }
 }

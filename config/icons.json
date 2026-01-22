@@ -6,7 +6,7 @@
 		}, {
 			"name":	"CREATE_FILE",
 			"x":	8,
-			"y":	31
+			"y":	0
 		}, {
 			"name":	"FOLDER",
 			"x":	3,
@@ -641,7 +641,7 @@
 			"y":	21
 		}, {
 			"name":	"EMPTY",
-			"x":	8,
+			"x":	9,
 			"y":	0
 		}, {
 			"name":	"WIN_DOCUMENTATION",
@@ -763,6 +763,14 @@
 			"name":	"SESSION_OPEN",
 			"x":	6,
 			"y":	0
+		}, {
+			"name":	"PROJECT_SAVE",
+			"x":	4,
+			"y":	33
+		}, {
+			"name":	"SCENE_SAVE",
+			"x":	4,
+			"y":	33
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

@@ -27,7 +27,7 @@ void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
 
     ImGui::Separator();
 
-    GUI::DrawButtonConfirm("Remove object from scene", "Are you sure to remove object from scene?", IconGUI::OBJECT_REMOVE_SCENE, GUIType::Sizes::ICONS_BROWSERS, [&] () {
+    GUI::ImageButtonNormalConfirm(IconGUI::OBJECT_REMOVE_SCENE, "Remove", "Removing scene object...", "Are you sure to remove object from scene?", [&] () {
         o->setRemoved(true);
     });
 }

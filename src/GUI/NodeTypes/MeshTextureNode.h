@@ -2,7 +2,7 @@
 #define MESHTEXTURENODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditorManager.h"
+#include "../../../include/GUI/ShaderNodeEditorManager.h"
 
 class MeshTextureNode : public NodeType {
 public:

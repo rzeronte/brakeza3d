@@ -60,6 +60,8 @@ public:
         Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobReadSceneScript>(json));
 
         Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json));
+        auto defaultPathScene = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE;
+        Components::get()->Scripting()->setCurrentScene(filename == defaultPathScene ? nullptr : new Scene(filename));
 
         SceneLoader::setLoading(false);
         LOG_MESSAGE("[ThreadJobReadFileScene] Callback END | Loaded %d objects.", objectCount);

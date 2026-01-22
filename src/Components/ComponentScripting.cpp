@@ -80,7 +80,7 @@ void ComponentScripting::ReloadLUAScripts() const
         s->ReloadScriptCode();
     }
 
-    for (auto &s : scripts) {
+    for (auto &s : sceneScripts) {
         s->ReloadScriptCode();
     }
 
@@ -108,7 +108,7 @@ void ComponentScripting::AddSceneLUAScript(ScriptLUA *script)
         return;
     }
 
-    scripts.push_back(script);
+    sceneScripts.push_back(script);
     ReloadScriptGlobals();
 }
 
@@ -130,7 +130,7 @@ void ComponentScripting::ReloadScriptGlobals() const
         script->ReloadGlobals();
     }
 
-    for (auto &script : scripts) {
+    for (auto &script : sceneScripts) {
         script->ReloadGlobals();
     }
 }
@@ -139,10 +139,10 @@ void ComponentScripting::RemoveSceneScript(ScriptLUA *script)
 {
     LOG_MESSAGE("[Scripting] Removing SceneScript '%s'...", script->scriptFilename.c_str());
 
-    for (auto it = scripts.begin(); it != scripts.end(); ++it) {
+    for (auto it = sceneScripts.begin(); it != sceneScripts.end(); ++it) {
         if ((*it)->scriptFilename == script->scriptFilename) {
             delete *it;
-            scripts.erase(it);
+            sceneScripts.erase(it);
             return;
         }
     }
@@ -180,7 +180,7 @@ void ComponentScripting::onStartScripts() const
     }
 
     LOG_MESSAGE("Executing OnStart for SCENE scripts...");
-    for (auto script : scripts) {
+    for (auto script : sceneScripts) {
         script->RunGlobal("onStart");
     }
 
@@ -197,7 +197,7 @@ void ComponentScripting::RunScripts() const
         script->RunGlobal("onUpdate");
     }
 
-    for (auto &script : scripts) {
+    for (auto &script : sceneScripts) {
         script->RunGlobal("onUpdate");
     }
 }
@@ -215,7 +215,7 @@ void ComponentScripting::InitLUATypes()
     lua.set_function("print", static_cast<void(*)(const char*, ...)>(&Logging::Message));
 }
 
-sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName)
+sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName, const char *varName) const
 {
     for (auto &s : projectScripts) {
         if (s->getScriptFilename() == scriptName) continue;
@@ -262,4 +262,16 @@ void ComponentScripting::RemoveScriptLUAFile(const std::string& path)
 
     Tools::RemoveFile(meta.codeFile);
     Tools::RemoveFile(meta.typesFile);
+}
+
+void ComponentScripting::setCurrentScene(Scene *value)
+{
+    delete currentScene;
+    currentScene = value;
+}
+
+void ComponentScripting::setCurrentProject(Project *value)
+{
+    delete currentProject;
+    currentProject = value;
 }

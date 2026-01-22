@@ -4,6 +4,7 @@
 
 #include "../../include/GUI/GUI.h"
 
+#include "imgui_internal.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
@@ -261,4 +262,166 @@ void GUI::ShowLoadTime(const std::string &text, const Timer &t)
     LOG_MESSAGE("***************************************************************");
     LOG_MESSAGE("[Brakeza] %s: %f secs", text.c_str(), t.getTotalTime());
     LOG_MESSAGE("***************************************************************");
+}
+
+bool GUI::ImageButtonSmall(GUIType::Sheet texture, const std::string &text, const std::function<void()> &onClick)
+{
+    return AutoImageButton(texture, text.c_str(), GUIType::Sizes::ICON_LOCKS, 18, 6, onClick);
+}
+
+bool GUI::ImageButtonNormal(GUIType::Sheet texture, const std::string &text, const std::function<void()> &onClick)
+{
+    return AutoImageButton(texture, text.c_str(), GUIType::Sizes::ICONS_OBJECTS_ALLOWED, 26, 6, onClick);
+}
+
+bool GUI::ImageButtonBig(GUIType::Sheet texture, const std::string &text, const std::function<void()> &onClick)
+{
+    return AutoImageButton(texture, text.c_str(), GUIType::Sizes::ICONS_CODE_EDITOR, 38, 6, onClick);
+}
+
+bool GUI::AutoImageButton(
+    GUIType::Sheet texture,
+    const char* label,
+    const ImVec2& imageSize,
+    float height,
+    float padding,
+    const std::function<void()> &onClick)
+{
+    ImGuiWindow* window = ImGui::GetCurrentWindow();
+    if (window->SkipItems)
+        return false;
+
+    ImGuiContext& g = *GImGui;
+    const ImGuiStyle& style = g.Style;
+    const ImGuiID id = window->GetID(label);
+
+    // Calcular ancho automáticamente
+    ImVec2 textSize = ImGui::CalcTextSize(label);
+    float autoWidth = padding + imageSize.x + padding + textSize.x + padding;
+
+    ImVec2 size(autoWidth, height);
+    const ImVec2 pos = window->DC.CursorPos;
+    const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+
+    ImGui::ItemSize(bb);
+    if (!ImGui::ItemAdd(bb, id))
+        return false;
+
+    bool hovered, held;
+    bool pressed = ImGui::ButtonBehavior(bb, id, &hovered, &held);
+
+    // Colores
+    ImVec4 bgColor = style.Colors[ImGuiCol_Button];
+    if (held)
+        bgColor = style.Colors[ImGuiCol_ButtonActive];
+    else if (hovered)
+        bgColor = style.Colors[ImGuiCol_ButtonHovered];
+
+    // Fondo
+    ImGui::RenderFrame(bb.Min, bb.Max, ImGui::GetColorU32(bgColor), true, style.FrameRounding);
+
+    // Imagen
+    ImVec2 imagePos = ImVec2(bb.Min.x + padding, bb.Min.y + (size.y - imageSize.y) * 0.5f);
+
+    window->DrawList->AddImage(FileSystemGUI::Icon(texture), imagePos,
+                               ImVec2(imagePos.x + imageSize.x, imagePos.y + imageSize.y),
+                               ImVec2(0, 0), ImVec2(1, 1),
+                               IM_COL32(255, 255, 255, 255)
+    );
+
+    // Texto
+    ImVec2 textPos = ImVec2(imagePos.x + imageSize.x + padding, bb.Min.y + (size.y - textSize.y) * 0.5f);
+
+    ImGui::RenderText(textPos, label);
+
+    if (pressed) onClick();
+
+    return pressed;
+}
+
+void GUI::ImageButtonSmallConfirm(
+    GUIType::Sheet texture,
+    const std::string &text,
+    const std::string &title,
+    const std::string &question,
+    const std::function<void()> &onConfirm)
+{
+    ImGui::PushID((title + question + text).c_str());
+
+    bool pressed = AutoImageButton(
+        texture,
+        text.c_str(),
+        GUIType::Sizes::ICON_LOCKS,
+        18,
+        6,
+        [](){}
+    );
+
+    if (pressed) {
+        ImGui::OpenPopup(title.c_str());
+    }
+
+    ShowPopUp(title.c_str(), question.c_str(), [&]() {
+        onConfirm();
+    });
+
+    ImGui::PopID();
+}
+
+void GUI::ImageButtonNormalConfirm(
+    GUIType::Sheet texture,
+    const std::string &text,
+    const std::string &title,
+    const std::string &question,
+    const std::function<void()> &onConfirm)
+{
+    ImGui::PushID((title + question + text).c_str());
+
+    bool pressed = AutoImageButton(
+        texture,
+        text.c_str(),
+        GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
+        26,
+        6,
+        [](){}
+    );
+
+    if (pressed) {
+        ImGui::OpenPopup(title.c_str());
+    }
+
+    ShowPopUp(title.c_str(), question.c_str(), [&]() {
+        onConfirm();
+    });
+
+    ImGui::PopID();
+}
+
+void GUI::ImageButtonBigConfirm(
+    GUIType::Sheet texture,
+    const std::string &text,
+    const std::string &title,
+    const std::string &question,
+    const std::function<void()> &onConfirm)
+{
+    ImGui::PushID((title + question + text).c_str());
+
+    bool pressed = AutoImageButton(
+        texture,
+        text.c_str(),
+        GUIType::Sizes::ICONS_CODE_EDITOR,
+        38,
+        6,
+        [](){}
+    );
+
+    if (pressed) {
+        ImGui::OpenPopup(title.c_str());
+    }
+
+    ShowPopUp(title.c_str(), question.c_str(), [&]() {
+        onConfirm();
+    });
+
+    ImGui::PopID();
 }

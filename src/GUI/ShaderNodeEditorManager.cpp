@@ -1,4 +1,4 @@
-#include "ShaderNodeEditorManager.h"
+#include "../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Render/Image.h"
 
@@ -22,7 +22,7 @@
 
 #include <cmath>
 
-#include "ImGuiLayoutHelpers.h"
+#include "../../include/GUI/ImGuiLayoutHelpers.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "NodeTypes/InternalTextureNode.h"
 #include "NodeTypes/MeshTextureNode.h"

@@ -26,6 +26,8 @@ private:
     static void DrawObjectCount();
     static void DrawLightsStatus();
     static void DrawScriptsStatus();
+    static void DrawProjectStatus();
+    static void DrawSceneStatus();
 
     // Helpers
     static void DrawIconWithText(GUIType::Sheet icon, const char* text);

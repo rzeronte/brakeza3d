@@ -2,12 +2,12 @@
 // Created by Eduardo on 23/12/2025.
 //
 
-#include "ProjectChecker.h"
-#include "../Brakeza.h"
-#include "../Misc/ToolsJSON.h"
-#include "../GUI/Objects/FileSystemGUI.h"
-#include "../Misc/Logging.h"
-#include "../Render/Drawable.h"
+#include "../../include/Loaders/ProjectChecker.h"
+#include "../../include/Brakeza.h"
+#include "../../include/Misc/ToolsJSON.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/Misc/Logging.h"
+#include "../../include/Render/Drawable.h"
 
 // =============================================================================
 // JSON HELPER FUNCTIONS

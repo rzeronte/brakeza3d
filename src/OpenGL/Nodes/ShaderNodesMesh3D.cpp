@@ -3,7 +3,7 @@
 //
 
 #include "../../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
-#include "../../GUI/ShaderNodeEditorManager.h"
+#include "../../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../../include/Components/Components.h"
 
 ShaderNodesMesh3D::ShaderNodesMesh3D(

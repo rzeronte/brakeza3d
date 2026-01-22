@@ -22,7 +22,7 @@ public:
 
         scripting->StopLUAScripts();
 
-        for (auto &o: scripting->getSceneLUAScripts()) {
+        for (auto &o: scripting->getSceneScripts()) {
             scripting->RemoveSceneScript(o);
         }
 
@@ -39,6 +39,7 @@ public:
             }
         }
 
+        Components::get()->Scripting()->setCurrentScene(nullptr);
         Components::get()->Render()->setSelectedObject(nullptr);
 
         SceneLoader::isClearing = false;

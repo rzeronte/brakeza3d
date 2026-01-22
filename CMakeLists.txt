@@ -317,17 +317,17 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIAddonDocumentation.h
         include/LUA/ObjectFactory.cpp
         include/Threads/ThreadJobMakeRigidBody.h
-        include/Loaders/SceneChecker.cpp
+        src/Loaders/SceneChecker.cpp
         include/Loaders/SceneChecker.h
         include/OpenGL/ShaderPreProcessor.h
         include/GUI/imgui-node-editor-master/imgui_node_editor.cpp
         include/GUI/imgui-node-editor-master/imgui_canvas.cpp
         include/GUI/imgui-node-editor-master/crude_json.cpp
         include/GUI/imgui-node-editor-master/imgui_node_editor_api.cpp
-        src/GUI/NodeEditorManager.h
+        include/GUI/NodeEditorManager.h
         src/GUI/ShaderNodeEditorManager.cpp
         src/GUI/NodeEditorManager.cpp
-        src/GUI/ShaderNodeEditorManager.h
+        include/GUI/ShaderNodeEditorManager.h
         src/GUI/NodeTypes/ColorNode.h
         src/GUI/NodeTypes/ImageNode.h
         src/GUI/NodeTypes/TimeNode.h
@@ -363,8 +363,8 @@ add_executable(Brakeza3D
         include/GUI/Editable/EditableOpenNode.h
         src/GUI/NodeTypes/InternalTextureNode.h
         src/GUI/NodeTypes/MeshTextureNode.h
-        src/GUI/ImGuiLayoutHelpers.h
-        include/Loaders/ProjectChecker.cpp
+        include/GUI/ImGuiLayoutHelpers.h
+        src/Loaders/ProjectChecker.cpp
         include/Loaders/ProjectChecker.h
         include/HttpClient/ResourceHubClient.h
         src/HttpClient/ResourceHubClient.cpp
@@ -374,6 +374,10 @@ add_executable(Brakeza3D
         include/GUI/Objects/ThreadGUI.h
         src/GUI/Objects/StatusBarGUI.cpp
         include/GUI/Objects/StatusBarGUI.h
+        include/Loaders/Scene.cpp
+        include/Loaders/Scene.h
+        include/Loaders/Project.cpp
+        include/Loaders/Project.h
 )
 
 target_link_libraries(Brakeza3D

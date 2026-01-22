@@ -6,7 +6,7 @@
 #define BRAKEZA3D_SHADERNODESPOSTPROCESSING_H
 
 #include "ShaderBaseNodes.h"
-#include "../../../src/GUI/ShaderNodeEditorManager.h"
+#include "../../GUI/ShaderNodeEditorManager.h"
 
 class ShaderNodesPostProcessing  : public ShaderBaseNodes
 {

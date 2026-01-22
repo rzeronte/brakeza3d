@@ -2,7 +2,7 @@
 #define INTERNALTEXTURENODE_H
 
 #include "NodeType.h"
-#include "../ShaderNodeEditorManager.h"
+#include "../../../include/GUI/ShaderNodeEditorManager.h"
 
 class InternalTextureNode : public NodeType {
 public:

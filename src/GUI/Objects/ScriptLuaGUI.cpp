@@ -396,8 +396,7 @@ void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &fil
 
 void ScriptLuaGUI::DrawScriptConfigActionButtons(EditableOpenScriptFile &file)
 {
-    GUI::DrawButton("Save script to disk", IconGUI::SCRIPT_SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, true, [&] {
+    GUI::ImageButtonNormal(IconGUI::SCRIPT_SAVE, "Save variables config", [&] {
         file.getScript()->UpdateFileTypes();
     });
 }
-

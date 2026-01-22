@@ -2,7 +2,7 @@
 #define SHADERNODESMESH3D_H
 
 #include "ShaderBaseNodes.h"
-#include "../../../src/GUI/ShaderNodeEditorManager.h"
+#include "../../GUI/ShaderNodeEditorManager.h"
 #include "../../3D/Mesh3D.h"
 
 class ShaderNodesMesh3D : public ShaderBaseNodes {

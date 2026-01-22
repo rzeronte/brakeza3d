@@ -8,7 +8,7 @@
 #include "SharedOpenGLStructs.h"
 #include "ShaderBaseOpenGL.h"
 #include "ShaderBaseOpenGLQuad.h"
-#include "../../../src/GUI/NodeEditorManager.h"
+#include "../../GUI/NodeEditorManager.h"
 #include "../../Misc/cJSON.h"
 
 class ShaderBaseCustom : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad

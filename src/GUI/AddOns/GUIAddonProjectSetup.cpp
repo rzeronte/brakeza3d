@@ -15,7 +15,7 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     auto scripting = Components::get()->Scripting();
     static bool shouldOpen = false;
 
-    std::string labelSceneScripts = "Scene scripts (" + std::to_string(scripting->getSceneLUAScripts().size()) + ")";
+    std::string labelSceneScripts = "Scene scripts (" + std::to_string(scripting->getSceneScripts().size()) + ")";
     ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
@@ -38,7 +38,7 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     ImGui::PopStyleVar(2);
     if (isOpenSceneScripts) {
         DrawSceneScripts();
-        if (scripting->getSceneLUAScripts().empty()) {
+        if (scripting->getSceneScripts().empty()) {
             Drawable::WarningMessage("There are not scenes attached");
         }
         ImGui::TreePop();
@@ -83,7 +83,7 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     auto scripting = Components::get()->Scripting();
     static bool shouldOpen = false;
 
-    std::string labelGlobalScripts = "Project scripts (" + std::to_string(scripting->getProjectLUAScripts().size()) + ")";
+    std::string labelGlobalScripts = "Project scripts (" + std::to_string(scripting->getProjectScripts().size()) + ")";
     ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
@@ -106,7 +106,7 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     ImGui::PopStyleVar(2);
     if (isOpenGlobalScripts) {
         DrawProjectScripts();
-        if (scripting->getProjectLUAScripts().empty()) {
+        if (scripting->getProjectScripts().empty()) {
             Drawable::WarningMessage("There are not scripts attached");
         }
         ImGui::TreePop();
@@ -154,6 +154,21 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
 {
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::PROJECT_SETTINGS);
     if (!windowStatus->isOpen) return;
+
+    auto scripting = Components::get()->Scripting();
+    if (scripting->getCurrentProject() != nullptr) {
+        GUI::ImageButtonNormal(IconGUI::PROJECT_SAVE, "Save current project", [scripting] {
+            ProjectLoader::SaveProject(scripting->getCurrentProject()->getFilePath().c_str());
+        });
+    }
+    if (scripting->getCurrentScene() != nullptr) {
+        ImGui:ImGui::SameLine();
+        GUI::ImageButtonNormal(IconGUI::SCENE_SAVE, "Save current scene", [scripting] {
+            SceneLoader::SaveScene(scripting->getCurrentScene()->getFilePath().c_str());
+        });
+    }
+
+    ImGui::Separator();
 
     static char name[256];
     strncpy(name, Config::get()->ENGINE_TITLE.c_str(), sizeof(name));
@@ -219,7 +234,7 @@ void GUIAddonProjectSetup::DrawProjectScripts()
     auto scripting = Components::get()->Scripting();
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
-    auto scripts = scripting->getProjectLUAScripts();
+    auto scripts = scripting->getProjectScripts();
 
     if (ImGui::BeginTable("ProjectScriptsTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Script");
@@ -274,7 +289,7 @@ void GUIAddonProjectSetup::DrawSceneScripts()
     auto scripting = Components::get()->Scripting();
 
     ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
-    auto scripts = scripting->getSceneLUAScripts();
+    auto scripts = scripting->getSceneScripts();
 
     if (ImGui::BeginTable("ScriptsTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Script");

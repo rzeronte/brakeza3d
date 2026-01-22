@@ -199,7 +199,7 @@ void ShadersGUI::DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file)
 
 void ShadersGUI::DrawShaderConfigActionButtons(EditableOpenShaderFile &file)
 {
-    GUI::DrawButton("Save shader", IconGUI::SHADER_SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, true,[&] {
+    GUI::ImageButtonNormal(IconGUI::SHADER_SAVE, "Save uniforms config", [&] {
         file.getShader()->UpdateFileTypes();
     });
 }

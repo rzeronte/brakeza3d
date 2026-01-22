@@ -3,7 +3,7 @@
 
 #include "NodeType.h"
 #include "../ShaderNodeEditorManager.h"
-#include "../NodeEditorManager.h"
+#include "../../../include/GUI/NodeEditorManager.h"
 #include <cmath>
 
 class ImageNode : public NodeType {

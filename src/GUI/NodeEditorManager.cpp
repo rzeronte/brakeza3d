@@ -2,7 +2,7 @@
 // Created by Eduardo on 01/01/2026.
 //
 
-#include "NodeEditorManager.h"
+#include "../../include/GUI/NodeEditorManager.h"
 #include <algorithm>
 #include <imgui_node_editor.h>
 #include <fstream>
