@@ -389,16 +389,16 @@
 			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_DEFAULT",
-			"x":	10,
+			"x":	7,
 			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_CODING",
-			"x":	2,
-			"y":	9
+			"x":	12,
+			"y":	35
 		}, {
 			"name":	"TOOLBAR_LAYOUT_DESIGN",
-			"x":	3,
-			"y":	9
+			"x":	13,
+			"y":	16
 		}, {
 			"name":	"TOOLBAR_TRANSLATE",
 			"x":	1,
@@ -609,12 +609,12 @@
 			"y":	10
 		}, {
 			"name":	"VIDEO_TAKE_SCREENSHOT",
-			"x":	3,
-			"y":	37
+			"x":	13,
+			"y":	9
 		}, {
 			"name":	"TOOLBAR_TAKE_SCREENSHOT",
-			"x":	3,
-			"y":	37
+			"x":	13,
+			"y":	9
 		}, {
 			"name":	"MNU_WORKERS",
 			"x":	5,

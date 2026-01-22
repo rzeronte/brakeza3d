@@ -88,6 +88,7 @@ void GUIAddonObjects3D::DrawObjectTypes(GUIManager *gui)
         ImGui::SameLine();
     }
     ImGui::PopStyleVar(2);
+    ImGui::NewLine();
 }
 
 bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObject)
@@ -129,31 +130,62 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
     if (!windowStatus->isOpen) return;
 
     auto &gameObjects = Brakeza::get()->getSceneObjects();
-
     auto type = gui->getObjectsViewerMode();
-    GUI::DrawButton("List mode", IconGUI::OBJECTS_VIEWER_LIST, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::ViewerObjectsMode::LIST, [&] {
-        gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::LIST);
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Tree mode", IconGUI::OBJECTS_VIEWER_TREE, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::ViewerObjectsMode::TREE, [&] {
-        gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::TREE);
-    });
-    ImGui::SameLine();
+
+    ImGui::Spacing();
     DrawObjectTypes(gui);
 
-    ImGui::NewLine();
-    ImGui::Separator();
-
     static char filterGUI[128] = "";
-    ImGui::SetNextItemWidth(150);
-    ImGui::InputText("Filter", filterGUI, IM_ARRAYSIZE(filterGUI));
-    ImGui::SameLine();
-    GUI::DrawButton("Clear filter", IconGUI::OBJECTS_VIEWER_CLEAR_FILTER, GUIType::Sizes::ICON_SIZE_MENUS, type == GUIType::ViewerObjectsMode::TREE, [&] {
-        filterGUI[0] = '\0';
-    });
+
+    // Tabla con 2 columnas para organizar los controles
+    if (ImGui::BeginTable("ControlsTable", 2, ImGuiTableFlags_SizingStretchProp)) {
+        ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthStretch);
+
+        ImGui::TableNextRow();
+
+        // Columna izquierda: botones de modo
+        ImGui::TableSetColumnIndex(0);
+        GUI::DrawButton("List mode", IconGUI::OBJECTS_VIEWER_LIST, GUIType::Sizes::ICON_SIZE_MENUS,
+            type == GUIType::ViewerObjectsMode::LIST, [&] {
+            gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::LIST);
+        });
+        ImGui::SameLine();
+        GUI::DrawButton("Tree mode", IconGUI::OBJECTS_VIEWER_TREE, GUIType::Sizes::ICON_SIZE_MENUS,
+            type == GUIType::ViewerObjectsMode::TREE, [&] {
+            gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::TREE);
+        });
+
+        // Columna derecha: filtro y botón clear alineados a la derecha
+        ImGui::TableSetColumnIndex(1);
+
+        // Calcular el ancho necesario para InputText + botón + espacio entre ellos
+        float inputWidth = 140;
+        float buttonWidth = ImGui::CalcTextSize("Clear filter").x + GUIType::Sizes::ICON_SIZE_MENUS.x + ImGui::GetStyle().FramePadding.x * 4;
+        float spacing = ImGui::GetStyle().ItemSpacing.x;
+        float totalWidth = inputWidth + spacing + buttonWidth;
+
+        // Obtener el ancho disponible y posicionar desde la derecha
+        float availWidth = ImGui::GetContentRegionAvail().x;
+        float offsetX = availWidth - totalWidth;
+        if (offsetX > 0) {
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+        }
+
+        ImGui::SetNextItemWidth(inputWidth);
+        ImGui::InputText("Filter", filterGUI, IM_ARRAYSIZE(filterGUI));
+        ImGui::SameLine();
+        GUI::DrawButton("Clear filter", IconGUI::OBJECTS_VIEWER_CLEAR_FILTER, GUIType::Sizes::ICON_SIZE_MENUS,
+            false, [&] {
+            filterGUI[0] = '\0';
+        });
+
+        ImGui::EndTable();
+    }
 
     ImGui::Separator();
 
+    // Listado según el modo seleccionado
     switch (type) {
         case GUIType::ViewerObjectsMode::TREE:
             DrawObjectsTree(gui, gameObjects, filterGUI);

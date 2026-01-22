@@ -51,18 +51,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): add  ImageButton / Current Project-scene manager">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Misc/Tools.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Misc/Tools.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -527,7 +520,7 @@
       <workItem from="1768861925954" duration="2970000" />
       <workItem from="1768937984347" duration="21023000" />
       <workItem from="1768961801993" duration="12000" />
-      <workItem from="1769005707324" duration="34647000" />
+      <workItem from="1769005707324" duration="37185000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -577,14 +570,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00134" summary="feat(doc): update doc and screenshots">
-      <option name="closed" value="true" />
-      <created>1766678383324</created>
-      <option name="number" value="00134" />
-      <option name="presentableId" value="LOCAL-00134" />
-      <option name="project" value="LOCAL" />
-      <updated>1766678383324</updated>
     </task>
     <task id="LOCAL-00135" summary="fix(demos): Fix demos / update doc">
       <option name="closed" value="true" />
@@ -914,7 +899,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769105082412</updated>
     </task>
-    <option name="localTasksCounter" value="176" />
+    <task id="LOCAL-00176" summary="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;">
+      <option name="closed" value="true" />
+      <created>1769119578009</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1769119578009</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -948,7 +941,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix(colliders): fix crashing when debug physics / ui improvements" />
     <MESSAGE value="fix(filesystem): fix creating and removing scripts/shaders" />
     <MESSAGE value="feat(checker): added scene info/checker" />
     <MESSAGE value="feat(doc): update doc and screenshots" />
@@ -973,7 +965,8 @@
     <MESSAGE value="feat(gui): improved gui styles, added icons..." />
     <MESSAGE value="feat(gui): native toolbar, colors, icons..." />
     <MESSAGE value="feat(gui): add  ImageButton / Current Project-scene manager" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): add  ImageButton / Current Project-scene manager" />
+    <MESSAGE value="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
