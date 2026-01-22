@@ -212,7 +212,7 @@ export default function Home() {
     return (
         <Layout
             title={`Home`}
-            description="Build amazing 2D and 3D games with Brakeza3D Engine">
+            description="Build amazing 2D and 3D games with Brakeza3D Game Engine">
             <HomepageHeader />
             <main>
                 <Stats />

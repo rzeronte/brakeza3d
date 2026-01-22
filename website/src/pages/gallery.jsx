@@ -5,7 +5,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 const galleryItems = [
   {
     title: 'Project 1',
-    description: 'Game demo built with Brakeza3D Engine',
+    description: 'Game demo built with Brakeza3D Game Engine',
     image: '/img/gallery/01.png',
   },
   {
