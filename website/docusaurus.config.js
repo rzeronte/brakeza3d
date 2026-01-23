@@ -8,7 +8,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Brakeza3D Engine',
+  title: 'Brakeza3D Game Engine',
   tagline: 'Simple and powerful cross-platform 2D/3D game engine',
   favicon: 'img/favicon.ico',
 

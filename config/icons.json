@@ -389,7 +389,7 @@
 			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_DEFAULT",
-			"x":	7,
+			"x":	6,
 			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_CODING",
@@ -787,6 +787,10 @@
 			"name":	"FOLDER_BACK",
 			"x":	9,
 			"y":	31
+		}, {
+			"name":	"BULLET",
+			"x":	5,
+			"y":	25
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

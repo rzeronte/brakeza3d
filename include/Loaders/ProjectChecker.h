@@ -76,6 +76,10 @@ public:
     explicit ProjectChecker() = default;
     ~ProjectChecker() = default;
 
+    [[nodiscard]] ProjectCheckerStatus getStatus() const        { return status; }
+    [[nodiscard]] std::string getFilePath() const               { return path; }
+    [[nodiscard]] bool isLoaded() const                         { return loaded; }
+
     void DrawInformationTable() const;
     void DrawScriptsTable() const;
     void DrawScenesTable() const;
@@ -83,6 +87,9 @@ public:
 
     void ExtractProjectInfo(cJSON* json);
     void ResetStatus();
+
+    void LoadProjectInfoFromDisk(const std::string &pathFile);
+
     void LoadProjectInfoDialog(const std::string &pathFile);
 };
 

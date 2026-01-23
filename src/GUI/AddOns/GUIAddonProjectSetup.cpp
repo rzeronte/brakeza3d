@@ -78,6 +78,29 @@ void GUIAddonProjectSetup::TreeProjectScenes()
     }
 }
 
+void GUIAddonProjectSetup::TreeProjectSettings()
+{
+    static bool shouldOpen = false;
+
+    std::string labelGlobalScripts = "Project settings";
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
+    if (shouldOpen) {
+        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
+        shouldOpen = false;
+    } else {
+        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
+    }
+    bool isOpen = ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
+
+    ImGui::PopStyleVar(2);
+    if (isOpen) {
+        DrawProjectSettings();
+        ImGui::TreePop();
+    }
+}
+
 void GUIAddonProjectSetup::TreeProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
@@ -157,14 +180,8 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
 
     auto scripting = Components::get()->Scripting();
     if (scripting->getCurrentProject() != nullptr) {
-        GUI::ImageButtonNormal(IconGUI::PROJECT_SAVE, "Save current project", [scripting] {
+        GUI::ImageButtonNormal(IconGUI::PROJECT_SAVE, "Save loaded Project", [scripting] {
             ProjectLoader::SaveProject(scripting->getCurrentProject()->getFilePath().c_str());
-        });
-    }
-    if (scripting->getCurrentScene() != nullptr) {
-        ImGui:ImGui::SameLine();
-        GUI::ImageButtonNormal(IconGUI::SCENE_SAVE, "Save current scene", [scripting] {
-            SceneLoader::SaveScene(scripting->getCurrentScene()->getFilePath().c_str());
         });
     }
 
@@ -177,13 +194,20 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
         Config::get()->ENGINE_TITLE = name;
     }
     ImGui::Separator();
-
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, 4.0f));
+    TreeProjectSettings();
+    ImGui::Separator();
     TreeProjectScripts();
     TreeProjectScenes();
     ImGui::Separator();
+    if (scripting->getCurrentScene() != nullptr) {
+        GUI::ImageButtonNormal(IconGUI::SCENE_SAVE, "Save loaded Scene", [scripting] {
+            SceneLoader::SaveScene(scripting->getCurrentScene()->getFilePath().c_str());
+        });
+    }
     TreeSceneScripts();
     TreeSceneShaders();
+    ImGui::Separator();
     ImGui::PopStyleVar();
 }
 
@@ -225,6 +249,69 @@ void GUIAddonProjectSetup::DrawProjectScenes()
 
             ImGui::PopID();
         }
+        ImGui::EndTable();
+    }
+}
+void GUIAddonProjectSetup::DrawProjectSettings()
+{
+    auto scripting = Components::get()->Scripting();
+    auto project = scripting->getCurrentProject();
+
+    if (project == nullptr) {
+        ImGui::Spacing();
+        Drawable::WarningMessage("There are not a project loaded");
+        return;
+    }
+
+    auto checker = scripting->getCurrentProject()->getChecker();
+    if (!checker.isLoaded()) return;
+
+    std::string projectName = checker.getStatus().name;
+    std::string filePath = checker.getFilePath();
+    Vertex3D gravity = checker.getStatus().gravity;
+
+    int resolutionW = checker.getStatus().resolution.width;
+    int resolutionH = checker.getStatus().resolution.height;;
+
+    if (ImGui::BeginTable("ProjectInfoTable", 2)) {
+        ImGui::TableSetupColumn("Property", ImGuiTableColumnFlags_WidthFixed, 150.0f);
+        ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
+
+        // Project Name
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::BULLET), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Project Name:");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::TextWrapped("%s", projectName.c_str());
+
+        // File Path
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::BULLET), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "File Path:");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::TextWrapped("%s", filePath.c_str());
+
+        // Gravity
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::BULLET), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Gravity:");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("%.2f, %.2f, %.2f", gravity.x, gravity.y, gravity.z);
+
+        // Resolution
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::BULLET), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Resolution:");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::Text("%d x %d", resolutionW, resolutionH);
         ImGui::EndTable();
     }
 }

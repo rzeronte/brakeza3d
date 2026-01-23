@@ -53,15 +53,21 @@
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/projects/MyProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/MyProject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/projects/SpaceArcadeDemoProject.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Loaders/Project.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/Project.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Loaders/ProjectChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/ProjectChecker.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Loaders/Scene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/Scene.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectChecker.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/src/pages/gallery.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/gallery.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/src/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docusaurus.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/docusaurus.config.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -526,7 +532,7 @@
       <workItem from="1768861925954" duration="2970000" />
       <workItem from="1768937984347" duration="21023000" />
       <workItem from="1768961801993" duration="12000" />
-      <workItem from="1769005707324" duration="38026000" />
+      <workItem from="1769005707324" duration="47154000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>

@@ -4,7 +4,7 @@
  * Modify the docusaurus.config.js file at your site's root instead.
  */
 export default {
-  "title": "Brakeza3D Engine",
+  "title": "Brakeza3D Game Engine",
   "tagline": "Simple and powerful cross-platform 2D/3D game engine",
   "favicon": "img/favicon.ico",
   "url": "https://brakeza.com",

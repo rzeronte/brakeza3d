@@ -371,6 +371,7 @@ namespace GUIType
     X(FOLDER_CURRENT, 0, 0) \
     X(SEARCH, 0, 0) \
     X(FOLDER_BACK, 0, 0) \
+    X(BULLET, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

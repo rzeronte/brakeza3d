@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "SceneChecker.h"
+
 class Scene
 {
 public:
@@ -14,9 +16,11 @@ public:
         : filePath(file_path) {
     }
 
-    [[nodiscard]] std::string getFilePath() const {return filePath; }
+    [[nodiscard]] std::string getFilePath() const { return filePath; }
+    [[nodiscard]] SceneChecker getChecker() const { return checker; }
 
 private:
+    SceneChecker checker;
     std::string filePath;
 };
 

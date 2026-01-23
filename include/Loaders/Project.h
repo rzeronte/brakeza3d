@@ -7,17 +7,23 @@
 
 #include <string>
 
+#include "ProjectChecker.h"
+
 class Project {
 public:
-    explicit Project(const std::string &file_path)
-        : filePath(file_path) {
+    explicit Project(const std::string &filePath)
+    :
+        filePath(filePath)
+    {
+        checker.LoadProjectInfoFromDisk(filePath);
     }
 
-    [[nodiscard]] std::string getFilePath() const { return filePath; }
+    [[nodiscard]] std::string getFilePath() const           { return filePath; }
+    [[nodiscard]] ProjectChecker getChecker() const         { return checker; }
 
 private:
     std::string filePath;
-
+    ProjectChecker checker;
 };
 
 

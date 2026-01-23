@@ -327,7 +327,7 @@ void ProjectChecker::ResetStatus()
     loaded = false;
 }
 
-void ProjectChecker::LoadProjectInfoDialog(const std::string& pathFile)
+void ProjectChecker::LoadProjectInfoFromDisk(const std::string& pathFile)
 {
     path = pathFile;
     ResetStatus();
@@ -342,5 +342,10 @@ void ProjectChecker::LoadProjectInfoDialog(const std::string& pathFile)
     }
 
     cJSON_Delete(json);
+}
+
+void ProjectChecker::LoadProjectInfoDialog(const std::string& pathFile)
+{
+    LoadProjectInfoFromDisk(pathFile);;
     Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROJECT_INFO)->isOpen = true;
 }

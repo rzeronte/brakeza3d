@@ -13,11 +13,15 @@ public:
     static void TreeSceneScripts();
     static void TreeProjectScripts();
     static void TreeProjectScenes();
+
+    static void TreeProjectSettings();
+
     static void TreeSceneShaders();
     static void DrawWinProjectSettings();
     static void DrawProjectScripts();
     static void DrawSceneScripts();
     static void DrawProjectScenes();
+    static void DrawProjectSettings();
     static void DrawSceneCustomShaders();
 };
 
