@@ -7,7 +7,7 @@ body {
 }
 
 h1 {
-  color: var(--ifm-color-primary-lightest);
+  color: inherit;
 }
 
 .heroBanner {
@@ -31,4 +31,41 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.statsSection {
+  padding: 3rem 0;
+  background-color: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+}
+
+.statsValue {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  background: var(--theme-hero-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.statsLabel {
+  font-size: 1.1rem;
+  color: var(--ifm-font-color-secondary);
+}
+
+.featuresSection,
+.showcaseSection {
+  padding: 4rem 0;
+  background-color: var(--ifm-background-color);
+}
+
+.ctaSection {
+  padding: 4rem 0;
+  background: var(--theme-cta-gradient);
+  color: white;
+  text-align: center;
+}
+
+.ctaSection .button {
+  border-radius: 8px;
 }

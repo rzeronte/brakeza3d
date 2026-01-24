@@ -291,7 +291,14 @@ void GUIManager::DrawRegisteredWindows()
         if (!window.isOpen) continue;
 
         ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing;
-        if (!window.isDockable) flags |= ImGuiWindowFlags_NoDocking;
+        if (!window.isDockable) {
+            flags |= ImGuiWindowFlags_NoDocking;
+
+            // Centrar ventana en el viewport
+            ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImVec2 center = viewport->GetCenter();
+            ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        }
 
         if (ImGui::Begin(window.label.c_str(), &window.isOpen, flags)) {
             window.functionCallBack();

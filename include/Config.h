@@ -104,7 +104,7 @@ public:
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;
     bool ENABLE_IMGUI_STATUSBAR = true;
-    float STATUS_BAR_HEIGHT = 27.0f;
+    float STATUS_BAR_HEIGHT = 29.0f;
     float TOOL_BAR_HEIGHT = 50.0f;
     bool ENABLE_GRID_BACKGROUND = true;
 

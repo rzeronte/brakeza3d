@@ -11,28 +11,29 @@ function HomepageHeader() {
     return (
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
-                <h1 className="hero__title" style={{fontSize: '3.5rem'}}>
+                <h1 className="hero__title" style={{fontSize: '3.5rem', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.3)'}}>
                     Brakeza3D v0.26.1 <br/>Released!
                 </h1>
-                <p className="hero__subtitle" style={{fontSize: '1.5rem'}}>
+                <p className="hero__subtitle" style={{fontSize: '1.5rem', color: 'rgba(255, 255, 255, 0.95)', textShadow: '0 1px 5px rgba(0,0,0,0.2)'}}>
                     A powerful 2D/3D game engine for indie developers
                 </p>
                 <div className={styles.buttons} style={{marginTop: '2rem'}}>
                     <Link
                         className="button button--primary button--lg"
-                        to="docs/getting-started/intro">
+                        to="/docs/getting-started/intro"
+                        style={{color: 'white'}}>
                         📖 Get started
                     </Link>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--secondary button--lg"
                         to="/downloads"
-                        style={{marginLeft: '1rem'}}>
+                        style={{marginLeft: '1rem', color: 'white'}}>
                         ⬇️ Downloads
                     </Link>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--secondary button--lg"
                         to="/gallery"
-                        style={{marginLeft: '1rem'}}>
+                        style={{marginLeft: '1rem', color: 'white'}}>
                         🎨 Show me more
                     </Link>
                 </div>
@@ -43,24 +44,24 @@ function HomepageHeader() {
 
 function Stats() {
     return (
-        <section style={{padding: '3rem 0', backgroundColor: '#1c1e21', color: 'white'}}>
+        <section className={styles.statsSection}>
             <div className="container">
-                <div className="row" style={{textAlign: 'center'}}>
+                <div className="row" style={{textAlign: 'center', color: 'var(--ifm-font-color-base)'}}>
                     <div className="col col--3">
-                        <h2 style={{fontSize: '2.5rem', marginBottom: '0.5rem'}}>2D/3D</h2>
-                        <p style={{fontSize: '1.1rem', color: '#aaa'}}>Dual Workflow</p>
+                        <h2 className={styles.statsValue}>2D/3D</h2>
+                        <p className={styles.statsLabel}>Dual Workflow</p>
                     </div>
                     <div className="col col--3">
-                        <h2 style={{fontSize: '2.5rem', marginBottom: '0.5rem'}}>Extensible</h2>
-                        <p style={{fontSize: '1.1rem', color: '#aaa'}}>Reusable LUA files + Customizable shaders GLSL/Nodes based </p>
+                        <h2 className={styles.statsValue}>Extensible</h2>
+                        <p className={styles.statsLabel}>Reusable LUA files + Customizable shaders GLSL/Nodes based </p>
                     </div>
                     <div className="col col--3">
-                        <h2 style={{fontSize: '2.5rem', marginBottom: '0.5rem'}}>GUI</h2>
-                        <p style={{fontSize: '1.1rem', color: '#aaa'}}>Intuitive drag & drop, code editor with syntax highlighting</p>
+                        <h2 className={styles.statsValue}>GUI</h2>
+                        <p className={styles.statsLabel}>Intuitive drag & drop, code editor with syntax highlighting</p>
                     </div>
                     <div className="col col--3">
-                        <h2 style={{fontSize: '2.5rem', marginBottom: '0.5rem'}}>Opensource</h2>
-                        <p style={{fontSize: '1.1rem', color: '#aaa'}}>C++ / SDL / Bullet / OpenGL / GLM / Assimp / LUA</p>
+                        <h2 className={styles.statsValue}>Opensource</h2>
+                        <p className={styles.statsLabel}>C++ / SDL / Bullet / OpenGL / GLM / Assimp / LUA</p>
                     </div>
                 </div>
             </div>
@@ -110,7 +111,7 @@ function Feature({title, description}) {
 
 function HomepageFeatures() {
     return (
-        <section style={{padding: '4rem 0'}}>
+        <section className={styles.featuresSection}>
             <div className="container">
                 <div className="row">
                     {FeatureList.map((props, idx) => (
@@ -136,7 +137,7 @@ function ProjectShowcase() {
     ];
 
     return (
-        <section style={{padding: '4rem 0', backgroundColor: '#f5f5f5'}}>
+        <section className={styles.showcaseSection}>
             <div className="container">
                 <div className="row">
                     {projects.map((project, idx) => (
@@ -158,7 +159,7 @@ function ProjectShowcase() {
                 </div>
 
                 <div style={{textAlign: 'center', marginTop: '2rem'}}>
-                    <Link className="button button--primary button--lg" to="/gallery">
+                    <Link className="button button--secondary button--lg" to="/gallery">
                         View Full Gallery →
                     </Link>
                 </div>
@@ -169,38 +170,33 @@ function ProjectShowcase() {
 
 function FinalCTA() {
     return (
-        <section style={{
-            padding: '4rem 0',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
-            textAlign: 'center'
-        }}>
+        <section className={styles.ctaSection}>
             <div className="container">
-                <h2 style={{fontSize: '2.5rem', marginBottom: '1rem'}}>
+                <h2 style={{fontSize: '2.5rem', marginBottom: '1rem', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.3)'}}>
                     Ready to Start Creating?
                 </h2>
-                <p style={{fontSize: '1.3rem', marginBottom: '2rem', opacity: 0.9}}>
+                <p style={{fontSize: '1.3rem', marginBottom: '2rem', color: 'rgba(255, 255, 255, 0.95)', textShadow: '0 1px 5px rgba(0,0,0,0.2)'}}>
                     Join developers worldwide building amazing games with Brakeza3D
                 </p>
                 <div>
                     <Link
                         className="button button--primary button--lg"
-                        to="/docs/getting-started/intro">
+                        to="/docs/getting-started/intro"
+                        style={{color: 'white'}}>
                         📖 Get started
                     </Link>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--secondary button--lg"
                         to="/downloads"
-                        style={{marginLeft: '1rem'}}>
+                        style={{marginLeft: '1rem', color: 'white'}}>
                         ⬇️ Downloads
                     </Link>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--secondary button--lg"
                         to="/gallery"
-                        style={{marginLeft: '1rem'}}>
+                        style={{marginLeft: '1rem', color: 'white'}}>
                         🎨 Show me more
                     </Link>
-
                 </div>
             </div>
         </section>

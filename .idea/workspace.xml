@@ -51,23 +51,22 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(project): Improve project setup widget">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/MyProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/MyProject.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/SpaceArcadeDemoProject.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonProjectSetup.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/Project.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/Project.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/ProjectChecker.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/ProjectChecker.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/Scene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/Scene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectChecker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectChecker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/docusaurus.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/docusaurus.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/components/DownloadCards.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/components/DownloadCards.module.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/css/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/pages/index.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -185,11 +184,6 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release-MinGW" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -532,7 +526,8 @@
       <workItem from="1768861925954" duration="2970000" />
       <workItem from="1768937984347" duration="21023000" />
       <workItem from="1768961801993" duration="12000" />
-      <workItem from="1769005707324" duration="47154000" />
+      <workItem from="1769005707324" duration="55055000" />
+      <workItem from="1769265833458" duration="5000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -582,14 +577,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00136" summary="fix(demos): Fix demos / update doc">
-      <option name="closed" value="true" />
-      <created>1766792311737</created>
-      <option name="number" value="00136" />
-      <option name="presentableId" value="LOCAL-00136" />
-      <option name="project" value="LOCAL" />
-      <updated>1766792311737</updated>
     </task>
     <task id="LOCAL-00137" summary="fix(demos): Fix demos / update doc">
       <option name="closed" value="true" />
@@ -919,7 +906,15 @@
       <option name="project" value="LOCAL" />
       <updated>1769121993903</updated>
     </task>
-    <option name="localTasksCounter" value="178" />
+    <task id="LOCAL-00178" summary="feat(project): Improve project setup widget">
+      <option name="closed" value="true" />
+      <created>1769135750688</created>
+      <option name="number" value="00178" />
+      <option name="presentableId" value="LOCAL-00178" />
+      <option name="project" value="LOCAL" />
+      <updated>1769135750688</updated>
+    </task>
+    <option name="localTasksCounter" value="179" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -953,7 +948,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix(filesystem): fix creating and removing scripts/shaders" />
     <MESSAGE value="feat(checker): added scene info/checker" />
     <MESSAGE value="feat(doc): update doc and screenshots" />
     <MESSAGE value="fix(demos): Fix demos / update doc" />
@@ -978,7 +972,8 @@
     <MESSAGE value="feat(gui): native toolbar, colors, icons..." />
     <MESSAGE value="feat(gui): add  ImageButton / Current Project-scene manager" />
     <MESSAGE value="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(browser): scene/script/project unify his window into &quot;Browser files&quot;" />
+    <MESSAGE value="feat(project): Improve project setup widget" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(project): Improve project setup widget" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
