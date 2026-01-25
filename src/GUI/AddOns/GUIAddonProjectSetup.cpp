@@ -5,7 +5,6 @@
 #include "../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
-
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
@@ -18,22 +17,405 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::PROJECT_SETTINGS);
     if (!windowStatus->isOpen) return;
 
-    SaveCurrentProjectButton();
-    ImGui::Separator();
+    auto scripting = Components::get()->Scripting();
+    auto project = scripting->getCurrentProject();
+    auto scene = scripting->getCurrentScene();
 
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, 4.0f));
-    TreeProjectSettings();
-    TreeProjectScripts();
-    TreeProjectScenes();
-    ImGui::Separator();
-    SaveCurrentSceneButton();
-    TreeSceneScripts();
-    TreeSceneShaders();
-    ImGui::Separator();
-    ImGui::PopStyleVar();
 
-    ExampleCustomTreeNodeUsage();
+    // ============================================
+    // NODO 1: PROJECT
+    // ============================================
+    {
+        static bool projectSelected = false;
+
+        std::string projectLabel = project != nullptr
+            ? "Project: " + project->getChecker().getStatus().name
+            : "Project: (Unknowed)";
+
+        CustomImGui::CustomTreeNodeConfig projectConfig(projectLabel.c_str());
+
+        // Icono según estado
+        projectConfig.leftIcon = project != nullptr
+            ? FileSystemGUI::Icon(IconGUI::PROJECT_FILE)  // Proyecto cargado
+            : FileSystemGUI::Icon(IconGUI::PROJECT_FILE_UNNAMED);  // Sin proyecto (gris)
+
+        projectConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        projectConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        //projectConfig.iconSize = ImVec2(18, 18);
+        projectConfig.bulletSize = ImVec2(18, 18);
+        projectConfig.defaultOpen = true;
+
+        // Color según estado
+        if (project != nullptr) {
+            // Proyecto cargado: fondo blanco/normal
+            projectConfig.selectedColor = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
+            projectConfig.hoveredColor = ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
+        } else {
+            // Sin proyecto: fondo gris apagado
+            projectConfig.selectedColor = ImVec4(0.3f, 0.3f, 0.3f, 0.2f);
+            projectConfig.hoveredColor = ImVec4(0.3f, 0.3f, 0.3f, 0.1f);
+        }
+
+        // Botones de acción
+        if (project != nullptr) {
+            // Botón: Guardar proyecto
+            projectConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::PROJECT_SAVE),
+                "💾 Save project",
+                [&]() {
+                    ProjectLoader::SaveProject(project->getFilePath());
+                }
+            );
+        } else {
+            // Botones: Nuevo/Abrir proyecto
+            projectConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::NODE_TYPE_DEFAULT),
+                "➕ New project",
+                [&]() {
+                    printf("TODO: Nuevo proyecto\n");
+                }
+            );
+            projectConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES),
+                "📂 Open project",
+                [&]() {
+                    printf("TODO: Abrir proyecto\n");
+                }
+            );
+        }
+
+        bool isProjectOpen = CustomImGui::CustomTreeNode(projectConfig, nullptr);
+
+        if (isProjectOpen) {
+            ImGui::Spacing();
+            if (project != nullptr) {
+                // Sub-nodo: Properties
+                DrawProjectSettingsNode();
+                ImGui::Spacing();
+
+                // Sub-nodo: Scripts
+                DrawProjectScriptsNode();
+                ImGui::Spacing();
+
+                // Sub-nodo: Scenes
+                DrawProjectScenesNode();
+
+            } else {
+                ImGui::Indent();
+                ImGui::Spacing();
+                Drawable::WarningMessage("No project loaded");
+                ImGui::Unindent();
+            }
+
+            CustomImGui::CustomTreePop();
+        }
+        ImGui::Spacing();
+    }
+
+    ImGui:: Separator();
+    ImGui::Spacing(); // <-- Espacio después de Settings
+
+    // ============================================
+    // NODO 2: SCENE ACTUAL
+    // ============================================
+    {
+        static bool sceneSelected = false;
+
+        std::string sceneLabel = scene != nullptr
+            ? "Current scene: " + scene->getFilePath()
+            : "Current Scene: Unknowed";
+
+        CustomImGui::CustomTreeNodeConfig sceneConfig(sceneLabel.c_str());
+
+        // Icono
+        sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
+        sceneConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        sceneConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        //sceneConfig.iconSize = ImVec2(18, 18);
+        //sceneConfig.bulletSize = ImVec2(12, 12);
+        sceneConfig.defaultOpen = true;
+
+        // Color según estado (temporal o del proyecto)
+        bool isTemporary = (project == nullptr);
+
+        // Botones de acción
+        if (scene != nullptr) {
+            // Botón: Guardar escena
+            sceneConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCENE_SAVE),
+                "💾 Save scene",
+                [&]() {
+                    SceneLoader::SaveScene(scene->getFilePath());
+                }
+            );
+        }
+
+        if (isTemporary) {
+            // Botón: Guardar como proyecto
+            sceneConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::PROJECT_SAVE),
+                "💾 Save as project...",
+                [&]() {
+                    printf("TODO: Guardar como proyecto\n");
+                }
+            );
+        }
+
+        bool isSceneOpen = CustomImGui::CustomTreeNode(sceneConfig, nullptr);
+
+        if (isSceneOpen) {
+            ImGui::Spacing();
+            if (isTemporary) {
+                ImGui::Indent();
+                ImGui::Spacing();
+                Drawable::WarningMessage("Scene not belonging to the project");
+                ImGui::Unindent();
+            }
+
+            // Sub-nodo: Scene Scripts
+            DrawSceneScriptsNode();
+            ImGui::Spacing();
+
+            // Sub-nodo: Scene Shaders
+            DrawSceneShadersNode();
+            ImGui::Spacing();
+
+            CustomImGui::CustomTreePop();
+        }
+    }
+
+    ImGui::PopStyleVar();
 }
+
+// ============================================
+// SUB-NODOS DE PROJECT
+// ============================================
+
+void GUIAddonProjectSetup::DrawProjectSettingsNode()
+{
+    static bool selected = false;
+    auto scripting = Components::get()->Scripting();
+    auto project = scripting->getCurrentProject();
+
+    if (project == nullptr) return;
+
+    CustomImGui::CustomTreeNodeConfig config("Project settings");
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.iconSize = ImVec2(18, 18);
+    //config.bulletSize = ImVec2(12, 12);
+    config.defaultOpen = false;
+
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+
+    if (isOpen) {
+        ImGui::Indent();
+        DrawProjectSettings();
+        ImGui::Unindent();
+        CustomImGui::CustomTreePop();
+    }
+}
+
+void GUIAddonProjectSetup::DrawProjectScriptsNode()
+{
+    static bool selected = false;
+    static bool shouldOpen = false;
+
+    auto scripting = Components::get()->Scripting();
+    auto scripts = scripting->getProjectScripts();
+
+    std::string label = "Project scripts (" + std::to_string(scripts.size()) + ")";
+
+    CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.iconSize = ImVec2(18, 18);
+    //config.bulletSize = ImVec2(12, 12);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)scripts.size();
+
+    // Drag & drop
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SCRIPT_ITEM,
+        [&](void* data) {
+            LOG_MESSAGE("Dropping script (%s) in project space", (char*)data);
+            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
+            scripting->AddProjectLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+            shouldOpen = true;
+        }
+    );
+
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+
+    if (isOpen) {
+        if (shouldOpen) shouldOpen = false;
+
+        ImGui::Indent();
+        if (scripts.empty()) {
+            ImGui::Spacing();
+            Drawable::WarningMessage("There are not scripts attached");
+        } else {
+            DrawProjectScripts();
+        }
+        ImGui::Unindent();
+        CustomImGui::CustomTreePop();
+    }
+}
+
+void GUIAddonProjectSetup::DrawProjectScenesNode()
+{
+    static bool selected = false;
+    static bool shouldOpen = false;
+
+    auto scripting = Components::get()->Scripting();
+    auto scenes = scripting->getProjectScenes();
+
+    std::string label = "Project scenes";
+
+    CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.iconSize = ImVec2(18, 18);
+    //config.bulletSize = ImVec2(12, 12);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)scenes.size();
+
+    // Drag & drop
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SCENE_ITEM,
+        [&](void* data) {
+            const char* scenePath = (const char*)data;
+            LOG_MESSAGE("Dropping scene '%s' in project space", scenePath);
+            scripting->AddProjectScene(scenePath);
+            shouldOpen = true;
+        }
+    );
+
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+
+    if (isOpen) {
+        if (shouldOpen) shouldOpen = false;
+
+        ImGui::Indent();
+        if (scenes.empty()) {
+            ImGui::Spacing();
+            Drawable::WarningMessage("There are not scenes attached");
+        } else {
+            DrawProjectScenes();
+        }
+        ImGui::Unindent();
+        CustomImGui::CustomTreePop();
+    }
+}
+
+// ============================================
+// SUB-NODOS DE SCENE ACTUAL
+// ============================================
+
+void GUIAddonProjectSetup::DrawSceneScriptsNode()
+{
+    static bool selected = false;
+    static bool shouldOpen = false;
+
+    auto scripting = Components::get()->Scripting();
+    auto scripts = scripting->getSceneScripts();
+
+    std::string label = "Scene scripts";
+
+    CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)scripts.size();
+
+    // Drag & drop
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SCRIPT_ITEM,
+        [&](void* data) {
+            LOG_MESSAGE("Dropping script (%s) in scene space", (char*)data);
+            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
+            scripting->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+            shouldOpen = true;
+        }
+    );
+
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+
+    if (isOpen) {
+        if (shouldOpen) shouldOpen = false;
+
+        ImGui::Indent();
+        if (scripts.empty()) {
+            ImGui::Spacing();
+            Drawable::WarningMessage("There are not scenes attached");
+        } else {
+            DrawSceneScripts();
+        }
+        ImGui::Unindent();
+        CustomImGui::CustomTreePop();
+    }
+}
+
+void GUIAddonProjectSetup::DrawSceneShadersNode()
+{
+    static bool selected = false;
+    static bool shouldOpen = false;
+
+    auto render = Components::get()->Render();
+    auto shaders = render->getSceneShaders();
+
+    std::string label = "Scene shaders";
+
+    CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.iconSize = ImVec2(18, 18);
+    //config.bulletSize = ImVec2(12, 12);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)shaders.size();
+
+    // Drag & drop
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SHADER_ITEM,
+        [&](void* data) {
+            auto receivedData = (Config::DragDropCustomShaderData*)data;
+            auto fullPath = std::string(receivedData->folder) + receivedData->file;
+            LOG_MESSAGE("Dropping shader file '%s' in scene space...", fullPath.c_str());
+            render->LoadShaderIntoScene(fullPath);
+            shouldOpen = true;
+        }
+    );
+
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+
+    if (isOpen) {
+        if (shouldOpen) shouldOpen = false;
+
+        ImGui::Indent();
+        if (shaders.empty()) {
+            ImGui::Spacing();
+            Drawable::WarningMessage("There are not shaders attached");
+        } else {
+            DrawSceneCustomShaders();
+        }
+        ImGui::Unindent();
+        CustomImGui::CustomTreePop();
+    }
+}
+
+// ============================================
+// FUNCIONES AUXILIARES (sin cambios)
+// ============================================
 
 void GUIAddonProjectSetup::TreeSceneScripts()
 {
@@ -64,6 +446,7 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     if (isOpenSceneScripts) {
         DrawSceneScripts();
         if (scripting->getSceneScripts().empty()) {
+            ImGui::Spacing();
             Drawable::WarningMessage("There are not scenes attached");
         }
         ImGui::TreePop();
@@ -97,6 +480,7 @@ void GUIAddonProjectSetup::TreeProjectScenes()
     if (isOpenGlobalScripts) {
         DrawProjectScenes();
         if (projectScenes.empty()) {
+            ImGui::Spacing();
             Drawable::WarningMessage("There are not scenes attached");
         }
         ImGui::TreePop();
@@ -155,6 +539,7 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     if (isOpenGlobalScripts) {
         DrawProjectScripts();
         if (scripting->getProjectScripts().empty()) {
+            ImGui::Spacing();
             Drawable::WarningMessage("There are not scripts attached");
         }
         ImGui::TreePop();
@@ -192,6 +577,7 @@ void GUIAddonProjectSetup::TreeSceneShaders()
     if (isOpenSceneShaders) {
         DrawSceneCustomShaders();
         if (render->getSceneShaders().empty()) {
+            ImGui::Spacing();
             Drawable::WarningMessage("There are not shaders attached");
         }
         ImGui::TreePop();
@@ -498,309 +884,3 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         ImGui::EndTable();
     }
 }
-
-void GUIAddonProjectSetup::ExampleCustomTreeNodeUsage()
-{
-    ImGui::Begin("CustomTreeNode - BOTONES FUNCIONAN");
-
-    // Estructura de datos
-    struct TreeItem {
-        std::string name;
-        bool isFolder;
-        int id;
-        std::vector<TreeItem> children;
-        bool selected = false;
-
-        TreeItem(const std::string& n, bool folder, int i)
-            : name(n), isFolder(folder), id(i) {}
-    };
-
-    // Estado estático
-    static bool initialized = false;
-    static TreeItem root("Proyecto Raíz", true, 0);
-    static TreeItem* selectedItem = nullptr;
-    static int totalClicks = 0;  // 🔢 CONTADOR DE CLICKS
-
-    // Inicializar datos de ejemplo
-    if (!initialized) {
-        auto& scripts = root.children.emplace_back("Scripts", true, 1);
-        scripts.children.emplace_back("PlayerController.cs", false, 2);
-        scripts.children.emplace_back("EnemyAI.cs", false, 3);
-        scripts.children.emplace_back("GameManager.cs", false, 4);
-
-        auto& scenes = root.children.emplace_back("Scenes", true, 5);
-        scenes.children.emplace_back("MainMenu.scene", false, 6);
-        scenes.children.emplace_back("Level01.scene", false, 7);
-
-        auto& levels = scenes.children.emplace_back("Levels", true, 8);
-        levels.children.emplace_back("Level02.scene", false, 9);
-        levels.children.emplace_back("Level03.scene", false, 10);
-
-        auto& assets = root.children.emplace_back("Assets", true, 11);
-        auto& textures = assets.children.emplace_back("Textures", true, 12);
-        textures.children.emplace_back("player_sprite.png", false, 13);
-        textures.children.emplace_back("enemy_sprite.png", false, 14);
-
-        auto& sounds = assets.children.emplace_back("Sounds", true, 15);
-        sounds.children.emplace_back("jump.wav", false, 16);
-        sounds.children.emplace_back("shoot.wav", false, 17);
-
-        root.children.emplace_back("README.md", false, 18);
-        root.children.emplace_back("config.json", false, 19);
-
-        initialized = true;
-    }
-
-    // ===== FUNCIÓN RECURSIVA =====
-    std::function<void(TreeItem&)> DrawTreeNode = [&](TreeItem& item) {  // [&] captura TODO por referencia
-        CustomImGui::CustomTreeNodeConfig config(item.name.c_str());
-
-        // Iconos según tipo
-        if (item.isFolder) {
-            config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
-        } else {
-            if (item.name.find(".cs") != std::string::npos) {
-                config.leftIcon = FileSystemGUI::Icon(IconGUI::NODE_TYPE_DEFAULT);
-            } else if (item.name.find(".scene") != std::string::npos) {
-                config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
-            } else if (item.name.find(".png") != std::string::npos) {
-                config.leftIcon = FileSystemGUI::Icon(IconGUI::IMAGE_FILE);
-            } else if (item.name.find(".wav") != std::string::npos) {
-                config.leftIcon = FileSystemGUI::Icon(IconGUI::NODE_EDITOR_TAB);
-            } else {
-                config.leftIcon = FileSystemGUI::Icon(IconGUI::NODE_TYPE_DEFAULT);
-            }
-        }
-
-        config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-        config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-        config.bulletSize = ImVec2(12, 12);
-        config.iconSize = ImVec2(16, 16);
-        config.isLeaf = !item.isFolder;
-
-        // ===== BOTONES CLICKABLES =====
-
-        if (item.isFolder) {
-            // CARPETAS
-
-            // Botón: Añadir Archivo
-            config.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::NODE_TYPE_DEFAULT),
-                "➕ Añadir archivo",
-                [&]() {  // Captura TODO por referencia
-                    totalClicks++;  // Incrementar contador
-                    static int counter = 100;
-                    std::string newName = "nuevo_archivo_" + std::to_string(counter++) + ".txt";
-                    item.children.emplace_back(newName, false, counter);
-
-                    printf("\n╔════════════════════════════════════════╗\n");
-                    printf("║  ✅ BOTÓN CLICKEADO: Añadir Archivo  ║\n");
-                    printf("╚════════════════════════════════════════╝\n");
-                    printf("📁 Carpeta: %s\n", item.name.c_str());
-                    printf("📄 Creado: %s\n", newName.c_str());
-                    printf("🔢 Clicks totales: %d\n\n", totalClicks);
-                }
-            );
-
-            // Botón: Añadir Carpeta
-            config.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES),
-                "➕ Añadir carpeta",
-                [&]() {  // Captura TODO por referencia
-                    totalClicks++;
-                    static int counter = 200;
-                    std::string newName = "nueva_carpeta_" + std::to_string(counter++);
-                    item.children.emplace_back(newName, true, counter);
-
-                    printf("\n╔════════════════════════════════════════╗\n");
-                    printf("║  ✅ BOTÓN CLICKEADO: Añadir Carpeta  ║\n");
-                    printf("╚════════════════════════════════════════╝\n");
-                    printf("📁 Carpeta padre: %s\n", item.name.c_str());
-                    printf("📁 Nueva: %s\n", newName.c_str());
-                    printf("🔢 Clicks totales: %d\n\n", totalClicks);
-                }
-            );
-
-            // Botón: Info
-            config.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::PROJECT_INFO),
-                "ℹ️ Información",
-                [&]() {  // Captura TODO por referencia
-                    totalClicks++;
-
-                    printf("\n╔════════════════════════════════════════╗\n");
-                    printf("║  ℹ️  BOTÓN CLICKEADO: Información    ║\n");
-                    printf("╚════════════════════════════════════════╝\n");
-                    printf("📁 Carpeta: %s\n", item.name.c_str());
-                    printf("🆔 ID: %d\n", item.id);
-                    printf("📦 Elementos: %zu\n", item.children.size());
-                    printf("🔢 Clicks totales: %d\n\n", totalClicks);
-                }
-            );
-
-            config.showChildCount = true;
-            config.childCount = (int)item.children.size();
-
-        } else {
-            // ARCHIVOS
-
-            // Botón: Abrir
-            config.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::NODE_EDITOR_POPUP),
-                "📂 Abrir",
-                [&]() {  // Captura TODO por referencia
-                    totalClicks++;
-
-                    printf("\n╔════════════════════════════════════════╗\n");
-                    printf("║  ✅ BOTÓN CLICKEADO: Abrir Archivo   ║\n");
-                    printf("╚════════════════════════════════════════╝\n");
-                    printf("📄 Archivo: %s\n", item.name.c_str());
-                    printf("🆔 ID: %d\n", item.id);
-                    printf("🔢 Clicks totales: %d\n\n", totalClicks);
-                }
-            );
-
-            // Botón: Renombrar
-            config.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::NODE_EDITOR_TAB),
-                "✏️ Renombrar",
-                [&]() {  // Captura TODO por referencia
-                    totalClicks++;
-
-                    printf("\n╔════════════════════════════════════════╗\n");
-                    printf("║  ✅ BOTÓN CLICKEADO: Renombrar       ║\n");
-                    printf("╚════════════════════════════════════════╝\n");
-                    printf("📄 Archivo: %s\n", item.name.c_str());
-                    printf("🔢 Clicks totales: %d\n\n", totalClicks);
-                }
-            );
-
-            // Botón: Info
-            config.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::PROJECT_INFO),
-                "ℹ️ Info",
-                [&]() {  // Captura TODO por referencia
-                    totalClicks++;
-
-                    printf("\n╔════════════════════════════════════════╗\n");
-                    printf("║  ℹ️  BOTÓN CLICKEADO: Info Archivo   ║\n");
-                    printf("╚════════════════════════════════════════╝\n");
-                    printf("📄 Archivo: %s\n", item.name.c_str());
-                    printf("🆔 ID: %d\n", item.id);
-                    printf("🔢 Clicks totales: %d\n\n", totalClicks);
-                }
-            );
-        }
-
-        // Botón ELIMINAR (común para todos)
-        config.actionItems.emplace_back(
-            FileSystemGUI::Icon(IconGUI::NODE_TYPE_DEFAULT),
-            "🗑️ Eliminar",
-            [&]() {  // Captura TODO por referencia
-                totalClicks++;
-
-                printf("\n╔════════════════════════════════════════╗\n");
-                printf("║  🗑️  BOTÓN CLICKEADO: ELIMINAR       ║\n");
-                printf("╚════════════════════════════════════════╝\n");
-                printf("⚠️ ADVERTENCIA!\n");
-                printf("📋 Nombre: %s\n", item.name.c_str());
-                printf("🆔 ID: %d\n", item.id);
-                printf("📂 Tipo: %s\n", item.isFolder ? "Carpeta" : "Archivo");
-                printf("🔢 Clicks totales: %d\n\n", totalClicks);
-            }
-        );
-
-        // Drag & drop
-        if (item.isFolder) {
-            config.dragDrop = CustomImGui::TreeDragDropConfig(
-                "TREE_ITEM",
-                [&](void* data) {  // Captura TODO por referencia
-                    TreeItem* dropped = *(TreeItem**)data;
-                    printf("\n📦 DROP: '%s' → '%s'\n\n", dropped->name.c_str(), item.name.c_str());
-                }
-            );
-        }
-
-        config.selectedColor = ImVec4(0.26f, 0.59f, 0.98f, 0.40f);
-        config.hoveredColor = ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
-
-        bool is_selected = (selectedItem == &item);
-        bool isOpen = CustomImGui::CustomTreeNode(config, &is_selected);
-
-        if (is_selected && selectedItem != &item) {
-            selectedItem = &item;
-            printf("🔷 SELECCIONADO: %s\n", item.name.c_str());
-        }
-
-        // Drag source
-        if (ImGui::BeginDragDropSource()) {
-            TreeItem* ptr = &item;
-            ImGui::SetDragDropPayload("TREE_ITEM", &ptr, sizeof(TreeItem*));
-            ImGui::Text("%s", item.name.c_str());
-            ImGui::EndDragDropSource();
-        }
-
-        if (isOpen) {
-            for (auto& child : item.children) {
-                DrawTreeNode(child);
-            }
-            CustomImGui::CustomTreePop();
-        }
-    };
-
-    // ===== UI HEADER =====
-    ImGui::TextColored(ImVec4(1, 1, 0, 1), "🎯 CONTADOR DE CLICKS: %d", totalClicks);
-    ImGui::SameLine();
-    if (ImGui::Button("🔄 Reset")) {
-        totalClicks = 0;
-        printf("\n🔄 Contador reseteado\n\n");
-    }
-
-    ImGui::Separator();
-
-    ImGui::TextColored(ImVec4(0, 1, 0, 1), "💡 HAZ CLICK EN LOS BOTONES →");
-    ImGui::BulletText("Cada click aumenta el contador");
-    ImGui::BulletText("Cada click muestra un log en consola");
-    ImGui::BulletText("Los botones cambian de color al hacer hover");
-
-    ImGui::Separator();
-
-    // Toolbar
-    if (ImGui::Button("➕ Añadir a Raíz")) {
-        static int counter = 300;
-        root.children.emplace_back("archivo_raiz_" + std::to_string(counter), false, counter++);
-        printf("➕ Añadido a raíz\n");
-    }
-    ImGui::SameLine();
-
-    if (ImGui::Button("🗑️ Limpiar Todo")) {
-        root.children.clear();
-        selectedItem = nullptr;
-        printf("🧹 Todo limpiado\n");
-    }
-    ImGui::SameLine();
-
-    if (ImGui::Button("🔄 Reset Estados")) {
-        CustomImGui::ResetTreeStates();
-        printf("🔄 Estados reseteados\n");
-    }
-
-    ImGui::Separator();
-
-    // ===== ÁRBOL =====
-    ImGui::BeginChild("TreeView", ImVec2(0, -40), true);
-    DrawTreeNode(root);
-    ImGui::EndChild();
-
-    // ===== INFO =====
-    ImGui::Separator();
-    if (selectedItem) {
-        ImGui::Text("Seleccionado: %s (ID: %d)", selectedItem->name.c_str(), selectedItem->id);
-    } else {
-        ImGui::TextDisabled("Nada seleccionado");
-    }
-
-    ImGui::End();
-}
-
-

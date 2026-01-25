@@ -791,6 +791,18 @@
 			"name":	"BULLET",
 			"x":	5,
 			"y":	25
+		}, {
+			"name":	"TREE_BULLET_ON",
+			"x":	2,
+			"y":	33
+		}, {
+			"name":	"TREE_BULLET_OFF",
+			"x":	3,
+			"y":	33
+		}, {
+			"name":	"PROJECT_FILE_UNNAMED",
+			"x":	7,
+			"y":	15
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
