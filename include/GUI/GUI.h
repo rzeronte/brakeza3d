@@ -372,6 +372,8 @@ namespace GUIType
     X(SEARCH, 0, 0) \
     X(FOLDER_BACK, 0, 0) \
     X(BULLET, 0, 0) \
+    X(TREE_BULLET_ON, 0, 0) \
+    X(TREE_BULLET_OFF, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

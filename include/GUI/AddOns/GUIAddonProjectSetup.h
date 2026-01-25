@@ -13,16 +13,20 @@ public:
     static void TreeSceneScripts();
     static void TreeProjectScripts();
     static void TreeProjectScenes();
-
     static void TreeProjectSettings();
-
     static void TreeSceneShaders();
+
+    static void SaveCurrentSceneButton();
+    static void SaveCurrentProjectButton();
+
     static void DrawWinProjectSettings();
     static void DrawProjectScripts();
     static void DrawSceneScripts();
     static void DrawProjectScenes();
     static void DrawProjectSettings();
     static void DrawSceneCustomShaders();
+
+    static void ExampleCustomTreeNodeUsage();
 };
 
 #endif //BRAKEZA3D_GUIWIDGETPROJECTSETTINGS_H
