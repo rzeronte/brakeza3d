@@ -114,7 +114,7 @@ const config = {
                 to: '/docs/editor/overview',
               },
               {
-                label: 'Engine Concepts',
+                label: 'Engine concepts',
                 to: '/docs/engine-concepts/script-controls',
               },
               {

@@ -53,20 +53,12 @@
   <component name="ChangeListManager">
     <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(project): Improve project setup widget">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/src/components/DownloadCards.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/components/DownloadCards.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/src/css/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/css/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/documentation.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/documentation.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docusaurus.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/docusaurus.config.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/src/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/src/pages/index.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.module.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -190,6 +182,11 @@
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -528,6 +525,7 @@
       <workItem from="1768961801993" duration="12000" />
       <workItem from="1769005707324" duration="55055000" />
       <workItem from="1769265833458" duration="5000" />
+      <workItem from="1769298354692" duration="812000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>

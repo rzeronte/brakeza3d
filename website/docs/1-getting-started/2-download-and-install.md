@@ -18,7 +18,7 @@ Go to the [downloads](../../downloads) section to get a ready-to-use installer f
 The project has been successfully built using the [CLion IDE](https://www.jetbrains.com/clion/download/download-thanks.html) on both Linux and Windows. As a CMake-based project, it can be built from the command line or with any CMake-compatible IDE.
 
 
-### Linux Compilation
+### Linux compilation
 
 On Unix-based systems, you only need to ensure that the required development packages are installed.
 

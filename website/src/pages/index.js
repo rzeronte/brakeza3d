@@ -19,7 +19,7 @@ function HomepageHeader() {
                 </p>
                 <div className={styles.buttons} style={{marginTop: '2rem'}}>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--secondary button--lg"
                         to="/docs/getting-started/intro"
                         style={{color: 'white'}}>
                         📖 Get started
@@ -180,7 +180,7 @@ function FinalCTA() {
                 </p>
                 <div>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--secondary button--lg"
                         to="/docs/getting-started/intro"
                         style={{color: 'white'}}>
                         📖 Get started
