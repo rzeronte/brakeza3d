@@ -39,12 +39,14 @@ struct CustomTreeNodeConfig {
     int childCount = 0;
     bool isLeaf = false;
     bool defaultOpen = false;
-    ImVec2 iconSize = ImVec2(16, 16);
-    ImVec2 bulletSize = ImVec2(12, 12);
+    ImVec2 iconSize = ImVec2(18, 18);
+    ImVec2 bulletSize = ImVec2(18, 18);
     ImVec4 iconTint = ImVec4(1, 1, 1, 1);
     ImVec4 selectedColor = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
     ImVec4 hoveredColor = ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
-    float itemPadding = 0.7f;  // Padding vertical de cada item (multiplicador de FramePadding.y)
+    float itemPadding = 1.2f;  // Padding vertical de cada item (aumentado para items más altos)
+    bool showCheckbox = false;  // Mostrar checkbox opcional
+    bool* p_checked = nullptr;  // Puntero al estado del checkbox (true/false)
 
     CustomTreeNodeConfig(const char* label) : label(label) {}
 };
@@ -65,175 +67,242 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     }
     bool& is_open = g_TreeNodeStates[id];
 
-    const float line_height = ImMax(config.iconSize.y, ImGui::GetTextLineHeight()) + style.FramePadding.y * config.itemPadding;  // Usa config.itemPadding
-    const float text_base_offset_y = ImMax(0.0f, (line_height - ImGui::GetTextLineHeight()) * 0.5f);
+    // Reducir espacio entre items para que estén más pegados
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, 2.0f));  // Reducido de ~4-8 a 2
 
-    // Calcular offset para action items - ALTURA REAL del ImageButton
-    float action_items_offset_y = 0.0f;
-    if (!config.actionItems.empty()) {
-        // ImageButton añade FramePadding, así que la altura REAL es:
-        float button_full_height = config.actionItems[0].size.y + style.FramePadding.y * 2.0f;
-        action_items_offset_y = (line_height - button_full_height) * 0.5f;
+    // --------------------------------------------------
+    // Altura de línea
+    // --------------------------------------------------
+    const float line_height =
+        ImMax(config.iconSize.y, ImGui::GetTextLineHeight()) +
+        style.FramePadding.y * config.itemPadding;
+
+    const float text_base_offset_y =
+        (line_height - ImGui::GetTextLineHeight()) * 0.5f;
+
+    // --------------------------------------------------
+    // Checkbox (fuera)
+    // --------------------------------------------------
+    float checkbox_width = 0.0f;
+    float checkbox_size = 0.0f;
+
+    if (config.showCheckbox && config.p_checked) {
+        checkbox_size = ImGui::GetFrameHeight();
+        checkbox_width = checkbox_size + style.ItemSpacing.x;
     }
 
+    // --------------------------------------------------
+    // Action items (solo para posicionar)
+    // --------------------------------------------------
     float action_items_width = 0.0f;
+    float action_items_offset_y = 0.0f;
+
     if (!config.actionItems.empty()) {
-        for (const auto& action_item : config.actionItems) {
-            action_items_width += action_item.size.x + style.ItemSpacing.x;
-        }
-        // Añadir margen extra a la derecha del último botón
-        action_items_width += style.FramePadding.x * 3.0f;  // Aumentado para más margen derecho
+        for (const auto& item : config.actionItems)
+            action_items_width += item.size.x + style.ItemSpacing.x;
+
+        action_items_width += style.FramePadding.x;
+
+        float button_full_height =
+            config.actionItems[0].size.y + style.FramePadding.y * 2.0f;
+
+        action_items_offset_y =
+            (line_height - button_full_height) * 0.5f;
     }
 
-    ImVec2 pos_start = ImGui::GetCursorScreenPos();
+    // --------------------------------------------------
+    // Posiciones base
+    // --------------------------------------------------
+    ImVec2 full_start = ImGui::GetCursorScreenPos();
+    ImVec2 pos_start = full_start;
+    pos_start.x += checkbox_width;
+
     const float full_width = ImGui::GetContentRegionAvail().x;
 
-    std::string display_label = config.label;
-    if (config.showChildCount && config.childCount > 0) {
-        display_label += " (" + std::to_string(config.childCount) + ")";
+    // --------------------------------------------------
+    // Dibujar CHECKBOX (fuera del invisible)
+    // --------------------------------------------------
+    if (config.showCheckbox && config.p_checked) {
+        ImVec2 cursor_backup = ImGui::GetCursorPos();
+
+        ImVec2 checkbox_pos(
+            full_start.x,
+            full_start.y + (line_height - checkbox_size) * 0.5f
+        );
+
+        ImGui::SetCursorScreenPos(checkbox_pos);
+        ImGui::PushID(id + 9999);
+        ImGui::Checkbox("##checkbox", config.p_checked);
+        ImGui::PopID();
+        ImGui::SetCursorPos(cursor_backup);
     }
 
-    // ====================
-    // ÁREA CLICKABLE DEL TREENODE (sin incluir botones)
-    // ====================
-    float tree_clickable_width = full_width - action_items_width - style.ItemSpacing.x;
+    // --------------------------------------------------
+    // INVISIBLE BUTTON (incluye iconos derechos)
+    // --------------------------------------------------
+    float tree_clickable_width = full_width - checkbox_width;
 
+    ImGui::SetCursorScreenPos(pos_start);
     ImGui::PushID(id);
-    bool node_clicked = ImGui::InvisibleButton("##treenode", ImVec2(tree_clickable_width, line_height));
+    bool node_clicked =
+        ImGui::InvisibleButton("##treenode", ImVec2(tree_clickable_width, line_height));
     ImGui::PopID();
+
+    // ✅ CRÍTICO: Permitir que los botones reciban eventos aunque estén "dentro" del InvisibleButton
+    ImGui::SetItemAllowOverlap();
 
     bool hovered = ImGui::IsItemHovered();
 
-    // Click para toggle/selección
-    if (node_clicked && !config.isLeaf) {
+    if (node_clicked && !config.isLeaf)
         is_open = !is_open;
-    }
 
-    if (node_clicked && p_selected) {
+    if (node_clicked && p_selected)
         *p_selected = true;
-    }
 
-    // Fondo
-    ImVec2 pos_end = ImVec2(pos_start.x + full_width, pos_start.y + line_height);
-    ImRect full_rect(pos_start, pos_end);
-
+    // --------------------------------------------------
+    // Fondo (cubre TODO salvo checkbox)
+    // --------------------------------------------------
     ImU32 bg_col = 0;
-    if (p_selected && *p_selected) {
+    if (p_selected && *p_selected)
         bg_col = ImGui::GetColorU32(config.selectedColor);
-    } else if (hovered) {
+    else if (hovered)
         bg_col = ImGui::GetColorU32(config.hoveredColor);
-    }
 
     if (bg_col != 0) {
-        window->DrawList->AddRectFilled(full_rect.Min, full_rect.Max, bg_col);
+        window->DrawList->AddRectFilled(
+            pos_start,
+            ImVec2(pos_start.x + tree_clickable_width, pos_start.y + line_height),
+            bg_col
+        );
     }
 
-    // ====================
-    // DIBUJAR ELEMENTOS
-    // ====================
+    // --------------------------------------------------
+    // Contenido izquierdo
+    // --------------------------------------------------
     float x_offset = pos_start.x + style.FramePadding.x;
 
-    // 1. BULLET
+    // Bullet
     if (!config.isLeaf && (config.bulletOpen || config.bulletClosed)) {
-        ImVec2 bullet_pos(x_offset, pos_start.y + (line_height - config.bulletSize.y) * 0.5f);
-        ImTextureID bullet_tex = is_open ? config.bulletOpen : config.bulletClosed;
-        if (bullet_tex) {
-            window->DrawList->AddImage(bullet_tex, bullet_pos,
-                ImVec2(bullet_pos.x + config.bulletSize.x, bullet_pos.y + config.bulletSize.y),
-                ImVec2(0, 0), ImVec2(1, 1), ImGui::GetColorU32(config.iconTint));
+        ImVec2 bullet_pos(
+            x_offset,
+            pos_start.y + (line_height - config.bulletSize.y) * 0.5f
+        );
+
+        ImTextureID tex = is_open ? config.bulletOpen : config.bulletClosed;
+        if (tex) {
+            ImVec2 bullet_max(
+                bullet_pos.x + config.bulletSize.x,
+                bullet_pos.y + config.bulletSize.y
+            );
+
+            window->DrawList->AddImage(
+                tex, bullet_pos, bullet_max,
+                ImVec2(0, 0), ImVec2(1, 1),
+                ImGui::GetColorU32(config.iconTint)
+            );
         }
-        x_offset += config.bulletSize.x + 4.0f;
-    } else if (!config.isLeaf) {
         x_offset += config.bulletSize.x + 4.0f;
     }
 
-    // 2. ICONO IZQUIERDO
+    // Icono izquierdo
     if (config.leftIcon) {
-        ImVec2 icon_pos(x_offset, pos_start.y + (line_height - config.iconSize.y) * 0.5f);
-        window->DrawList->AddImage(config.leftIcon, icon_pos,
-            ImVec2(icon_pos.x + config.iconSize.x, icon_pos.y + config.iconSize.y),
-            ImVec2(0, 0), ImVec2(1, 1), ImGui::GetColorU32(config.iconTint));
+        ImVec2 icon_pos(
+            x_offset,
+            pos_start.y + (line_height - config.iconSize.y) * 0.5f
+        );
+
+        ImVec2 icon_max(
+            icon_pos.x + config.iconSize.x,
+            icon_pos.y + config.iconSize.y
+        );
+
+        window->DrawList->AddImage(
+            config.leftIcon,
+            icon_pos,
+            icon_max,
+            ImVec2(0, 0),
+            ImVec2(1, 1),
+            ImGui::GetColorU32(config.iconTint)
+        );
+
         x_offset += config.iconSize.x + 4.0f;
     }
 
-    // 3. TEXTO
-    window->DrawList->AddText(ImVec2(x_offset, pos_start.y + text_base_offset_y),
-                              ImGui::GetColorU32(ImGuiCol_Text), display_label.c_str());
+    // Texto
+    std::string display_label = config.label;
+    if (config.showChildCount && config.childCount > 0)
+        display_label += " (" + std::to_string(config.childCount) + ")";
 
-    // ====================
-    // 4. ACTION ITEMS - CLICKABLES
-    // ====================
+    window->DrawList->AddText(
+        ImVec2(x_offset, pos_start.y + text_base_offset_y),
+        ImGui::GetColorU32(ImGuiCol_Text),
+        display_label.c_str()
+    );
+
+    // --------------------------------------------------
+    // ACTION ITEMS (DENTRO del invisible, pero ahora con overlap permitido)
+    // --------------------------------------------------
     if (!config.actionItems.empty()) {
-        // Guardar posición actual del cursor
-        ImVec2 cursor_backup = ImGui::GetCursorPos();
+        ImVec2 buttons_start(
+            pos_start.x + tree_clickable_width - action_items_width,
+            pos_start.y + action_items_offset_y
+        );
 
-        // Calcular posición ABSOLUTA en pantalla para los botones
-        ImVec2 buttons_start_screen = pos_start;
-        buttons_start_screen.x += full_width - action_items_width + style.ItemSpacing.x;
-        buttons_start_screen.y += action_items_offset_y;  // Usar el offset calculado (mismo método que el texto)
-
-        // Dibujar cada botón en su posición absoluta
         for (size_t i = 0; i < config.actionItems.size(); ++i) {
-            const auto& action_item = config.actionItems[i];  // Cambio: item → action_item
+            const auto& item = config.actionItems[i];
 
-            // Calcular posición de este botón
-            ImVec2 button_pos = buttons_start_screen;
-            button_pos.x += i * (action_item.size.x + style.ItemSpacing.x);
+            ImVec2 btn_pos = buttons_start;
+            btn_pos.x += i * (item.size.x + style.ItemSpacing.x);
 
-            // Establecer cursor en posición absoluta (screen coordinates)
-            ImGui::SetCursorScreenPos(button_pos);
-
+            ImGui::SetCursorScreenPos(btn_pos);
             ImGui::PushID((int)i);
 
-            // Botón con estilos
             ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 0.8f));
             ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);
             ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
 
-            bool clicked = ImGui::ImageButton("##btn", action_item.icon, action_item.size);
+            bool clicked = ImGui::ImageButton("##btn", item.icon, item.size);
 
             ImGui::PopStyleVar(2);
             ImGui::PopStyleColor(3);
 
-            // EJECUTAR CALLBACK
-            if (clicked && action_item.onClick) {
-                action_item.onClick();
-            }
+            if (clicked && item.onClick)
+                item.onClick();
 
-            // Tooltip
-            if (ImGui::IsItemHovered() && !action_item.tooltip.empty()) {
+            if (ImGui::IsItemHovered() && !item.tooltip.empty()) {
                 ImGui::BeginTooltip();
-                ImGui::TextUnformatted(action_item.tooltip.c_str());
+                ImGui::TextUnformatted(item.tooltip.c_str());
                 ImGui::EndTooltip();
             }
 
             ImGui::PopID();
         }
-
-        // Restaurar cursor a su posición original (relativa a la ventana)
-        ImGui::SetCursorPos(cursor_backup);
     }
 
-    // Drag & drop
+    // --------------------------------------------------
+    // Drag & drop (misma zona clickable)
+    // --------------------------------------------------
     if (config.dragDrop.acceptsDrop && !config.dragDrop.dragDropType.empty()) {
         ImGui::SetCursorScreenPos(pos_start);
-        ImGui::InvisibleButton("##dragdrop", ImVec2(full_width, line_height));
+        ImGui::InvisibleButton("##dragdrop", ImVec2(tree_clickable_width, line_height));
+
         if (ImGui::BeginDragDropTarget()) {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(config.dragDrop.dragDropType.c_str())) {
-                if (config.dragDrop.onDropCallback) {
+            if (const ImGuiPayload* payload =
+                ImGui::AcceptDragDropPayload(config.dragDrop.dragDropType.c_str())) {
+                if (config.dragDrop.onDropCallback)
                     config.dragDrop.onDropCallback(payload->Data);
-                }
             }
             ImGui::EndDragDropTarget();
         }
     }
 
-    // Indent si está abierto
-    if (is_open && !config.isLeaf) {
+    if (is_open && !config.isLeaf)
         ImGui::Indent();
-    }
+
+    // Restaurar ItemSpacing
+    ImGui::PopStyleVar();
 
     return is_open && !config.isLeaf;
 }
