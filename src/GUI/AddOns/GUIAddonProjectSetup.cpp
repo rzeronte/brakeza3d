@@ -603,7 +603,7 @@ void GUIAddonProjectSetup::DrawProjectScenes()
         // Botones de acción
         sceneConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
-            "Load scene",
+            "Load Scene",
             [currentScene]() {
                 SceneLoader::ClearScene();
                 SceneLoader::LoadScene(currentScene);

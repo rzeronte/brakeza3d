@@ -378,6 +378,7 @@ namespace GUIType
     X(SCENE_FILE_UNNAMED, 0, 0) \
     X(PROJECT_CLOSE, 0, 0) \
     X(SCENE_ATTACH_PROJECT, 0, 0) \
+    X(SCRIPT_LOAD, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

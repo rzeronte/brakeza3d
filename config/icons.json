@@ -485,8 +485,8 @@
 			"y":	29
 		}, {
 			"name":	"SHADER_LOAD",
-			"x":	15,
-			"y":	9
+			"x":	5,
+			"y":	33
 		}, {
 			"name":	"SHADER_LOCK",
 			"x":	15,
@@ -649,8 +649,8 @@
 			"y":	28
 		}, {
 			"name":	"SCENE_INFO",
-			"x":	13,
-			"y":	28
+			"x":	15,
+			"y":	27
 		}, {
 			"name":	"CHECKED",
 			"x":	14,
@@ -709,8 +709,8 @@
 			"y":	27
 		}, {
 			"name":	"PROJECT_INFO",
-			"x":	13,
-			"y":	28
+			"x":	15,
+			"y":	27
 		}, {
 			"name":	"MNU_RESOURCESHUB",
 			"x":	0,
@@ -815,6 +815,10 @@
 			"name":	"SCENE_ATTACH_PROJECT",
 			"x":	13,
 			"y":	35
+		}, {
+			"name":	"SCRIPT_LOAD",
+			"x":	5,
+			"y":	33
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

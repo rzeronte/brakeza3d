@@ -51,25 +51,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(CustomTreeNode): CustomTreeNode and his apply for ProjectSetup Window">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(CustomTreeNode): Applied CustomTreeNode To Addons Objects and ProjectSetup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/icons/sheet.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/icons/sheet.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/MyProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/MyProject.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/projects/TutorialsProject.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scenes/DemoScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/DemoScene.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scenes/RainCubesScene.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scenes/RainCubesScene.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Components/ComponentScripting.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Components/ComponentScripting.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/CustomTreeNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/CustomTreeNode.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Loaders/ProjectLoader.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Loaders/ProjectLoader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Threads/ThreadJobClearScene.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Threads/ThreadJobClearScene.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Components/ComponentScripting.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/StatusBarGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/StatusBarGUI.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/StatusBarGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/StatusBarGUI.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/todo.md" beforeDir="false" afterPath="$PROJECT_DIR$/todo.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -194,11 +186,6 @@
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -539,7 +526,8 @@
       <workItem from="1769265833458" duration="5000" />
       <workItem from="1769298354692" duration="1522000" />
       <workItem from="1769301398172" duration="19597000" />
-      <workItem from="1769366573863" duration="26075000" />
+      <workItem from="1769366573863" duration="26142000" />
+      <workItem from="1769435147521" duration="17968000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -589,22 +577,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00140" summary="feat(lua): Transparency  / GLSL Render commons">
-      <option name="closed" value="true" />
-      <created>1767060749721</created>
-      <option name="number" value="00140" />
-      <option name="presentableId" value="LOCAL-00140" />
-      <option name="project" value="LOCAL" />
-      <updated>1767060749726</updated>
-    </task>
-    <task id="LOCAL-00141" summary="feat(lua): Transparency  / GLSL Render commons">
-      <option name="closed" value="true" />
-      <created>1767061038614</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1767061038614</updated>
     </task>
     <task id="LOCAL-00142" summary="fix(picking): Fix outliner on multimesh objects">
       <option name="closed" value="true" />
@@ -926,7 +898,23 @@
       <option name="project" value="LOCAL" />
       <updated>1769374265483</updated>
     </task>
-    <option name="localTasksCounter" value="182" />
+    <task id="LOCAL-00182" summary="feat(CustomTreeNode): CustomTreeNode / Project Setup Widget">
+      <option name="closed" value="true" />
+      <created>1769395779161</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1769395779161</updated>
+    </task>
+    <task id="LOCAL-00183" summary="feat(CustomTreeNode): Applied CustomTreeNode To Addons Objects and ProjectSetup">
+      <option name="closed" value="true" />
+      <created>1769464901534</created>
+      <option name="number" value="00183" />
+      <option name="presentableId" value="LOCAL-00183" />
+      <option name="project" value="LOCAL" />
+      <updated>1769464901534</updated>
+    </task>
+    <option name="localTasksCounter" value="184" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -960,8 +948,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="fix(demos): Fix demos / update doc" />
-    <MESSAGE value="feat(resolution): feature for render resolution via lua" />
     <MESSAGE value="feat(lua): Added method/doc lua scripting" />
     <MESSAGE value="feat(lua): Transparency  / GLSL Render commons" />
     <MESSAGE value="fix(picking): Fix outliner on multimesh objects" />
@@ -985,7 +971,9 @@
     <MESSAGE value="feat(project): Improve project setup widget" />
     <MESSAGE value="feat(customTree): added custom tree for project settingts" />
     <MESSAGE value="feat(CustomTreeNode): CustomTreeNode and his apply for ProjectSetup Window" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(CustomTreeNode): CustomTreeNode and his apply for ProjectSetup Window" />
+    <MESSAGE value="feat(CustomTreeNode): CustomTreeNode / Project Setup Widget" />
+    <MESSAGE value="feat(CustomTreeNode): Applied CustomTreeNode To Addons Objects and ProjectSetup" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(CustomTreeNode): Applied CustomTreeNode To Addons Objects and ProjectSetup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

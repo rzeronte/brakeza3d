@@ -34,4 +34,6 @@ private:
     static void DrawIconWithFormattedText(GUIType::Sheet icon, const char* format, ...);
 
     static void DrawGradientLine(ImGuiViewport *viewport, float yPosition, float lineHeight);
+    static float CalculateItemWidth(GUIType::Sheet icon, const char* text);
+    static void DrawRightAlignedItems(GUIAddonResourceHub* resourceHub);
 };

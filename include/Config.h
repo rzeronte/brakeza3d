@@ -138,7 +138,7 @@ public:
 
     bool DRAW_LIGHTS_DIRECTION = false;
     bool FULLSCREEN = false;
-    bool DRAW_FPS_RENDER = false;
+    bool DRAW_FPS_RENDER = true;
 
     float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
 
