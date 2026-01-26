@@ -1,15 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_152228.png",
-	"description":	{
-		"x":	0,
-		"y":	-9.8000001907348633,
-		"z":	0
-	},
-	"gravity":	{
-		"x":	0,
-		"y":	-9.8000001907348633,
-		"z":	0
-	},
+	"screenshot":	"../assets/screenshots/scene_131666.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.17000000178813934,
@@ -35,6 +25,7 @@
 	"objects":	[{
 			"name":	"CUBE_ONE",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
 				"x":	4.9835672378540039,
@@ -46,34 +37,14 @@
 				"y":	-0,
 				"z":	0
 			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
-					"name":	"RainCubesDemo",
-					"types":	[{
-							"name":	"frequency",
-							"type":	"float",
-							"value":	0.5
-						}]
-				}],
-			"model":	"../assets/models//basic/cube.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"CUBE_THREE",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-5.6965012550354,
-				"y":	11.232712745666504,
-				"z":	-1.5106461048126221
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
@@ -93,6 +64,7 @@
 		}, {
 			"name":	"CUBE_TWO",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
 				"x":	1.8986202478408813,
@@ -103,6 +75,15 @@
 				"x":	0,
 				"y":	-0,
 				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
@@ -122,6 +103,7 @@
 		}, {
 			"name":	"Axis",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
 				"x":	-0.22656756639480591,
@@ -132,6 +114,15 @@
 				"x":	0,
 				"y":	-0,
 				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -171,18 +162,57 @@
 			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
+		}, {
+			"name":	"CUBE_THREE",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-5.6965012550354,
+				"y":	11.232712745666504,
+				"z":	-1.5106461048126221
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"name":	"RainCubesDemo",
+					"types":	[{
+							"name":	"frequency",
+							"type":	"float",
+							"value":	0.5
+						}]
+				}],
+			"model":	"../assets/models//basic/cube.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-16.860191345214844,
-			"y":	0.032943099737167358,
-			"z":	11.421530723571777
+			"x":	-21.670555114746094,
+			"y":	0.3423750102519989,
+			"z":	14.191510200500488
 		},
 		"rotation":	{
-			"x":	-7.9498176574707031,
-			"y":	57.099918365478516,
+			"x":	3.2251830101013184,
+			"y":	52.299911499023438,
 			"z":	0
 		}
 	}

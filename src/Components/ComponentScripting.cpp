@@ -95,6 +95,8 @@ void ComponentScripting::ReloadLUAScripts() const
 
 void ComponentScripting::AddProjectScene(const std::string &value)
 {
+    LOG_ERROR("[Scripting] Adding scene '%s' to Project...", value.c_str());
+
     if (std::find(projectScenes.begin(), projectScenes.end(), value) == projectScenes.end()) {
         projectScenes.push_back(value);
     }
@@ -262,6 +264,11 @@ void ComponentScripting::RemoveScriptLUAFile(const std::string& path)
 
     Tools::RemoveFile(meta.codeFile);
     Tools::RemoveFile(meta.typesFile);
+}
+
+bool ComponentScripting::hasProjectScene(const std::string& filePath)
+{
+    return std::find(projectScenes.begin(), projectScenes.end(), filePath) != projectScenes.end();
 }
 
 void ComponentScripting::setCurrentScene(Scene *value)

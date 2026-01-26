@@ -43,7 +43,11 @@ public:
     void onStartScripts() const;
     void RunScripts() const;
     void InitLUATypes();
+
+    bool hasProjectScene(const std::string &filePath);
+
     sol::object getGlobalScriptVar(const std::string& scriptName, const char *varName) const;
+
     sol::state &getLua()                                                    { return lua; }
     std::vector<ScriptLUA*> &getSceneScripts()                              { return sceneScripts; }
     std::vector<std::string> &getProjectScenes()                            { return projectScenes; }

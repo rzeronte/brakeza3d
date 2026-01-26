@@ -12,6 +12,10 @@
 void ProjectLoader::LoadProject(const std::string &filename)
 {
     RemoveProjectScripts();
+    RemoveProjectScenes();
+
+    Components::get()->Scripting()->setCurrentProject(nullptr);
+    Components::get()->Scripting()->setCurrentScene(nullptr);
 
     auto contentFile = Tools::ReadFile(filename);
     auto contentJSON = cJSON_Parse(contentFile);
@@ -114,12 +118,31 @@ void ProjectLoader::SaveProject(const std::string &filename)
     Tools::WriteToFile(filename, cJSON_Print(root));
 }
 
+void ProjectLoader::RemoveProjectScenes()
+{
+    auto scripting = Components::get()->Scripting();
+    for (auto &o: scripting->getProjectScenes()) {
+        scripting->RemoveProjectScene(o);
+    }
+}
+
 void ProjectLoader::RemoveProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
-    for (auto o: scripting->getProjectScripts()) {
+    for (auto &o: scripting->getProjectScripts()) {
         scripting->RemoveProjectScript(o);
     }
+}
+
+void ProjectLoader::CloseCurrentProject()
+{
+    LOG_MESSAGE("[ProjectLoader] Closing current project...");
+
+    auto scripting = Components::get()->Scripting();
+    if (scripting->getCurrentScene() != nullptr) {
+        SceneLoader::ClearScene();
+    }
+    scripting->setCurrentProject(nullptr);
 }
 
 void ProjectLoader::CreateProject(const std::string &filename)
