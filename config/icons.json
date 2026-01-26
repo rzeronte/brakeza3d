@@ -17,8 +17,8 @@
 			"y":	3
 		}, {
 			"name":	"SAVE",
-			"x":	4,
-			"y":	33
+			"x":	9,
+			"y":	0
 		}, {
 			"name":	"RESET",
 			"x":	10,
@@ -121,8 +121,8 @@
 			"y":	0
 		}, {
 			"name":	"WIN_PROJECT_SETTINGS",
-			"x":	15,
-			"y":	38
+			"x":	6,
+			"y":	11
 		}, {
 			"name":	"WIN_SCENE_OBJECTS",
 			"x":	11,
@@ -381,16 +381,16 @@
 			"y":	4
 		}, {
 			"name":	"LAYOUTS_SAVE_LAYOUT",
-			"x":	4,
-			"y":	33
+			"x":	9,
+			"y":	0
 		}, {
 			"name":	"TOOLBAR_ENABLE_GUI",
 			"x":	7,
 			"y":	1
 		}, {
 			"name":	"TOOLBAR_LAYOUT_DEFAULT",
-			"x":	6,
-			"y":	1
+			"x":	10,
+			"y":	27
 		}, {
 			"name":	"TOOLBAR_LAYOUT_CODING",
 			"x":	12,
@@ -541,8 +541,8 @@
 			"y":	7
 		}, {
 			"name":	"PROJECT_SETUP_GLOBAL_SCRIPTS",
-			"x":	11,
-			"y":	1
+			"x":	1,
+			"y":	4
 		}, {
 			"name":	"PROJECT_SETUP_SCENE_SCRIPTS",
 			"x":	1,
@@ -565,12 +565,12 @@
 			"y":	11
 		}, {
 			"name":	"SHADER_SAVE",
-			"x":	4,
-			"y":	33
+			"x":	9,
+			"y":	0
 		}, {
 			"name":	"SCRIPT_SAVE",
-			"x":	4,
-			"y":	33
+			"x":	9,
+			"y":	0
 		}, {
 			"name":	"WARNING",
 			"x":	2,
@@ -765,12 +765,12 @@
 			"y":	0
 		}, {
 			"name":	"PROJECT_SAVE",
-			"x":	4,
-			"y":	33
+			"x":	9,
+			"y":	0
 		}, {
 			"name":	"SCENE_SAVE",
-			"x":	4,
-			"y":	33
+			"x":	9,
+			"y":	0
 		}, {
 			"name":	"WIN_BROWSER",
 			"x":	0,
@@ -803,6 +803,18 @@
 			"name":	"PROJECT_FILE_UNNAMED",
 			"x":	7,
 			"y":	15
+		}, {
+			"name":	"SCENE_FILE_UNNAMED",
+			"x":	10,
+			"y":	38
+		}, {
+			"name":	"PROJECT_CLOSE",
+			"x":	14,
+			"y":	1
+		}, {
+			"name":	"SCENE_ATTACH_PROJECT",
+			"x":	13,
+			"y":	35
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

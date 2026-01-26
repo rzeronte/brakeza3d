@@ -24,22 +24,68 @@ void FileSystemGUI::DrawMainBrowser()
     auto &scriptsBrowser = GUI->getBrowserScripts();
     auto &shadersBrowser = GUI->getBrowserShaders();
 
-    GUI::DrawButton("Browse Projects", IconGUI::PROJECT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_PROJECTS, [] {
-        type = GUIType::BROWSE_PROJECTS;
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_SCENES, [] {
-        type = GUIType::BROWSE_SCENES;
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_SCRIPTS, [] {
-        type = GUIType::BROWSE_SCRIPTS;
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICON_BROWSER_TYPE, type == GUIType::BROWSE_SHADERS, [] {
-        type = GUIType::BROWSE_SHADERS;
-    });
+    if (ImGui::BeginTable("BrowseTable", 2,
+        ImGuiTableFlags_SizingStretchSame |
+        ImGuiTableFlags_NoPadOuterX))
+    {
+        ImGui::TableSetupColumn("Column1", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Column2", ImGuiTableColumnFlags_WidthStretch);
 
+        ImGui::TableNextRow();
+
+        // Columna izquierda: Projects
+        ImGui::TableSetColumnIndex(0);
+        GUI::DrawButton(
+            "Browse Projects",
+            IconGUI::PROJECT_FILE,
+            GUIType::Sizes::ICONS_CODE_EDITOR,
+            type == GUIType::BROWSE_PROJECTS,
+            [] {
+                type = GUIType::BROWSE_PROJECTS;
+            }
+        );
+
+        // Columna derecha: Scenes, Scripts, Shaders (alineados a la derecha)
+        ImGui::TableSetColumnIndex(1);
+
+        // Guardar la posición inicial de la columna
+        float columnStartX = ImGui::GetCursorPosX();
+
+        // Calcular el ancho de cada botón
+        ImGuiStyle& style = ImGui::GetStyle();
+        float iconWidth = GUIType::Sizes::ICONS_CODE_EDITOR.x;
+        float spacing = style.ItemSpacing.x;
+        float framePadding = style.FramePadding.x * 2;
+
+        float width1 = iconWidth + framePadding;
+        float width2 = iconWidth + framePadding;
+        float width3 = iconWidth + framePadding;
+
+        float totalWidth = width1 + width2 + width3 + (spacing * 2);
+
+        // Obtener el ancho de la columna actual
+        float columnWidth = ImGui::GetContentRegionAvail().x;
+
+        // Calcular la posición absoluta para alinear a la derecha
+        if (totalWidth < columnWidth) {
+            ImGui::SetCursorPosX(columnStartX + columnWidth - totalWidth);
+        }
+
+        GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICONS_CODE_EDITOR,
+            type == GUIType::BROWSE_SCENES, [] { type = GUIType::BROWSE_SCENES; });
+
+        ImGui::SameLine();
+
+        GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICONS_CODE_EDITOR,
+            type == GUIType::BROWSE_SCRIPTS, [] { type = GUIType::BROWSE_SCRIPTS; });
+
+        ImGui::SameLine();
+
+        GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICONS_CODE_EDITOR,
+            type == GUIType::BROWSE_SHADERS, [] { type = GUIType::BROWSE_SHADERS; });
+
+        ImGui::EndTable();
+    }
     ImGui::Separator();
 
     if (type == GUIType::BROWSE_PROJECTS) {
@@ -88,15 +134,15 @@ void FileSystemGUI::DrawProjectRowActions(GUIType::BrowserCache &browser, const 
         Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(fullPath);
     });
     ImGui::SameLine();
-    GUI::DrawButtonTransparent("Open project", IconGUI::PROJECT_OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButtonTransparent("Open Project", IconGUI::PROJECT_OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         ProjectLoader::LoadProject(fullPath);
     });
     ImGui::SameLine();
-    GUI::DrawButtonConfirm("Override project", "Are you sure to override project?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+    GUI::DrawButtonConfirm("Override Project", "Are you sure to override project?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
         ProjectLoader::SaveProject(fullPath);
     });
     ImGui::SameLine();
-    GUI::DrawButtonConfirm("Deleting project", "Are you sure to delete project?", IconGUI::PROJECT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+    GUI::DrawButtonConfirm("Deleting Project", "Are you sure to delete project?", IconGUI::PROJECT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
         ProjectLoader::RemoveProject(fullPath);
         browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
     });
@@ -320,10 +366,18 @@ void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::B
     ImGui::Text("%s", browser.currentFolder.c_str());
     ImGui::Separator();
 
+    // Calcular offset para centrado vertical
+    ImVec2 iconSize = GUIType::Sizes::ICONS_BROWSERS;
+    float frameHeight = ImGui::GetFrameHeight();
+    float offsetY = (frameHeight - iconSize.y) * 0.5f;
+
     // only show ".." if we arent in browser's root folder
     if (browser.currentFolder != rootFolder) {
-        ImGui::Image(Icon(IconGUI::FOLDER_BACK), GUIType::Sizes::ICONS_BROWSERS);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + offsetY);  // Bajar cursor
+        ImGui::Image(Icon(IconGUI::FOLDER_BACK), iconSize);
         ImGui::SameLine();
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() - offsetY);  // Subir cursor
+
         if (ImGui::Button("..")) {
             browser.currentFolder = Tools::NormalizePath(Tools::GoBackFromFolder(browser.currentFolder));
             browser.onChangeFolderCallback();
@@ -331,11 +385,6 @@ void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::B
     }
 
     if (browser.folderFolders.empty()) return;
-
-    // Para el icono de la carpeta actual
-    ImVec2 iconSize = GUIType::Sizes::ICONS_BROWSERS;
-    float frameHeight = ImGui::GetFrameHeight();
-    float offsetY = (frameHeight - iconSize.y) * 0.5f;
 
     // IMPORTANTE: No modificar el vector durante la iteración
     std::string selectedFolder;

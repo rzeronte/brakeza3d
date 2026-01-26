@@ -8,6 +8,8 @@
 	"scripts":	[],
 	"scenes":	[{
 			"path":	"../assets/scenes/DemoScene.json"
+		}, {
+			"path":	"../assets/scenes/RainCubesScene.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,

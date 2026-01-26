@@ -375,6 +375,9 @@ namespace GUIType
     X(TREE_BULLET_ON, 0, 0) \
     X(TREE_BULLET_OFF, 0, 0) \
     X(PROJECT_FILE_UNNAMED, 0, 0) \
+    X(SCENE_FILE_UNNAMED, 0, 0) \
+    X(PROJECT_CLOSE, 0, 0) \
+    X(SCENE_ATTACH_PROJECT, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

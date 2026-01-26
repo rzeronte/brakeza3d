@@ -26,8 +26,6 @@ public:
             scripting->RemoveSceneScript(o);
         }
 
-        scripting->getProjectScenes().clear();
-
         auto render = Components::get()->Render();
         for (auto &s: render->getSceneShaders()) {
             render->RemoveSceneShader(s);

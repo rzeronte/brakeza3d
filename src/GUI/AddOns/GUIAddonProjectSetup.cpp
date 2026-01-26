@@ -27,60 +27,55 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     // NODO 1: PROJECT
     // ============================================
     {
-        static bool projectSelected = false;
-
         std::string projectLabel = project != nullptr
             ? "Project: " + project->getChecker().getStatus().name
-            : "Project: (Unknowed)";
+            : "Project: Unknown";
 
         CustomImGui::CustomTreeNodeConfig projectConfig(projectLabel.c_str());
 
-        // Icono según estado
-        projectConfig.leftIcon = project != nullptr
-            ? FileSystemGUI::Icon(IconGUI::PROJECT_FILE)  // Proyecto cargado
-            : FileSystemGUI::Icon(IconGUI::PROJECT_FILE_UNNAMED);  // Sin proyecto (gris)
-
+        projectConfig.leftIcon = FileSystemGUI::Icon(project != nullptr ? IconGUI::PROJECT_FILE : IconGUI::PROJECT_FILE_UNNAMED);
         projectConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         projectConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-        //projectConfig.iconSize = ImVec2(18, 18);
-        projectConfig.bulletSize = ImVec2(18, 18);
-        projectConfig.defaultOpen = true;
+        projectConfig.defaultOpen = false;
 
         // Color según estado
         if (project != nullptr) {
-            // Proyecto cargado: fondo blanco/normal
             projectConfig.selectedColor = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
             projectConfig.hoveredColor = ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
         } else {
-            // Sin proyecto: fondo gris apagado
             projectConfig.selectedColor = ImVec4(0.3f, 0.3f, 0.3f, 0.2f);
             projectConfig.hoveredColor = ImVec4(0.3f, 0.3f, 0.3f, 0.1f);
         }
 
         // Botones de acción
         if (project != nullptr) {
-            // Botón: Guardar proyecto
+            projectConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::PROJECT_INFO),
+                "Project info",
+                [&]() {
+                    Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(project->getFilePath());
+                }
+            );
             projectConfig.actionItems.emplace_back(
                 FileSystemGUI::Icon(IconGUI::PROJECT_SAVE),
-                "💾 Save project",
+                "Save project",
                 [&]() {
                     ProjectLoader::SaveProject(project->getFilePath());
                 }
             );
-        } else {
-            // Botones: Nuevo/Abrir proyecto
             projectConfig.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::NODE_TYPE_DEFAULT),
-                "➕ New project",
+                FileSystemGUI::Icon(IconGUI::PROJECT_CLOSE),
+                "Close project",
                 [&]() {
-                    printf("TODO: Nuevo proyecto\n");
+                    ProjectLoader::CloseCurrentProject();
                 }
             );
+        } else {
             projectConfig.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES),
-                "📂 Open project",
+                FileSystemGUI::Icon(IconGUI::CREATE_FILE),
+                "New project",
                 [&]() {
-                    printf("TODO: Abrir proyecto\n");
+                    printf("TODO: Nuevo proyecto\n");
                 }
             );
         }
@@ -90,74 +85,74 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
         if (isProjectOpen) {
             ImGui::Spacing();
             if (project != nullptr) {
-                // Sub-nodo: Properties
                 DrawProjectSettingsNode();
                 ImGui::Spacing();
-
-                // Sub-nodo: Scripts
                 DrawProjectScriptsNode();
                 ImGui::Spacing();
-
-                // Sub-nodo: Scenes
                 DrawProjectScenesNode();
-
             } else {
-                ImGui::Indent();
-                ImGui::Spacing();
                 Drawable::WarningMessage("No project loaded");
-                ImGui::Unindent();
             }
-
             CustomImGui::CustomTreePop();
         }
         ImGui::Spacing();
     }
 
-    ImGui:: Separator();
-    ImGui::Spacing(); // <-- Espacio después de Settings
+    ImGui::Separator();
+    ImGui::Spacing();
 
     // ============================================
     // NODO 2: SCENE ACTUAL
     // ============================================
     {
-        static bool sceneSelected = false;
-
         std::string sceneLabel = scene != nullptr
-            ? "Current scene: " + scene->getFilePath()
-            : "Current Scene: Unknowed";
+            ? "Scene: " + scene->getFilePath()
+            : "Scene: Unknown";
 
         CustomImGui::CustomTreeNodeConfig sceneConfig(sceneLabel.c_str());
 
-        // Icono
-        sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
+        // Icono según estado
+        sceneConfig.leftIcon = FileSystemGUI::Icon(scene != nullptr ? IconGUI::SCENE_FILE : IconGUI::SCENE_FILE_UNNAMED);
         sceneConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         sceneConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-        //sceneConfig.iconSize = ImVec2(18, 18);
-        //sceneConfig.bulletSize = ImVec2(12, 12);
-        sceneConfig.defaultOpen = true;
+        sceneConfig.defaultOpen = false;
 
-        // Color según estado (temporal o del proyecto)
-        bool isTemporary = (project == nullptr);
+        bool isTemporary = false;
 
         // Botones de acción
         if (scene != nullptr) {
-            // Botón: Guardar escena
+            // Capturar por valor las variables necesarias
+            auto currentScene = scene;
+
             sceneConfig.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::SCENE_SAVE),
-                "💾 Save scene",
-                [&]() {
-                    SceneLoader::SaveScene(scene->getFilePath());
+                FileSystemGUI::Icon(IconGUI::SCENE_INFO),
+                "Scene detail",
+                [currentScene]() {
+                    LOG_MESSAGE("wtf");
+                    Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(currentScene->getFilePath());
                 }
             );
+            sceneConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCENE_SAVE),
+                "Save scene",
+                [currentScene]() {
+                    SceneLoader::SaveScene(currentScene->getFilePath());
+                }
+            );
+
+            isTemporary = !Components::get()->Scripting()->hasProjectScene(scene->getFilePath());
         }
 
-        if (isTemporary) {
-            // Botón: Guardar como proyecto
+        if (isTemporary && project != nullptr) {
+            // Capturar por valor las variables necesarias
+            auto currentScene = scene;
+
             sceneConfig.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::PROJECT_SAVE),
-                "💾 Save as project...",
-                [&]() {
-                    printf("TODO: Guardar como proyecto\n");
+                FileSystemGUI::Icon(IconGUI::SCENE_ATTACH_PROJECT),
+                "Attach scene to Project",
+                [currentScene]() {
+                    LOG_ERROR("HOLA");
+                    Components::get()->Scripting()->AddProjectScene(currentScene->getFilePath());
                 }
             );
         }
@@ -167,17 +162,12 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
         if (isSceneOpen) {
             ImGui::Spacing();
             if (isTemporary) {
-                ImGui::Indent();
-                ImGui::Spacing();
                 Drawable::WarningMessage("Scene not belonging to the project");
-                ImGui::Unindent();
             }
 
-            // Sub-nodo: Scene Scripts
             DrawSceneScriptsNode();
             ImGui::Spacing();
 
-            // Sub-nodo: Scene Shaders
             DrawSceneShadersNode();
             ImGui::Spacing();
 
@@ -194,7 +184,6 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
 
 void GUIAddonProjectSetup::DrawProjectSettingsNode()
 {
-    static bool selected = false;
     auto scripting = Components::get()->Scripting();
     auto project = scripting->getCurrentProject();
 
@@ -204,41 +193,34 @@ void GUIAddonProjectSetup::DrawProjectSettingsNode()
     config.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.iconSize = ImVec2(18, 18);
-    //config.bulletSize = ImVec2(12, 12);
     config.defaultOpen = false;
 
     bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
 
     if (isOpen) {
-        ImGui::Indent();
+        ImGui::Spacing();
         DrawProjectSettings();
-        ImGui::Unindent();
         CustomImGui::CustomTreePop();
     }
 }
 
 void GUIAddonProjectSetup::DrawProjectScriptsNode()
 {
-    static bool selected = false;
     static bool shouldOpen = false;
 
     auto scripting = Components::get()->Scripting();
     auto scripts = scripting->getProjectScripts();
 
-    std::string label = "Project scripts (" + std::to_string(scripts.size()) + ")";
+    std::string label = "Project scripts";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.iconSize = ImVec2(18, 18);
-    //config.bulletSize = ImVec2(12, 12);
     config.defaultOpen = shouldOpen;
     config.showChildCount = true;
     config.childCount = (int)scripts.size();
 
-    // Drag & drop
     config.dragDrop = CustomImGui::TreeDragDropConfig(
         GUIType::DragDropTarget::SCRIPT_ITEM,
         [&](void* data) {
@@ -254,21 +236,18 @@ void GUIAddonProjectSetup::DrawProjectScriptsNode()
     if (isOpen) {
         if (shouldOpen) shouldOpen = false;
 
-        ImGui::Indent();
         if (scripts.empty()) {
             ImGui::Spacing();
-            Drawable::WarningMessage("There are not scripts attached");
+            Drawable::WarningMessage("There are not scripts attached to project");
         } else {
             DrawProjectScripts();
         }
-        ImGui::Unindent();
         CustomImGui::CustomTreePop();
     }
 }
 
 void GUIAddonProjectSetup::DrawProjectScenesNode()
 {
-    static bool selected = false;
     static bool shouldOpen = false;
 
     auto scripting = Components::get()->Scripting();
@@ -280,13 +259,10 @@ void GUIAddonProjectSetup::DrawProjectScenesNode()
     config.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.iconSize = ImVec2(18, 18);
-    //config.bulletSize = ImVec2(12, 12);
     config.defaultOpen = shouldOpen;
     config.showChildCount = true;
     config.childCount = (int)scenes.size();
 
-    // Drag & drop
     config.dragDrop = CustomImGui::TreeDragDropConfig(
         GUIType::DragDropTarget::SCENE_ITEM,
         [&](void* data) {
@@ -302,14 +278,12 @@ void GUIAddonProjectSetup::DrawProjectScenesNode()
     if (isOpen) {
         if (shouldOpen) shouldOpen = false;
 
-        ImGui::Indent();
+        ImGui::Spacing();
         if (scenes.empty()) {
-            ImGui::Spacing();
             Drawable::WarningMessage("There are not scenes attached");
         } else {
             DrawProjectScenes();
         }
-        ImGui::Unindent();
         CustomImGui::CustomTreePop();
     }
 }
@@ -320,7 +294,6 @@ void GUIAddonProjectSetup::DrawProjectScenesNode()
 
 void GUIAddonProjectSetup::DrawSceneScriptsNode()
 {
-    static bool selected = false;
     static bool shouldOpen = false;
 
     auto scripting = Components::get()->Scripting();
@@ -336,7 +309,6 @@ void GUIAddonProjectSetup::DrawSceneScriptsNode()
     config.showChildCount = true;
     config.childCount = (int)scripts.size();
 
-    // Drag & drop
     config.dragDrop = CustomImGui::TreeDragDropConfig(
         GUIType::DragDropTarget::SCRIPT_ITEM,
         [&](void* data) {
@@ -351,22 +323,19 @@ void GUIAddonProjectSetup::DrawSceneScriptsNode()
 
     if (isOpen) {
         if (shouldOpen) shouldOpen = false;
+        ImGui::Spacing();
 
-        ImGui::Indent();
         if (scripts.empty()) {
-            ImGui::Spacing();
             Drawable::WarningMessage("There are not scenes attached");
         } else {
             DrawSceneScripts();
         }
-        ImGui::Unindent();
         CustomImGui::CustomTreePop();
     }
 }
 
 void GUIAddonProjectSetup::DrawSceneShadersNode()
 {
-    static bool selected = false;
     static bool shouldOpen = false;
 
     auto render = Components::get()->Render();
@@ -378,13 +347,10 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.iconSize = ImVec2(18, 18);
-    //config.bulletSize = ImVec2(12, 12);
     config.defaultOpen = shouldOpen;
     config.showChildCount = true;
     config.childCount = (int)shaders.size();
 
-    // Drag & drop
     config.dragDrop = CustomImGui::TreeDragDropConfig(
         GUIType::DragDropTarget::SHADER_ITEM,
         [&](void* data) {
@@ -400,21 +366,19 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
 
     if (isOpen) {
         if (shouldOpen) shouldOpen = false;
+        ImGui::Spacing();
 
-        ImGui::Indent();
         if (shaders.empty()) {
-            ImGui::Spacing();
             Drawable::WarningMessage("There are not shaders attached");
         } else {
             DrawSceneCustomShaders();
         }
-        ImGui::Unindent();
         CustomImGui::CustomTreePop();
     }
 }
 
 // ============================================
-// FUNCIONES AUXILIARES (sin cambios)
+// FUNCIONES TREE (REFACTORIZADAS CON CustomTreeNode)
 // ============================================
 
 void GUIAddonProjectSetup::TreeSceneScripts()
@@ -423,33 +387,36 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     static bool shouldOpen = false;
 
     std::string labelSceneScripts = "Scene scripts (" + std::to_string(scripting->getSceneScripts().size()) + ")";
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
-    if (shouldOpen) {
-        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-        shouldOpen = false;
-    } else {
-        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
-    }
-    bool isOpenSceneScripts = ImGui::TreeNodeEx(labelSceneScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
-            LOG_MESSAGE("Dropping script (%s) in global space", payload->Data);
-            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
+
+    CustomImGui::CustomTreeNodeConfig config(labelSceneScripts.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.bulletSize = ImVec2(18, 18);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)scripting->getSceneScripts().size();
+
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SCRIPT_ITEM,
+        [&](void* data) {
+            LOG_MESSAGE("Dropping script (%s) in scene space", (char*)data);
+            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
             scripting->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
             shouldOpen = true;
         }
-        ImGui::EndDragDropTarget();
-    }
-    ImGui::PopStyleVar(2);
+    );
+
+    bool isOpenSceneScripts = CustomImGui::CustomTreeNode(config, nullptr);
+
     if (isOpenSceneScripts) {
+        if (shouldOpen) shouldOpen = false;
+
         DrawSceneScripts();
         if (scripting->getSceneScripts().empty()) {
-            ImGui::Spacing();
-            Drawable::WarningMessage("There are not scenes attached");
+            Drawable::WarningMessage("There are not scripts attached");
         }
-        ImGui::TreePop();
+        CustomImGui::CustomTreePop();
     }
 }
 
@@ -459,54 +426,56 @@ void GUIAddonProjectSetup::TreeProjectScenes()
     static bool shouldOpen = false;
 
     auto projectScenes = scripting->getProjectScenes();
-    std::string labelGlobalScripts = "Project scenes (" + std::to_string(projectScenes.size()) + ")";
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    if (shouldOpen) {
-        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-        shouldOpen = false;
-    } else {
-        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
-    }
-    bool isOpenGlobalScripts = ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCENE_ITEM)) {
-            const char* scenePath = (const char*)payload->Data;
-            LOG_MESSAGE("Dropping scene '%s' in global space", scenePath);
+    std::string labelProjectScenes = "Project scenes (" + std::to_string(projectScenes.size()) + ")";
+
+    CustomImGui::CustomTreeNodeConfig config(labelProjectScenes.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.bulletSize = ImVec2(18, 18);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)projectScenes.size();
+
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SCENE_ITEM,
+        [&](void* data) {
+            const char* scenePath = (const char*)data;
+            LOG_MESSAGE("Dropping scene '%s' in project space", scenePath);
             scripting->AddProjectScene(scenePath);
             shouldOpen = true;
         }
-        ImGui::EndDragDropTarget();
-    }
-    if (isOpenGlobalScripts) {
+    );
+
+    bool isOpenProjectScenes = CustomImGui::CustomTreeNode(config, nullptr);
+
+    if (isOpenProjectScenes) {
+        if (shouldOpen) shouldOpen = false;
+
         DrawProjectScenes();
         if (projectScenes.empty()) {
-            ImGui::Spacing();
             Drawable::WarningMessage("There are not scenes attached");
         }
-        ImGui::TreePop();
+        CustomImGui::CustomTreePop();
     }
 }
 
 void GUIAddonProjectSetup::TreeProjectSettings()
 {
-    static bool shouldOpen = false;
+    std::string labelProjectSettings = "Project settings";
 
-    std::string labelGlobalScripts = "Project settings";
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
-    if (shouldOpen) {
-        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-        shouldOpen = false;
-    } else {
-        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
-    }
-    bool isOpen = ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
+    CustomImGui::CustomTreeNodeConfig config(labelProjectSettings.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.bulletSize = ImVec2(18, 18);
+    config.defaultOpen = false;
 
-    ImGui::PopStyleVar(2);
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+
     if (isOpen) {
         DrawProjectSettings();
-        ImGui::TreePop();
+        CustomImGui::CustomTreePop();
     }
 }
 
@@ -515,34 +484,38 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     auto scripting = Components::get()->Scripting();
     static bool shouldOpen = false;
 
-    std::string labelGlobalScripts = "Project scripts (" + std::to_string(scripting->getProjectScripts().size()) + ")";
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
-    if (shouldOpen) {
-        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-        shouldOpen = false;
-    } else {
-        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
-    }
-    bool isOpenGlobalScripts = ImGui::TreeNodeEx(labelGlobalScripts.c_str(), ImGuiTreeNodeFlags_FramePadding);
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM)) {
-            LOG_MESSAGE("Dropping script '%s' in global space", payload->Data);
-            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char *) payload->Data));
+    std::string labelGlobalScripts = "Project scripts";
+
+    CustomImGui::CustomTreeNodeConfig config(labelGlobalScripts.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)scripting->getProjectScripts().size();
+
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SCRIPT_ITEM,
+        [&](void* data) {
+            LOG_MESSAGE("Dropping script '%s' in project space", (char*)data);
+            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
             scripting->AddProjectLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
             shouldOpen = true;
         }
-        ImGui::EndDragDropTarget();
-    }
-    ImGui::PopStyleVar(2);
+    );
+
+    bool isOpenGlobalScripts = CustomImGui::CustomTreeNode(config, nullptr);
+
     if (isOpenGlobalScripts) {
+
+        if (shouldOpen) shouldOpen = false;
+        ImGui::Spacing();
+
         DrawProjectScripts();
         if (scripting->getProjectScripts().empty()) {
-            ImGui::Spacing();
             Drawable::WarningMessage("There are not scripts attached");
         }
-        ImGui::TreePop();
+        CustomImGui::CustomTreePop();
     }
 }
 
@@ -552,37 +525,43 @@ void GUIAddonProjectSetup::TreeSceneShaders()
     static bool shouldOpen = false;
 
     std::string labelSceneShaders = "Scene shaders (" + std::to_string(render->getSceneShaders().size()) + ")";
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 6));
-    if (shouldOpen) {
-        ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-        shouldOpen = false;
-    } else {
-        ImGui::SetNextItemOpen(false, ImGuiCond_FirstUseEver);
-    }
-    bool isOpenSceneShaders = ImGui::TreeNodeEx(labelSceneShaders.c_str(), ImGuiTreeNodeFlags_FramePadding);
-    if (ImGui::BeginDragDropTarget()) {
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM)) {
-            ImGui::SetNextItemOpen(true, ImGuiCond_Always);
-            auto receivedData = (Config::DragDropCustomShaderData*) payload->Data;
+
+    CustomImGui::CustomTreeNodeConfig config(labelSceneShaders.c_str());
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    //config.bulletSize = ImVec2(18, 18);
+    config.defaultOpen = shouldOpen;
+    config.showChildCount = true;
+    config.childCount = (int)render->getSceneShaders().size();
+
+    config.dragDrop = CustomImGui::TreeDragDropConfig(
+        GUIType::DragDropTarget::SHADER_ITEM,
+        [&](void* data) {
+            auto receivedData = (Config::DragDropCustomShaderData*)data;
             auto fullPath = std::string(receivedData->folder) + receivedData->file;
-            LOG_MESSAGE("Dropping shader file '%s' in global space...", fullPath.c_str());
+            LOG_MESSAGE("Dropping shader file '%s' in scene space...", fullPath.c_str());
             render->LoadShaderIntoScene(fullPath);
             shouldOpen = true;
         }
-        ImGui::EndDragDropTarget();
-    }
-    ImGui::PopStyleVar(2);
+    );
+
+    bool isOpenSceneShaders = CustomImGui::CustomTreeNode(config, nullptr);
+
     if (isOpenSceneShaders) {
+        if (shouldOpen) shouldOpen = false;
+
         DrawSceneCustomShaders();
         if (render->getSceneShaders().empty()) {
-            ImGui::Spacing();
             Drawable::WarningMessage("There are not shaders attached");
         }
-        ImGui::TreePop();
+        CustomImGui::CustomTreePop();
     }
 }
+
+// ============================================
+// BOTONES DE GUARDADO
+// ============================================
 
 void GUIAddonProjectSetup::SaveCurrentSceneButton()
 {
@@ -604,54 +583,60 @@ void GUIAddonProjectSetup::SaveCurrentProjectButton()
     }
 }
 
+// ============================================
+// DRAW FUNCTIONS
+// ============================================
+
 void GUIAddonProjectSetup::DrawProjectScenes()
 {
     auto scripting = Components::get()->Scripting();
-
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
     auto scenes = scripting->getProjectScenes();
 
-    if (ImGui::BeginTable("ProjectScenesTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Scene");
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        for (unsigned int i = 0; i < scenes.size(); i++) {
-            auto currentScene = scenes[i];
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::AlignTextToFramePadding();
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-            ImGui::SameLine(0, 5.0f);
-            ImGui::Text(currentScene.c_str());
+    for (unsigned int i = 0; i < scenes.size(); i++) {
+        auto currentScene = scenes[i];
+        ImGui::PushID(i);
 
-            // Script details
-            ImGui::TableNextColumn();
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // Padding interno del botón
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // Espacio entre botones
+        // Configurar CustomTreeNode para cada escena
+        CustomImGui::CustomTreeNodeConfig sceneConfig(currentScene.c_str());
+        sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
 
-            GUI::DrawButtonTransparent("Load scene", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        // Botones de acción
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
+            "Load scene",
+            [currentScene]() {
                 SceneLoader::ClearScene();
                 SceneLoader::LoadScene(currentScene);
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove scene from project", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                Components::get()->Scripting()->RemoveProjectScene(currentScene);
-            });
+            }
+        );
 
-            ImGui::PopStyleVar(2);  // ¡ESTO FALTABA!
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
+            "Remove scene from project",
+            [scripting, currentScene]() {
+                scripting->RemoveProjectScene(currentScene);
+            }
+        );
 
-            ImGui::PopID();
+        // Como las escenas son solo strings, no necesitan ser expandibles
+        // Puedes usar un TreeNode simple o solo mostrar el item con botones
+        // Si quieres mantener la apariencia de TreeNode (aunque no se expanda):
+        bool isOpen = CustomImGui::CustomTreeNode(sceneConfig, nullptr);
+        if (isOpen) {
+            // Las escenas no tienen propiedades que mostrar, así que cerramos inmediatamente
+            CustomImGui::CustomTreePop();
         }
-        ImGui::EndTable();
+
+        ImGui::PopID();
     }
 }
+
 void GUIAddonProjectSetup::DrawProjectSettings()
 {
     auto scripting = Components::get()->Scripting();
     auto project = scripting->getCurrentProject();
 
     if (project == nullptr) {
-        ImGui::Spacing();
         Drawable::WarningMessage("There are not a project loaded");
         return;
     }
@@ -664,7 +649,7 @@ void GUIAddonProjectSetup::DrawProjectSettings()
     Vertex3D gravity = checker.getStatus().gravity;
 
     int resolutionW = checker.getStatus().resolution.width;
-    int resolutionH = checker.getStatus().resolution.height;;
+    int resolutionH = checker.getStatus().resolution.height;
 
     if (ImGui::BeginTable("ProjectInfoTable", 2)) {
         ImGui::TableSetupColumn("Property", ImGuiTableColumnFlags_WidthFixed, 150.0f);
@@ -712,175 +697,162 @@ void GUIAddonProjectSetup::DrawProjectSettings()
 void GUIAddonProjectSetup::DrawProjectScripts()
 {
     auto scripting = Components::get()->Scripting();
-
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
     auto scripts = scripting->getProjectScripts();
+    ImGui::Spacing();
+    for (unsigned int i = 0; i < scripts.size(); i++) {
+        auto currentScript = scripts[i];
+        ImGui::PushID(i);
 
-    if (ImGui::BeginTable("ProjectScriptsTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Script");
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        for (unsigned int i = 0; i < scripts.size(); i++) {
-            auto currentScript = scripts[i];
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-            ImGui::SameLine(0, 5.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
-            bool isOpenCurrentScript = ImGui::TreeNodeEx(currentScript->getName().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
-            ImGui::PopStyleVar(2);
-            if (isOpenCurrentScript) {
-                currentScript->DrawImGuiProperties();
-                ImGui::TreePop();
-            }
+        // Evaluar estados ANTES de crear el config
+        bool isPaused = currentScript->isPaused();
+        std::string scriptName = currentScript->getName();
 
-            // Script details
-            ImGui::TableNextColumn();
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // Padding interno del botón
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // Espacio entre botones
+        // Configurar CustomTreeNode para cada script
+        CustomImGui::CustomTreeNodeConfig scriptConfig(scriptName.c_str());
+        scriptConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCRIPT_FILE);
+        scriptConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        scriptConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        scriptConfig.defaultOpen = false;
 
-            GUI::DrawButtonTransparent(
-                currentScript->isPaused() ? "Unlock project script##" : "Lock project script##",
-                currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
-                GUIType::Sizes::ICONS_BROWSERS,
-                false,
-                [&] { currentScript->setPaused(!currentScript->isPaused());
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                currentScript->Reload();
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                scripting->RemoveProjectScript(currentScript);
-            });
+        // Botones de acción
+        scriptConfig.actionItems.emplace_back(
+            isPaused ? FileSystemGUI::Icon(IconGUI::LUA_LOCK) : FileSystemGUI::Icon(IconGUI::LUA_UNLOCK),
+            isPaused ? "Unlock project script" : "Lock project script",
+            [currentScript]() { currentScript->setPaused(!currentScript->isPaused()); }
+        );
 
-            ImGui::PopStyleVar(2);
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
+            "Reload project script",
+            [currentScript]() { currentScript->Reload(); }
+        );
 
-            ImGui::PopID();
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
+            "Remove script",
+            [scripting, currentScript]() { scripting->RemoveProjectScript(currentScript); }
+        );
+
+        bool isOpenCurrentScript = CustomImGui::CustomTreeNode(scriptConfig, nullptr);
+
+        if (isOpenCurrentScript) {
+            currentScript->DrawImGuiProperties();
+            CustomImGui::CustomTreePop();
         }
-        ImGui::EndTable();
+
+        ImGui::PopID();
     }
 }
 
 void GUIAddonProjectSetup::DrawSceneScripts()
 {
     auto scripting = Components::get()->Scripting();
-
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
     auto scripts = scripting->getSceneScripts();
 
-    if (ImGui::BeginTable("ScriptsTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Script");
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+    for (unsigned int i = 0; i < scripts.size(); i++) {
+        auto currentScript = scripts[i];
+        ImGui::PushID(i);
 
-        for (unsigned int i = 0; i < scripts.size(); i++) {
-            auto currentScript = scripts[i];
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-            ImGui::SameLine(0, 5.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
-            bool isOpenCurrentScript = ImGui::TreeNodeEx(currentScript->getName().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
-            ImGui::PopStyleVar(2);
-            if (isOpenCurrentScript) {
-                currentScript->DrawImGuiProperties();
-                ImGui::TreePop();
-            }
+        // Evaluar estados ANTES de crear el config
+        bool isPaused = currentScript->isPaused();
+        std::string scriptName = currentScript->getName();
 
-            // Script details
-            ImGui::TableNextColumn();
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // Padding interno del botón
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // Espacio entre botones
+        // Configurar CustomTreeNode para cada script
+        CustomImGui::CustomTreeNodeConfig scriptConfig(scriptName.c_str());
+        scriptConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCRIPT_FILE);
+        scriptConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        scriptConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        scriptConfig.defaultOpen = false;
 
-            GUI::DrawButtonTransparent(
-                currentScript->isPaused() ? "Unlock scene script" : "Lock scene script",
-                currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
-                GUIType::Sizes::ICONS_BROWSERS,
-                false,
-                [&] { currentScript->setPaused(!currentScript->isPaused()); }
-            );
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                ScriptLuaGUI::LoadScriptDialog(currentScript->getTypesFile());
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Reload scene script", IconGUI::SCRIPT_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                currentScript->Reload();
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove scene script", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                scripting->RemoveSceneScript(currentScript);
-            });
+        // Botones de acción - captura SOLO el puntero, no evalúes estados dinámicos aquí
+        scriptConfig.actionItems.emplace_back(
+            isPaused ? FileSystemGUI::Icon(IconGUI::LUA_LOCK) : FileSystemGUI::Icon(IconGUI::LUA_UNLOCK),
+            isPaused ? "Unlock scene script" : "Lock scene script",
+            [currentScript]() { currentScript->setPaused(!currentScript->isPaused()); }
+        );
 
-            ImGui::PopStyleVar(2);
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCRIPT_EDIT),
+            "Edit script",
+            [currentScript]() { ScriptLuaGUI::LoadScriptDialog(currentScript->getTypesFile()); }
+        );
 
-            ImGui::PopID();
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
+            "Reload scene script",
+            [currentScript]() { currentScript->Reload(); }
+        );
+
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
+            "Remove scene script",
+            [scripting, currentScript]() { scripting->RemoveSceneScript(currentScript); }
+        );
+
+        bool isOpenCurrentScript = CustomImGui::CustomTreeNode(scriptConfig, nullptr);
+
+        if (isOpenCurrentScript) {
+            currentScript->DrawImGuiProperties();
+            CustomImGui::CustomTreePop();
         }
-        ImGui::EndTable();
+
+        ImGui::PopID();
     }
 }
 
 void GUIAddonProjectSetup::DrawSceneCustomShaders()
 {
     auto render = Components::get()->Render();
-
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 5.0f));
     auto shaders = render->getSceneShaders();
 
-    if (ImGui::BeginTable("SceneShadersTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Shader");
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+    for (int i = 0; i < shaders.size(); i++) {
+        auto currentShader = shaders[i];
+        ImGui::PushID(i);
 
-        for (int i = 0; i < shaders.size(); i++) {
-            auto s = shaders[i];
-            ImGui::PushID(i);
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-            ImGui::SameLine(0, 5.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
-            bool isOpenCurrentShader = ImGui::TreeNodeEx(s->getLabel().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
-            ImGui::PopStyleVar(2);
-            if (isOpenCurrentShader) {
-                s->DrawImGuiProperties(nullptr, nullptr);
-                ImGui::TreePop();
-            }
+        // Evaluar estados ANTES de crear el config
+        bool isEnabled = currentShader->isEnabled();
+        std::string shaderLabel = currentShader->getLabel();
 
-            // Buttons
-            ImGui::TableNextColumn();
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // padding inner button
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // spacing between buttonms
+        // Configurar CustomTreeNode para cada shader
+        CustomImGui::CustomTreeNodeConfig shaderConfig(shaderLabel.c_str());
+        shaderConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SHADER_FILE);
+        shaderConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        shaderConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        shaderConfig.defaultOpen = false;
 
-            GUI::DrawButtonTransparent(
-                !s->isEnabled() ? "UnLock scene shader" : "Lock scene shader",
-                !s->isEnabled() ? IconGUI::SHADER_LOCK : IconGUI::SHADER_UNLOCK,
-                GUIType::Sizes::ICON_LOCKS,
-                false,
-                [&] { s->setEnabled(!s->isEnabled());}
-            );
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICON_LOCKS, false, [&] {
-                auto jsonFilename = s->getTypesFile();
-                ShadersGUI::LoadDialogShader(s->getTypesFile());
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Reload shader", IconGUI::LUA_RELOAD, GUIType::Sizes::ICON_LOCKS, false, [&] {
-                s->Reload();
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove shader from scene", IconGUI::LUA_REMOVE, GUIType::Sizes::ICON_LOCKS, false, [&] {
-                render->RemoveSceneShaderByIndex((int) i);
-            });
+        // Botones de acción
+        shaderConfig.actionItems.emplace_back(
+            !isEnabled ? FileSystemGUI::Icon(IconGUI::SHADER_LOCK) : FileSystemGUI::Icon(IconGUI::SHADER_UNLOCK),
+            !isEnabled ? "Unlock scene shader" : "Lock scene shader",
+            [currentShader]() { currentShader->setEnabled(!currentShader->isEnabled()); }
+        );
 
-            ImGui::PopStyleVar(2);
+        shaderConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SHADER_EDIT),
+            "Edit shader",
+            [currentShader]() { ShadersGUI::LoadDialogShader(currentShader->getTypesFile()); }
+        );
 
-            ImGui::PopID();
+        shaderConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::LUA_RELOAD),
+            "Reload shader",
+            [currentShader]() { currentShader->Reload(); }
+        );
+
+        int index = i;
+        shaderConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
+            "Remove shader from scene",
+            [render, index]() { render->RemoveSceneShaderByIndex(index); }
+        );
+
+        bool isOpenCurrentShader = CustomImGui::CustomTreeNode(shaderConfig, nullptr);
+
+        if (isOpenCurrentShader) {
+            currentShader->DrawImGuiProperties(nullptr, nullptr);
+            CustomImGui::CustomTreePop();
         }
-        ImGui::EndTable();
+
+        ImGui::PopID();
     }
 }

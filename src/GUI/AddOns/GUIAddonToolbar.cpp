@@ -104,7 +104,7 @@ void GUIAddonToolbar::LayoutIcons()
 {
     auto *window = Components::get()->Window();
 
-    GUI::DrawButton("Enable/Disable UI", IconGUI::TOOLBAR_ENABLE_GUI, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->ENABLE_IMGUI,[]() {
+    GUI::DrawButton("Enable/Disable UI", IconGUI::TOOLBAR_ENABLE_GUI, GUIType::Sizes::ICONS_TOOLBAR, false,[]() {
         GUI::Toggle(Config::get()->ENABLE_IMGUI);
     });
     ImGui::SameLine();

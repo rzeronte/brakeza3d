@@ -47,6 +47,7 @@ struct CustomTreeNodeConfig {
     float itemPadding = 1.2f;  // Padding vertical de cada item (aumentado para items más altos)
     bool showCheckbox = false;  // Mostrar checkbox opcional
     bool* p_checked = nullptr;  // Puntero al estado del checkbox (true/false)
+    float indentSpacing = 20.0f;
 
     CustomTreeNodeConfig(const char* label) : label(label) {}
 };
@@ -68,7 +69,7 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     bool& is_open = g_TreeNodeStates[id];
 
     // Reducir espacio entre items para que estén más pegados
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, 2.0f));  // Reducido de ~4-8 a 2
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, 2.0f));
 
     // --------------------------------------------------
     // Altura de línea
@@ -138,25 +139,76 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     }
 
     // --------------------------------------------------
-    // INVISIBLE BUTTON (incluye iconos derechos)
+    // ACTION ITEMS PRIMERO (para que capturen eventos)
+    // --------------------------------------------------
+    bool action_button_clicked = false;
+    bool action_button_hovered = false;
+
+    if (!config.actionItems.empty()) {
+        float tree_clickable_width = full_width - checkbox_width;
+        ImVec2 buttons_start(
+            pos_start.x + tree_clickable_width - action_items_width,
+            pos_start.y + action_items_offset_y
+        );
+
+        for (size_t i = 0; i < config.actionItems.size(); ++i) {
+            const auto& item = config.actionItems[i];
+
+            ImVec2 btn_pos = buttons_start;
+            btn_pos.x += i * (item.size.x + style.ItemSpacing.x);
+
+            ImGui::SetCursorScreenPos(btn_pos);
+            std::string idItem = std::to_string((int)i + 10000) + config.label;
+            ImGui::PushID( idItem.c_str());
+
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
+            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 0.8f));
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
+
+            bool clicked = ImGui::ImageButton("##btn", item.icon, item.size);
+
+            ImGui::PopStyleVar(2);
+            ImGui::PopStyleColor(3);
+
+            if (ImGui::IsItemHovered()) {
+                action_button_hovered = true;
+            }
+
+            if (clicked) {
+                action_button_clicked = true;
+                if (item.onClick)
+                    item.onClick();
+            }
+
+            if (ImGui::IsItemHovered() && !item.tooltip.empty()) {
+                ImGui::BeginTooltip();
+                ImGui::TextUnformatted(item.tooltip.c_str());
+                ImGui::EndTooltip();
+            }
+
+            ImGui::PopID();
+        }
+    }
+
+    // --------------------------------------------------
+    // INVISIBLE BUTTON (área del nodo, DESPUÉS de los botones)
     // --------------------------------------------------
     float tree_clickable_width = full_width - checkbox_width;
 
     ImGui::SetCursorScreenPos(pos_start);
     ImGui::PushID(id);
-    bool node_clicked =
-        ImGui::InvisibleButton("##treenode", ImVec2(tree_clickable_width, line_height));
+    bool node_clicked = ImGui::InvisibleButton("##treenode", ImVec2(tree_clickable_width, line_height));
     ImGui::PopID();
 
-    // ✅ CRÍTICO: Permitir que los botones reciban eventos aunque estén "dentro" del InvisibleButton
-    ImGui::SetItemAllowOverlap();
+    bool hovered = ImGui::IsItemHovered() && !action_button_hovered;
 
-    bool hovered = ImGui::IsItemHovered();
-
-    if (node_clicked && !config.isLeaf)
+    // Solo procesar click del nodo si no se clickeó un botón de acción
+    if (node_clicked && !action_button_clicked && !config.isLeaf)
         is_open = !is_open;
 
-    if (node_clicked && p_selected)
+    if (node_clicked && !action_button_clicked && p_selected)
         *p_selected = true;
 
     // --------------------------------------------------
@@ -240,48 +292,6 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     );
 
     // --------------------------------------------------
-    // ACTION ITEMS (DENTRO del invisible, pero ahora con overlap permitido)
-    // --------------------------------------------------
-    if (!config.actionItems.empty()) {
-        ImVec2 buttons_start(
-            pos_start.x + tree_clickable_width - action_items_width,
-            pos_start.y + action_items_offset_y
-        );
-
-        for (size_t i = 0; i < config.actionItems.size(); ++i) {
-            const auto& item = config.actionItems[i];
-
-            ImVec2 btn_pos = buttons_start;
-            btn_pos.x += i * (item.size.x + style.ItemSpacing.x);
-
-            ImGui::SetCursorScreenPos(btn_pos);
-            ImGui::PushID((int)i);
-
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.5f));
-            ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.4f, 0.4f, 0.4f, 0.8f));
-            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 2.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FrameBorderSize, 0.0f);
-
-            bool clicked = ImGui::ImageButton("##btn", item.icon, item.size);
-
-            ImGui::PopStyleVar(2);
-            ImGui::PopStyleColor(3);
-
-            if (clicked && item.onClick)
-                item.onClick();
-
-            if (ImGui::IsItemHovered() && !item.tooltip.empty()) {
-                ImGui::BeginTooltip();
-                ImGui::TextUnformatted(item.tooltip.c_str());
-                ImGui::EndTooltip();
-            }
-
-            ImGui::PopID();
-        }
-    }
-
-    // --------------------------------------------------
     // Drag & drop (misma zona clickable)
     // --------------------------------------------------
     if (config.dragDrop.acceptsDrop && !config.dragDrop.dragDropType.empty()) {
@@ -298,8 +308,13 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
         }
     }
 
-    if (is_open && !config.isLeaf)
-        ImGui::Indent();
+    if (is_open && !config.isLeaf) {
+        if (config.indentSpacing > 0.0f) {
+            ImGui::Indent(config.indentSpacing);
+        } else {
+            ImGui::Indent();
+        }
+    }
 
     // Restaurar ItemSpacing
     ImGui::PopStyleVar();
@@ -307,8 +322,13 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     return is_open && !config.isLeaf;
 }
 
-inline void CustomTreePop() {
-    ImGui::Unindent();
+inline void CustomTreePop(float indentSpacing = 0.0f)
+{
+    if (indentSpacing > 0.0f) {
+        ImGui::Unindent(indentSpacing);
+    } else {
+        ImGui::Unindent();
+    }
 }
 
 inline void ResetTreeStates() {
