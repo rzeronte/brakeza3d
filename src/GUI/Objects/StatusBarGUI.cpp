@@ -62,21 +62,46 @@ void StatusBarGUI::RestoreStyle()
 
 void StatusBarGUI::RenderContent(GUIAddonResourceHub* resourceHub)
 {
-    DrawVersionInfo();
-    DrawSeparator();
-    DrawFPSCounter();
-    DrawSeparator();
-    DrawSessionStatus(resourceHub);
-    DrawSeparator();
-    DrawObjectCount();
-    DrawSeparator();
-    DrawLightsStatus();
-    DrawSeparator();
-    DrawScriptsStatus();
-    DrawSeparator();
-    DrawSceneStatus();
-    DrawSeparator();
-    DrawProjectStatus();
+    // Tabla con 3 columnas: izquierda, spacer, derecha
+    if (ImGui::BeginTable("StatusBarTable", 3, ImGuiTableFlags_None))
+    {
+        // Izquierda: ancho fijo según contenido
+        ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthFixed);
+        // Centro: se expande para llenar el espacio
+        ImGui::TableSetupColumn("Spacer", ImGuiTableColumnFlags_WidthStretch);
+        // Derecha: ancho fijo según contenido
+        ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+
+        ImGui::TableNextRow();
+
+        // ===== COLUMNA IZQUIERDA =====
+        ImGui::TableSetColumnIndex(0);
+        DrawVersionInfo();
+        DrawSeparator();
+        if (Config::get()->DRAW_FPS_RENDER) {
+            DrawFPSCounter();
+            DrawSeparator();
+        }
+        DrawSessionStatus(resourceHub);
+        DrawSeparator();
+        DrawObjectCount();
+        DrawSeparator();
+        DrawLightsStatus();
+        DrawSeparator();
+        DrawScriptsStatus();
+
+        // ===== COLUMNA CENTRO (vacía, solo empuja) =====
+        ImGui::TableSetColumnIndex(1);
+        // Vacío intencionalmente
+
+        // ===== COLUMNA DERECHA =====
+        ImGui::TableSetColumnIndex(2);
+        DrawSceneStatus();
+        DrawSeparator();
+        DrawProjectStatus();
+
+        ImGui::EndTable();
+    }
 }
 
 void StatusBarGUI::DrawSeparator()
@@ -93,8 +118,6 @@ void StatusBarGUI::DrawVersionInfo()
 
 void StatusBarGUI::DrawFPSCounter()
 {
-    if (!Config::get()->DRAW_FPS_RENDER) return;
-
     DrawIconWithFormattedText(IconGUI::VIDEO_FPS, "FPS: %.1f", ImGui::GetIO().Framerate);
 }
 
@@ -138,14 +161,14 @@ void StatusBarGUI::DrawScriptsStatus()
 void StatusBarGUI::DrawProjectStatus()
 {
     auto project = Components::get()->Scripting()->getCurrentProject();
-    auto label = project != nullptr ? project->getFilePath().c_str() : "None";
+    auto label = project != nullptr ? project->getFilePath().c_str() : "Unknown";
     DrawIconWithText(IconGUI::PROJECT_FILE, label);
 }
 
 void StatusBarGUI::DrawSceneStatus()
 {
     auto scene = Components::get()->Scripting()->getCurrentScene();
-    auto label = scene != nullptr ? scene->getFilePath().c_str() : "None";
+    auto label = scene != nullptr ? scene->getFilePath().c_str() : "Unknown";
     DrawIconWithText(IconGUI::SCENE_FILE, label);
 }
 
@@ -204,4 +227,39 @@ void StatusBarGUI::DrawGradientLine(ImGuiViewport* viewport, float yPosition, fl
         ImVec2(lineEnd.x, lineEnd.y),
         colorCyan, colorLime, colorLime, colorCyan
     );
+}
+
+float StatusBarGUI::CalculateItemWidth(GUIType::Sheet icon, const char* text)
+{
+    float iconWidth = GUIType::Sizes::ICON_SIZE_MENUS.x;
+    float textWidth = ImGui::CalcTextSize(text).x;
+    float spacing = ImGui::GetStyle().ItemSpacing.x;
+
+    return iconWidth + spacing + textWidth;
+}
+
+void StatusBarGUI::DrawRightAlignedItems(GUIAddonResourceHub* resourceHub)
+{
+    // Calcular el ancho total de los items a la derecha
+    float totalWidth = 0.0f;
+    float separatorWidth = ImGui::CalcTextSize(" | ").x;
+
+    // Ejemplo: Scene + Project
+    auto scene = Components::get()->Scripting()->getCurrentScene();
+    auto sceneLabel = scene != nullptr ? scene->getFilePath().c_str() : "None";
+    totalWidth += CalculateItemWidth(IconGUI::SCENE_FILE, sceneLabel);
+    totalWidth += separatorWidth;
+
+    auto project = Components::get()->Scripting()->getCurrentProject();
+    auto projectLabel = project != nullptr ? project->getFilePath().c_str() : "None";
+    totalWidth += CalculateItemWidth(IconGUI::PROJECT_FILE, projectLabel);
+
+    // Posicionar cursor a la derecha
+    float availableWidth = ImGui::GetContentRegionAvail().x;
+    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + availableWidth - totalWidth);
+
+    // Dibujar items
+    DrawSceneStatus();
+    DrawSeparator();
+    DrawProjectStatus();
 }

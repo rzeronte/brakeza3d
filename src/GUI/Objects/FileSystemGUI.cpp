@@ -226,6 +226,7 @@ void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
     auto files = browser.folderFiles;
 
     if (files.empty()) {
+        ImGui::Spacing();
         Drawable::WarningMessage("Empty directory");
     }
 
@@ -290,18 +291,18 @@ void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const st
     });
     ImGui::TableSetColumnIndex(2);
     // Load button
-    GUI::DrawButtonTransparent("Load scene", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButtonTransparent("Load Scene file", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         SceneLoader::ClearScene();
         SceneLoader::LoadScene(fullPath);
     });
     ImGui::TableSetColumnIndex(3);
     // Save button
-    GUI::DrawButtonConfirm("Overriding scene", "Are you sure to override scene?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+    GUI::DrawButtonConfirm("Overriding scene file", "Are you sure to override scene?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
         SceneLoader::SaveScene(fullPath);
     });
     ImGui::TableSetColumnIndex(4);
     // Delete button
-    GUI::DrawButtonConfirm("Deleting scene", "Are you sure to delete scene?", IconGUI::SCENE_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+    GUI::DrawButtonConfirm("Deleting scene file", "Are you sure to delete scene?", IconGUI::SCENE_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
         SceneLoader::RemoveScene(fullPath);
         browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
     });
@@ -360,7 +361,7 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
 
 void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::BrowserCache &browser)
 {
-    ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_BROWSERS);
+    ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
     ImGui::SameLine();
     ImGui::Text("%s", browser.currentFolder.c_str());
     ImGui::Separator();
@@ -581,6 +582,7 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
     auto files = browser.folderFiles;
 
     if (files.empty()) {
+        ImGui::Spacing();
         Drawable::WarningMessage("Empty directory");
     }
 
@@ -633,20 +635,20 @@ void FileSystemGUI::DrawShaderRowActions(GUIType::BrowserCache &browser, const s
 
     // Load button
     ImGui::TableSetColumnIndex(1);
-    GUI::DrawButtonTransparent("Load shader into scene", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+    GUI::DrawButtonTransparent("Attach to current Scene", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
         Components::get()->Render()->LoadShaderIntoScene(fullPath);
     });
 
     // Edit button
     ImGui::TableSetColumnIndex(2);
-    GUI::DrawButton("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
+    GUI::DrawButton("Edit Shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
         ShadersGUI::LoadDialogShader(fullPath);
     });
 
     // Delete button
     ImGui::TableSetColumnIndex(3);
 
-    GUI::DrawButtonConfirm("Deleting shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
+    GUI::DrawButtonConfirm("Deleting Shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
         ShaderBaseCustomOGLCode::RemoveCustomShaderFiles(
             browser.currentFolder,
             Tools::getFilenameWithoutExtension(file)
@@ -716,12 +718,14 @@ void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
     auto files = browser.folderFiles;
 
     if (files.empty()) {
+        ImGui::Spacing();
         Drawable::WarningMessage("Empty directory");
     }
 
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScriptsFolderTable", 3, flags)) {
+    if (ImGui::BeginTable("ScriptsFolderTable", 4, flags)) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Load", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Edit", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthFixed);
         for (int i = 0; i < files.size(); i++) {
@@ -759,14 +763,22 @@ void FileSystemGUI::DrawScriptRowActions(GUIType::BrowserCache &browser, const s
     auto fullPath = browser.currentFolder + file;
 
     ImGui::TableSetColumnIndex(1);
+    GUI::DrawButton("Attach to current Scene", IconGUI::SCRIPT_LOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+        auto meta = ScriptLuaGUI::ExtractScriptMetainfo(fullPath);
+        Components::get()->Scripting()->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+    });
+
+    ImGui::TableSetColumnIndex(2);
     GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
         ScriptLuaGUI::LoadScriptDialog(fullPath);
     });
-    ImGui::TableSetColumnIndex(2);
+
+    ImGui::TableSetColumnIndex(3);
     GUI::DrawButtonConfirm("Deleting script", "Are you sure to delete script?", IconGUI::SCRIPT_REMOVE, GUIType::Sizes::ICONS_BROWSERS,[&] {
         ComponentScripting::RemoveScriptLUAFile(fullPath);
         browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
     });
+
 }
 
 void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
