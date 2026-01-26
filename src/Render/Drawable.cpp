@@ -204,7 +204,7 @@ void Drawable::WarningMessage(const char *msg)
 {
     ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", msg);
+    ImGui::TextDisabled("%s", msg);
     ImGui::Spacing();
 }
 

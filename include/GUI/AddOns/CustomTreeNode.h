@@ -48,6 +48,7 @@ struct CustomTreeNodeConfig {
     bool showCheckbox = false;  // Mostrar checkbox opcional
     bool* p_checked = nullptr;  // Puntero al estado del checkbox (true/false)
     float indentSpacing = 20.0f;
+    ImVec4 textColor = ImVec4(0, 0, 0, 0);  // (0,0,0,0) significa "usar color por defecto"
 
     CustomTreeNodeConfig(const char* label) : label(label) {}
 };
@@ -103,12 +104,8 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
             action_items_width += item.size.x + style.ItemSpacing.x;
 
         action_items_width += style.FramePadding.x;
-
-        float button_full_height =
-            config.actionItems[0].size.y + style.FramePadding.y * 2.0f;
-
-        action_items_offset_y =
-            (line_height - button_full_height) * 0.5f;
+        float button_full_height = config.actionItems[0].size.y + style.FramePadding.y * 2.0f;
+        action_items_offset_y = (line_height - button_full_height) * 0.5f;
     }
 
     // --------------------------------------------------
@@ -116,7 +113,7 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     // --------------------------------------------------
     ImVec2 full_start = ImGui::GetCursorScreenPos();
     ImVec2 pos_start = full_start;
-    pos_start.x += checkbox_width;
+    pos_start.x += checkbox_width - 4.0f;
 
     const float full_width = ImGui::GetContentRegionAvail().x;
 
@@ -133,7 +130,13 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
 
         ImGui::SetCursorScreenPos(checkbox_pos);
         ImGui::PushID(id + 9999);
+
+        // Reducir el FramePadding para hacer el checkbox más pequeño
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.0f, 2.0f)); // Valores más pequeños
+
         ImGui::Checkbox("##checkbox", config.p_checked);
+
+        ImGui::PopStyleVar(); // Restaurar FramePadding
         ImGui::PopID();
         ImGui::SetCursorPos(cursor_backup);
     }
@@ -285,9 +288,17 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     if (config.showChildCount && config.childCount > 0)
         display_label += " (" + std::to_string(config.childCount) + ")";
 
+    // Determinar color del texto
+    ImU32 text_color;
+    if (config.textColor.w > 0.0f) {  // Si alpha > 0, usar color personalizado
+        text_color = ImGui::GetColorU32(config.textColor);
+    } else {
+        text_color = ImGui::GetColorU32(ImGuiCol_Text);  // Color por defecto
+    }
+
     window->DrawList->AddText(
         ImVec2(x_offset, pos_start.y + text_base_offset_y),
-        ImGui::GetColorU32(ImGuiCol_Text),
+        text_color,  // Usar el color determinado
         display_label.c_str()
     );
 

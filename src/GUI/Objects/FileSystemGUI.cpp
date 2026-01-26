@@ -326,7 +326,6 @@ void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
     GUI::ImageButtonNormal(IconGUI::SCENE_FILE, "Create scene", [&] {
         openPopup = true;
     });
-
 }
 
 void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
@@ -345,7 +344,7 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
         });
 
         float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
-        float spacing = 150.0f - buttonWidth * 2; // Ajusta este valor según necesites
+        float spacing = 150.0f - buttonWidth * 2;
 
         ImGui::SameLine(0, spacing);
         GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
@@ -366,7 +365,6 @@ void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::B
     ImGui::Text("%s", browser.currentFolder.c_str());
     ImGui::Separator();
 
-    // Calcular offset para centrado vertical
     ImVec2 iconSize = GUIType::Sizes::ICONS_BROWSERS;
     float frameHeight = ImGui::GetFrameHeight();
     float offsetY = (frameHeight - iconSize.y) * 0.5f;
@@ -386,7 +384,6 @@ void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::B
 
     if (browser.folderFolders.empty()) return;
 
-    // IMPORTANTE: No modificar el vector durante la iteración
     std::string selectedFolder;
 
     for (const auto &i : browser.folderFolders) {
