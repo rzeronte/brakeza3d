@@ -9,8 +9,9 @@
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Editable/EditableOpenShaderFile.h"
-#include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Editable/EditableOpenNode.h"
+#include "../../../include/GUI/AddOns/CustomTreeNode.h"
+#include "../../../include/Components/Components.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
 #include "../../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
@@ -209,8 +210,6 @@ void ShadersGUI::DrawWinObjectShaders()
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SHADERS);
     if (!windowStatus->isOpen) return;
 
-    auto objects = Brakeza::get()->getSceneObjects();
-
     auto o = Components::get()->Render()->getSelectedObject();
     if (o == nullptr) {
         Drawable::WarningMessage("No object selected");
@@ -226,57 +225,70 @@ void ShadersGUI::DrawWinObjectShaders()
     auto customShaders = mesh->getCustomShaders();
     if (customShaders.empty()) {
         Drawable::WarningMessage("No shaders in selected object");
+        return;
     }
 
-    if (ImGui::BeginTable("SceneShadersTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Shader");
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+    for (unsigned int i = 0; i < customShaders.size(); i++) {
+        auto s = customShaders[i];
 
-        for (unsigned int i = 0; i < customShaders.size(); i++) {
-            ImGui::PushID(i);
-            auto s = customShaders[i];
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-            ImGui::SameLine(0, 5.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
-            bool isOpenCurrentShader = ImGui::TreeNodeEx(s->getLabel().c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
-            ImGui::PopStyleVar(2);
-            if (isOpenCurrentShader) {
-                s->DrawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
-            }
-            // Buttons
-            ImGui::TableNextColumn();
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // padding inner button
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // spacing between buttonms
+        // Configurar CustomTreeNode
+        CustomImGui::CustomTreeNodeConfig config(s->getLabel().c_str());
 
-            GUI::DrawButtonTransparent(
-                !s->isEnabled() ? "Unlock shader object" : "Lock shader object",
-                !s->isEnabled() ? IconGUI::SHADER_LOCK : IconGUI::SHADER_UNLOCK,
-                GUIType::Sizes::ICONS_BROWSERS,
-                false,
-                [&] { s->setEnabled(!s->isEnabled()); }
-            );
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Reload shader in object", IconGUI::SHADER_RELOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                s->Reload();
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Edit shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                auto jsonFilename = s->getTypesFile() + ".json";
-                LoadDialogShader(s->getTypesFile());
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove shader in object", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                mesh->RemoveShader(i);
-            });
+        config.leftIcon = FileSystemGUI::Icon(IconGUI::SHADER_FILE);
+        config.iconSize = GUIType::Sizes::ICONS_OBJECTS_ALLOWED;
 
-            ImGui::PopStyleVar(2);
+        // 🎯 Añadir bullets
+        config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        config.bulletSize = ImVec2(18, 18); // Opcional, ajusta el tamaño
 
-            ImGui::PopID();
+        config.itemPadding = 1.0f;
+        config.indentSpacing = 20.0f;
+        config.defaultOpen = false;
+
+        // Lock/Unlock
+        CustomImGui::TreeActionItem lockItem(
+            !s->isEnabled() ? FileSystemGUI::Icon(IconGUI::SHADER_LOCK) : FileSystemGUI::Icon(IconGUI::SHADER_UNLOCK),
+            !s->isEnabled() ? "Unlock shader object" : "Lock shader object",
+            [s]() { s->setEnabled(!s->isEnabled()); }
+        );
+        lockItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(lockItem);
+
+        // Reload
+        CustomImGui::TreeActionItem reloadItem(
+            FileSystemGUI::Icon(IconGUI::SHADER_RELOAD),
+            "Reload shader in object",
+            [s]() { s->Reload(); }
+        );
+        reloadItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(reloadItem);
+
+        // Edit
+        CustomImGui::TreeActionItem editItem(
+            FileSystemGUI::Icon(IconGUI::SHADER_EDIT),
+            "Edit shader",
+            [s]() { LoadDialogShader(s->getTypesFile()); }
+        );
+        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(editItem);
+
+        // Remove
+        CustomImGui::TreeActionItem removeItem(
+            FileSystemGUI::Icon(IconGUI::SHADER_REMOVE),
+            "Remove shader in object",
+            [mesh, i]() { mesh->RemoveShader(i); }
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        // Dibujar el nodo
+        bool isOpen = CustomImGui::CustomTreeNode(config);
+
+        if (isOpen) {
+            s->DrawImGuiProperties(mesh->getModelTextures()[0], mesh->getModelTextures()[0]);
+            CustomImGui::CustomTreePop(config.indentSpacing);
         }
-        ImGui::EndTable();
     }
 }
 

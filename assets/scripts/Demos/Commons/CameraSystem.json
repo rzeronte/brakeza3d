@@ -1,6 +1,6 @@
 {
 	"codeFile":	"../assets/scripts/Demos/Commons/CameraSystem.lua",
 	"typesFile":	"../assets/scripts/Demos/Commons/CameraSystem.json",
-	"name":	"../assets/scripts/Demos/Commons/CameraSystem",
+	"name":	"CameraSystem",
 	"types":	[]
 }

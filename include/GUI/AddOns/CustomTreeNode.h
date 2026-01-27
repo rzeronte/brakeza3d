@@ -49,6 +49,7 @@ struct CustomTreeNodeConfig {
     bool* p_checked = nullptr;  // Puntero al estado del checkbox (true/false)
     float indentSpacing = 20.0f;
     ImVec4 textColor = ImVec4(0, 0, 0, 0);  // (0,0,0,0) significa "usar color por defecto"
+    std::function<void()> onDoubleClick = nullptr;
 
     CustomTreeNodeConfig(const char* label) : label(label) {}
 };
@@ -214,6 +215,11 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     if (node_clicked && !action_button_clicked && p_selected)
         *p_selected = true;
 
+    // Detectar doble click
+    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left) && !action_button_clicked) {
+        if (config.onDoubleClick)
+            config.onDoubleClick();
+    }
     // --------------------------------------------------
     // Fondo (cubre TODO salvo checkbox)
     // --------------------------------------------------
