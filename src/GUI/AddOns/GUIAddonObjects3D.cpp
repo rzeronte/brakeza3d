@@ -65,9 +65,9 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
             FileSystemGUI::Icon(IconGUI::SCRIPT_FILE),
             "Scripts: " + std::to_string(numScripts),
             [o]() {
-                LOG_MESSAGE("[Objects] Scripts: %s", o->getName().c_str());
-            }
-        );
+                Components::get()->Render()->setSelectedObject(o);
+                Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SCRIPTS)->isOpen = true;
+        });
     }
 
     // Shaders
@@ -78,8 +78,8 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
             FileSystemGUI::Icon(IconGUI::SHADER_FILE),
             "Shaders: " + std::to_string(numShaders),
             [o, mesh]() {
-                LOG_MESSAGE("[Objects] Shaders: %s", o->getName().c_str());
-            }
+                Components::get()->Render()->setSelectedObject(o);
+                Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SHADERS)->isOpen = true;            }
         );
     }
 
@@ -118,6 +118,13 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
         o->AttachScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
     };
     config.dragDrop = dragDropScript;
+    config.onDoubleClick = [o]() {
+        LOG_MESSAGE("[Objects] DOUBLE CLICK");
+        Components::get()->Render()->setSelectedObject(o);
+        if (!Brakeza::get()->GUI()->isWindowOpen(GUIType::OBJECT_PROPS)) {
+            Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_PROPS)->isOpen = true;
+        }
+    };
 
     // ===== SELECCIÓN =====
     auto selectedObject = Components::get()->Render()->getSelectedObject();
@@ -136,13 +143,6 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
 
     // Actualizar estado enabled
     o->setEnabled(isEnabled);
-
-    // Doble click para propiedades
-    if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-        if (!Brakeza::get()->GUI()->isWindowOpen(GUIType::OBJECT_PROPS)) {
-            Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_PROPS)->isOpen = true;
-        }
-    }
 
     // Drag & Drop shaders (Mesh3D)
     if (mesh != nullptr) {

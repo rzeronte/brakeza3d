@@ -7,6 +7,7 @@
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/Editable/EditableOpenScriptFile.h"
+#include "../../../include/GUI/AddOns/CustomTreeNode.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Render/Drawable.h"
 
@@ -74,55 +75,63 @@ void ScriptLuaGUI::DrawWinObjectScripts()
 
     if (objectScripts.empty()) {
         Drawable::WarningMessage("No scripts in selected object");
+        return;
     }
 
-    if (ImGui::BeginTable("SceneShadersTable", 2, ImGuiTableFlags_None | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Shader");
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+    for (unsigned int i = 0; i < objectScripts.size(); i++) {
+        auto currentScript = objectScripts[i];
 
-        for (unsigned int i = 0; i < objectScripts.size(); i++) {
-            auto currentScript = objectScripts[i];
-            ImGui::PushID(std::string("##object_scripts_" + std::to_string(i)).c_str());
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-            ImGui::SameLine(0, 5.0f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
-            std::string name = std::to_string(i + 1) + ") " + currentScript->getName();
-            bool isOpenCurrentScript = ImGui::TreeNodeEx(name.c_str(), ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding);
-            ImGui::PopStyleVar(2);
-            if (isOpenCurrentScript) {
-                currentScript->DrawImGuiProperties();
-                ImGui::TreePop();
-            }
+        // Configurar CustomTreeNode
+        std::string name = currentScript->getName();
+        CustomImGui::CustomTreeNodeConfig config(name.c_str());
 
-            // Buttons
-            ImGui::TableNextColumn();
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));    // padding inner button
-            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));     // spacing between buttonms
+        config.leftIcon = FileSystemGUI::Icon(IconGUI::SCRIPT_FILE);
+        config.iconSize = GUIType::Sizes::ICONS_OBJECTS_ALLOWED;
 
-            GUI::DrawButtonTransparent(
-                currentScript->isPaused() ? "Unlock script object" : "Lock script object",
-                currentScript->isPaused() ? IconGUI::LUA_LOCK : IconGUI::LUA_UNLOCK,
-                GUIType::Sizes::ICONS_BROWSERS,
-                false,
-                [&] { currentScript->setPaused(!currentScript->isPaused()); }
-            );
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                LoadScriptDialog(currentScript->getTypesFile());
-            });
-            ImGui::SameLine();
-            GUI::DrawButtonTransparent("Remove script object", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-                o->RemoveScript(currentScript);
-            });
+        // 🎯 Añadir bullets
+        config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+        config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        config.bulletSize = ImVec2(18, 18);
 
-            ImGui::PopStyleVar(2);
-            ImGui::PopID();
+        config.itemPadding = 1.0f;
+        config.indentSpacing = 20.0f;
+        config.defaultOpen = false;
+
+        // Lock/Unlock
+        CustomImGui::TreeActionItem lockItem(
+            currentScript->isPaused() ? FileSystemGUI::Icon(IconGUI::LUA_LOCK) : FileSystemGUI::Icon(IconGUI::LUA_UNLOCK),
+            currentScript->isPaused() ? "Unlock script object" : "Lock script object",
+            [currentScript]() { currentScript->setPaused(!currentScript->isPaused()); }
+        );
+        lockItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(lockItem);
+
+        // Edit
+        CustomImGui::TreeActionItem editItem(
+            FileSystemGUI::Icon(IconGUI::SCRIPT_EDIT),
+            "Edit script",
+            [currentScript]() { LoadScriptDialog(currentScript->getTypesFile()); }
+        );
+        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(editItem);
+
+        // Remove
+        CustomImGui::TreeActionItem removeItem(
+            FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
+            "Remove script object",
+            [o, currentScript]() { o->RemoveScript(currentScript); }
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        // Dibujar el nodo
+        bool isOpen = CustomImGui::CustomTreeNode(config);
+
+        if (isOpen) {
+            currentScript->DrawImGuiProperties();
+            CustomImGui::CustomTreePop(config.indentSpacing);
         }
     }
-    ImGui::EndTable();
 }
 
 void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon)
