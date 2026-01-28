@@ -37,6 +37,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
         projectConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         projectConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
         projectConfig.defaultOpen = false;
+        projectConfig.forceOpenPtr = &FileSystemGUI::autoExpandProject;
 
         // Color según estado
         if (project != nullptr) {
@@ -74,8 +75,9 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
             projectConfig.actionItems.emplace_back(
                 FileSystemGUI::Icon(IconGUI::CREATE_FILE),
                 "New project",
-                [&]() {
-                    printf("TODO: Nuevo proyecto\n");
+                []() {
+                    LOG_MESSAGE("NEW PROJECT");
+                    FileSystemGUI::openPopUpCreateProject = true;
                 }
             );
         }
@@ -106,7 +108,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     // ============================================
     {
         std::string sceneLabel = scene != nullptr
-            ? "Scene: " + scene->getFilePath()
+            ? "Scene: " + Tools::removeSubstring(scene->getFilePath(), Config::get()->ASSETS_FOLDER)
             : "Scene: Unknown";
 
         CustomImGui::CustomTreeNodeConfig sceneConfig(sceneLabel.c_str());
@@ -116,6 +118,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
         sceneConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         sceneConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
         sceneConfig.defaultOpen = false;
+        sceneConfig.forceOpenPtr = &FileSystemGUI::autoExpandScene;
 
         bool isTemporary = false;
 
@@ -595,12 +598,13 @@ void GUIAddonProjectSetup::DrawProjectScenes()
     for (unsigned int i = 0; i < scenes.size(); i++) {
         auto currentScene = scenes[i];
         ImGui::PushID(i);
+        auto label = Tools::removeSubstring(currentScene, Config::get()->ASSETS_FOLDER);
 
-        // Configurar CustomTreeNode para cada escena
-        CustomImGui::CustomTreeNodeConfig sceneConfig(currentScene.c_str());
+        CustomImGui::CustomTreeNodeConfig sceneConfig(label.c_str());
         sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
 
-        // Botones de acción
+        // BUTTONS
+
         sceneConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
             "Load Scene",
@@ -645,7 +649,8 @@ void GUIAddonProjectSetup::DrawProjectSettings()
     if (!checker.isLoaded()) return;
 
     std::string projectName = checker.getStatus().name;
-    std::string filePath = checker.getFilePath();
+    std::string filePath = Tools::removeSubstring(checker.getFilePath(), Config::get()->ASSETS_FOLDER);
+
     Vertex3D gravity = checker.getStatus().gravity;
 
     int resolutionW = checker.getStatus().resolution.width;

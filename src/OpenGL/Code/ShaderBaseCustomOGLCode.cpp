@@ -13,6 +13,7 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
+#include "../../../include/Render/Drawable.h"
 
 ShaderBaseCustomOGLCode::ShaderBaseCustomOGLCode(
     const std::string &label,
@@ -140,8 +141,7 @@ void ShaderBaseCustomOGLCode::DrawTypeInternalImGuiControl(const ShaderOGLCustom
 
 void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
-    ImGui::SeparatorText("OpenGL custom uniforms");
-
+    ImGui::Spacing();
     static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
 
     int contUniforms = CountTypesByFilter(dataTypes, {
@@ -172,17 +172,14 @@ void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *s
         ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Custom uniforms not found");
     }
 
-    ImGui::SeparatorText("OpenGL system uniforms");
-
     for (auto &type: dataTypes) {
         DrawTypeInternalImGuiControl(type);
     }
 
     if (countInternalUniforms == 0) {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "System uniforms not found");
+        ImGui::Spacing();
+        Drawable::WarningMessage("No system uniforms found");
     }
-
-    ImGui::SeparatorText("OpenGL textures");
 
     if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
         int j = 0;

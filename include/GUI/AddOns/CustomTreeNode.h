@@ -42,14 +42,16 @@ struct CustomTreeNodeConfig {
     ImVec2 iconSize = ImVec2(18, 18);
     ImVec2 bulletSize = ImVec2(18, 18);
     ImVec4 iconTint = ImVec4(1, 1, 1, 1);
-    ImVec4 selectedColor = ImVec4(0.26f, 0.59f, 0.98f, 0.31f);
-    ImVec4 hoveredColor = ImVec4(0.26f, 0.59f, 0.98f, 0.20f);
-    float itemPadding = 1.2f;  // Padding vertical de cada item (aumentado para items más altos)
+    ImVec4 selectedColor = ImVec4(0.35f, 0.65f, 0.45f, 0.3f);
+    ImVec4 hoveredColor = ImVec4(0.35f, 0.65f, 0.45f, 0.2f);
+    float itemPadding = 1.2f;  // Padding vertical de cada item
+    float itemMargin = 2.0f;  // Margen vertical entre items
     bool showCheckbox = false;  // Mostrar checkbox opcional
     bool* p_checked = nullptr;  // Puntero al estado del checkbox (true/false)
     float indentSpacing = 20.0f;
-    ImVec4 textColor = ImVec4(0, 0, 0, 0);  // (0,0,0,0) significa "usar color por defecto"
+    ImVec4 textColor = ImVec4(0, 0, 0, 0);  // (0,0,0,0) means "default color"
     std::function<void()> onDoubleClick = nullptr;
+    bool* forceOpenPtr = nullptr;  // Puntero opcional para controlar apertura
 
     CustomTreeNodeConfig(const char* label) : label(label) {}
 };
@@ -65,13 +67,25 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     const ImGuiStyle& style = ImGui::GetStyle();
     const ImGuiID id = window->GetID(config.label);
 
+    // Forzar apertura
+    if (g_TreeNodeStates.find(id) == g_TreeNodeStates.end()) {
+        g_TreeNodeStates[id] = config.defaultOpen;
+    }
+
+    // Aplicar forceOpenPtr directamente al estado
+    if (config.forceOpenPtr && *config.forceOpenPtr) {
+        g_TreeNodeStates[id] = true;  // Forzar apertura en TU sistema
+        *config.forceOpenPtr = false;  // Auto-reset
+    }
+
     if (g_TreeNodeStates.find(id) == g_TreeNodeStates.end()) {
         g_TreeNodeStates[id] = config.defaultOpen;
     }
     bool& is_open = g_TreeNodeStates[id];
 
     // Reducir espacio entre items para que estén más pegados
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, 2.0f));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, config.itemMargin));
+
 
     // --------------------------------------------------
     // Altura de línea

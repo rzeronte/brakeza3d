@@ -819,6 +819,14 @@
 			"name":	"SCRIPT_LOAD",
 			"x":	5,
 			"y":	33
+		}, {
+			"name":	"WIN_OBJECT_AUTOHIDE_ON",
+			"x":	5,
+			"y":	1
+		}, {
+			"name":	"WIN_OBJECT_AUTOHIDE_OFF",
+			"x":	4,
+			"y":	1
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

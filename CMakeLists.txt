@@ -369,7 +369,7 @@ add_executable(Brakeza3D
         include/HttpClient/ResourceHubClient.h
         src/HttpClient/ResourceHubClient.cpp
         include/GUI/AddOns/GUIAddonResourceHub.h
-        include/GUI/AddOns/GUIAddonResourceHub.cpp
+        src/GUI/AddOns/GUIAddonResourceHub.cpp
         src/GUI/Objects/ThreadGUI.cpp
         include/GUI/Objects/ThreadGUI.h
         src/GUI/Objects/StatusBarGUI.cpp
@@ -379,8 +379,7 @@ add_executable(Brakeza3D
         include/Loaders/Project.cpp
         include/Loaders/Project.h
         include/GUI/AddOns/CustomTreeNode.h
-        include/GUI/AddOns/CustomTreeNode.cpp
-        include/GUI/AddOns/CustomTreeNodeExamples.h
+        src/GUI/AddOns/CustomTreeNode.cpp
 )
 
 target_link_libraries(Brakeza3D

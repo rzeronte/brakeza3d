@@ -67,7 +67,7 @@ namespace GUIType
     };
 
     struct Sizes {
-        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(24, 24);
+        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(22, 22);
         static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(18, 18);
         static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
@@ -129,14 +129,18 @@ namespace GUIType
         BROWSER,
     };
 
-    struct WindowData {
+    struct WindowGUI {
         std::string label;
         Window window;
         Sheet icon;
         bool isOpen = false;
         bool isInternal = false;
         bool isDockable = true;
+        bool isObjectWindow = false;
         std::function<void()> functionCallBack;
+        ImVec2 minSize = ImVec2(200, 150);
+        ImVec2 maxSize = ImVec2(FLT_MAX, FLT_MAX);
+        bool autoHideIfNotSelected = false;
     };
 
     struct LayoutWindowConfig {
@@ -379,6 +383,8 @@ namespace GUIType
     X(PROJECT_CLOSE, 0, 0) \
     X(SCENE_ATTACH_PROJECT, 0, 0) \
     X(SCRIPT_LOAD, 0, 0) \
+    X(WIN_OBJECT_AUTOHIDE_ON, 0, 0) \
+    X(WIN_OBJECT_AUTOHIDE_OFF, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

@@ -6,6 +6,7 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../include/Misc/ToolsJSON.h"
 
 
@@ -68,13 +69,14 @@ void ProjectLoader::LoadProject(const std::string &filename)
     // volumes
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "sound") != nullptr) {
         auto soundJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "sound");
-        Config::get()->SOUND_VOLUME_MUSIC = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_music")->valuedouble;;
-        Config::get()->SOUND_VOLUME_FX = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_fx")->valuedouble;;
+        Config::get()->SOUND_VOLUME_MUSIC = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_music")->valuedouble;
+        Config::get()->SOUND_VOLUME_FX = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_fx")->valuedouble;
         Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) Config::get()->SOUND_VOLUME_FX);
         Mix_VolumeMusic((int) Config::get()->SOUND_VOLUME_MUSIC);
     }
 
     Components::get()->Scripting()->setCurrentProject(new Project(filename));
+    FileSystemGUI::autoExpandProject = true;
 }
 
 void ProjectLoader::SaveProject(const std::string &filename)
@@ -143,6 +145,7 @@ void ProjectLoader::CloseCurrentProject()
         SceneLoader::ClearScene();
     }
     scripting->setCurrentProject(nullptr);
+    FileSystemGUI::autoExpandProject = false;
 }
 
 void ProjectLoader::CreateProject(const std::string &filename)

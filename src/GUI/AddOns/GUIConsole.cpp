@@ -65,7 +65,6 @@ void GuiAddonConsole::DrawWinLogging()
     const char* title = windowStatus->label.c_str();
     bool* p_open = &windowStatus->isOpen;
 
-    ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
     if (!ImGui::Begin(title, p_open))
     {
         ImGui::End();
@@ -91,13 +90,11 @@ void GuiAddonConsole::DrawWinLogging()
     // Options, Filter
     GUI::DrawButton("Clear", IconGUI::LOGGING_CLEAR, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ClearLog(); });
     ImGui::SameLine();
-    GUI::DrawButton("Options", IconGUI::LOGGING_OPTIONS, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ImGui::OpenPopup("Options"); });
-    ImGui::SameLine();
     Filter.Draw("Filter", 180);
     ImGui::Separator();
 
     // Reserve enough left-over height for 1 separator + 1 input text
-    const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
+    const float footer_height_to_reserve = 0; //ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
     if (ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar))
     {
         if (ImGui::BeginPopupContextWindow())
@@ -144,12 +141,11 @@ void GuiAddonConsole::DrawWinLogging()
         ImGui::PopStyleVar();
     }
     ImGui::EndChild();
-    ImGui::Separator();
 
     // Command-line
     bool reclaim_focus = false;
     ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_EscapeClearsAll | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
-    if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags, &TextEditCallbackStub, this))
+    /*if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags, &TextEditCallbackStub, this))
     {
         char* s = InputBuf;
         Strtrim(s);
@@ -163,7 +159,7 @@ void GuiAddonConsole::DrawWinLogging()
     ImGui::SetItemDefaultFocus();
     if (reclaim_focus)
         ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
-
+    */
     ImGui::End();
 }
 

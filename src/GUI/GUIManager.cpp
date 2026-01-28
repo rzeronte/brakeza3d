@@ -21,8 +21,8 @@
 #include "../../include/GUI/Objects/ThreadGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
 
-#define ADD_WIN(title, type, icon, visible, internal, dockable, func) \
-windows.push_back({ title, type, icon, visible, internal, dockable, [&] { func; }})
+#define ADD_WIN(title, type, icon, visible, internal, dockable, isObjectWindow, func, minSize, maxSize) \
+windows.push_back({ title, type, icon, visible, internal, dockable, isObjectWindow, [&] { func; }, minSize, maxSize})
 
 GUIManager::GUIManager()
 :
@@ -61,25 +61,25 @@ void GUIManager::OnStart()
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project setup",       GUIType::PROJECT_SETTINGS,    IconGUI::WIN_PROJECT_SETTINGS,  true,  false, true, GUIAddonProjectSetup::DrawWinProjectSettings());
-    ADD_WIN("File browser",        GUIType::BROWSER,             IconGUI::WIN_BROWSER,           true,  false, true, FileSystemGUI::DrawMainBrowser());
-    ADD_WIN("Scene Objects",       GUIType::SCENE_OBJECTS,       IconGUI::WIN_SCENE_OBJECTS,     true,  false, true, GUIAddonObjects3D::DrawWinSceneObjects(this));
-    ADD_WIN("Object Properties",   GUIType::OBJECT_PROPS,        IconGUI::WIN_OBJECT_PROPS,      true,  false, true, GUIAddonObject3DProperties::DrawWinObjectProps(this));
-    ADD_WIN("Object shaders",      GUIType::OBJECT_SHADERS,      IconGUI::WIN_OBJECT_SHADERS,    false, false, true, ShadersGUI::DrawWinObjectShaders());
-    ADD_WIN("Object Scripts",      GUIType::OBJECT_SCRIPTS,      IconGUI::WIN_OBJECT_SCRIPTS,    false, false, true, ScriptLuaGUI::DrawWinObjectScripts());
-    ADD_WIN("Object variables",    GUIType::OBJECT_VARS,         IconGUI::WIN_OBJECT_VARS,       false, false, true, ScriptLuaGUI::DrawWinObjectVars(this));
-    ADD_WIN("Global variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       false, false, true, ScriptLuaGUI::DrawWinGlobalVars(this));
-    ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true, DrawWinKeyboardMouse());
-    ADD_WIN("Images",              GUIType::IMAGES,              IconGUI::WIN_IMAGES,            false, false, true, FileSystemGUI::DrawWinImages(browserImages, browserImagesTextures));
-    ADD_WIN("Logging/Console",     GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true, widgetConsole->DrawWinLogging());
-    ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true, DrawWinDepthLightsMap());
-    ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, true, Profiler::get()->DrawWinProfiler());
-    ADD_WIN("Code/Nodes editor",   GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true, DrawWinEditableOpenResources());
-    ADD_WIN("Debug GUI Icons",     GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, true, IconsGUI::DrawWinDebugIcons(this));
-    ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  false, GUIAddonDocumentation::DrawWinDocumentation(documentationTree));
-    ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, sceneChecker.DrawWinSceneInfo());
-    ADD_WIN("Project Detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          false, true,  false, projectChecker.DrawWinProjectInfo());
-    ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           false, false, false, ThreadGUI::MenuWorkers());
+    ADD_WIN("Project Setup",       GUIType::PROJECT_SETTINGS,    IconGUI::WIN_PROJECT_SETTINGS,  true,  false, true,  false,  GUIAddonProjectSetup::DrawWinProjectSettings(),                            ImVec2(300, 300), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("File Browser",        GUIType::BROWSER,             IconGUI::WIN_BROWSER,           true,  false, true,  false,  FileSystemGUI::DrawMainBrowser(),                                          ImVec2(450, 300), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Scene Objects",       GUIType::SCENE_OBJECTS,       IconGUI::WIN_SCENE_OBJECTS,     true,  false, true,  false,  GUIAddonObjects3D::DrawWinSceneObjects(this),                          ImVec2(340, 500), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Properties",   GUIType::OBJECT_PROPS,        IconGUI::WIN_OBJECT_PROPS,      true,  false, true,  true,   GUIAddonObject3DProperties::DrawWinObjectProps(this),                  ImVec2(340, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Shaders",      GUIType::OBJECT_SHADERS,      IconGUI::WIN_OBJECT_SHADERS,    true, false, true,  true,    ShadersGUI::DrawWinObjectShaders(),                                        ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Scripts",      GUIType::OBJECT_SCRIPTS,      IconGUI::WIN_OBJECT_SCRIPTS,    true, false, true,  true,    ScriptLuaGUI::DrawWinObjectScripts(),                                      ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Variables",    GUIType::OBJECT_VARS,         IconGUI::WIN_OBJECT_VARS,       false, false, true,  true,   ScriptLuaGUI::DrawWinObjectVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Global Variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       false, false, true,  false,  ScriptLuaGUI::DrawWinGlobalVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true,  false,  DrawWinKeyboardMouse(),                                                    ImVec2(350, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Images",              GUIType::IMAGES,              IconGUI::WIN_IMAGES,            false, false, true,  false,  FileSystemGUI::DrawWinImages(browserImages, browserImagesTextures),  ImVec2(600, 550), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Logs/Console",        GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true,  false,  widgetConsole->DrawWinLogging(),                                           ImVec2(400, 300), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true,  false,  DrawWinDepthLightsMap(),                                                   ImVec2(400, 500), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, false,  false, Profiler::get()->DrawWinProfiler(),                                        ImVec2(800, 600), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Code/Nodes editor",   GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true,  false,  DrawWinEditableOpenResources(),                                            ImVec2(1024, 768), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("GUI Icons",           GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, false, false,  IconsGUI::DrawWinDebugIcons(this),                                     ImVec2(650, 500), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  false, false,  GUIAddonDocumentation::DrawWinDocumentation(documentationTree),            ImVec2(400, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Project Detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           false, false, false, false,  ThreadGUI::MenuWorkers(),                                                  ImVec2(550, 650), ImVec2(FLT_MAX, FLT_MAX));
 
     RegisterDefaultLayoutWindows();
 }
@@ -90,8 +90,8 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::PROJECT_SETTINGS, true },
         { GUIType::SCENE_OBJECTS, true },
         { GUIType::OBJECT_PROPS, true },
-        { GUIType::OBJECT_SHADERS, false },
-        { GUIType::OBJECT_SCRIPTS, false },
+        { GUIType::OBJECT_SHADERS, true },
+        { GUIType::OBJECT_SCRIPTS, true },
         { GUIType::OBJECT_VARS, false },
         { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
@@ -113,7 +113,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::OBJECT_SHADERS, true },
         { GUIType::OBJECT_SCRIPTS, true },
         { GUIType::OBJECT_VARS, true },
-        { GUIType::GLOBAL_VARS, true },
+        { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
         { GUIType::IMAGES, false },
         { GUIType::LOGGING, true },
@@ -287,24 +287,78 @@ void GUIManager::DrawWinEditableOpenResources() const
 
 void GUIManager::DrawRegisteredWindows()
 {
+    bool selected = Components::get()->Render()->getSelectedObject() != nullptr;
+
     for (auto& window : windows) {
         if (!window.isOpen) continue;
 
+        if (!selected && window.autoHideIfNotSelected) continue;
+
         ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing;
+
         if (!window.isDockable) {
             flags |= ImGuiWindowFlags_NoDocking;
+        }
 
-            // Centrar ventana en el viewport
+        // Centrar ventanas no dockables al aparecer
+        if (!window.isDockable) {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
             ImVec2 center = viewport->GetCenter();
             ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
         }
 
+        ImGui::SetNextWindowBgAlpha(0.99f);
+        ImGui::SetNextWindowSizeConstraints(window.minSize, window.maxSize);
+
         if (ImGui::Begin(window.label.c_str(), &window.isOpen, flags)) {
             window.functionCallBack();
+
+            if (window.isObjectWindow) {
+                float statusBarHeight = GetObjectStatusBarHeight();
+
+                float availableHeight = ImGui::GetContentRegionAvail().y - statusBarHeight + 8.0f;
+
+                ImGui::BeginChild(
+                    "WindowContent",
+                    ImVec2(0, availableHeight),
+                    false,
+                    ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
+                );
+                ImGui::EndChild();
+
+                DrawObjectWindowStatusBar(window);
+            }
         }
         ImGui::End();
     }
+}
+
+void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
+{
+    ImGui::Separator();
+
+    GUI::DrawButtonTransparent(
+        "Auto-hide when no object is selected",
+        window.autoHideIfNotSelected ? IconGUI::WIN_OBJECT_AUTOHIDE_OFF : IconGUI::WIN_OBJECT_AUTOHIDE_ON,
+        GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
+        window.autoHideIfNotSelected,
+        [&] {
+            window.autoHideIfNotSelected = !window.autoHideIfNotSelected;
+        }
+    );
+}
+
+float GUIManager::GetObjectStatusBarHeight()
+{
+    float height = 0.0f;
+
+    height += ImGui::GetStyle().ItemSpacing.y;
+    height += ImGui::GetFrameHeight();
+    height += ImGui::GetStyle().FramePadding.y * 2.0f;
+    height += ImGui::GetStyle().ItemSpacing.y;
+    height += ImGui::GetStyle().SeparatorTextPadding.y;
+
+    return height;
 }
 
 void GUIManager::UpdateImGuiDocking()
@@ -463,9 +517,6 @@ void GUIManager::DrawWinDepthLightsMap()
     auto windowStatus = getWindowStatus(GUIType::DEPTH_LIGHTS_MAPS);
     if (!windowStatus->isOpen) return;
 
-    SetNextWindowSize(350, 400);
-    ImGui::SetNextWindowBgAlpha(GUIType::Levels::WINDOW_ALPHA);
-
     auto title = std::string("Lights Depth Maps Viewer: ");
     if (ImGui::Begin(title.c_str(), &windowStatus->isOpen, ImGuiWindowFlags_NoDocking)) {
 
@@ -560,7 +611,7 @@ void GUIManager::DrawSplashWindow()
     ImGui::PopStyleVar(2);
 }
 
-GUIType::WindowData* GUIManager::getWindowStatus(GUIType::Window window)
+GUIType::WindowGUI* GUIManager::getWindowStatus(GUIType::Window window)
 {
     for (auto& status : windows) {
         if (status.window == window) {

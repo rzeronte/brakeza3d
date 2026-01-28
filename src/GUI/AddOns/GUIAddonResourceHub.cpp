@@ -1,4 +1,4 @@
-#include "GUIAddonResourceHub.h"
+#include "../../../include/GUI/AddOns/GUIAddonResourceHub.h"
 #include "imgui.h"
 #include <cstring>
 #include <iostream>
@@ -6,10 +6,10 @@
 #include <chrono>
 #include <map>
 
-#include "../GUI.h"
-#include "../../Config.h"
-#include "../../HttpClient/ResourceHubClient.h"
-#include "../Objects/FileSystemGUI.h"
+#include "../../../include/GUI/GUI.h"
+#include "../../../include/Config.h"
+#include "../../../include/HttpClient/ResourceHubClient.h"
+#include "../../../include/GUI/Objects/FileSystemGUI.h"
 
 GUIAddonResourceHub::GUIAddonResourceHub()
 {
