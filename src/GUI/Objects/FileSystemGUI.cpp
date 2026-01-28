@@ -9,6 +9,7 @@
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/GUI/AddOns/CustomTreeNode.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Loaders/ProjectLoader.h"
 #include "../../../include/Loaders/SceneChecker.h"
@@ -16,8 +17,16 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Render/Drawable.h"
 
+bool FileSystemGUI::openPopUpCreateProject = false;
+bool FileSystemGUI::openPopupCreateScene = false;
+bool FileSystemGUI::openPopupCreateShader = false;
+bool FileSystemGUI::openPopupCreateScript = false;
+bool FileSystemGUI::autoExpandProject = false;
+bool FileSystemGUI::autoExpandScene = false;
+
 void FileSystemGUI::DrawMainBrowser()
 {
+
     auto GUI = Brakeza::get()->GUI();
     auto &projectBrowser = GUI->getBrowserProjects();
     auto &scenesBrowser = GUI->getBrowserScenes();
@@ -38,7 +47,7 @@ void FileSystemGUI::DrawMainBrowser()
         GUI::DrawButton(
             "Browse Projects",
             IconGUI::PROJECT_FILE,
-            GUIType::Sizes::ICONS_CODE_EDITOR,
+            GUIType::Sizes::ICONS_BROWSERS,
             type == GUIType::BROWSE_PROJECTS,
             [] {
                 type = GUIType::BROWSE_PROJECTS;
@@ -53,7 +62,7 @@ void FileSystemGUI::DrawMainBrowser()
 
         // Calcular el ancho de cada botón
         ImGuiStyle& style = ImGui::GetStyle();
-        float iconWidth = GUIType::Sizes::ICONS_CODE_EDITOR.x;
+        float iconWidth = GUIType::Sizes::ICONS_BROWSERS.x;
         float spacing = style.ItemSpacing.x;
         float framePadding = style.FramePadding.x * 2;
 
@@ -71,17 +80,17 @@ void FileSystemGUI::DrawMainBrowser()
             ImGui::SetCursorPosX(columnStartX + columnWidth - totalWidth);
         }
 
-        GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICONS_CODE_EDITOR,
+        GUI::DrawButton("Browse Scenes", IconGUI::SCENE_FILE, GUIType::Sizes::ICONS_BROWSERS,
             type == GUIType::BROWSE_SCENES, [] { type = GUIType::BROWSE_SCENES; });
 
         ImGui::SameLine();
 
-        GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICONS_CODE_EDITOR,
+        GUI::DrawButton("Browse Scripts", IconGUI::SCRIPT_FILE, GUIType::Sizes::ICONS_BROWSERS,
             type == GUIType::BROWSE_SCRIPTS, [] { type = GUIType::BROWSE_SCRIPTS; });
 
         ImGui::SameLine();
 
-        GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICONS_CODE_EDITOR,
+        GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICONS_BROWSERS,
             type == GUIType::BROWSE_SHADERS, [] { type = GUIType::BROWSE_SHADERS; });
 
         ImGui::EndTable();
@@ -108,86 +117,101 @@ void FileSystemGUI::DrawMainBrowser()
 void FileSystemGUI::DrawProjectsTable(GUIType::BrowserCache &browser)
 {
     std::vector<std::string> files = browser.folderFiles;
+
+    if (files.empty()) {
+        ImGui::Spacing();
+        Drawable::WarningMessage("Empty directory");
+        return;
+    }
+
     std::sort(files.begin(), files.end());
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ProjectsFolderTable", 2, flags)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        for (int i = 0; i < files.size(); i++) {
-            const auto& file = files[i];
-            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                DrawProjectRow(browser, file, i);
-            }
+    for (int i = 0; i < files.size(); i++) {
+        const auto& file = files[i];
+        if (strcmp(file.c_str(), ".") == 0 || strcmp(file.c_str(), "..") == 0) {
+            continue;
         }
-        ImGui::EndTable();
+
+        auto fullPath = browser.currentFolder + file;
+
+        // Configurar CustomTreeNode
+        std::string name = std::to_string(i + 1) + ") " + file;
+        CustomImGui::CustomTreeNodeConfig config(name.c_str());
+
+        config.leftIcon = Icon(IconGUI::PROJECT_FILE);
+        config.iconSize = GUIType::Sizes::ICONS_BROWSERS;
+        config.isLeaf = true;  // No tiene hijos, no se expande
+        config.itemPadding = 1.5f;
+        config.itemMargin = 6.0f;
+
+        // Information
+        CustomImGui::TreeActionItem infoItem(
+            Icon(IconGUI::PROJECT_INFO),
+            "Project information",
+            [fullPath]() {
+                Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(fullPath);
+            }
+        );
+        infoItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(infoItem);
+
+        // Open
+        CustomImGui::TreeActionItem openItem(
+            Icon(IconGUI::PROJECT_OPEN),
+            "Open Project",
+            [fullPath]() {
+                ProjectLoader::LoadProject(fullPath);
+            }
+        );
+        openItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(openItem);
+
+        // Save/Override (directo sin confirmación)
+        CustomImGui::TreeActionItem saveItem(
+            Icon(IconGUI::SAVE),
+            "Override Project",
+            [fullPath]() {
+                ProjectLoader::SaveProject(fullPath);
+            }
+        );
+        saveItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(saveItem);
+
+        // Delete (directo sin confirmación)
+        CustomImGui::TreeActionItem removeItem(
+            Icon(IconGUI::PROJECT_REMOVE),
+            "Delete project",
+            [&browser, fullPath]() {
+                ProjectLoader::RemoveProject(fullPath);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+            }
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        // Dibujar el nodo
+        CustomImGui::CustomTreeNode(config);
     }
-}
-
-void FileSystemGUI::DrawProjectRowActions(GUIType::BrowserCache &browser, const std::string &file)
-{
-    ImGui::TableSetColumnIndex(1);
-
-    auto fullPath = browser.currentFolder + file;
-
-    GUI::DrawButtonTransparent("Project information", IconGUI::PROJECT_INFO, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-        Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(fullPath);
-    });
-    ImGui::SameLine();
-    GUI::DrawButtonTransparent("Open Project", IconGUI::PROJECT_OPEN, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-        ProjectLoader::LoadProject(fullPath);
-    });
-    ImGui::SameLine();
-    GUI::DrawButtonConfirm("Override Project", "Are you sure to override project?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        ProjectLoader::SaveProject(fullPath);
-    });
-    ImGui::SameLine();
-    GUI::DrawButtonConfirm("Deleting Project", "Are you sure to delete project?", IconGUI::PROJECT_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        ProjectLoader::RemoveProject(fullPath);
-        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-    });
-}
-
-void FileSystemGUI::DrawProjectRow(GUIType::BrowserCache &browser, const std::string &file, int index)
-{
-    ImGui::PushID(index);
-    ImGui::TableNextRow();
-
-    // name
-    ImGui::TableSetColumnIndex(0);
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-    ImGui::Image(Icon(IconGUI::PROJECT_FILE), GUIType::Sizes::ICONS_BROWSERS);
-    ImGui::SameLine();
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY()));
-    auto title = std::to_string(index + 1) + ") " + file;
-    ImGui::Text("%s", title.c_str());
-    ImGui::TableSetColumnIndex(1);
-    DrawProjectRowActions(browser, file);
-
-    ImGui::PopID();
 }
 
 void FileSystemGUI::DrawProjectFiles(GUIType::BrowserCache &browser)
 {
-    static bool openPopup = false;
-
-    static std::string title = "Create project dialog";
-    if (openPopup) {
-        ImGui::OpenPopup(title.c_str());
-        openPopup = false;
+    if (openPopUpCreateProject) {
+        ImGui::OpenPopup(Config::get()->MODAL_CREATE_PROJECT_TITLE_ID.c_str());
+        openPopUpCreateProject = false;
     }
 
-    DrawProjectCreatorDialog(browser, title);
+    DrawProjectCreatorDialog(browser, Config::get()->MODAL_CREATE_PROJECT_TITLE_ID);
 
     ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
     ImGui::SameLine();
-    ImGui::Text("%s", browser.currentFolder.c_str());
+    ImGui::Text("%s", Tools::removeSubstring(browser.currentFolder, Config::get()->ASSETS_FOLDER).c_str());
 
     ImGui::Separator();
     DrawProjectsTable(browser);
     ImGui::Separator();
-    GUI::ImageButtonNormal(IconGUI::PROJECT_FILE, "Create project", [&] {
-        openPopup = true;
+    GUI::ImageButtonNormal(IconGUI::PROJECT_FILE, "Create Project", [&] {
+        openPopUpCreateProject = true;
     });
 }
 
@@ -228,104 +252,106 @@ void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
     if (files.empty()) {
         ImGui::Spacing();
         Drawable::WarningMessage("Empty directory");
+        return;
     }
 
     std::sort(files.begin(), files.end());
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScenesFolderTable", 5, flags)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Information", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Load", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Edit", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthFixed);
-        for (int i = 0; i < files.size(); i++) {
-            const auto& file = files[i];
-            if (strcmp(file.c_str(), ".") != 0 && strcmp(file.c_str(), "..") != 0) {
-                DrawSceneRow(browser, file, i);
-            }
+    for (int i = 0; i < files.size(); i++) {
+        const auto& file = files[i];
+        if (strcmp(file.c_str(), ".") == 0 || strcmp(file.c_str(), "..") == 0) {
+            continue;
         }
-        ImGui::EndTable();
-    }
-}
 
-void FileSystemGUI::DrawSceneRow(GUIType::BrowserCache &browser, const std::string &file, int index)
-{
-    ImGui::PushID(index);
-    ImGui::TableNextRow();
-
-    ImGui::TableSetColumnIndex(0);
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 4, ImGui::GetCursorPosY() + 5.0f));
-    ImGui::Image(Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICONS_BROWSERS);
-    ImGui::SameLine();
-
-    std::string optionText = std::to_string(index + 1) + ") " + file;
-    ImGui::Selectable(optionText.c_str());
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
         auto fullPath = browser.currentFolder + file;
 
-        ImGui::SetDragDropPayload(
-            GUIType::DragDropTarget::SCENE_ITEM,
-            fullPath.c_str(),
-            fullPath.size() + 1
+        // Configurar CustomTreeNode
+        std::string name = std::to_string(i + 1) + ") " + file;
+        CustomImGui::CustomTreeNodeConfig config(name.c_str());
+
+        config.leftIcon = Icon(IconGUI::SCENE_FILE);
+        config.iconSize = GUIType::Sizes::ICONS_BROWSERS;
+        config.isLeaf = true;
+        config.itemPadding = 1.5f;
+        config.itemMargin = 6.0f;
+
+
+        // Information
+        CustomImGui::TreeActionItem infoItem(
+            Icon(IconGUI::SCENE_INFO),
+            "Scene information",
+            [fullPath]() {
+                Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(fullPath);
+            }
         );
+        infoItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(infoItem);
 
-        ImGui::Text("%s", fullPath.c_str());
-        ImGui::EndDragDropSource();
+        // Load
+        CustomImGui::TreeActionItem loadItem(
+            Icon(IconGUI::SCENE_LOAD),
+            "Load Scene file",
+            [fullPath]() {
+                SceneLoader::ClearScene();
+                SceneLoader::LoadScene(fullPath);
+            }
+        );
+        loadItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(loadItem);
+
+        // Save (directo sin confirmación)
+        CustomImGui::TreeActionItem saveItem(
+            Icon(IconGUI::SAVE),
+            "Override scene",
+            [fullPath]() {
+                SceneLoader::SaveScene(fullPath);
+            }
+        );
+        saveItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(saveItem);
+
+        // Delete (directo sin confirmación)
+        CustomImGui::TreeActionItem removeItem(
+            Icon(IconGUI::SCENE_REMOVE),
+            "Delete scene",
+            [&browser, fullPath]() {
+                SceneLoader::RemoveScene(fullPath);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+            }
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        // Dibujar el nodo
+        CustomImGui::CustomTreeNode(config);
+
+        // Drag & Drop Source (después de dibujar)
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload(
+                GUIType::DragDropTarget::SCENE_ITEM,
+                fullPath.c_str(),
+                fullPath.size() + 1
+            );
+            ImGui::Text("%s", fullPath.c_str());
+            ImGui::EndDragDropSource();
+        }
     }
-
-    ImGui::TableSetColumnIndex(1);
-    DrawSceneRowActions(browser, file);
-
-    ImGui::PopID();
-}
-
-void FileSystemGUI::DrawSceneRowActions(GUIType::BrowserCache &browser, const std::string &file)
-{
-    auto fullPath = browser.currentFolder + file;
-
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 4));
-
-    GUI::DrawButtonTransparent("Scene information", IconGUI::SCENE_INFO, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-        Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(fullPath);
-    });
-    ImGui::TableSetColumnIndex(2);
-    // Load button
-    GUI::DrawButtonTransparent("Load Scene file", IconGUI::SCENE_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-        SceneLoader::ClearScene();
-        SceneLoader::LoadScene(fullPath);
-    });
-    ImGui::TableSetColumnIndex(3);
-    // Save button
-    GUI::DrawButtonConfirm("Overriding scene file", "Are you sure to override scene?", IconGUI::SAVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        SceneLoader::SaveScene(fullPath);
-    });
-    ImGui::TableSetColumnIndex(4);
-    // Delete button
-    GUI::DrawButtonConfirm("Deleting scene file", "Are you sure to delete scene?", IconGUI::SCENE_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        SceneLoader::RemoveScene(fullPath);
-        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-    });
-
-    ImGui::PopStyleVar();
 }
 
 void FileSystemGUI::DrawSceneFiles(GUIType::BrowserCache &browser)
 {
-    static bool openPopup = false;
-    static std::string title = "Create scene dialog";
-    if (openPopup) {
-        ImGui::OpenPopup(title.c_str());
-        openPopup = false;
+    if (openPopupCreateScene) {
+        ImGui::OpenPopup(Config::get()->MODAL_CREATE_SCENE_TITLE_ID.c_str());
+        openPopupCreateScene = false;
     }
-    DrawSceneCreatorDialog(browser, title);
+    DrawSceneCreatorDialog(browser, Config::get()->MODAL_CREATE_SCENE_TITLE_ID);
 
     DrawBrowserFolders(Config::get()->SCENES_FOLDER, browser);
     ImGui::Separator();
     DrawScenesTable(browser);
     ImGui::Separator();
-    GUI::ImageButtonNormal(IconGUI::SCENE_FILE, "Create scene", [&] {
-        openPopup = true;
+    GUI::ImageButtonNormal(IconGUI::SCENE_FILE, "Create Scene", [&] {
+        openPopupCreateScene = true;
     });
 }
 
@@ -363,7 +389,7 @@ void FileSystemGUI::DrawBrowserFolders(const std::string& rootFolder, GUIType::B
 {
     ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
     ImGui::SameLine();
-    ImGui::Text("%s", browser.currentFolder.c_str());
+    ImGui::Text("%s", Tools::removeSubstring(browser.currentFolder, Config::get()->ASSETS_FOLDER).c_str());
     ImGui::Separator();
 
     ImVec2 iconSize = GUIType::Sizes::ICONS_BROWSERS;
@@ -425,15 +451,14 @@ ImTextureID FileSystemGUI::Icon(GUIType::Sheet coords)
 
 void FileSystemGUI::DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package)
 {
-    ImGui::Image(Icon(IconGUI::IMAGE_FILE), GUIType::Sizes::ICON_BROWSER_TYPE);
-    ImGui::SameLine();
-    ImGui::Text("Current Folder: %s", browser.currentFolder.c_str());
-    ImGui::Separator();
-
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::IMAGES);
     if (!windowStatus->isOpen) return;
 
     DrawBrowserFolders(Config::get()->IMAGES_FOLDER, browser);
+    if (browser.folderFolders.empty()) {
+        ImGui::Spacing();
+        Drawable::WarningMessage("There are not subfolders");
+    }
     ImGui::Separator();
 
     // Slider
@@ -584,96 +609,94 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
     if (files.empty()) {
         ImGui::Spacing();
         Drawable::WarningMessage("Empty directory");
+        return;
     }
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScriptsFolderTable", 4, flags)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Load", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Edit", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Delete", ImGuiTableColumnFlags_WidthFixed);
-        for (int i = 0; i < files.size(); i++) {
-            DrawShaderRow(browser, files[i], i);
-        }
-        ImGui::EndTable();
-    }
-}
-
-void FileSystemGUI::DrawShaderRow(GUIType::BrowserCache &browser, const std::string &file, int index)
-{
-    ImGui::PushID(index);
-    ImGui::TableNextRow();
-
-    // name
-    ImGui::TableSetColumnIndex(0);
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-    ImGui::Image(Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICONS_BROWSERS);
-    ImGui::SameLine();
-    std::string optionText = std::to_string(index + 1) + ") " + file;
-    ImGui::Selectable(optionText.c_str());
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
-        static std::string folderCopy, fileCopy;
-        folderCopy = browser.currentFolder;
-        fileCopy = file;
-
-        Config::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
-        ImGui::SetDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM, &data, sizeof(data));
-
+    for (int i = 0; i < files.size(); i++) {
+        auto file = files[i];
         auto fullPath = browser.currentFolder + file;
-        ImGui::Text("%s", fullPath.c_str());
-        ImGui::EndDragDropSource();
-    }
 
-    DrawShaderRowActions(browser, file);
+        // Configurar CustomTreeNode
+        std::string name = std::to_string(i + 1) + ") " + file;
+        CustomImGui::CustomTreeNodeConfig config(name.c_str());
 
-    ImGui::PopID();
-}
+        config.leftIcon = Icon(IconGUI::SHADER_FILE);
+        config.iconSize = GUIType::Sizes::ICONS_BROWSERS;
+        config.isLeaf = true;  // No tiene hijos, no se expande
+        config.itemPadding = 1.5f;
+        config.itemMargin = 6.0f;
 
-void FileSystemGUI::DrawShaderRowActions(GUIType::BrowserCache &browser, const std::string &file)
-{
-    auto fullPath = browser.currentFolder + file;
 
-    // Load button
-    ImGui::TableSetColumnIndex(1);
-    GUI::DrawButtonTransparent("Attach to current Scene", IconGUI::SHADER_LOAD, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-        Components::get()->Render()->LoadShaderIntoScene(fullPath);
-    });
-
-    // Edit button
-    ImGui::TableSetColumnIndex(2);
-    GUI::DrawButton("Edit Shader", IconGUI::SHADER_EDIT, GUIType::Sizes::ICONS_BROWSERS, false,[&] {
-        ShadersGUI::LoadDialogShader(fullPath);
-    });
-
-    // Delete button
-    ImGui::TableSetColumnIndex(3);
-
-    GUI::DrawButtonConfirm("Deleting Shader", "Are you sure to delete shader?", IconGUI::SHADER_REMOVE, GUIType::Sizes::ICONS_BROWSERS, [&] {
-        ShaderBaseCustomOGLCode::RemoveCustomShaderFiles(
-            browser.currentFolder,
-            Tools::getFilenameWithoutExtension(file)
+        // Load
+        CustomImGui::TreeActionItem loadItem(
+            Icon(IconGUI::SHADER_LOAD),
+            "Attach to current Scene",
+            [fullPath]() {
+                Components::get()->Render()->LoadShaderIntoScene(fullPath);
+            }
         );
-        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-    });
+        loadItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(loadItem);
+
+        // Edit
+        CustomImGui::TreeActionItem editItem(
+            Icon(IconGUI::SHADER_EDIT),
+            "Edit Shader",
+            [fullPath]() {
+                ShadersGUI::LoadDialogShader(fullPath);
+            }
+        );
+        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(editItem);
+
+        // Delete (directo sin confirmación)
+        CustomImGui::TreeActionItem removeItem(
+            Icon(IconGUI::SHADER_REMOVE),
+            "Delete shader",
+            [&browser, file, fullPath]() {
+                ShaderBaseCustomOGLCode::RemoveCustomShaderFiles(
+                    browser.currentFolder,
+                    Tools::getFilenameWithoutExtension(file)
+                );
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
+            }
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        // Dibujar el nodo
+        CustomImGui::CustomTreeNode(config);
+
+        // Drag & Drop Source (después de dibujar) - Usa estructura específica para shaders
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            static std::string folderCopy, fileCopy;
+            folderCopy = browser.currentFolder;
+            fileCopy = file;
+
+            Config::DragDropCustomShaderData data = {folderCopy.c_str(), fileCopy.c_str()};
+            ImGui::SetDragDropPayload(GUIType::DragDropTarget::SHADER_ITEM, &data, sizeof(data));
+
+            ImGui::Text("%s", fullPath.c_str());
+            ImGui::EndDragDropSource();
+        }
+    }
 }
 
 void FileSystemGUI::DrawShaderFiles(GUIType::BrowserCache &browser)
 {
-    static bool openPopup = false;
-    static std::string title = "Create shader dialog";
-    if (openPopup) {
-        ImGui::OpenPopup(title.c_str());
-        openPopup = false;
+    if (openPopupCreateShader) {
+        ImGui::OpenPopup(Config::get()->MODAL_CREATE_SHADER_TITLE_ID.c_str());
+        openPopupCreateShader = false;
     }
 
-    DrawShaderCreatorDialog(browser, title);
+    DrawShaderCreatorDialog(browser, Config::get()->MODAL_CREATE_SHADER_TITLE_ID);
 
     DrawBrowserFolders(Config::get()->CUSTOM_SHADERS_FOLDER, browser);
     ImGui::Separator();
     DrawShadersTable(browser);
     ImGui::Separator();
     GUI::ImageButtonNormal(IconGUI::SHADER_FILE, "Create shader", [&] {
-        openPopup = true;
+        openPopupCreateShader = true;
     });
 }
 
@@ -720,65 +743,66 @@ void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
     if (files.empty()) {
         ImGui::Spacing();
         Drawable::WarningMessage("Empty directory");
+        return;
     }
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScriptsFolderTable", 4, flags)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Load", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Edit", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Remove", ImGuiTableColumnFlags_WidthFixed);
-        for (int i = 0; i < files.size(); i++) {
-            DrawScriptRow(browser, files[i], i);
-        }
-        ImGui::EndTable();
-    }
-}
-
-void FileSystemGUI::DrawScriptRow(GUIType::BrowserCache &browser, const std::string &file, int index)
-{
-    ImGui::PushID(index);
-    ImGui::TableNextRow();
-
-    ImGui::TableSetColumnIndex(0);
-    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-    ImGui::Image(Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_BROWSERS);
-
-    ImGui::SameLine();
-    std::string optionText = std::to_string(index + 1) + ") " + file;
-    ImGui::Selectable(optionText.c_str());
-    if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+    for (int i = 0; i < files.size(); i++) {
+        auto file = files[i];
         auto fullPath = browser.currentFolder + file;
-        ImGui::SetDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM, fullPath.c_str(), fullPath.size() + 1);
-        ImGui::Text("%s", fullPath.c_str());
-        ImGui::EndDragDropSource();
+
+        std::string name = std::to_string(i + 1) + ") " + file;
+        CustomImGui::CustomTreeNodeConfig config(name.c_str());
+
+        config.leftIcon = Icon(IconGUI::SCRIPT_FILE);
+        config.iconSize = GUIType::Sizes::ICONS_BROWSERS;
+        config.isLeaf = true;
+        config.itemPadding = 1.5f;
+        config.itemMargin = 6.0f;
+
+        // Load
+        CustomImGui::TreeActionItem loadItem(
+            Icon(IconGUI::SCRIPT_LOAD),
+            "Attach to current Scene",
+            [fullPath]() {
+                auto meta = ScriptLuaGUI::ExtractScriptMetainfo(fullPath);
+                Components::get()->Scripting()->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+            }
+        );
+        loadItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(loadItem);
+
+        // Edit
+        CustomImGui::TreeActionItem editItem(
+            Icon(IconGUI::SCRIPT_EDIT),
+            "Edit script",
+            [fullPath]() {
+                ScriptLuaGUI::LoadScriptDialog(fullPath);
+            }
+        );
+        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(editItem);
+
+        // Remove (directo sin confirmación)
+        CustomImGui::TreeActionItem removeItem(
+            Icon(IconGUI::SCRIPT_REMOVE),
+            "Delete script",
+            [&browser, fullPath]() {
+                ComponentScripting::RemoveScriptLUAFile(fullPath);
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
+            }
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        CustomImGui::CustomTreeNode(config);
+
+        // Drag & Drop Source
+        if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload(GUIType::DragDropTarget::SCRIPT_ITEM, fullPath.c_str(), fullPath.size() + 1);
+            ImGui::Text("%s", fullPath.c_str());
+            ImGui::EndDragDropSource();
+        }
     }
-    DrawScriptRowActions(browser, file);
-
-    ImGui::PopID();
-}
-
-void FileSystemGUI::DrawScriptRowActions(GUIType::BrowserCache &browser, const std::string &file)
-{
-    auto fullPath = browser.currentFolder + file;
-
-    ImGui::TableSetColumnIndex(1);
-    GUI::DrawButton("Attach to current Scene", IconGUI::SCRIPT_LOAD, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-        auto meta = ScriptLuaGUI::ExtractScriptMetainfo(fullPath);
-        Components::get()->Scripting()->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
-    });
-
-    ImGui::TableSetColumnIndex(2);
-    GUI::DrawButton("Edit script", IconGUI::SCRIPT_EDIT, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
-        ScriptLuaGUI::LoadScriptDialog(fullPath);
-    });
-
-    ImGui::TableSetColumnIndex(3);
-    GUI::DrawButtonConfirm("Deleting script", "Are you sure to delete script?", IconGUI::SCRIPT_REMOVE, GUIType::Sizes::ICONS_BROWSERS,[&] {
-        ComponentScripting::RemoveScriptLUAFile(fullPath);
-        browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
-    });
-
 }
 
 void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
@@ -812,20 +836,18 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
 
 void FileSystemGUI::DrawScriptFiles(GUIType::BrowserCache &browser)
 {
-    static bool openPopup = false;
-    static std::string title = "Create script dialog";
-    if (openPopup) {
-        ImGui::OpenPopup(title.c_str());
-        openPopup = false;
+    if (openPopupCreateScript) {
+        ImGui::OpenPopup(Config::get()->MODAL_CREATE_SCRIPT_TITLE_ID.c_str());
+        openPopupCreateScript = false;
     }
 
-    DrawScriptCreatorDialog(browser, title);
+    DrawScriptCreatorDialog(browser, Config::get()->MODAL_CREATE_SCRIPT_TITLE_ID);
     DrawBrowserFolders(Config::get()->SCRIPTS_FOLDER, browser);
 
     ImGui::Separator();
     DrawScriptsTable(browser);
     ImGui::Separator();
     GUI::ImageButtonNormal(IconGUI::SCRIPT_FILE, "Create script", [&] {
-        openPopup = true;
+        openPopupCreateScript = true;
     });
 }

@@ -67,7 +67,7 @@ void GUIAddonToolbar::Draw()
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 8));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));        // Añade esto
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));   // Y esto
 
@@ -75,6 +75,8 @@ void GUIAddonToolbar::Draw()
 
     if (ImGui::Begin("MainToolBar", nullptr, flags)) {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 6));
+        ImGui::Dummy(ImVec2(14.0f, 0.0f));
+        ImGui::SameLine();
         LUAStatusIcons();
         VerticalSeparator();
         LayoutIcons();
@@ -244,8 +246,7 @@ void GUIAddonToolbar::RenderTriangleModes()
 void GUIAddonToolbar::VerticalSeparator()
 {
     ImGui::SameLine();
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 10.0f);
-    ImGui::Text("|");
+    ImGui::Dummy(ImVec2(10.0f, 0.0f));
     ImGui::SameLine();
 }
 

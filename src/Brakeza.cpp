@@ -4,6 +4,7 @@
 #include "../cxxxopts/cxxxopts.h"
 #include "../include/Brakeza.h"
 #include "../include/Components/Components.h"
+#include "../include/GUI/Objects/FileSystemGUI.h"
 #include "../include/Render/Profiler.h"
 
 Brakeza *Brakeza::instance = nullptr;
@@ -190,6 +191,7 @@ void Brakeza::AutoLoadProjectOrContinue() const
     }
 
     SceneLoader::LoadScene(Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE);
+    FileSystemGUI::autoExpandScene = false;
 }
 
 void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const

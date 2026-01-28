@@ -15,7 +15,7 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
     ImGui::Spacing();
 
-    ImGui::SeparatorText("Script variables");
+    ImGui::SeparatorText("Script variables values");
 
     if (o->dataTypes.empty()) {
         Drawable::WarningMessage("Script with no variables");
@@ -136,10 +136,18 @@ void ScriptLuaGUI::DrawWinObjectScripts()
 
 void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon)
 {
+    // Preparar el label
+    std::string label = showName ? type.name : ("##" + type.name);
+
+    // Si no mostramos el nombre, forzar el ancho completo
+    if (!showName) {
+        ImGui::SetNextItemWidth(-FLT_MIN);  // Ocupa todo el ancho disponible
+    }
+
     switch (LUADataTypesMapping[type.type].type) {
         case LUADataType::INT: {
             int valueInt = std::get<int>(type.value);
-            if (ImGui::InputInt(type.name.c_str(), &valueInt)) {
+            if (ImGui::InputInt(label.c_str(), &valueInt)) {
                 type.value = valueInt;
             }
             break;
@@ -148,16 +156,14 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
             std::string valueString = std::get<const char*>(type.value);
             static char name[256];
             strncpy(name, valueString.c_str(), sizeof(name));
-            ImGui::InputText(type.name.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-            if (ImGui::IsItemEdited()) {
+            if (ImGui::InputText(label.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite)) {
                 type.value = name;
             }
-
             break;
         }
         case LUADataType::FLOAT: {
             float valueFloat = std::get<float>(type.value);
-            if (ImGui::InputFloat(type.name.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
+            if (ImGui::InputFloat(label.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
                 type.value = valueFloat;
             }
             break;
@@ -166,7 +172,7 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
             Vertex3D valueVertex = std::get<Vertex3D>(type.value);
             float vec4f[4];
             valueVertex.toFloat(vec4f);
-            if (ImGui::DragFloat3(type.name.c_str(), vec4f, 0.01f, 0.0f, 1.0f)) {
+            if (ImGui::DragFloat3(label.c_str(), vec4f, 0.01f, 0.0f, 1.0f)) {
                 valueVertex.x = vec4f[0];
                 valueVertex.y = vec4f[1];
                 valueVertex.z = vec4f[2];
@@ -341,18 +347,11 @@ void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
 
     static int selectedItem = 0;
     ImGui::Combo("Type", &selectedItem, itemsCStr.data(), itemsCStr.size());
-    ImGui::SameLine();
-    GUI::DrawButton(
-        "Create variable",
-        IconGUI::SCRIPT_CREATE_VARIABLE,
-        GUIType::Sizes::ICONS_BROWSERS,
-        false,
-        [&] {
-            if (localVarName[0] != '\0') {
-                file.getScript()->AddDataTypeEmpty(localVarName, itemsCStr[selectedItem]);
-            }
+    GUI::ImageButtonNormal(IconGUI::SCRIPT_CREATE_VARIABLE, "Create variable", [&] {
+        if (localVarName[0] != '\0') {
+            file.getScript()->AddDataTypeEmpty(localVarName, itemsCStr[selectedItem]);
         }
-    );
+    });
 }
 
 void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
@@ -361,38 +360,56 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 
     auto shader = file.getScript();
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    if (ImGui::BeginTable("ScriptProperties", 4, flags)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
+    if (shader->dataTypes.empty()) {
+        Drawable::WarningMessage("No variables defined");
+        return;
+    }
 
-        for (int i = 0; i < shader->dataTypes.size(); i++) {
-            ImGui::PushID(std::string("script_table_var_" + std::to_string(i)).c_str());
-            ImGui::TableNextRow();
-            auto type = &shader->dataTypes[i];
+    // Calcular el ancho del botón
+    float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
 
-            ImGui::TableSetColumnIndex(0);
-            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Text("%d) %s", i + 1, type->name.c_str());
+    // Calcular el ancho máximo de los labels
+    float maxLabelWidth = 0.0f;
+    for (int i = 0; i < shader->dataTypes.size(); i++) {
+        auto type = &shader->dataTypes[i];
+        std::string label = std::to_string(i + 1) + ") " + type->name + " (" + LUADataTypesMapping[type->type].label + ")";
+        float labelWidth = ImGui::CalcTextSize(label.c_str()).x;
+        maxLabelWidth = ImMax(maxLabelWidth, labelWidth);
+    }
 
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Text("%s", LUADataTypesMapping[type->type].label.c_str());
+    // Ancho total de la parte izquierda: botón + spacing + texto + margen
+    float leftSideWidth = buttonWidth + ImGui::GetStyle().ItemSpacing.x + maxLabelWidth + 30.0f;
 
-            ImGui::TableSetColumnIndex(2);
-            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            DrawTypeImGuiControl(*type, true, true);
+    for (int i = 0; i < shader->dataTypes.size(); i++) {
+        auto type = &shader->dataTypes[i];
 
-            ImGui::TableSetColumnIndex(3);
-            GUI::DrawButton("Delete script variable", IconGUI::SCRIPT_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                file.getScript()->RemoveDataType(*type);
-                file.getScript()->UpdateFileTypes();
-            });
-            ImGui::PopID();
-        }
-        ImGui::EndTable();
+        ImGui::PushID(i);
+
+        ImGui::AlignTextToFramePadding();
+
+        // Botón eliminar
+        GUI::DrawButton("Delete script variable", IconGUI::SCRIPT_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            file.getScript()->RemoveDataType(*type);
+            file.getScript()->UpdateFileTypes();
+        });
+
+        ImGui::SameLine();
+
+        // Número y nombre
+        ImGui::Text("%d) %s", i + 1, type->name.c_str());
+        ImGui::SameLine();
+
+        // Tipo
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%s)", LUADataTypesMapping[type->type].label.c_str());
+
+        // Posicionar el control en la posición calculada
+        ImGui::SameLine(leftSideWidth);
+
+        // Control de valor ocupa el resto del espacio disponible
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        DrawTypeImGuiControl(*type, false, true);
+
+        ImGui::PopID();
     }
 }
 

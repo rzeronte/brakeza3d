@@ -40,11 +40,11 @@ void ShadersGUI::DrawShaderConfigHeader(EditableOpenShaderFile &file)
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_VS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("VS file: " + vsFile).c_str());
+    ImGui::Text(std::string("VS: " + Tools::removeSubstring(vsFile, Config::get()->ASSETS_FOLDER)).c_str());
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_CODE_FS), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
-    ImGui::Text(std::string("FS file: " + fsFile).c_str());
+    ImGui::Text(std::string("FS: " + Tools::removeSubstring(fsFile, Config::get()->ASSETS_FOLDER)).c_str());
 
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_TYPE_MESH3D), GUIType::Sizes::ICONS_BROWSERS);
@@ -116,9 +116,7 @@ void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
 
     auto comboId = std::string("Type##") + "_" + file.getShader()->getLabel();
     ImGui::Combo(comboId.c_str(), &selectedItem, labelsCStr.data(), (int) labelsCStr.size());
-    ImGui::SameLine();
-
-    GUI::DrawButton("Create uniform", IconGUI::SHADER_CREATE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, false, [&] {
+    GUI::ImageButtonNormal(IconGUI::SHADER_CREATE_VARIABLE, "Create uniform", [&] {
         if (localVarName[0] != '\0' && selectedItem < glslTypes.size()) {
             file.getShader()->AddDataTypeEmpty(localVarName, glslTypes[selectedItem].c_str());
             localVarName[0] = '\0';
@@ -149,46 +147,83 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 {
     ImGui::SeparatorText("Shader uniforms");
 
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg;
-    auto tableId = std::string("ShaderProperties_" + file.getShader()->getLabel());
-    if (ImGui::BeginTable(tableId.c_str(), 4, flags)) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthFixed);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed);
-        for (int i = 0; i < file.getShader()->dataTypes.size(); i++) {
-            auto type = &file.getShader()->dataTypes[i];
-            auto fileId = std::string("shader_table_var_" + type->name + "_" + type->type);
-            ImGui::PushID(fileId.c_str());
-            ImGui::TableNextRow();
+    if (file.getShader()->dataTypes.empty()) {
+        Drawable::WarningMessage("No variables defined");
+        return;
+    }
 
-            ImGui::TableNextRow();
-            // Name column
-            ImGui::TableSetColumnIndex(0);
-            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Text("%d) %s", i + 1, type->name.c_str());
+    // Calcular el ancho del botón
+    float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
 
-            // Type column
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ImGui::Text("%s", GLSLTypeMapping[type->type].label.c_str());
+    // Calcular el ancho máximo de los labels (solo los que tienen controles)
+    float maxLabelWidth = 0.0f;
+    for (int i = 0; i < file.getShader()->dataTypes.size(); i++) {
+        auto type = &file.getShader()->dataTypes[i];
 
-            // Value ImGuiControl
-            ImGui::TableSetColumnIndex(2);
-            ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 5.0f, ImGui::GetCursorPosY() + 5.0f));
-            ShaderBaseCustomOGLCode::DrawTypeImGuiControl(*type);
+        // Verificar si el tipo es interno
+        auto dataType = GLSLTypeMapping[type->type].type;
+        bool isInternal = dataType == ShaderOpenGLCustomDataType::DELTA_TIME ||
+                          dataType == ShaderOpenGLCustomDataType::EXECUTION_TIME ||
+                          dataType == ShaderOpenGLCustomDataType::DEPTH ||
+                          dataType == ShaderOpenGLCustomDataType::SCENE ||
+                          dataType == ShaderOpenGLCustomDataType::TEXTURE2D ||
+                          dataType == ShaderOpenGLCustomDataType::DIFFUSE ||
+                          dataType == ShaderOpenGLCustomDataType::SPECULAR;
 
-            // Actions column
-            ImGui::TableSetColumnIndex(3);
-            GUI::DrawButton("Remove shader variable", IconGUI::SHADER_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
-                file.getShader()->removeDataType(*type);
-            });
-            ImGui::PopID();
+        // Solo calcular ancho si NO es interno
+        if (!isInternal) {
+            std::string label = std::to_string(i + 1) + ") " + type->name + " (" + GLSLTypeMapping[type->type].label + ")";
+            float labelWidth = ImGui::CalcTextSize(label.c_str()).x;
+            maxLabelWidth = ImMax(maxLabelWidth, labelWidth);
         }
-        ImGui::EndTable();
+    }
+
+    // Ancho total de la parte izquierda: botón + spacing + texto + margen
+    float leftSideWidth = buttonWidth + ImGui::GetStyle().ItemSpacing.x + maxLabelWidth + 30.0f;
+
+    for (int i = 0; i < file.getShader()->dataTypes.size(); i++) {
+        auto type = &file.getShader()->dataTypes[i];
+
+        ImGui::PushID(i);
+
+        ImGui::AlignTextToFramePadding();
+
+        // Botón eliminar
+        GUI::DrawButton("Remove shader variable", IconGUI::SHADER_REMOVE_VARIABLE, GUIType::Sizes::ICONS_BROWSERS, true, [&] {
+            file.getShader()->removeDataType(*type);
+        });
+
+        ImGui::SameLine();
+
+        // Número y nombre
+        ImGui::Text("%d) %s", i + 1, type->name.c_str());
+        ImGui::SameLine();
+
+        // Tipo
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%s)", GLSLTypeMapping[type->type].label.c_str());
+
+        // Verificar si el tipo es interno (sin control editable)
+        auto dataType = GLSLTypeMapping[type->type].type;
+        bool isInternal = dataType == ShaderOpenGLCustomDataType::DELTA_TIME ||
+                          dataType == ShaderOpenGLCustomDataType::EXECUTION_TIME ||
+                          dataType == ShaderOpenGLCustomDataType::DEPTH ||
+                          dataType == ShaderOpenGLCustomDataType::SCENE ||
+                          dataType == ShaderOpenGLCustomDataType::TEXTURE2D ||
+                          dataType == ShaderOpenGLCustomDataType::DIFFUSE ||
+                          dataType == ShaderOpenGLCustomDataType::SPECULAR;
+
+        if (!isInternal) {
+            // Posicionar el control en la posición calculada
+            ImGui::SameLine(leftSideWidth);
+
+            // Control de valor ocupa el resto del espacio disponible
+            ImGui::SetNextItemWidth(-FLT_MIN);
+            ShaderBaseCustomOGLCode::DrawTypeImGuiControl(*type);
+        }
+
+        ImGui::PopID();
     }
 }
-
 void ShadersGUI::DrawShaderConfigEmptyStateWarning(EditableOpenShaderFile &file)
 {
     auto types = file.getShader()->getDataTypes();

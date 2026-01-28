@@ -26,7 +26,7 @@ class Object3D;
 
 class GUIManager
 {
-    std::vector<GUIType::WindowData> windows;
+    std::vector<GUIType::WindowGUI> windows;
 
     std::vector<GUIType::LayoutWindowConfig> defaultLayoutWindowsConfig;
     std::vector<GUIType::LayoutWindowConfig> devsLayoutWindowsConfig;
@@ -69,6 +69,11 @@ class GUIManager
 
     void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
+
+    static void DrawObjectWindowStatusBar(GUIType::WindowGUI &window);
+
+    float GetObjectStatusBarHeight();
+
     void DrawWinKeyboardMouse();
     void DrawSplashWindow();
 
@@ -109,7 +114,7 @@ public:
     [[nodiscard]] ProjectChecker &getProjectChecker()                                   { return projectChecker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
     [[nodiscard]] GUIAddonResourceHub * getResourcesHub() const                         { return resourceHub; }
-    GUIType::WindowData *getWindowStatus(GUIType::Window window);
+    GUIType::WindowGUI *getWindowStatus(GUIType::Window window);
 
     virtual void DrawGUI();
     static void SetNextWindowSize(int w, int h);

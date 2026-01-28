@@ -4,13 +4,13 @@
 
 #include "../../include/Loaders/SceneLoader.h"
 #include "../../include/Config.h"
+#include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 #include "../../include/Serializers/Image2DAnimationSerializer.h"
 #include "../../include/Threads/ThreadJobLoadObject.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
@@ -86,6 +86,7 @@ void SceneLoader::LoadScene(const std::string& filename)
 
     isLoading = true;
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadFileScene>(filename));
+    FileSystemGUI::autoExpandScene = true;
 }
 
 void SceneLoader::SaveScene(const std::string &filename)

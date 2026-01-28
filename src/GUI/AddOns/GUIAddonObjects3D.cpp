@@ -55,6 +55,7 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
     config.p_checked = &isEnabled;
     config.isLeaf = true;
     config.itemPadding = 0.8f;
+    config.itemMargin = 4.0f;
 
     // ===== ACCIONES A LA DERECHA =====
 
@@ -108,7 +109,6 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
         );
     }
 
-
     // Drag & Drop
     CustomImGui::TreeDragDropConfig dragDropScript;
     dragDropScript.acceptsDrop = true;
@@ -119,7 +119,6 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
     };
     config.dragDrop = dragDropScript;
     config.onDoubleClick = [o]() {
-        LOG_MESSAGE("[Objects] DOUBLE CLICK");
         Components::get()->Render()->setSelectedObject(o);
         if (!Brakeza::get()->GUI()->isWindowOpen(GUIType::OBJECT_PROPS)) {
             Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_PROPS)->isOpen = true;

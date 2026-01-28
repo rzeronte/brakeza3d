@@ -198,6 +198,11 @@ public:
     std::string URL_ASSETS_HUB_API = "http://localhost:3000";
     std::string URL_ASSETS_HUB_URL = "https://hub.brakeza.com";
 
+    std::string MODAL_CREATE_PROJECT_TITLE_ID = "Create project dialog";
+    std::string MODAL_CREATE_SCRIPT_TITLE_ID = "Create script dialog";
+    std::string MODAL_CREATE_SHADER_TITLE_ID = "Create shader dialog";
+    std::string MODAL_CREATE_SCENE_TITLE_ID = "Create scene dialog";
+
     // GLOBAL ENUMS
     enum SoundChannels {
         SND_GLOBAL = -1,
