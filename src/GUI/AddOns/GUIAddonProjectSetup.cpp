@@ -224,7 +224,7 @@ void GUIAddonProjectSetup::DrawProjectScriptsNode()
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
     config.defaultOpen = shouldOpen;
     config.showChildCount = true;
-    config.childCount = (int)scripts.size();
+    config.childCount = (int) scripts.size();
 
     config.dragDrop = CustomImGui::TreeDragDropConfig(
         GUIType::DragDropTarget::SCRIPT_ITEM,
@@ -386,217 +386,6 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
 }
 
 // ============================================
-// FUNCIONES TREE (REFACTORIZADAS CON CustomTreeNode)
-// ============================================
-
-void GUIAddonProjectSetup::TreeSceneScripts()
-{
-    auto scripting = Components::get()->Scripting();
-    static bool shouldOpen = false;
-
-    std::string labelSceneScripts = "Scene scripts (" + std::to_string(scripting->getSceneScripts().size()) + ")";
-
-    CustomImGui::CustomTreeNodeConfig config(labelSceneScripts.c_str());
-
-    config.iconSize = ImVec2(18, 18);
-    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS);
-    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.bulletSize = ImVec2(18, 18);
-    config.defaultOpen = shouldOpen;
-    config.showChildCount = true;
-    config.childCount = (int)scripting->getSceneScripts().size();
-
-    config.dragDrop = CustomImGui::TreeDragDropConfig(
-        GUIType::DragDropTarget::SCRIPT_ITEM,
-        [&](void* data) {
-            LOG_MESSAGE("Dropping script (%s) in scene space", (char*)data);
-            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
-            scripting->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
-            shouldOpen = true;
-        }
-    );
-
-    bool isOpenSceneScripts = CustomImGui::CustomTreeNode(config, nullptr);
-
-    if (isOpenSceneScripts) {
-        if (shouldOpen) shouldOpen = false;
-
-        DrawSceneScripts();
-        if (scripting->getSceneScripts().empty()) {
-            Drawable::WarningMessage("There are not scripts attached");
-        }
-        CustomImGui::CustomTreePop();
-    }
-}
-
-void GUIAddonProjectSetup::TreeProjectScenes()
-{
-    auto scripting = Components::get()->Scripting();
-    static bool shouldOpen = false;
-
-    auto projectScenes = scripting->getProjectScenes();
-    std::string labelProjectScenes = "Project scenes (" + std::to_string(projectScenes.size()) + ")";
-
-    CustomImGui::CustomTreeNodeConfig config(labelProjectScenes.c_str());
-    config.iconSize = ImVec2(18, 18);
-    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
-    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.bulletSize = ImVec2(18, 18);
-    config.defaultOpen = shouldOpen;
-    config.showChildCount = true;
-    config.childCount = (int)projectScenes.size();
-
-    config.dragDrop = CustomImGui::TreeDragDropConfig(
-        GUIType::DragDropTarget::SCENE_ITEM,
-        [&](void* data) {
-            const char* scenePath = (const char*)data;
-            LOG_MESSAGE("Dropping scene '%s' in project space", scenePath);
-            scripting->AddProjectScene(scenePath);
-            shouldOpen = true;
-        }
-    );
-
-    bool isOpenProjectScenes = CustomImGui::CustomTreeNode(config, nullptr);
-
-    if (isOpenProjectScenes) {
-        if (shouldOpen) shouldOpen = false;
-
-        DrawProjectScenes();
-        if (projectScenes.empty()) {
-            Drawable::WarningMessage("There are not scenes attached");
-        }
-        CustomImGui::CustomTreePop();
-    }
-}
-
-void GUIAddonProjectSetup::TreeProjectSettings()
-{
-    std::string labelProjectSettings = "Project settings";
-
-    CustomImGui::CustomTreeNodeConfig config(labelProjectSettings.c_str());
-    config.iconSize = ImVec2(18, 18);
-    config.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
-    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.bulletSize = ImVec2(18, 18);
-    config.defaultOpen = false;
-
-    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
-
-    if (isOpen) {
-        DrawProjectSettings();
-        CustomImGui::CustomTreePop();
-    }
-}
-
-void GUIAddonProjectSetup::TreeProjectScripts()
-{
-    auto scripting = Components::get()->Scripting();
-    static bool shouldOpen = false;
-
-    std::string labelGlobalScripts = "Project scripts";
-
-    CustomImGui::CustomTreeNodeConfig config(labelGlobalScripts.c_str());
-
-    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS);
-    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    config.defaultOpen = shouldOpen;
-    config.showChildCount = true;
-    config.childCount = (int)scripting->getProjectScripts().size();
-
-    config.dragDrop = CustomImGui::TreeDragDropConfig(
-        GUIType::DragDropTarget::SCRIPT_ITEM,
-        [&](void* data) {
-            LOG_MESSAGE("Dropping script '%s' in project space", (char*)data);
-            auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
-            scripting->AddProjectLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
-            shouldOpen = true;
-        }
-    );
-
-    bool isOpenGlobalScripts = CustomImGui::CustomTreeNode(config, nullptr);
-
-    if (isOpenGlobalScripts) {
-
-        if (shouldOpen) shouldOpen = false;
-        ImGui::Spacing();
-
-        DrawProjectScripts();
-        if (scripting->getProjectScripts().empty()) {
-            Drawable::WarningMessage("There are not scripts attached");
-        }
-        CustomImGui::CustomTreePop();
-    }
-}
-
-void GUIAddonProjectSetup::TreeSceneShaders()
-{
-    auto render = Components::get()->Render();
-    static bool shouldOpen = false;
-
-    std::string labelSceneShaders = "Scene shaders (" + std::to_string(render->getSceneShaders().size()) + ")";
-
-    CustomImGui::CustomTreeNodeConfig config(labelSceneShaders.c_str());
-    config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS);
-    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    //config.bulletSize = ImVec2(18, 18);
-    config.defaultOpen = shouldOpen;
-    config.showChildCount = true;
-    config.childCount = (int)render->getSceneShaders().size();
-
-    config.dragDrop = CustomImGui::TreeDragDropConfig(
-        GUIType::DragDropTarget::SHADER_ITEM,
-        [&](void* data) {
-            auto receivedData = (Config::DragDropCustomShaderData*)data;
-            auto fullPath = std::string(receivedData->folder) + receivedData->file;
-            LOG_MESSAGE("Dropping shader file '%s' in scene space...", fullPath.c_str());
-            render->LoadShaderIntoScene(fullPath);
-            shouldOpen = true;
-        }
-    );
-
-    bool isOpenSceneShaders = CustomImGui::CustomTreeNode(config, nullptr);
-
-    if (isOpenSceneShaders) {
-        if (shouldOpen) shouldOpen = false;
-
-        DrawSceneCustomShaders();
-        if (render->getSceneShaders().empty()) {
-            Drawable::WarningMessage("There are not shaders attached");
-        }
-        CustomImGui::CustomTreePop();
-    }
-}
-
-// ============================================
-// BOTONES DE GUARDADO
-// ============================================
-
-void GUIAddonProjectSetup::SaveCurrentSceneButton()
-{
-    auto scripting = Components::get()->Scripting();
-    if (scripting->getCurrentScene() != nullptr) {
-        GUI::ImageButtonNormal(IconGUI::SCENE_SAVE, "Save loaded Scene", [scripting] {
-            SceneLoader::SaveScene(scripting->getCurrentScene()->getFilePath());
-        });
-    }
-}
-
-void GUIAddonProjectSetup::SaveCurrentProjectButton()
-{
-    auto scripting = Components::get()->Scripting();
-    if (scripting->getCurrentProject() != nullptr) {
-        GUI::ImageButtonNormal(IconGUI::PROJECT_SAVE, "Save loaded Project", [scripting] {
-            ProjectLoader::SaveProject(scripting->getCurrentProject()->getFilePath());
-        });
-    }
-}
-
-// ============================================
 // DRAW FUNCTIONS
 // ============================================
 
@@ -612,9 +401,10 @@ void GUIAddonProjectSetup::DrawProjectScenes()
 
         CustomImGui::CustomTreeNodeConfig sceneConfig(label.c_str());
         sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
+        sceneConfig.iconSize = ImVec2(18, 18);
+        sceneConfig.textColor = ImVec4(0.7f, 0.7f, 0.7f, 1.0f);
 
         // BUTTONS
-
         sceneConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
             "Load Scene",
@@ -632,9 +422,6 @@ void GUIAddonProjectSetup::DrawProjectScenes()
             }
         );
 
-        // Como las escenas son solo strings, no necesitan ser expandibles
-        // Puedes usar un TreeNode simple o solo mostrar el item con botones
-        // Si quieres mantener la apariencia de TreeNode (aunque no se expanda):
         bool isOpen = CustomImGui::CustomTreeNode(sceneConfig, nullptr);
         if (isOpen) {
             // Las escenas no tienen propiedades que mostrar, así que cerramos inmediatamente
@@ -724,6 +511,7 @@ void GUIAddonProjectSetup::DrawProjectScripts()
 
         // Configurar CustomTreeNode para cada script
         CustomImGui::CustomTreeNodeConfig scriptConfig(scriptName.c_str());
+        scriptConfig.iconSize = ImVec2(18, 18);
         scriptConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCRIPT_FILE);
         scriptConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         scriptConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -777,6 +565,7 @@ void GUIAddonProjectSetup::DrawSceneScripts()
         scriptConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCRIPT_FILE);
         scriptConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         scriptConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        scriptConfig.iconSize = ImVec2(18, 18);
         scriptConfig.defaultOpen = false;
 
         // Botones de acción - captura SOLO el puntero, no evalúes estados dinámicos aquí
@@ -835,6 +624,12 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         shaderConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
         shaderConfig.defaultOpen = false;
 
+        bool isNodeShader = currentShader->getType() == SHADER_NODE_OBJECT || currentShader->getType() == SHADER_NODE_POSTPROCESSING;
+
+        if (isNodeShader) {
+            shaderConfig.isLeaf = true;
+        }
+
         // Botones de acción
         shaderConfig.actionItems.emplace_back(
             !isEnabled ? FileSystemGUI::Icon(IconGUI::SHADER_LOCK) : FileSystemGUI::Icon(IconGUI::SHADER_UNLOCK),
@@ -843,7 +638,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         );
 
         shaderConfig.actionItems.emplace_back(
-            FileSystemGUI::Icon(IconGUI::SHADER_EDIT),
+            FileSystemGUI::Icon(isNodeShader ? IconGUI::WIN_SHADER_NODES: IconGUI::SHADER_EDIT),
             "Edit shader",
             [currentShader]() { ShadersGUI::LoadDialogShader(currentShader->getTypesFile()); }
         );

@@ -15,8 +15,9 @@ public:
     bool EXIT = false;
 
     // TITLE/VERSION
-    std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez Alvarez <eduardo@brakeza.com>";
-    std::string ENGINE_VERSION = "v.1.0.0";
+    std::string ENGINE_TITLE = "Brakeza3D - By Eduardo Rodriguez Alvarez";
+    std::string ABOUT_ME = "By Eduardo Rodriguez Alvarez";
+    std::string ENGINE_VERSION = "v0.26.2";
 
     std::string ENGINE_WEBSITE = "https://www.brakeza.com";
     std::string ENGINE_SOURCE_WEBSITE = "https://github.com/rzeronte/brakeza3d";

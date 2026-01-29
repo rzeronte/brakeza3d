@@ -105,5 +105,5 @@ void ShaderNodesMesh3D::RenderMesh(
 
 void ShaderNodesMesh3D::DrawImGuiProperties(const Image* diffuse, Image* specular)
 {
-    ShaderBaseNodes::DrawImGuiProperties(diffuse, specular);
+    //ShaderBaseNodes::DrawImGuiProperties(diffuse, specular);
 }
