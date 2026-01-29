@@ -37,8 +37,8 @@
 			"y":	27
 		}, {
 			"name":	"SCRIPT_FILE",
-			"x":	1,
-			"y":	4
+			"x":	13,
+			"y":	31
 		}, {
 			"name":	"SCRIPT_EDIT",
 			"x":	1,
@@ -137,8 +137,8 @@
 			"y":	27
 		}, {
 			"name":	"WIN_OBJECT_SCRIPTS",
-			"x":	1,
-			"y":	4
+			"x":	13,
+			"y":	31
 		}, {
 			"name":	"WIN_OBJECT_VARS",
 			"x":	5,
@@ -165,8 +165,8 @@
 			"y":	37
 		}, {
 			"name":	"WIN_FILES_SCRIPTS",
-			"x":	1,
-			"y":	4
+			"x":	13,
+			"y":	31
 		}, {
 			"name":	"WIN_FILES_SHADERS",
 			"x":	8,
@@ -465,12 +465,12 @@
 			"y":	10
 		}, {
 			"name":	"LUA_LOCK",
-			"x":	2,
-			"y":	25
+			"x":	1,
+			"y":	22
 		}, {
 			"name":	"LUA_UNLOCK",
-			"x":	3,
-			"y":	25
+			"x":	14,
+			"y":	23
 		}, {
 			"name":	"LUA_RELOAD",
 			"x":	10,
@@ -489,12 +489,12 @@
 			"y":	33
 		}, {
 			"name":	"SHADER_LOCK",
-			"x":	15,
-			"y":	28
+			"x":	1,
+			"y":	22
 		}, {
 			"name":	"SHADER_UNLOCK",
 			"x":	14,
-			"y":	39
+			"y":	23
 		}, {
 			"name":	"SHADER_RELOAD",
 			"x":	10,
@@ -541,12 +541,12 @@
 			"y":	7
 		}, {
 			"name":	"PROJECT_SETUP_GLOBAL_SCRIPTS",
-			"x":	1,
-			"y":	4
+			"x":	13,
+			"y":	31
 		}, {
 			"name":	"PROJECT_SETUP_SCENE_SCRIPTS",
-			"x":	1,
-			"y":	4
+			"x":	13,
+			"y":	31
 		}, {
 			"name":	"PROJECT_SETUP_SCENE_SHADERS",
 			"x":	8,
@@ -625,8 +625,8 @@
 			"y":	5
 		}, {
 			"name":	"WIN_SCRIPT_SETUP",
-			"x":	1,
-			"y":	4
+			"x":	13,
+			"y":	31
 		}, {
 			"name":	"WIN_SHADER_SETUP",
 			"x":	8,

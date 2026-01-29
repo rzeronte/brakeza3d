@@ -84,31 +84,6 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
         );
     }
 
-    // Colliders
-    GUIType::Sheet colliderIcon = IconGUI::EMPTY;
-    std::string colliderTooltip = "No collider";
-
-    if (o->isCollisionsEnabled()) {
-        if (o->getCollisionMode() == GHOST) {
-            colliderIcon = IconGUI::COLLIDER_GHOST;
-            colliderTooltip = "Collider: GHOST";
-        } else if (o->getCollisionMode() == BODY) {
-            colliderIcon = IconGUI::COLLIDER_BODY;
-            colliderTooltip = "Collider: BODY";
-        } else if (o->getCollisionMode() == KINEMATIC) {
-            colliderIcon = IconGUI::COLLIDER_KINEMATIC;
-            colliderTooltip = "Collider: KINEMATIC";
-        }
-
-        config.actionItems.emplace_back(
-            FileSystemGUI::Icon(colliderIcon),
-            colliderTooltip,
-            [o]() {
-                LOG_MESSAGE("[Objects] Collider: %s", o->getName().c_str());
-            }
-        );
-    }
-
     // Drag & Drop
     CustomImGui::TreeDragDropConfig dragDropScript;
     dragDropScript.acceptsDrop = true;

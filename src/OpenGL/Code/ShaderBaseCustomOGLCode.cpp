@@ -55,12 +55,14 @@ void ShaderBaseCustomOGLCode::PrepareMainThread()
     CreateFramebuffer();
 }
 
-void ShaderBaseCustomOGLCode::DrawTypeImGuiControl(ShaderOGLCustomType &type)
+void ShaderBaseCustomOGLCode::DrawTypeImGuiControl(ShaderOGLCustomType &type, bool showName)
 {
     ImGui::PushID(std::string(type.name + type.type).c_str());
 
     auto& info = GLSLTypeMapping[type.type];
-    auto label = Tools::ImGuiUnique(type.name);
+    // Si showName es false, usar ## para ocultar el label
+    auto label = showName ? Tools::ImGuiUnique(type.name) : std::string("##") + type.name;
+
     switch (info.type) {
         case ShaderOpenGLCustomDataType::INT: {
             int valueInt = std::get<int>(type.value);
@@ -127,11 +129,25 @@ void ShaderBaseCustomOGLCode::DrawTypeInternalImGuiControl(const ShaderOGLCustom
 {
     switch (GLSLTypeMapping[type.type].type) {
         case ShaderOpenGLCustomDataType::DELTA_TIME: {
-            ImGui::Text(type.name.c_str());
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", type.name.c_str());
+
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%s", type.type.c_str());
+
             break;
         }
         case ShaderOpenGLCustomDataType::EXECUTION_TIME: {
-            ImGui::Text(type.name.c_str());
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", type.name.c_str());
+
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("%s", type.type.c_str());
+
             break;
         }
         default:
@@ -139,10 +155,52 @@ void ShaderBaseCustomOGLCode::DrawTypeInternalImGuiControl(const ShaderOGLCustom
     }
 }
 
+void SetTableColumn(int index, float yOffset = 13.0f)
+{
+    ImGui::TableSetColumnIndex(index);
+    if (index == 0) {
+        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
+    } else {
+        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + yOffset));
+    }
+}
+
+void ShaderBaseCustomOGLCode::DrawTextureRow(
+    const char* name,
+    ImTextureID texture,
+    const char* tooltip,
+    int textureSlot,
+    int width,
+    int height
+)
+{
+    ImGui::TableNextRow();
+
+    SetTableColumn(0);
+    ImGui::Image(texture, ImVec2(36, 36));
+    ImGui::SetItemTooltip("%s", tooltip);
+
+    SetTableColumn(1);
+    ImGui::Text("%s", name);
+
+    SetTableColumn(2);
+    ImGui::Text("GL_TEXTURE%d", textureSlot);
+
+    SetTableColumn(3);
+    if (width > 0 && height > 0) {
+        ImGui::Text("%dx%d", width, height);
+    } else {
+        ImGui::Text("-");
+    }
+}
+
 void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
     ImGui::Spacing();
-    static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp;
+
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp |
+                                ImGuiTableFlags_BordersOuter |
+                                ImGuiTableFlags_BordersInnerV;
 
     int contUniforms = CountTypesByFilter(dataTypes, {
         ShaderOpenGLCustomDataType::INT,
@@ -157,161 +215,144 @@ void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *s
         ShaderOpenGLCustomDataType::EXECUTION_TIME,
     });
 
-    int countUniformTextures  = CountTypesByFilter(dataTypes, {
+    int countUniformTextures = CountTypesByFilter(dataTypes, {
         ShaderOpenGLCustomDataType::DEPTH,
         ShaderOpenGLCustomDataType::SCENE,
         ShaderOpenGLCustomDataType::TEXTURE2D,
         ShaderOpenGLCustomDataType::DIFFUSE,
     });
 
-    for (auto &type: dataTypes) {
-        DrawTypeImGuiControl(type);
-    }
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 4));
 
-    if (contUniforms == 0) {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Custom uniforms not found");
-    }
+    // Custom uniforms
+    ImGui::SeparatorText("Custom uniforms");
+    if (ImGui::BeginTable("CustomUniforms", 2, flags)) {
+        if (contUniforms > 0) {
+            for (auto &type: dataTypes) {
+                if (!IsCustomUniform(type)) continue;
 
-    for (auto &type: dataTypes) {
-        DrawTypeInternalImGuiControl(type);
-    }
+                ImGui::TableNextRow(ImGuiTableRowFlags_None, ImGui::GetFrameHeight());
+                ImGui::TableSetColumnIndex(0);
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("%s", type.name.c_str());
 
-    if (countInternalUniforms == 0) {
-        ImGui::Spacing();
-        Drawable::WarningMessage("No system uniforms found");
-    }
-
-    if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
-        int j = 0;
-        for (auto &type: dataTypes) {
-            switch (GLSLTypeMapping[type.type].type) {
-                case ShaderOpenGLCustomDataType::DEPTH: {
-                    ImGui::TableNextRow();
-
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-
-                    auto globalTexture = Components::get()->Window()->getGBuffer().depth;
-                    ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
-                    ImGui::SetItemTooltip("Depth Texture");
-
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("%s", type.name.c_str());
-
-                    ImGui::TableSetColumnIndex(2);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("GL_TEXTURE%d", j);
-
-                    ImGui::TableSetColumnIndex(3);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("%dx%d", Config::get()->screenWidth, Config::get()->screenHeight);
-                    j++;
-                    break;
-                }
-                case ShaderOpenGLCustomDataType::SCENE: {
-                    ImGui::TableNextRow();
-
-                    ImGui::TableSetColumnIndex(0);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-
-                    auto globalTexture = Components::get()->Window()->getGlobalTexture();
-                    ImGui::Image(reinterpret_cast<ImTextureID>(globalTexture), ImVec2(36, 36));
-                    ImGui::SetItemTooltip("Render scene");
-
-                    ImGui::TableSetColumnIndex(1);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("%s", type.name.c_str());
-
-                    ImGui::TableSetColumnIndex(2);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("GL_TEXTURE%d", j);
-
-                    ImGui::TableSetColumnIndex(3);
-                    ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                    ImGui::Text("%dx%d", Config::get()->screenWidth, Config::get()->screenHeight);
-                    j++;
-                    break;
-                }
-                case ShaderOpenGLCustomDataType::DIFFUSE: {
-                    ImGui::TableNextRow();
-
-                    if (diffuse != nullptr) {
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-
-                        ImGui::Image(diffuse->getOGLImTexture(), ImVec2(36, 36));
-                        ImGui::SetItemTooltip(diffuse->getFileName().c_str());
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("%s", type.name.c_str());
-
-                        ImGui::TableSetColumnIndex(2);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("GL_TEXTURE%d", j);
-
-                        ImGui::TableSetColumnIndex(3);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("%dx%d", diffuse->width(), diffuse->height());
-                    }
-                    j++;
-                    break;
-                }
-                case ShaderOpenGLCustomDataType::TEXTURE2D: {
-                    ImGui::TableNextRow();
-
-                    auto texture = std::get<Image *>(type.value);
-                    if (texture != nullptr) {
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-
-                        ImGui::Image(texture->getOGLImTexture(), ImVec2(36, 36));
-                        ImGui::SetItemTooltip(texture->getFileName().c_str());
-                        CaptureDragDropUpdateImage(type, texture);
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("%s", type.name.c_str());
-
-                        ImGui::TableSetColumnIndex(2);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("GL_TEXTURE%d", j);
-
-                        ImGui::TableSetColumnIndex(3);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("%dx%d", texture->width(), texture->height());
-                    } else {
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX() + 3.0f, ImGui::GetCursorPosY() + 2.0f));
-                        ImGui::Image(FileSystemGUI::Icon(IconGUI::TEXTURE), ImVec2(36, 36));
-                        CaptureDragDropUpdateImage(type, texture);
-
-                        ImGui::TableSetColumnIndex(1);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("Empty texture");
-
-                        ImGui::TableSetColumnIndex(2);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("GL_TEXTURE%d", j);
-
-                        ImGui::TableSetColumnIndex(3);
-                        ImGui::SetCursorPos(ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY() + 13.0f));
-                        ImGui::Text("-");
-                    }
-                    j++;
-                    break;
-                }
-                default:
-                    break;
+                ImGui::TableSetColumnIndex(1);
+                DrawTypeImGuiControl(type, false);
             }
+        } else {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            Drawable::WarningMessage("No custom uniforms found");
         }
         ImGui::EndTable();
-
-        if (countUniformTextures == 0) {
-            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Textures not found");
-        }
     }
+
+    ImGui::Spacing();
+
+    // Internal/System uniforms
+    ImGui::SeparatorText("Internal uniforms");
+    if (ImGui::BeginTable("InternalUniforms", 2, flags)) {
+        if (countInternalUniforms > 0) {
+            for (auto &type: dataTypes) {
+                DrawTypeInternalImGuiControl(type);
+            }
+        } else {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            Drawable::WarningMessage("No system uniforms found");
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::Spacing();
+
+    // Textures table
+    ImGui::SeparatorText("Textures uniforms");
+    if (ImGui::BeginTable("ShaderOpenGLCustomTexture", 4, flags)) {
+        if (countUniformTextures > 0) {
+            int j = 0;
+
+            for (auto &type: dataTypes) {
+                switch (GLSLTypeMapping[type.type].type) {
+                    case ShaderOpenGLCustomDataType::DEPTH: {
+                        auto globalTexture = Components::get()->Window()->getGBuffer().depth;
+                        DrawTextureRow(type.name.c_str(),
+                                      reinterpret_cast<ImTextureID>(globalTexture),
+                                      "Depth Texture", j,
+                                      Config::get()->screenWidth,
+                                      Config::get()->screenHeight);
+                        j++;
+                        break;
+                    }
+
+                    case ShaderOpenGLCustomDataType::SCENE: {
+                        auto globalTexture = Components::get()->Window()->getGlobalTexture();
+                        DrawTextureRow(type.name.c_str(),
+                                      reinterpret_cast<ImTextureID>(globalTexture),
+                                      "Render scene", j,
+                                      Config::get()->screenWidth,
+                                      Config::get()->screenHeight);
+                        j++;
+                        break;
+                    }
+
+                    case ShaderOpenGLCustomDataType::DIFFUSE: {
+                        if (diffuse != nullptr) {
+                            DrawTextureRow(type.name.c_str(),
+                                          diffuse->getOGLImTexture(),
+                                          diffuse->getFileName().c_str(), j,
+                                          diffuse->width(), diffuse->height());
+                        }
+                        j++;
+                        break;
+                    }
+
+                    case ShaderOpenGLCustomDataType::TEXTURE2D: {
+                        ImGui::TableNextRow();
+                        auto texture = std::get<Image *>(type.value);
+
+                        SetTableColumn(0);
+                        if (texture != nullptr) {
+                            ImGui::Image(texture->getOGLImTexture(), ImVec2(36, 36));
+                            ImGui::SetItemTooltip("%s", texture->getFileName().c_str());
+                        } else {
+                            ImGui::Image(FileSystemGUI::Icon(IconGUI::TEXTURE), ImVec2(36, 36));
+                        }
+                        CaptureDragDropUpdateImage(type, texture);
+
+                        SetTableColumn(1);
+                        ImGui::Text("%s", texture ? type.name.c_str() : "Empty texture");
+
+                        SetTableColumn(2);
+                        ImGui::Text("GL_TEXTURE%d", j);
+
+                        SetTableColumn(3);
+                        if (texture) {
+                            ImGui::Text("%dx%d", texture->width(), texture->height());
+                        } else {
+                            ImGui::Text("-");
+                        }
+
+                        j++;
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            }
+        } else {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Textures not found");
+        }
+
+        ImGui::EndTable();
+    }
+
+    ImGui::PopStyleVar(2);
+
 }
 
 void ShaderBaseCustomOGLCode::Destroy()
@@ -835,4 +876,16 @@ void ShaderBaseCustomOGLCode::CreateFramebuffer()
 void ShaderBaseCustomOGLCode::setTextureResult(GLuint value)
 {
     textureResult = value;
+}
+
+
+bool ShaderBaseCustomOGLCode::IsCustomUniform(const ShaderOGLCustomType &type)
+{
+    auto dataType = GLSLTypeMapping[type.type].type;
+
+    return dataType == ShaderOpenGLCustomDataType::INT ||
+           dataType == ShaderOpenGLCustomDataType::FLOAT ||
+           dataType == ShaderOpenGLCustomDataType::VEC2 ||
+           dataType == ShaderOpenGLCustomDataType::VEC3 ||
+           dataType == ShaderOpenGLCustomDataType::VEC4;
 }

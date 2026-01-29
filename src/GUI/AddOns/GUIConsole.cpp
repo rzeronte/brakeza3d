@@ -112,23 +112,24 @@ void GuiAddonConsole::DrawWinLogging()
 
             // Normally you would store more information in your item than just a string.
             // (e.g. make Items[] an array of structure, store color/type etc.)
-            ImVec4 color;
+            ImVec4 color = ImVec4(0.50f, 0.55f, 0.60f, 1.00f);
             bool has_color = false;
             if (strstr(item, "[Error]")) {
                 color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true;
             } else if (strncmp(item, "# ", 2) == 0) {
-                color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true;
+                color = ImVec4(0.4f, 1.0f, 0.4f, 1.0f); has_color = true;
             }
+
+            ImGui::PushStyleColor(ImGuiCol_Text, color);
+
             if (has_color) {
-                ImGui::PushStyleColor(ImGuiCol_Text, color);
                 ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_MSG_ERROR), GUIType::Sizes::ICONS_LOG);
             } else {
                 ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_MSG_OK), GUIType::Sizes::ICONS_LOG);
             }
             ImGui::SameLine();
             ImGui::TextUnformatted(item);
-            if (has_color)
-                ImGui::PopStyleColor();
+            ImGui::PopStyleColor();
         }
 
 

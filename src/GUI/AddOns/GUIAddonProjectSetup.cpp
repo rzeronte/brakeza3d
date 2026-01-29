@@ -193,6 +193,7 @@ void GUIAddonProjectSetup::DrawProjectSettingsNode()
     if (project == nullptr) return;
 
     CustomImGui::CustomTreeNodeConfig config("Project settings");
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -217,6 +218,7 @@ void GUIAddonProjectSetup::DrawProjectScriptsNode()
     std::string label = "Project scripts";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -259,6 +261,7 @@ void GUIAddonProjectSetup::DrawProjectScenesNode()
     std::string label = "Project scenes";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -305,6 +308,7 @@ void GUIAddonProjectSetup::DrawSceneScriptsNode()
     std::string label = "Scene scripts";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -347,6 +351,7 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
     std::string label = "Scene shaders";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SHADERS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -392,6 +397,8 @@ void GUIAddonProjectSetup::TreeSceneScripts()
     std::string labelSceneScripts = "Scene scripts (" + std::to_string(scripting->getSceneScripts().size()) + ")";
 
     CustomImGui::CustomTreeNodeConfig config(labelSceneScripts.c_str());
+
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENE_SCRIPTS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -432,6 +439,7 @@ void GUIAddonProjectSetup::TreeProjectScenes()
     std::string labelProjectScenes = "Project scenes (" + std::to_string(projectScenes.size()) + ")";
 
     CustomImGui::CustomTreeNodeConfig config(labelProjectScenes.c_str());
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_SCENES);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -468,6 +476,7 @@ void GUIAddonProjectSetup::TreeProjectSettings()
     std::string labelProjectSettings = "Project settings";
 
     CustomImGui::CustomTreeNodeConfig config(labelProjectSettings.c_str());
+    config.iconSize = ImVec2(18, 18);
     config.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
@@ -490,6 +499,7 @@ void GUIAddonProjectSetup::TreeProjectScripts()
     std::string labelGlobalScripts = "Project scripts";
 
     CustomImGui::CustomTreeNodeConfig config(labelGlobalScripts.c_str());
+
     config.leftIcon = FileSystemGUI::Icon(IconGUI::PROJECT_SETUP_GLOBAL_SCRIPTS);
     config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
     config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
