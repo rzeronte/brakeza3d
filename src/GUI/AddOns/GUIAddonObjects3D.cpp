@@ -1,6 +1,5 @@
 //
 // Created by Eduardo on 06/12/2025.
-// SIN BULLETS en objetos (solo en categorías)
 //
 
 #include "../../../include/GUI/AddOns/GUIAddonObjects3D.h"
@@ -11,9 +10,6 @@
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/Components/Components.h"
 
-// ============================================================================
-// FUNCIÓN AUXILIAR: Búsqueda case-insensitive
-// ============================================================================
 bool GUIAddonObjects3D::exist(const std::string &pattern1, const std::string &pattern2)
 {
     std::string nameUpper = pattern1;
@@ -23,9 +19,7 @@ bool GUIAddonObjects3D::exist(const std::string &pattern1, const std::string &pa
     return nameUpper.find(filterUpper) != std::string::npos;
 }
 
-// ============================================================================
-// FUNCIÓN AUXILIAR: Verificar si un tipo de objeto está visible
-// ============================================================================
+
 bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObject)
 {
     for (auto& o : gui->visibleTypeObjects) {
@@ -36,9 +30,6 @@ bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObje
     return false;
 }
 
-// ============================================================================
-// FUNCIÓN PRINCIPAL: Dibujar objeto individual con CustomTreeNode
-// ============================================================================
 void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
 {
     // Configurar el TreeNode
@@ -74,11 +65,11 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
     // Shaders
     auto mesh = dynamic_cast<Mesh3D*>(o);
     if (mesh != nullptr && !mesh->getCustomShaders().empty()) {
-        int numShaders = mesh ? (int)mesh->getCustomShaders().size() : 0;
+        int numShaders = (int) mesh->getCustomShaders().size();
         config.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::SHADER_FILE),
             "Shaders: " + std::to_string(numShaders),
-            [o, mesh]() {
+            [o]() {
                 Components::get()->Render()->setSelectedObject(o);
                 Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SHADERS)->isOpen = true;            }
         );
@@ -134,7 +125,7 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
 // ============================================================================
 // DrawObjectsTree - Solo categorías con bullets
 // ============================================================================
-void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Object3D *> &objects, std::string filter)
+void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Object3D *> &objects, const std::string &filter)
 {
     int globalIndex = 0;
 
@@ -204,10 +195,7 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
     }
 }
 
-// ============================================================================
-// DrawObjectList - Modo lista (sin bullets tampoco)
-// ============================================================================
-void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, std::string filter)
+void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, const std::string &filter)
 {
     if (objects.empty()) {
         Drawable::WarningMessage("Empty list");
@@ -224,9 +212,6 @@ void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> 
     }
 }
 
-// ============================================================================
-// DrawObjectTypes - Botones de filtro
-// ============================================================================
 void GUIAddonObjects3D::DrawObjectTypes(GUIManager *gui)
 {
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));

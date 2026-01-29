@@ -29,12 +29,12 @@ public:
     /**
      * Dibuja los objetos en modo árbol (agrupados por tipo)
      */
-    static void DrawObjectsTree(GUIManager *gui, const std::vector<Object3D *> &objects, std::string filter);
+    static void DrawObjectsTree(GUIManager *gui, const std::vector<Object3D *> &objects, const std::string &filter);
 
     /**
      * Dibuja los objetos en modo lista (todos juntos)
      */
-    static void DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, std::string filter);
+    static void DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, const std::string &filter);
 
     // ========================================================================
     // NUEVA FUNCIÓN - CustomTreeNode
