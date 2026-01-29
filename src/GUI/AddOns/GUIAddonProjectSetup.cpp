@@ -622,6 +622,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         shaderConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SHADER_FILE);
         shaderConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
         shaderConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        shaderConfig.iconSize = ImVec2(18, 18);
         shaderConfig.defaultOpen = false;
 
         bool isNodeShader = currentShader->getType() == SHADER_NODE_OBJECT || currentShader->getType() == SHADER_NODE_POSTPROCESSING;
