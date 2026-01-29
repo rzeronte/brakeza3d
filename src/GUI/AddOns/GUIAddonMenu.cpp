@@ -585,13 +585,16 @@ void GUIAddonMenu::AboutMeModal()
 
         ImGui::Text("Welcome to Brakeza3D!");
         ImGui::Text(setup->ENGINE_VERSION.c_str());
-        ImGui::Text(setup->ENGINE_TITLE.c_str());
-        Drawable::ImGuiLink("Website", setup->ENGINE_WEBSITE.c_str());
+        ImGui::Text(setup->ABOUT_ME.c_str());
+        ImGui::Separator();
+        Drawable::ImGuiLink(setup->ENGINE_WEBSITE.c_str(), setup->ENGINE_WEBSITE.c_str());
+        Drawable::ImGuiLink(setup->URL_ASSETS_HUB_URL.c_str(), setup->URL_ASSETS_HUB_URL.c_str());
         Drawable::ImGuiLink("GitHub", setup->ENGINE_SOURCE_WEBSITE.c_str());
-        if (ImGui::Button("Close")) {
+        ImGui::Separator();
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {
             ImGui::CloseCurrentPopup();
             Config::get()->SHOW_ABOUT_ME_MODAL = false;
-        }
+        });
         ImGui::EndPopup();
     }
 }

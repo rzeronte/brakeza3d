@@ -281,6 +281,12 @@ void ShadersGUI::DrawWinObjectShaders()
         config.indentSpacing = 20.0f;
         config.defaultOpen = false;
 
+        bool isNodeShader = s->getType() == SHADER_NODE_OBJECT || s->getType() == SHADER_NODE_POSTPROCESSING;
+
+        if (isNodeShader) {
+            config.isLeaf = true;
+        }
+
         // Lock/Unlock
         CustomImGui::TreeActionItem lockItem(
             !s->isEnabled() ? FileSystemGUI::Icon(IconGUI::SHADER_LOCK) : FileSystemGUI::Icon(IconGUI::SHADER_UNLOCK),
@@ -301,7 +307,7 @@ void ShadersGUI::DrawWinObjectShaders()
 
         // Edit
         CustomImGui::TreeActionItem editItem(
-            FileSystemGUI::Icon(IconGUI::SHADER_EDIT),
+            FileSystemGUI::Icon(isNodeShader ? IconGUI::WIN_SHADER_NODES : IconGUI::SHADER_EDIT),
             "Edit shader",
             [s]() { LoadDialogShader(s->getTypesFile()); }
         );
