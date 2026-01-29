@@ -205,7 +205,6 @@ void Drawable::WarningMessage(const char *msg)
     ImGui::Image(FileSystemGUI::Icon(IconGUI::WARNING), GUIType::Sizes::ICONS_BROWSERS);
     ImGui::SameLine();
     ImGui::TextDisabled("%s", msg);
-    ImGui::Spacing();
 }
 
 void Drawable::drawObject3DGizmo(

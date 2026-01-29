@@ -39,7 +39,7 @@ struct CustomTreeNodeConfig {
     int childCount = 0;
     bool isLeaf = false;
     bool defaultOpen = false;
-    ImVec2 iconSize = ImVec2(18, 18);
+    ImVec2 iconSize = ImVec2(24, 24);
     ImVec2 bulletSize = ImVec2(18, 18);
     ImVec4 iconTint = ImVec4(1, 1, 1, 1);
     ImVec4 selectedColor = ImVec4(0.35f, 0.65f, 0.45f, 0.3f);
@@ -303,24 +303,34 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
         x_offset += config.iconSize.x + 4.0f;
     }
 
-    // Texto
+    // Texto con clipping
     std::string display_label = config.label;
     if (config.showChildCount && config.childCount > 0)
         display_label += " (" + std::to_string(config.childCount) + ")";
 
     // Determinar color del texto
     ImU32 text_color;
-    if (config.textColor.w > 0.0f) {  // Si alpha > 0, usar color personalizado
+    if (config.textColor.w > 0.0f) {
         text_color = ImGui::GetColorU32(config.textColor);
     } else {
-        text_color = ImGui::GetColorU32(ImGuiCol_Text);  // Color por defecto
+        text_color = ImGui::GetColorU32(ImGuiCol_Text);
     }
+
+    // Calcular el ancho máximo disponible para el texto (sin invadir action items)
+    float text_max_width = tree_clickable_width - (x_offset - pos_start.x) - action_items_width - style.ItemSpacing.x;
+
+    // Aplicar clipping para que el texto no se solape con los botones
+    ImVec2 clip_min = ImVec2(x_offset, pos_start.y);
+    ImVec2 clip_max = ImVec2(x_offset + text_max_width, pos_start.y + line_height);
+    window->DrawList->PushClipRect(clip_min, clip_max, true);
 
     window->DrawList->AddText(
         ImVec2(x_offset, pos_start.y + text_base_offset_y),
-        text_color,  // Usar el color determinado
+        text_color,
         display_label.c_str()
     );
+
+    window->DrawList->PopClipRect();
 
     // --------------------------------------------------
     // Drag & drop (misma zona clickable)

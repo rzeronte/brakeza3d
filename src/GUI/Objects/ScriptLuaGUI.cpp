@@ -17,17 +17,36 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 
     ImGui::SeparatorText("Script variables values");
 
-    if (o->dataTypes.empty()) {
-        Drawable::WarningMessage("Script with no variables");
-        return;
+    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp |
+                                ImGuiTableFlags_BordersOuter |
+                                ImGuiTableFlags_BordersInnerV;
+
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8, 6));
+    if (ImGui::BeginTable("ScriptVariables", 2, flags)) {
+        if (!o->dataTypes.empty()) {
+            int i = 0;
+            for (auto& type: o->dataTypes) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("%s", type.name.c_str());
+
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushID(i);
+                DrawTypeImGuiControl(type, false, true);
+                ImGui::PopID();
+
+                i++;
+            }
+        } else {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            Drawable::WarningMessage("Script with no variables");
+        }
+        ImGui::EndTable();
     }
-    int i = 0;
-    for (auto& type: o->dataTypes) {
-        ImGui::PushID(i);
-        DrawTypeImGuiControl(type, true, true);
-        i++;
-        ImGui::PopID();
-    }
+    ImGui::PopStyleVar();
+
     ImGui::Spacing();
 }
 

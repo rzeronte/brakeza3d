@@ -30,9 +30,10 @@ public:
     void PrepareBackground() override;
     void PrepareMainThread() override;
 
-    static void DrawTypeImGuiControl(ShaderOGLCustomType &type);
+    static void DrawTypeImGuiControl(ShaderOGLCustomType &type, bool showName);
     static int CountTypesByFilter(const std::vector<ShaderOGLCustomType> &types,const std::vector<ShaderOpenGLCustomDataType> &filterTypes);
     static void DrawTypeInternalImGuiControl(const ShaderOGLCustomType &type);
+    static void DrawTextureRow(const char *name, ImTextureID texture, const char *tooltip, int textureSlot, int width, int height);
 
     void DrawImGuiProperties(const Image *diffuse, Image *specular) override;
 
@@ -75,6 +76,8 @@ public:
     void CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const;
     void CreateFramebuffer();
     void setTextureResult(GLuint value);
+
+    static bool IsCustomUniform(const ShaderOGLCustomType &type);
 };
 
 

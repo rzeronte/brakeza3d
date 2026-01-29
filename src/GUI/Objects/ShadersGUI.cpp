@@ -218,7 +218,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 
             // Control de valor ocupa el resto del espacio disponible
             ImGui::SetNextItemWidth(-FLT_MIN);
-            ShaderBaseCustomOGLCode::DrawTypeImGuiControl(*type);
+            ShaderBaseCustomOGLCode::DrawTypeImGuiControl(*type, true);
         }
 
         ImGui::PopID();
