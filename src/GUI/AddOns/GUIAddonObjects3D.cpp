@@ -209,7 +209,11 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
 // ============================================================================
 void GUIAddonObjects3D::DrawObjectList(GUIManager *gui, std::vector<Object3D *> &objects, std::string filter)
 {
-    for (unsigned int i = 0; i < (unsigned int)objects.size(); i++) {
+    if (objects.empty()) {
+        Drawable::WarningMessage("Empty list");
+    }
+
+    for (unsigned int i = 0; i < (unsigned int) objects.size(); i++) {
         auto &o = objects[i];
 
         if (o->isRemoved()) continue;
