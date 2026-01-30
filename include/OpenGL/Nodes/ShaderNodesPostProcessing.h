@@ -10,7 +10,6 @@
 
 class ShaderNodesPostProcessing  : public ShaderBaseNodes
 {
-    ShaderNodeEditorManager *nodeManager;
 public:
     ShaderNodesPostProcessing(const std::string &label, const std::string &typesFile, ShaderCustomType type, ShaderNodeEditorManager *nodeManager);
 
@@ -20,6 +19,7 @@ public:
     void Render(GLuint fbo, GLuint scenePostProcessedTexture) override;
     void DrawImGuiProperties(const Image *diffuse, Image *specular) override;
     void UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture) const;
+    ShaderNodeEditorManager* GetNodeManager() const { return dynamic_cast<ShaderNodeEditorManager*>(getNodeManager()); }
 };
 
 

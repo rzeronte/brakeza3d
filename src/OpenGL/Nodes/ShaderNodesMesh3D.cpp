@@ -15,7 +15,6 @@ ShaderNodesMesh3D::ShaderNodesMesh3D(
 )
 :
     ShaderBaseNodes(label, typesFile, type, nodeManager),
-    nodeManager(nodeManager),
     currentMesh(mesh)
 {
 }
@@ -52,17 +51,17 @@ void ShaderNodesMesh3D::RenderMesh(
     GLuint diffuseTexture = mesh->getModelTextures()[materialIndex]->getOGLTextureID();
     GLuint specularTexture = diffuseTexture; // Por ahora usar la misma
 
-    nodeManager->UpdateMeshTextures(diffuseTexture, specularTexture);
-    nodeManager->Update();
+    GetNodeManager()->UpdateMeshTextures(diffuseTexture, specularTexture);
+    GetNodeManager()->Update();
 
     // Configurar framebuffer y shader
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-    Components::get()->Render()->ChangeOpenGLProgram(nodeManager->GetShaderProgram());
+    Components::get()->Render()->ChangeOpenGLProgram(GetNodeManager()->GetShaderProgram());
 
     auto camera = Components::get()->Camera();
 
     // Enviar uniforms MVP
-    GLuint shaderProgram = nodeManager->GetShaderProgram();
+    GLuint shaderProgram = GetNodeManager()->GetShaderProgram();
     GLint projLoc = glGetUniformLocation(shaderProgram, "u_Projection");
     GLint viewLoc = glGetUniformLocation(shaderProgram, "u_View");
     GLint modelLoc = glGetUniformLocation(shaderProgram, "u_Model");
@@ -78,7 +77,7 @@ void ShaderNodesMesh3D::RenderMesh(
     }
 
     // Configurar texturas (llamado por RenderEffect internamente)
-    nodeManager->RenderEffect(fbo);
+    GetNodeManager()->RenderEffect(fbo);
 
     // Bindear atributos de vértices
     glEnableVertexAttribArray(0);
@@ -105,5 +104,5 @@ void ShaderNodesMesh3D::RenderMesh(
 
 void ShaderNodesMesh3D::DrawImGuiProperties(const Image* diffuse, Image* specular)
 {
-    nodeManager->RenderShaderDebugPanel();
+    GetNodeManager()->RenderShaderDebugPanel();
 }

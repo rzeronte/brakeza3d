@@ -535,13 +535,16 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
 
     if (getType() == SHADER_NODE_POSTPROCESSING) {
         code << "in vec2 v_TexCoord;\n";
+        code << "out vec4 FragColor;\n";
     } else if (getType() == SHADER_NODE_OBJECT) {
         code << "in vec3 v_FragPos;\n";
         code << "in vec3 v_Normal;\n";
         code << "in vec2 v_TexCoord;\n";
+        // GBuffer outputs
+        code << "layout (location = 0) out vec3 gPosition;\n";
+        code << "layout (location = 1) out vec3 gNormal;\n";
+        code << "layout (location = 2) out vec4 gAlbedoSpec;\n";
     }
-
-    code << "out vec4 FragColor;\n";
     code << "uniform float u_Time;\n";
 
     // Declarar uniforms de texturas
@@ -570,7 +573,13 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
 
     if (!outputNode || outputNode->inputs.empty()) {
         code << "void main() {\n";
-        code << "    FragColor = vec4(1.0, 0.0, 1.0, 1.0);\n";
+        if (getType() == SHADER_NODE_OBJECT) {
+            code << "    gPosition = v_FragPos;\n";
+            code << "    gNormal = normalize(v_Normal);\n";
+            code << "    gAlbedoSpec = vec4(1.0, 0.0, 1.0, 1.0);\n";
+        } else {
+            code << "    FragColor = vec4(1.0, 0.0, 1.0, 1.0);\n";
+        }
         code << "}\n";
         return code.str();
     }
@@ -579,10 +588,20 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
 
     std::string finalColor = TraverseNode(outputNode->inputs[0]->id, code);
 
-    if (finalColor.empty()) {
-        code << "    FragColor = vec4(0.0, 1.0, 1.0, 1.0);\n";
+    if (getType() == SHADER_NODE_OBJECT) {
+        code << "    gPosition = v_FragPos;\n";
+        code << "    gNormal = normalize(v_Normal);\n";
+        if (finalColor.empty()) {
+            code << "    gAlbedoSpec = vec4(0.0, 1.0, 1.0, 1.0);\n";
+        } else {
+            code << "    gAlbedoSpec = vec4(" << finalColor << ", 1.0);\n";
+        }
     } else {
-        code << "    FragColor = vec4(" << finalColor << ", 1.0);\n";
+        if (finalColor.empty()) {
+            code << "    FragColor = vec4(0.0, 1.0, 1.0, 1.0);\n";
+        } else {
+            code << "    FragColor = vec4(" << finalColor << ", 1.0);\n";
+        }
     }
 
     code << "}\n";
@@ -967,7 +986,7 @@ void ShaderNodeEditorManager::RenderMesh(
     if (!m_ShaderProgram) return;
 
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW);

@@ -14,8 +14,7 @@ ShaderNodesPostProcessing::ShaderNodesPostProcessing(
     ShaderNodeEditorManager *nodeManager
 )
 :
-    ShaderBaseNodes(label, typesFile, type, nodeManager),
-    nodeManager(nodeManager)
+    ShaderBaseNodes(label, typesFile, type, nodeManager)
 {
 }
 
@@ -29,21 +28,21 @@ void ShaderNodesPostProcessing::Destroy()
 
 void ShaderNodesPostProcessing::Reload()
 {
-    nodeManager->SetNeedsRecompile();
+    GetNodeManager()->SetNeedsRecompile();
 }
 
 void ShaderNodesPostProcessing::Render(GLuint fbo, GLuint scenePostProcessedTexture)
 {
-    nodeManager->Update();
-    nodeManager->RenderEffect(fbo);
+    GetNodeManager()->Update();
+    GetNodeManager()->RenderEffect(fbo);
 }
 
 void ShaderNodesPostProcessing::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
-    nodeManager->RenderShaderDebugPanel();
+    GetNodeManager()->RenderShaderDebugPanel();
 }
 
 void ShaderNodesPostProcessing::UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture) const
 {
-    nodeManager->UpdateInternalTextures(colorTexture, depthTexture);
+    GetNodeManager()->UpdateInternalTextures(colorTexture, depthTexture);
 }

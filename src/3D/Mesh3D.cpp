@@ -266,13 +266,23 @@ void Mesh3D::postUpdate()
 
 void Mesh3D::RunObjectShaders() const
 {
+    if (customShaders.empty()) return;
+
     auto window = Components::get()->Window();
     auto camera = Components::get()->Camera();
 
     for (const auto& s: customShaders) {
+        if (!s->isEnabled()) continue;
+
         // Si es un shader de nodos para mesh
         if (auto* nodesShader = dynamic_cast<ShaderNodesMesh3D*>(s)) {
-            auto nodeManager = nodesShader->GetNodeManager(); // Necesitas añadir este getter
+            auto nodeManager = nodesShader->GetNodeManager();
+            if (!nodeManager) {
+                LOG_ERROR("[Mesh3D] nodeManager is null for shader %s", s->getLabel().c_str());
+                continue;
+            }
+
+            LOG_MESSAGE("[Mesh3D] Running node shader on mesh, program=%d", (int)nodeManager->GetShaderProgram());
 
             // Renderizar cada parte del mesh
             for (size_t i = 0; i < meshes.size(); i++) {
@@ -285,6 +295,11 @@ void Mesh3D::RunObjectShaders() const
                 );
 
                 nodeManager->Update();
+
+                if (nodeManager->GetShaderProgram() == 0) {
+                    LOG_ERROR("[Mesh3D] Shader program is 0 after Update()!");
+                    continue;
+                }
 
                 // Renderizar este submesh
                 nodeManager->RenderMesh(
