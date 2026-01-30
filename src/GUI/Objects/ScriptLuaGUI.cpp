@@ -125,11 +125,11 @@ void ScriptLuaGUI::DrawWinObjectScripts()
         lockItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(lockItem);
 
-        // Edit
+        // Reload
         CustomImGui::TreeActionItem editItem(
-            FileSystemGUI::Icon(IconGUI::SCRIPT_EDIT),
-            "Edit script",
-            [currentScript]() { LoadScriptDialog(currentScript->getTypesFile()); }
+            FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
+            "Reload script object",
+            [currentScript]() { }
         );
         editItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(editItem);
