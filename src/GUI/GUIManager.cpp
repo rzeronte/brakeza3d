@@ -621,10 +621,10 @@ GUIType::WindowGUI* GUIManager::getWindowStatus(GUIType::Window window)
     return nullptr;
 }
 
-bool GUIManager::isEditableFileAlreadyOpen(const std::string &label) const
+bool GUIManager::isEditableFileAlreadyOpen(const std::string &uniqueId) const
 {
     for (const auto &f : openFiles) {
-        if (label == f->getTabLabel()) {
+        if (uniqueId == f->getUniqueId()) {
             return true;
         }
     }
@@ -648,7 +648,7 @@ void GUIManager::OpenEditableFile(EditableOpenBaseResource *openFile)
 void GUIManager::CloseEditableFile(EditableOpenBaseResource *openFile) const
 {
     for (auto &f : openFiles) {
-        if (f->getPath() == openFile->getPath()) {
+        if (f->getUniqueId() == openFile->getUniqueId()) {
             f->setRemoved(true);
         }
     }
@@ -659,11 +659,11 @@ void GUIManager::ResetIndexCodeEditor()
     indexCodeEditorTab = -1;
 }
 
-void GUIManager::setIndexCodeEditorTab(const std::string &label)
+void GUIManager::setIndexCodeEditorTab(const std::string &uniqueId)
 {
     int i = 0;
     for (auto &o : openFiles) {
-        if (label == o->getTabLabel()) {
+        if (uniqueId == o->getUniqueId()) {
             indexCodeEditorTab = i;
             return;
         }

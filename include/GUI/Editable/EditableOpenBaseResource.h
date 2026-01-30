@@ -15,17 +15,19 @@ enum EditableOpenResourceWinType {
 
 class EditableOpenBaseResource
 {
+    std::string uniqueId;
     std::string tabLabel;
     std::string path;
     bool removed = false;
     EditableOpenResourceWinType winType = TAB;
 
 public:
-    EditableOpenBaseResource(const std::string &tabLabel, const std::string &path)
-    : tabLabel(tabLabel), path(path) { }
+    EditableOpenBaseResource(const std::string &uniqueId, const std::string &tabLabel, const std::string &path)
+    : uniqueId(uniqueId), tabLabel(tabLabel), path(path) { }
 
     virtual ~EditableOpenBaseResource() {}
     [[nodiscard]] EditableOpenResourceWinType getWinType() const    { return winType;}
+    [[nodiscard]] std::string getUniqueId() const                   { return uniqueId; }
     [[nodiscard]] std::string getTabLabel() const                   { return tabLabel; }
     [[nodiscard]] std::string getPath() const                       { return path; }
     [[nodiscard]] bool isRemoved() const                            { return removed; }

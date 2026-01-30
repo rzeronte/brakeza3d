@@ -11,8 +11,9 @@
 class EditableOpenNode : public EditableOpenBaseResource
 {
     ShaderBaseNodes *shaderNodes;
+    bool isLiveShader = false;
 public:
-    EditableOpenNode(const std::string &tabLabel, const std::string &path, ShaderBaseNodes *shaderNodes);
+    EditableOpenNode(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ShaderBaseNodes *shaderNodes, bool isLiveShader = false);
     void DrawTabEdition(int i) override;
 
     void DrawEditableOpenNodeConfig();

@@ -10,7 +10,7 @@
 
 void EditableOpenFileGUI::DrawCodeEditorTab(EditableOpenFile &file, int tabIndex)
 {
-    std::string uniqueTabId = file.getTabLabel() + "##" + file.getPath();
+    std::string uniqueTabId = file.getTabLabel() + "##" + file.getUniqueId();
 
     if (file.getWinType() == TAB) {
         auto currentIndexTab = Brakeza::get()->GUI()->getIndexCodeEditorTab();
@@ -18,7 +18,7 @@ void EditableOpenFileGUI::DrawCodeEditorTab(EditableOpenFile &file, int tabIndex
         ImGuiTabItemFlags flags = (currentIndexTab == tabIndex) ? ImGuiTabItemFlags_SetSelected : 0;
         if (ImGui::BeginTabItem(uniqueTabId.c_str(), nullptr, flags)) {
             static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
-            std::string tableId = "codeEditorTab##" + file.getPath();
+            std::string tableId = "codeEditorTab##" + file.getUniqueId();
             if (ImGui::BeginTable(tableId.c_str(), 2, flags)) {
                 ImGui::TableSetupColumn("Setup", ImGuiTableColumnFlags_WidthFixed, 350.0f);
                 ImGui::TableSetupColumn("Code", ImGuiTableColumnFlags_WidthStretch);
@@ -50,7 +50,7 @@ void EditableOpenFileGUI::DrawCodeEditorTab(EditableOpenFile &file, int tabIndex
         // Crear popup modal
         if (ImGui::BeginPopupModal(uniqueTabId.c_str(), nullptr, ImGuiWindowFlags_NoCollapse)) {
             static ImGuiTableFlags flags = ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable;
-            std::string tableId = "codeEditorPopup##" + file.getPath();
+            std::string tableId = "codeEditorPopup##" + file.getUniqueId();
 
             // Calcular altura disponible (dejando espacio para el botón cerrar)
             float availableHeight = ImGui::GetContentRegionAvail().y - 40.0f;

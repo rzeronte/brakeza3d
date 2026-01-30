@@ -14,6 +14,7 @@ class ShadersGUI
 {
 public:
     static void LoadDialogShader(const std::string &file);
+    static void LoadDialogShader(ShaderBaseCustom *shader);
 
     static void DrawShaderConfig(EditableOpenShaderFile &file);
     static void DrawShaderConfigHeader(EditableOpenShaderFile &file);

@@ -637,7 +637,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         shaderConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(isNodeShader ? IconGUI::WIN_SHADER_NODES: IconGUI::SHADER_EDIT),
             "Edit shader",
-            [currentShader]() { ShadersGUI::LoadDialogShader(currentShader->getTypesFile()); }
+            [currentShader]() { ShadersGUI::LoadDialogShader(currentShader); }
         );
 
         shaderConfig.actionItems.emplace_back(
