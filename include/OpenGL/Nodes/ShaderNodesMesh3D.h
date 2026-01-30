@@ -7,7 +7,6 @@
 
 class ShaderNodesMesh3D : public ShaderBaseNodes {
 private:
-    ShaderNodeEditorManager* nodeManager;
     Mesh3D* currentMesh;
 
 public:
@@ -33,7 +32,7 @@ public:
         int vertexCount,
         GLuint fbo
     );
-    ShaderNodeEditorManager* GetNodeManager()                   { return nodeManager; }
+    ShaderNodeEditorManager* GetNodeManager() const             { return dynamic_cast<ShaderNodeEditorManager*>(getNodeManager()); }
 
     void DrawImGuiProperties(const Image* diffuse, Image* specular) override;
 };
