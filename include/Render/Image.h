@@ -51,7 +51,7 @@ public:
     [[nodiscard]] void* pixels() const                          { return surface->pixels; }
     [[nodiscard]] SDL_Texture *getTexture() const               { return texture; }
     [[nodiscard]] SDL_Surface *getSurface() const               { return surface; }
-    [[nodiscard]] ImTextureID getOGLImTexture() const           { return (ImTextureID) textureId; }
+    [[nodiscard]] ImTextureID getOGLImTexture() const           { return (ImTextureID)(intptr_t)textureId;; }
     [[nodiscard]] GLuint getOGLTextureID() const                { return textureId; }
     [[nodiscard]] const std::string &getFileName() const        { return fileName; }
     [[nodiscard]] Color getPixelColor(int x, int y) const;

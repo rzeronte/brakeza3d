@@ -29,7 +29,7 @@ public:
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "A", PinType::Vector);
         editor->AddInputPin(node, "B", PinType::Vector);
-        editor->AddInputPin(node, "FactorTest", PinType::Float);
+        editor->AddInputPin(node, "Factor", PinType::Float);
         editor->AddOutputPin(node, "Result", PinType::Vector);
     }
 

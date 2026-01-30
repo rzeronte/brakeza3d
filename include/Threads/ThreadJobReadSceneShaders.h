@@ -7,6 +7,7 @@
 
 #include "ThreadJobBase.h"
 #include "../Components/Components.h"
+#include "../GUI/Objects/ShadersGUI.h"
 #include "../Misc/cJSON.h"
 #include "../OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 
@@ -24,27 +25,23 @@ public:
 
     void fnProcess()
     {
-        cJSON *currentShaderJSON;
-        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
-            auto vsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vsFile")->valuestring;
-            auto fsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fsFile")->valuestring;
-            auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
-            auto dataTypes = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-            auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
 
-            auto shader = new ShaderOGLCustomCodePostprocessing(name, typesFile, vsFile, fsFile, dataTypes);
-            shader->PrepareBackground();
-            Components::get()->Render()->AddShaderToScene(shader);
-        }
         LOG_MESSAGE("[ThreadJobReadFileScene] Process END");
     }
 
     void fnCallback()
     {
-        auto &shaders = Components::get()->Render()->getSceneShaders();
+        cJSON *currentShaderJSON;
+        cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
+            auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
+            Components::get()->Render()->LoadShaderIntoScene(typesFile);
+
+        }
+
+        /*auto &shaders = Components::get()->Render()->getSceneShaders();
         for (auto &s : shaders) {
             s->PrepareMainThread();
-        }
+        }*/
         LOG_MESSAGE("[ThreadJobReadFileScene] Callback END");
     }
 

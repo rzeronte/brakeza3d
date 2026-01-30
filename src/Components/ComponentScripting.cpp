@@ -95,7 +95,7 @@ void ComponentScripting::ReloadLUAScripts() const
 
 void ComponentScripting::AddProjectScene(const std::string &value)
 {
-    LOG_ERROR("[Scripting] Adding scene '%s' to Project...", value.c_str());
+    LOG_MESSAGE("[Scripting] Adding scene '%s' to Project...", value.c_str());
 
     if (std::find(projectScenes.begin(), projectScenes.end(), value) == projectScenes.end()) {
         projectScenes.push_back(value);

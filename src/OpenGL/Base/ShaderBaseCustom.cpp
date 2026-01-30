@@ -45,7 +45,9 @@ void ShaderBaseCustom::setEnabled(bool value)
     enabled = value;
 }
 
-cJSON * ShaderBaseCustom::getTypesJSON() const {
+cJSON * ShaderBaseCustom::getTypesJSON() const
+{
+    return nullptr;
 }
 
 ShaderCustomType ShaderBaseCustom::ExtractTypeFromShaderName(const std::string& folder, const std::string &name)
