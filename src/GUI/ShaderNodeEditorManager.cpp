@@ -407,9 +407,8 @@ void ShaderNodeEditorManager::OnCreateNodeMenu()
     if (ImGui::MenuItem("Gradient")) CreateNodeOfType("Gradient");
 }
 
-void ShaderNodeEditorManager::Clear() {
-    std::cout << "🧹 ShaderNodeEditorManager::Clear() called" << std::endl;
-
+void ShaderNodeEditorManager::Clear()
+{
     // Limpiar texturas primero
     for (auto& pair : m_NodeTextures) {
         if (pair.second.image) {
@@ -881,18 +880,12 @@ std::shared_ptr<Node> ShaderNodeEditorManager::CreateNodeFromJSON(cJSON* nodeJso
 
 void ShaderNodeEditorManager::SetExternalTextureForNode(int nodeId, GLuint textureId)
 {
-    std::cout << "🔧 SetExternalTextureForNode called: nodeId=" << nodeId << ", textureId=" << textureId << std::endl;
-
     DeleteImageForNode(nodeId);
 
     auto window = Components::get()->Window();
 
-    std::cout << "🔧 Creating Image for node " << nodeId << " (" << window->getWidthRender() << "x" << window->getHeightRender() << ")" << std::endl;
-
     m_NodeTextures[nodeId].image = new Image(textureId, window->getWidthRender(), window->getHeightRender());
     m_NodeTextures[nodeId].filepath = "[System Texture]";
-
-    std::cout << "🔧 m_NodeTextures now has " << m_NodeTextures.size() << " entries" << std::endl;
 
     LOG_MESSAGE("External texture set for node %d (GLuint: %u, %dx%d)", nodeId, textureId, window->getWidthRender(), window->getHeightRender());
 }
