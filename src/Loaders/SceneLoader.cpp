@@ -119,7 +119,7 @@ void SceneLoader::SaveScene(const std::string &filename)
 
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
-    for (auto shader : Components::get()->Render()->getSceneShaders()) {
+    for (auto &shader : Components::get()->Render()->getSceneShaders()) {
         auto shaderJson = shader->getTypesJSON();
         cJSON_AddItemToArray(shadersArrayJSON, shaderJson);
     }

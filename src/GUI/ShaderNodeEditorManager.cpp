@@ -407,6 +407,25 @@ void ShaderNodeEditorManager::OnCreateNodeMenu()
     if (ImGui::MenuItem("Gradient")) CreateNodeOfType("Gradient");
 }
 
+void ShaderNodeEditorManager::Clear() {
+    std::cout << "🧹 ShaderNodeEditorManager::Clear() called" << std::endl;
+
+    // Limpiar texturas primero
+    for (auto& pair : m_NodeTextures) {
+        if (pair.second.image) {
+            delete pair.second.image;
+            pair.second.image = nullptr;
+        }
+    }
+    m_NodeTextures.clear();
+
+    // Llamar al Clear de la clase base para limpiar nodos/links/pins
+    NodeEditorManager::Clear();
+
+    // Recompilar shader después de limpiar
+    m_NeedsRecompile = true;
+}
+
 void ShaderNodeEditorManager::Update()
 {
     if (m_NeedsRecompile) {
@@ -430,15 +449,20 @@ void ShaderNodeEditorManager::RenderEffect(GLuint fb)
     for (auto& node : GetNodes()) {
         if ((node->name == "Image" ||
              node->name == "Internal Texture" ||
-             node->name == "MeshTexture") &&
+             node->name == "Mesh Texture") &&
             m_NodeTextures.find(node->id) != m_NodeTextures.end()) {
+
             auto& tex = m_NodeTextures[node->id];
+
             if (tex.image) {
+                GLuint texID = tex.image->getOGLTextureID();
+
                 glActiveTexture(GL_TEXTURE0 + textureUnit);
-                glBindTexture(GL_TEXTURE_2D, tex.image->getOGLTextureID());
+                glBindTexture(GL_TEXTURE_2D, texID);
 
                 std::string uniformName = "u_Texture" + std::to_string(node->id);
                 GLint texLoc = glGetUniformLocation(m_ShaderProgram, uniformName.c_str());
+
                 if (texLoc != -1) {
                     glUniform1i(texLoc, textureUnit);
                 }
@@ -473,6 +497,8 @@ const std::string& ShaderNodeEditorManager::GetLastShaderCode() const
 void ShaderNodeEditorManager::LoadImageForNode(int nodeId, const std::string& filepath)
 {
     DeleteImageForNode(nodeId);
+
+    if (filepath == "[System Texture]") return;
 
     try {
         if (m_NodeTextures[nodeId].image == nullptr) {
@@ -758,57 +784,77 @@ void ShaderNodeEditorManager::DeserializeCustomData(cJSON* root) {
 
 std::shared_ptr<Node> ShaderNodeEditorManager::CreateNodeFromJSON(cJSON* nodeJson) {
     std::string type = cJSON_GetObjectItem(nodeJson, "type")->valuestring;
-
-    // Usar el sistema existente de CreateNodeOfType
     std::shared_ptr<Node> node = CreateNodeOfType(type);
 
     if (!node) {
-        // Fallback a la implementación base si el tipo no existe
         return NodeEditorManager::CreateNodeFromJSON(nodeJson);
     }
 
-    // El nodo ya tiene sus pins creados por CreateNodeOfType,
-    // pero necesitamos actualizar los IDs para que coincidan con el JSON
-    int id = cJSON_GetObjectItem(nodeJson, "id")->valueint;
-    node->id = id;
+    int oldId = node->id;
+    int newId = cJSON_GetObjectItem(nodeJson, "id")->valueint;
+    node->id = newId;
 
-    // Actualizar IDs de los pins
+    if (node->name == "Internal Texture" || node->name == "Mesh Texture") {
+        auto oldIt = m_NodeTextures.find(oldId);
+        if (oldIt != m_NodeTextures.end()) {
+            m_NodeTextures[newId] = oldIt->second;
+            if (oldId != newId) {
+                m_NodeTextures.erase(oldId);
+            }
+        } else {
+            SetExternalTextureForNode(newId, 0);
+        }
+    }
+
+    // ✅ ELIMINAR PINS CREADOS AUTOMÁTICAMENTE
+    for (auto& pin : node->inputs) {
+        m_Pins.erase(std::remove_if(m_Pins.begin(), m_Pins.end(),
+            [pin](const std::shared_ptr<Pin>& p) { return p->id == pin->id; }), m_Pins.end());
+    }
+    for (auto& pin : node->outputs) {
+        m_Pins.erase(std::remove_if(m_Pins.begin(), m_Pins.end(),
+            [pin](const std::shared_ptr<Pin>& p) { return p->id == pin->id; }), m_Pins.end());
+    }
+
+    node->inputs.clear();
+    node->outputs.clear();
+
+    // ✅ RECREAR INPUTS CON IDS CORRECTOS
     cJSON* inputsArray = cJSON_GetObjectItem(nodeJson, "inputs");
     if (inputsArray) {
-        int idx = 0;
         cJSON* pinJson = nullptr;
         cJSON_ArrayForEach(pinJson, inputsArray) {
-            if (idx < node->inputs.size()) {
-                int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
-                node->inputs[idx]->id = pinId;
+            int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
+            std::string pinName = cJSON_GetObjectItem(pinJson, "name")->valuestring;
+            PinType pinType = static_cast<PinType>(cJSON_GetObjectItem(pinJson, "type")->valueint);
 
-                if (pinId >= m_NextId) {
-                    m_NextId = pinId + 1;
-                }
-            }
-            idx++;
+            auto pin = std::make_shared<Pin>(pinId, newId, ed::PinKind::Input, pinType, pinName);
+            node->inputs.push_back(pin);
+            m_Pins.push_back(pin);
+
+            if (pinId >= m_NextId) m_NextId = pinId + 1;
         }
     }
 
+    // ✅ RECREAR OUTPUTS CON IDS CORRECTOS
     cJSON* outputsArray = cJSON_GetObjectItem(nodeJson, "outputs");
     if (outputsArray) {
-        int idx = 0;
         cJSON* pinJson = nullptr;
         cJSON_ArrayForEach(pinJson, outputsArray) {
-            if (idx < node->outputs.size()) {
-                int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
-                node->outputs[idx]->id = pinId;
+            int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
+            std::string pinName = cJSON_GetObjectItem(pinJson, "name")->valuestring;
+            PinType pinType = static_cast<PinType>(cJSON_GetObjectItem(pinJson, "type")->valueint);
 
-                if (pinId >= m_NextId) {
-                    m_NextId = pinId + 1;
-                }
-            }
-            idx++;
+            auto pin = std::make_shared<Pin>(pinId, newId, ed::PinKind::Output, pinType, pinName);
+            node->outputs.push_back(pin);
+            m_Pins.push_back(pin);
+
+            if (pinId >= m_NextId) m_NextId = pinId + 1;
         }
     }
 
-    if (id >= m_NextId) {
-        m_NextId = id + 1;
+    if (newId >= m_NextId) {
+        m_NextId = newId + 1;
     }
 
     return node;
@@ -816,14 +862,20 @@ std::shared_ptr<Node> ShaderNodeEditorManager::CreateNodeFromJSON(cJSON* nodeJso
 
 void ShaderNodeEditorManager::SetExternalTextureForNode(int nodeId, GLuint textureId)
 {
+    std::cout << "🔧 SetExternalTextureForNode called: nodeId=" << nodeId << ", textureId=" << textureId << std::endl;
+
     DeleteImageForNode(nodeId);
 
     auto window = Components::get()->Window();
-    // Crear un objeto Image desde el GLuint existente
+
+    std::cout << "🔧 Creating Image for node " << nodeId << " (" << window->getWidthRender() << "x" << window->getHeightRender() << ")" << std::endl;
+
     m_NodeTextures[nodeId].image = new Image(textureId, window->getWidthRender(), window->getHeightRender());
     m_NodeTextures[nodeId].filepath = "[System Texture]";
 
-    LOG_MESSAGE("External texture set for node %d (GLuint: %u, %dx%d)", nodeId, textureId);
+    std::cout << "🔧 m_NodeTextures now has " << m_NodeTextures.size() << " entries" << std::endl;
+
+    LOG_MESSAGE("External texture set for node %d (GLuint: %u, %dx%d)", nodeId, textureId, window->getWidthRender(), window->getHeightRender());
 }
 
 void ShaderNodeEditorManager::PlugSystemTexture(std::shared_ptr<Node>& node, GLuint systemTextureId)
@@ -985,4 +1037,108 @@ void ShaderNodeEditorManager::RenderMesh(
 
     glUseProgram(0);
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
+}
+
+void ShaderNodeEditorManager::RenderShaderDebugPanel()
+{
+    ImGui::Spacing();
+
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8, 6));
+
+    if (ImGui::BeginTable("NodesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Node", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Connections", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableHeadersRow();
+
+        for (auto& node : m_Nodes) {
+            ImGui::TableNextRow();
+
+            // Columna 1: Icono + Nombre del nodo (con color)
+            ImGui::TableNextColumn();
+
+            // Determinar si está conectado
+            bool hasConnections = false;
+            for (auto& pin : node->inputs) {
+                if (IsPinConnected(pin->id)) {
+                    hasConnections = true;
+                    break;
+                }
+            }
+            for (auto& pin : node->outputs) {
+                if (IsPinConnected(pin->id)) {
+                    hasConnections = true;
+                    break;
+                }
+            }
+
+            ImTextureID icon = FileSystemGUI::Icon(hasConnections ? IconGUI::SHADER_UNLOCK : IconGUI::SHADER_LOCK);
+
+            ImGui::Image(icon, ImVec2(16, 16));
+            ImGui::SameLine();
+
+            ImGui::PushStyleColor(ImGuiCol_Text, node->color);
+            ImGui::Text("%s (ID:%d)", node->name.c_str(), node->id);
+            ImGui::PopStyleColor();
+
+            // Columna 2: Con qué está conectado
+            ImGui::TableNextColumn();
+            std::string connections = "";
+
+            // Buscar conexiones de inputs
+            for (auto& pin : node->inputs) {
+                for (auto& link : m_Links) {
+                    if (link->endPinId == pin->id) {
+                        auto startPin = FindPin(link->startPinId);
+                        if (startPin) {
+                            auto sourceNode = FindNode(startPin->nodeId);
+                            if (sourceNode) {
+                                if (!connections.empty()) connections += ", ";
+                                connections += sourceNode->name + "." + startPin->name + " -> " + pin->name;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Buscar conexiones de outputs
+            for (auto& pin : node->outputs) {
+                for (auto& link : m_Links) {
+                    if (link->startPinId == pin->id) {
+                        auto endPin = FindPin(link->endPinId);
+                        if (endPin) {
+                            auto targetNode = FindNode(endPin->nodeId);
+                            if (targetNode) {
+                                if (!connections.empty()) connections += ", ";
+                                connections += pin->name + " -> " + targetNode->name + "." + endPin->name;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (connections.empty()) {
+                ImGui::TextDisabled("None");
+            } else {
+                ImGui::TextWrapped("%s", connections.c_str());
+            }
+        }
+
+        ImGui::EndTable();
+    }
+
+    ImGui::PopStyleVar();
+    ImGui::Spacing();
+
+    // ===== CÓDIGO DEL SHADER =====
+    if (ImGui::CollapsingHeader("Shader Code")) {
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+        ImGui::BeginChild("ShaderCode", ImVec2(0, 300), true);
+        ImGui::TextUnformatted(m_LastShaderCode.c_str());
+        ImGui::EndChild();
+        ImGui::PopStyleColor();
+
+        if (ImGui::Button("Copy to Clipboard")) {
+            ImGui::SetClipboardText(m_LastShaderCode.c_str());
+        }
+    }
 }

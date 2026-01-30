@@ -627,10 +627,6 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
 
         bool isNodeShader = currentShader->getType() == SHADER_NODE_OBJECT || currentShader->getType() == SHADER_NODE_POSTPROCESSING;
 
-        if (isNodeShader) {
-            shaderConfig.isLeaf = true;
-        }
-
         // Botones de acción
         shaderConfig.actionItems.emplace_back(
             !isEnabled ? FileSystemGUI::Icon(IconGUI::SHADER_LOCK) : FileSystemGUI::Icon(IconGUI::SHADER_UNLOCK),

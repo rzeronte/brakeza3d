@@ -64,3 +64,16 @@ void ShaderBaseNodes::WriteEmptyCustomShaderToDisk(const std::string &name, cons
     // json
     Tools::WriteToFile(typesFile, content);
 }
+
+cJSON * ShaderBaseNodes::getTypesJSON() const
+{
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddStringToObject(root, "typesFile", fileTypes.c_str());
+    cJSON_AddStringToObject(root, "name", label.c_str());
+    cJSON_AddStringToObject(root, "type", getShaderTypeString(type).c_str());
+
+    auto dataNodes = nodeManager->getJSONTypes();
+    cJSON_AddItemToObject(root, "types", dataNodes);
+
+    return root;
+}

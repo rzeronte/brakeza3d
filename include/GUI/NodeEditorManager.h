@@ -129,7 +129,7 @@ public:
     [[nodiscard]] const std::vector<std::shared_ptr<Link>>& GetLinks() const      { return m_Links; }
     [[nodiscard]] const std::vector<std::shared_ptr<Pin>>& GetPins() const        { return m_Pins; }
     // ==================== Utilidades ====================
-    void Clear();
+    virtual void Clear();
     void NavigateToContent();
     void NavigateToSelection();
     ImVec2 GetNodePosition(int nodeId);

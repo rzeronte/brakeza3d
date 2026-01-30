@@ -90,6 +90,7 @@ public:
     void Update();
     void RenderEffect(GLuint fb);
     void OnCreateNodeMenu() override;
+    void Clear() override;  // ← Añadir esta línea
 
     [[nodiscard]] GLuint GetShaderProgram() const;
     [[nodiscard]] const std::string& GetLastShaderCode() const;
@@ -129,6 +130,8 @@ public:
         const glm::mat4& view,
         const glm::mat4& projection
     );
+
+    void RenderShaderDebugPanel();
 };
 
 #endif //SHADERNODEEDITOR_H
