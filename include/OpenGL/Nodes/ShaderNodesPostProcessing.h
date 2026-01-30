@@ -19,7 +19,7 @@ public:
     void Reload() override;
     void Render(GLuint fbo, GLuint scenePostProcessedTexture) override;
     void DrawImGuiProperties(const Image *diffuse, Image *specular) override;
-    void UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture);
+    void UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture) const;
 };
 
 

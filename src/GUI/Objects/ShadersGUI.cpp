@@ -283,10 +283,6 @@ void ShadersGUI::DrawWinObjectShaders()
 
         bool isNodeShader = s->getType() == SHADER_NODE_OBJECT || s->getType() == SHADER_NODE_POSTPROCESSING;
 
-        if (isNodeShader) {
-            config.isLeaf = true;
-        }
-
         // Lock/Unlock
         CustomImGui::TreeActionItem lockItem(
             !s->isEnabled() ? FileSystemGUI::Icon(IconGUI::SHADER_LOCK) : FileSystemGUI::Icon(IconGUI::SHADER_UNLOCK),

@@ -41,10 +41,9 @@ void ShaderNodesPostProcessing::Render(GLuint fbo, GLuint scenePostProcessedText
 void ShaderNodesPostProcessing::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
     nodeManager->RenderShaderDebugPanel();
-   //ShaderBaseNodes::DrawImGuiProperties(diffuse, specular);
 }
 
-void ShaderNodesPostProcessing::UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture)
+void ShaderNodesPostProcessing::UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture) const
 {
     nodeManager->UpdateInternalTextures(colorTexture, depthTexture);
 }
