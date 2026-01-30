@@ -282,8 +282,6 @@ void Mesh3D::RunObjectShaders() const
                 continue;
             }
 
-            LOG_MESSAGE("[Mesh3D] Running node shader on mesh, program=%d", (int)nodeManager->GetShaderProgram());
-
             // Renderizar cada parte del mesh
             for (size_t i = 0; i < meshes.size(); i++) {
                 const auto& m = meshes[i];

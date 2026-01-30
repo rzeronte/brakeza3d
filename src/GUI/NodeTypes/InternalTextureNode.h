@@ -34,9 +34,7 @@ public:
         editor->AddOutputPin(node, "Alpha", PinType::Float);
 
         // Inicializar la textura (se actualizará cada frame)
-        std::cout << "⭐ SetupPins called for Internal Texture node " << node->id << std::endl;
         editor->SetExternalTextureForNode(node->id, 0);
-        std::cout << "⭐ SetExternalTextureForNode finished for node " << node->id << std::endl;
     }
 
     float RenderUI(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
