@@ -6,6 +6,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/Brakeza.h"
+#include "../../include/GUI/Objects/ShadersGUI.h"
 #include "../../include/Threads/ThreadJobLoadMesh3D.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"
@@ -135,21 +136,14 @@ void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
         auto shaderTypesMapping = Components::get()->Render()->getShaderTypesMapping();
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
-            auto typeString = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "type")->valuestring;
-            switch (auto type = ShaderBaseCustom::getShaderTypeFromString(typeString)) {
-                case SHADER_OBJECT: {
-                    auto name = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "name")->valuestring;
-                    auto vsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "vsFile")->valuestring;
-                    auto fsFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "fsFile")->valuestring;
-                    auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
-                    auto types = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
-                    auto shader = new ShaderOGLCustomCodeMesh3D(mesh, name, typesFile, vsFile, fsFile, types);
-                    mesh->AddCustomShader(shader);
-                    break;
-                }
-                default: {
-                    LOG_MESSAGE("[LoadAttributes] Unknown shader type: %d", type);
-                }
+            auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
+            auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(typesFile);
+
+            auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, mesh);
+            if (shader != nullptr) {
+                mesh->AddCustomShader(shader);
+            } else {
+                LOG_ERROR("[Mesh3D] Cannot load shader %s...", typesFile);
             }
         }
     }
