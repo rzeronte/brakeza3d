@@ -6,9 +6,9 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 
-EditableOpenShaderFile::EditableOpenShaderFile(const std::string &tabLabel, const std::string &path, ShaderBaseCustomOGLCode *shader)
+EditableOpenShaderFile::EditableOpenShaderFile(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ShaderBaseCustomOGLCode *shader)
 :
-    EditableOpenFile(tabLabel, path, TextEditor::LanguageDefinition::GLSL()),
+    EditableOpenFile(uniqueId, tabLabel, path, TextEditor::LanguageDefinition::GLSL()),
     shader(shader)
 {
 }

@@ -8,16 +8,17 @@
 #include "../../../include/Misc/Tools.h"
 
 
-EditableOpenNode::EditableOpenNode(const std::string &tabLabel, const std::string &path, ShaderBaseNodes *shaderNodes)
+EditableOpenNode::EditableOpenNode(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ShaderBaseNodes *shaderNodes, bool isLiveShader)
 :
-    EditableOpenBaseResource(tabLabel, path),
-    shaderNodes(shaderNodes)
+    EditableOpenBaseResource(uniqueId, tabLabel, path),
+    shaderNodes(shaderNodes),
+    isLiveShader(isLiveShader)
 {
 }
 
 void EditableOpenNode::DrawTabEdition(int tabIndex)
 {
-    std::string uniqueTabId = getTabLabel() + "##" + getPath();
+    std::string uniqueTabId = getTabLabel() + "##" + getUniqueId();
 
     if (getWinType() == TAB) {
         auto currentIndexTab = Brakeza::get()->GUI()->getIndexCodeEditorTab();
@@ -73,12 +74,14 @@ void EditableOpenNode::DrawCodeEditActionButtons()
         ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableNextRow();
-        // Columna izquierda - botón Save
+        // Columna izquierda - botones
         ImGui::TableSetColumnIndex(0);
-        GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
-            shaderNodes->SaveToFile();
-        });
-        ImGui::SameLine();
+        if (!isLiveShader) {
+            GUI::DrawButton("Save file", IconGUI::SAVE, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
+                shaderNodes->SaveToFile();
+            });
+            ImGui::SameLine();
+        }
         GUI::DrawButton("Auto fit", IconGUI::NODE_EDITOR_AUTOFIT, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
             shaderNodes->getNodeManager()->Autofit();
         });

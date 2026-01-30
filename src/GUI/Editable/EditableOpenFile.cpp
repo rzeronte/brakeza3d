@@ -7,9 +7,9 @@
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/GUI/Editable/EditableOpenFileGUI.h"
 
-EditableOpenFile::EditableOpenFile(const std::string &tabLabel, const std::string &path, const TextEditor::LanguageDefinition &lang)
+EditableOpenFile::EditableOpenFile(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, const TextEditor::LanguageDefinition &lang)
 :
-    EditableOpenBaseResource(tabLabel, path)
+    EditableOpenBaseResource(uniqueId, tabLabel, path)
 {
     LOG_MESSAGE("[EditableOpenFile] Creating EditableOpenFile: Tab: '%s', File: '%s'", tabLabel.c_str(), path.c_str());
 

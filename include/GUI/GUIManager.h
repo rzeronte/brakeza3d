@@ -83,7 +83,7 @@ public:
     virtual ~GUIManager() = default;
 
     bool isWindowOpen(GUIType::Window w) const;
-    bool isEditableFileAlreadyOpen(const std::string &label) const;
+    bool isEditableFileAlreadyOpen(const std::string &uniqueId) const;
     void LoadDocumentation();
     void OnStart();
     void ResetIndexCodeEditor();
@@ -99,7 +99,7 @@ public:
     void CloseEditableFile(EditableOpenBaseResource *openFile) const;
     void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
     void setLayoutToDefault(Config::ImGUIConfigs config);
-    void setIndexCodeEditorTab(const std::string &label);
+    void setIndexCodeEditorTab(const std::string &uniqueId);
 
     [[nodiscard]] TextureAtlas * getTextureAtlas() const                                { return textureAtlas; }
     [[nodiscard]] GuiAddonConsole *getConsole() const                                   { return widgetConsole; }

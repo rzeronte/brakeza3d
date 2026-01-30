@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <cstdint>
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
@@ -302,13 +303,15 @@ void ShadersGUI::DrawWinObjectShaders()
         config.actionItems.push_back(reloadItem);
 
         // Edit
-        CustomImGui::TreeActionItem editItem(
-            FileSystemGUI::Icon(isNodeShader ? IconGUI::WIN_SHADER_NODES : IconGUI::SHADER_EDIT),
-            "Edit shader",
-            [s]() { LoadDialogShader(s->getTypesFile()); }
-        );
-        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
-        config.actionItems.push_back(editItem);
+        if (isNodeShader) {
+            CustomImGui::TreeActionItem editItem(
+                FileSystemGUI::Icon(isNodeShader ? IconGUI::WIN_SHADER_NODES : IconGUI::SHADER_EDIT),
+                "Edit nodes",
+                [s]() { LoadDialogShader(s); }
+            );
+            editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+            config.actionItems.push_back(editItem);
+        }
 
         // Remove
         CustomImGui::TreeActionItem removeItem(
@@ -333,32 +336,33 @@ void ShadersGUI::LoadDialogShader(const std::string &file)
 {
     auto metaInfo = ExtractShaderCustomCodeMetainfo(file);
     auto type = ShaderBaseCustom::ExtractShaderTypeFromTypesFile(file);
+    std::string uniqueId = "file:" + file;
 
-    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(metaInfo.name)) {
+    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(uniqueId)) {
         auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
         shader->PrepareSync();
         switch (type) {
             case SHADER_POSTPROCESSING: {
                 Brakeza::get()->GUI()->OpenEditableFile(
-                    new EditableOpenShaderFile(shader->getLabel(), metaInfo.vsFile, dynamic_cast<ShaderOGLCustomCodePostprocessing*>(shader))
+                    new EditableOpenShaderFile(uniqueId, shader->getLabel(), metaInfo.vsFile, dynamic_cast<ShaderOGLCustomCodePostprocessing*>(shader))
                 );
                 break;
             }
             case SHADER_OBJECT: {
                 Brakeza::get()->GUI()->OpenEditableFile(
-                    new EditableOpenShaderFile(shader->getLabel(), metaInfo.vsFile, dynamic_cast<ShaderOGLCustomCodeMesh3D*>(shader))
+                    new EditableOpenShaderFile(uniqueId, shader->getLabel(), metaInfo.vsFile, dynamic_cast<ShaderOGLCustomCodeMesh3D*>(shader))
                 );
                 break;
             }
             case SHADER_NODE_OBJECT: {
                 Brakeza::get()->GUI()->OpenEditableFile(
-                    new EditableOpenNode(shader->getLabel(), file, dynamic_cast<ShaderNodesMesh3D*>(shader))
+                    new EditableOpenNode(uniqueId, shader->getLabel(), file, dynamic_cast<ShaderNodesMesh3D*>(shader))
                 );
                 break;
             }
             case SHADER_NODE_POSTPROCESSING: {
                 Brakeza::get()->GUI()->OpenEditableFile(
-                    new EditableOpenNode(shader->getLabel(),  file, dynamic_cast<ShaderNodesPostProcessing*>(shader))
+                    new EditableOpenNode(uniqueId, shader->getLabel(), file, dynamic_cast<ShaderNodesPostProcessing*>(shader))
                 );
                 break;
             }
@@ -368,7 +372,48 @@ void ShadersGUI::LoadDialogShader(const std::string &file)
     }
     auto codeEditorWindow = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::CODE_EDITOR);
     if (!codeEditorWindow->isOpen) codeEditorWindow->isOpen = true;
-    Brakeza::get()->GUI()->setIndexCodeEditorTab(metaInfo.name);
+    Brakeza::get()->GUI()->setIndexCodeEditorTab(uniqueId);
+}
+
+void ShadersGUI::LoadDialogShader(ShaderBaseCustom *shader)
+{
+    auto type = shader->getType();
+    auto label = shader->getLabel() + " (Live)";
+    std::string uniqueId = "live:" + std::to_string(reinterpret_cast<uintptr_t>(shader));
+
+    if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(uniqueId)) {
+        switch (type) {
+            case SHADER_POSTPROCESSING: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenShaderFile(uniqueId, label, shader->getTypesFile(), dynamic_cast<ShaderOGLCustomCodePostprocessing*>(shader))
+                );
+                break;
+            }
+            case SHADER_OBJECT: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenShaderFile(uniqueId, label, shader->getTypesFile(), dynamic_cast<ShaderOGLCustomCodeMesh3D*>(shader))
+                );
+                break;
+            }
+            case SHADER_NODE_OBJECT: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenNode(uniqueId, label, shader->getTypesFile(), dynamic_cast<ShaderNodesMesh3D*>(shader), true)
+                );
+                break;
+            }
+            case SHADER_NODE_POSTPROCESSING: {
+                Brakeza::get()->GUI()->OpenEditableFile(
+                    new EditableOpenNode(uniqueId, label, shader->getTypesFile(), dynamic_cast<ShaderNodesPostProcessing*>(shader), true)
+                );
+                break;
+            }
+            default:
+                LOG_ERROR("[ShadersGUI] Unknown shader type...");
+        }
+    }
+    auto codeEditorWindow = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::CODE_EDITOR);
+    if (!codeEditorWindow->isOpen) codeEditorWindow->isOpen = true;
+    Brakeza::get()->GUI()->setIndexCodeEditorTab(uniqueId);
 }
 
 ShaderBaseCustomMetaInfo ShadersGUI::ExtractShaderCustomCodeMetainfo(const std::string &pathFile)

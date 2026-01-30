@@ -65,17 +65,19 @@ void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
 {
     auto meta = ExtractScriptMetainfo(pathFile);
     auto GUI = Brakeza::get()->GUI();
+    std::string uniqueId = "file:" + pathFile;
 
-    if (!GUI->isEditableFileAlreadyOpen(meta.name)) {
+    if (!GUI->isEditableFileAlreadyOpen(uniqueId)) {
         GUI->OpenEditableFile(
             new EditableOpenScriptFile(
+                uniqueId,
                 meta.name,
                 meta.codeFile,
                 new ScriptLUA(meta.name, meta.codeFile, meta.typesFile)
             )
         );
     }
-    GUI->setIndexCodeEditorTab(meta.name);
+    GUI->setIndexCodeEditorTab(uniqueId);
     Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
 }
 

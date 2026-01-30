@@ -18,7 +18,7 @@ class EditableOpenFile: public EditableOpenBaseResource
     TextEditor editor;
 public:
 
-    explicit EditableOpenFile(const std::string &tabLabel, const std::string &path, const TextEditor::LanguageDefinition &lang);
+    explicit EditableOpenFile(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, const TextEditor::LanguageDefinition &lang);
 
     [[nodiscard]] std::string &getContent()         { return content; }
     [[nodiscard]] TextEditor &getEditor()           { return editor; }

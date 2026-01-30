@@ -7,9 +7,9 @@
 #include "../../../include/Brakeza.h"
 #include "../include/GUI/Objects/ScriptLuaGUI.h"
 
-EditableOpenScriptFile::EditableOpenScriptFile(const std::string &tabLabel, const std::string &path, ScriptLUA *script)
+EditableOpenScriptFile::EditableOpenScriptFile(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ScriptLUA *script)
 :
-    EditableOpenFile(tabLabel, path, TextEditor::LanguageDefinition::Lua()),
+    EditableOpenFile(uniqueId, tabLabel, path, TextEditor::LanguageDefinition::Lua()),
     script(script)
 {
 }
