@@ -230,14 +230,12 @@ void GUIAddonResourceHub::renderResourceList() {
     }
     
     if (resources.empty()) {
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "No resources found. Try searching or change filters.");
+        Drawable::WarningMessage("No resources found. Try searching or change filters.");
         return;
     }
     
-    // Aumentar el padding de las celdas
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8.0f, 8.0f));
 
-    // Table
     if (ImGui::BeginTable("ResourcesTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 350))) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthStretch);
@@ -299,12 +297,11 @@ void GUIAddonResourceHub::renderResourceList() {
         ImGui::EndTable();
     }
 
-    ImGui::PopStyleVar(); // Restaurar el padding original
+    ImGui::PopStyleVar();
 }
 
-// ============ MÉTODOS DE LÓGICA ============
-
-void GUIAddonResourceHub::performLogin() {
+void GUIAddonResourceHub::performLogin()
+{
     if (strlen(username) == 0 || strlen(password) == 0) {
         loginError = "Please enter username and password";
         return;
@@ -330,7 +327,8 @@ void GUIAddonResourceHub::performLogin() {
     }
 }
 
-void GUIAddonResourceHub::performLogout() {
+void GUIAddonResourceHub::performLogout()
+{
     client->logout();
     isLoggedIn = false;
     showBrowserWindow = false;
@@ -341,7 +339,8 @@ void GUIAddonResourceHub::performLogout() {
     std::memset(password, 0, sizeof(password));
 }
 
-void GUIAddonResourceHub::loadResources() {
+void GUIAddonResourceHub::loadResources()
+{
     isLoadingResources = true;
     resources.clear();
     
