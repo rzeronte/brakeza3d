@@ -6,10 +6,13 @@
 #include <chrono>
 #include <map>
 
+#include "../../../include/Brakeza.h"
 #include "../../../include/GUI/GUI.h"
 #include "../../../include/Config.h"
+#include "../../../include/Components/Components.h"
 #include "../../../include/HttpClient/ResourceHubClient.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/Render/Drawable.h"
 
 GUIAddonResourceHub::GUIAddonResourceHub()
 {
@@ -72,65 +75,79 @@ void GUIAddonResourceHub::render() {
 
 void GUIAddonResourceHub::renderLoginWindow() {
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f), 
+    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
                             ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
-    
+
+    ImGui::SetNextWindowBgAlpha(0.99f);
+
     if (ImGui::Begin("Assets Hub - Login", &showLoginWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking)) {
         // Username
         ImGui::Text("Username:");
         ImGui::SetNextItemWidth(-1);
         ImGui::InputText("##username", username, sizeof(username));
         ImGui::Spacing();
-        
+
         // Password
         ImGui::Text("Password:");
         ImGui::SetNextItemWidth(-1);
         ImGui::InputText("##password", password, sizeof(password), ImGuiInputTextFlags_Password);
         ImGui::Spacing();
         ImGui::Spacing();
-        
+
         // Error message
         if (!loginError.empty()) {
             ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "%s", loginError.c_str());
             ImGui::Spacing();
         }
-        
+
         // Buttons
         if (isLoggingIn) {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "Logging in...");
         } else {
-            GUI::ImageButtonNormal(IconGUI::SESSION_OPEN, "Login", [&] {
-                performLogin();
-            });
-            ImGui::SameLine();
             GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {
                 showLoginWindow = false;
                 loginError = "";
             });
+            // alineamos dcha
+            ImGui::SameLine();
+            float buttonWidth = 85.0f; // Ajusta al tamaño de tu botón
+            ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - buttonWidth, 0));
+            ImGui::SameLine();
+            GUI::ImageButtonNormal(IconGUI::SESSION_OPEN, "Login", [&] {
+                performLogin();
+            });
+
         }
-        
+
         ImGui::Spacing();
         ImGui::Separator();
-        ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "Demo: demo_user / 123456");
+        Drawable::ImGuiLink("Don't have any account? Register!", Config::get()->URL_ASSETS_HUB_URL.c_str());
+        Drawable::ImGuiLink("Forgot your password?", Config::get()->URL_ASSETS_HUB_URL.c_str());
     }
     ImGui::End();
 }
 
-void GUIAddonResourceHub::renderBrowserWindow() {
+void GUIAddonResourceHub::renderBrowserWindow()
+{
     ImGui::SetNextWindowSize(ImVec2(900, 600), ImGuiCond_FirstUseEver);
-    
-    if (ImGui::Begin("Assets Hub Browser", &showBrowserWindow, ImGuiWindowFlags_NoDocking)) {
-        // Header
-        ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), Config::get()->URL_ASSETS_HUB_URL.c_str());
-        ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+
+    ImGui::SetNextWindowBgAlpha(0.99f);
+
+    if (ImGui::Begin(Config::get()->URL_ASSETS_HUB_URL.c_str(), &showBrowserWindow, ImGuiWindowFlags_NoDocking)) {
+        // Crear un espacio invisible que empuje los botones a la derecha
+        ImGui::Dummy(ImVec2(ImGui::GetContentRegionAvail().x - 170.0f, 0));
+        ImGui::SameLine();
 
         GUI::ImageButtonNormal(IconGUI::SESSION_CLOSE, "Logout", [&] {
             performLogout();
         });
-
+        ImGui::SameLine();
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {
+            showBrowserWindow = false;
+        });
         ImGui::Separator();
         ImGui::Spacing();
-        
+
         // Search and filters
         renderSearchFilters();
         
@@ -144,7 +161,8 @@ void GUIAddonResourceHub::renderBrowserWindow() {
         ImGui::Spacing();
         ImGui::Separator();
         
-        // Pagination
+        // Pagination - centrar texto verticalmente con botones
+        ImGui::AlignTextToFramePadding();
         ImGui::Text("Page %d of %d", currentPage, totalPages);
         ImGui::SameLine();
         
@@ -168,9 +186,10 @@ void GUIAddonResourceHub::renderBrowserWindow() {
 
 void GUIAddonResourceHub::renderSearchFilters() {
     // Search box
+    ImGui::AlignTextToFramePadding(); // Centrar verticalmente
     ImGui::Text("Search:");
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(300);
+    ImGui::SetNextItemWidth(150);
     if (ImGui::InputText("##search", searchQuery, sizeof(searchQuery), ImGuiInputTextFlags_EnterReturnsTrue)) {
         currentPage = 1;
         loadResources();
@@ -184,8 +203,9 @@ void GUIAddonResourceHub::renderSearchFilters() {
 
     ImGui::SameLine();
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 20);
-    
+
     // Type filter
+    ImGui::AlignTextToFramePadding(); // Centrar verticalmente
     ImGui::Text("Type:");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(120);
@@ -194,11 +214,11 @@ void GUIAddonResourceHub::renderSearchFilters() {
         currentPage = 1;
         loadResources();
     }
-    
+
     ImGui::SameLine();
-    
+
     // Refresh button
-    GUI::DrawButton("Refresh", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, false,[&]() {
+    GUI::ImageButtonNormal(IconGUI::CLEAR_FILTERS, "Clear filters", [&] {
         loadResources();
     });
 }
@@ -214,28 +234,30 @@ void GUIAddonResourceHub::renderResourceList() {
         return;
     }
     
-    // Table
-    if (ImGui::BeginTable("ResourcesTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 400))) {
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 200.0f);
-        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableSetupColumn("Category", ImGuiTableColumnFlags_WidthFixed, 100.0f);
-        ImGui::TableSetupColumn("Author", ImGuiTableColumnFlags_WidthFixed, 120.0f);
-        ImGui::TableSetupColumn("Rating", ImGuiTableColumnFlags_WidthFixed, 80.0f);
-        ImGui::TableHeadersRow();
+    // Aumentar el padding de las celdas
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8.0f, 8.0f));
 
+    // Table
+    if (ImGui::BeginTable("ResourcesTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 350))) {
+        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Category", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Author", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Rating", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < resources.size(); i++) {
             const ResourceInfo& res = resources[i];
-            
+
             ImGui::TableNextRow();
-            
+
             // Name (clickable)
             ImGui::TableSetColumnIndex(0);
             if (ImGui::Selectable(res.name.c_str(), selectedResourceIndex == (int)i, ImGuiSelectableFlags_SpanAllColumns)) {
                 selectedResourceIndex = i;
                 loadResourceDetail(res.id);
             }
-            
+
             // Type
             ImGui::TableSetColumnIndex(1);
             if (res.type == "script") {
@@ -243,22 +265,41 @@ void GUIAddonResourceHub::renderResourceList() {
             } else {
                 ImGui::TextColored(ImVec4(0.4f, 0.7f, 1.0f, 1.0f), "Shader");
             }
-            
+
             // Category
             ImGui::TableSetColumnIndex(2);
             ImGui::Text("%s", res.type == "script" ? res.scriptType.c_str() : res.shaderType.c_str());
-            
+
             // Author
             ImGui::TableSetColumnIndex(3);
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::HUB_ASSET_AUTHOR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+            ImGui::SameLine();
             ImGui::Text("%s", res.author.c_str());
-            
+
             // Rating
             ImGui::TableSetColumnIndex(4);
-            ImGui::Text("%.1f (%d)", res.rating, res.ratingCount);
+            {
+                auto starOn = FileSystemGUI::Icon(IconGUI::STAR_ON);
+                auto starOff = FileSystemGUI::Icon(IconGUI::STAR_OFF);
+                ImVec2 starSize = ImVec2(12, 12);
+
+                for (int s = 0; s < 5; s++) {
+                    if (s > 0) ImGui::SameLine(0, 1);
+                    if (s < (int)res.rating) {
+                        ImGui::Image(starOn, starSize);
+                    } else {
+                        ImGui::Image(starOff, starSize);
+                    }
+                }
+                ImGui::SameLine();
+                ImGui::Text("(%d)", res.ratingCount);
+            }
         }
-        
+
         ImGui::EndTable();
     }
+
+    ImGui::PopStyleVar(); // Restaurar el padding original
 }
 
 // ============ MÉTODOS DE LÓGICA ============
@@ -385,6 +426,7 @@ void GUIAddonResourceHub::renderResourceDetail() {
     if (!selectedResourceDetail) return;
 
     ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowBgAlpha(0.99f);
 
     if (ImGui::Begin("Resource Details", &showResourceDetail,  ImGuiWindowFlags_NoDocking)) {
         cJSON* name = cJSON_GetObjectItem(selectedResourceDetail, "name");
@@ -398,9 +440,12 @@ void GUIAddonResourceHub::renderResourceDetail() {
 
         // Title
         if (name) {
-            ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Si tienes fuentes custom
             ImGui::TextColored(ImVec4(0.4f, 0.8f, 1.0f, 1.0f), "%s", name->valuestring);
-            ImGui::PopFont();
+            ImGui::SameLine();
+            ImGui::Text("by");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "<%s>", author->valuestring);
+
         }
         ImGui::Separator();
         ImGui::Spacing();
@@ -412,17 +457,8 @@ void GUIAddonResourceHub::renderResourceDetail() {
             ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", type->valuestring);
         }
 
-        ImGui::SameLine(300);
-        ImGui::Text("Author:");
-        ImGui::SameLine();
-        if (author) {
-            ImGui::Text("%s", author->valuestring);
-        }
-
         ImGui::Spacing();
 
-        ImGui::Text("Rating:");
-        ImGui::SameLine();
         if (rating && ratingCount) {
             float ratingValue = static_cast<float>(rating->valuedouble);
             auto starOn = FileSystemGUI::Icon(IconGUI::STAR_ON);
@@ -463,8 +499,6 @@ void GUIAddonResourceHub::renderResourceDetail() {
         ImGui::Separator();
 
         // Files list with individual download buttons
-        ImGui::Text("Files:");
-
         if (files && cJSON_IsArray(files)) {
             int fileCount = cJSON_GetArraySize(files);
 
@@ -475,80 +509,83 @@ void GUIAddonResourceHub::renderResourceDetail() {
                     ImGui::Button("Downloading...", ImVec2(150, 0));
                     ImGui::PopStyleColor();
                 } else {
-                    if (ImGui::Button("Download All", ImVec2(150, 0))) {
+                    GUI::ImageButtonNormal(IconGUI::DOWNLOAD_ALL_RESOURCE, "Download ALL", [&] {
                         downloadAllFiles(id->valueint, files);
-                    }
+                    });
                 }
                 ImGui::Spacing();
             }
 
-            // Lista de archivos con botones individuales
-            ImGui::BeginChild("FilesList", ImVec2(0, 150), true);
+            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 8.0f)); // Más padding
+            if (ImGui::BeginTable("FilesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 200))) {
+                ImGui::TableSetupColumn("Filename", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthStretch);
 
-            for (int i = 0; i < fileCount; i++) {
-                cJSON* file = cJSON_GetArrayItem(files, i);
-                cJSON* filename = cJSON_GetObjectItem(file, "filename");
+                for (int i = 0; i < fileCount; i++) {
+                    cJSON* file = cJSON_GetArrayItem(files, i);
+                    cJSON* filename = cJSON_GetObjectItem(file, "filename");
 
-                if (filename) {
-                    std::string fname = filename->valuestring;
+                    if (filename) {
+                        std::string fname = filename->valuestring;
 
-                    // Nombre del archivo
-                    ImGui::BulletText("%s", fname.c_str());
-                    ImGui::SameLine();
+                        ImGui::TableNextRow();
 
-                    // Espaciado dinámico
-                    float textWidth = ImGui::CalcTextSize(fname.c_str()).x;
-                    ImGui::SameLine(300);
+                        // Columna: Nombre del archivo
+                        ImGui::TableSetColumnIndex(0);
+                        ImGui::AlignTextToFramePadding(); // Alineación vertical
+                        ImGui::Text("%s", fname.c_str());
 
-                    // Estado de descarga
-                    std::string buttonId = "##download_" + std::to_string(i);
+                        // Columna: Botón de descarga
+                        ImGui::TableSetColumnIndex(1);
 
-                    if (downloadingFiles[fname]) {
-                        // Downloading...
-                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-                        ImGui::Button("Downloading...", ImVec2(100, 0));
-                        ImGui::PopStyleColor();
+                        std::string buttonId = "##download_" + std::to_string(i);
 
-                    } else if (downloadSuccess.count(fname) && downloadSuccess[fname]) {
-                        // Success
-                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.7f, 0.0f, 1.0f));
-                        ImGui::Button("Downloaded", ImVec2(100, 0));
-                        ImGui::PopStyleColor();
+                        if (downloadingFiles[fname]) {
+                            // Downloading...
+                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+                            ImGui::Button("Downloading...", ImVec2(-FLT_MIN, 0)); // -FLT_MIN ocupa todo el ancho
+                            ImGui::PopStyleColor();
 
-                    } else if (downloadErrors.count(fname)) {
-                        // Error
-                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
-                        if (ImGui::Button("Error", ImVec2(100, 0))) {
-                            // Mostrar error en tooltip
-                        }
-                        ImGui::PopStyleColor();
+                        } else if (downloadSuccess.count(fname) && downloadSuccess[fname]) {
+                            // Success
+                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.7f, 0.0f, 1.0f));
+                            ImGui::Button("Downloaded", ImVec2(-FLT_MIN, 0));
+                            ImGui::PopStyleColor();
 
-                        if (ImGui::IsItemHovered()) {
-                            ImGui::SetTooltip("%s", downloadErrors[fname].c_str());
-                        }
+                        } else if (downloadErrors.count(fname)) {
+                            // Error
+                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
+                            if (ImGui::Button(("Error" + buttonId).c_str(), ImVec2(50, 0))) {
+                                // Mostrar error en tooltip
+                            }
+                            ImGui::PopStyleColor();
 
-                        // Botón de reintentar
-                        ImGui::SameLine();
-                        if (ImGui::Button(("Retry" + buttonId).c_str(), ImVec2(60, 0))) {
-                            downloadFile(id->valueint, fname);
-                        }
+                            if (ImGui::IsItemHovered()) {
+                                ImGui::SetTooltip("%s", downloadErrors[fname].c_str());
+                            }
 
-                    } else {
-                        // Download button
-                        if (ImGui::Button(("Download" + buttonId).c_str(), ImVec2(100, 0))) {
-                            downloadFile(id->valueint, fname);
+                            // Botón retry en la misma línea
+                            ImGui::SameLine();
+                            if (ImGui::SmallButton(("Retry" + buttonId).c_str())) {
+                                downloadFile(id->valueint, fname);
+                            }
+
+                        } else {
+                            // Download button
+                            GUI::ImageButtonNormal(IconGUI::DOWNLOAD_RESOURCE, "Download file", [&, fname, id] {
+                                downloadFile(id->valueint, fname);
+                            });
                         }
                     }
                 }
+
+                ImGui::EndTable();
             }
 
-            ImGui::EndChild();
-        } else {
-            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No files available");
-        }
-
-        ImGui::Spacing();
-        ImGui::Separator();
+            ImGui::PopStyleVar();
+            } else {
+                ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No files available");
+            }
         ImGui::Spacing();
 
         // ============================================
@@ -561,7 +598,7 @@ void GUIAddonResourceHub::renderResourceDetail() {
         ImGui::SetNextItemWidth(150);
         ImGui::SliderInt("##rating", &userRating, 1, 5, "%d stars");
         ImGui::SameLine();
-        if (ImGui::Button("Submit Rating", ImVec2(120, 0))) {
+        GUI::ImageButtonNormal(IconGUI::HUB_ASSET_SUBMIT_RATING, "Submiting rating", [&, id] {
             if (id) {
                 if (client->rateResource(id->valueint, userRating)) {
                     std::cout << "Rating submitted successfully!" << std::endl;
@@ -570,14 +607,19 @@ void GUIAddonResourceHub::renderResourceDetail() {
                     std::cout << "Failed to submit rating" << std::endl;
                 }
             }
-        }
+        });
 
+        ImGui::Spacing();
+        ImGui::Separator();
         ImGui::Spacing();
 
         // Close button
-        if (ImGui::Button("Close", ImVec2(100, 0))) {
+        float buttonWidth = 120.0f;
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - buttonWidth - ImGui::GetStyle().WindowPadding.x);
+
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {
             showResourceDetail = false;
-        }
+        });
     }
     ImGui::End();
 }

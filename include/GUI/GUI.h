@@ -385,6 +385,10 @@ namespace GUIType
     X(SCRIPT_LOAD, 0, 0) \
     X(WIN_OBJECT_AUTOHIDE_ON, 0, 0) \
     X(WIN_OBJECT_AUTOHIDE_OFF, 0, 0) \
+    X(DOWNLOAD_ALL_RESOURCE, 0, 0) \
+    X(HUB_ASSET_AUTHOR, 0, 0) \
+    X(HUB_ASSET_SUBMIT_RATING, 0, 0) \
+    X(CLEAR_FILTERS, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

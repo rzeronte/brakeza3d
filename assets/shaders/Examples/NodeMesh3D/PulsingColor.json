@@ -1,0 +1,84 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/PulsingColor.json",
+	"name": "PulsingColor",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 50, "y": 100 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 2, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Sin",
+				"type": "Sin",
+				"position": { "x": 200, "y": 100 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.8, "a": 1.0 },
+				"inputs": [{ "id": 4, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 5, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 6,
+				"name": "Color A",
+				"type": "Color",
+				"position": { "x": 50, "y": 250 },
+				"color": { "r": 1.0, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 7, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 8,
+				"name": "Color B",
+				"type": "Color",
+				"position": { "x": 50, "y": 400 },
+				"color": { "r": 0.2, "g": 0.2, "b": 1.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 9, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "Mix",
+				"type": "Mix",
+				"position": { "x": 350, "y": 250 },
+				"color": { "r": 0.4, "g": 0.4, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 11, "name": "A", "type": 5 },
+					{ "id": 12, "name": "B", "type": 5 },
+					{ "id": 13, "name": "Factor", "type": 1 }
+				],
+				"outputs": [{ "id": 14, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 15,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 550, "y": 250 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 16, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 20, "startPinId": 2, "endPinId": 4 },
+			{ "id": 21, "startPinId": 5, "endPinId": 13 },
+			{ "id": 22, "startPinId": 7, "endPinId": 11 },
+			{ "id": 23, "startPinId": 9, "endPinId": 12 },
+			{ "id": 24, "startPinId": 14, "endPinId": 16 }
+		],
+		"lastShaderCode": "#version 330 core\nin vec3 v_FragPos;\nin vec3 v_Normal;\nin vec2 v_TexCoord;\nlayout (location = 0) out vec3 gPosition;\nlayout (location = 1) out vec3 gNormal;\nlayout (location = 2) out vec4 gAlbedoSpec;\nuniform float u_Time;\n\nvoid main() {\n    float var1 = u_Time;\n    float var3 = sin(var1);\n    vec3 var6 = vec3(1.0, 0.2, 0.2);\n    vec3 var8 = vec3(0.2, 0.2, 1.0);\n    vec3 var10 = mix(var6, var8, var3 * 0.5 + 0.5);\n    gPosition = v_FragPos;\n    gNormal = normalize(v_Normal);\n    gAlbedoSpec = vec4(var10, 1.0);\n}\n"
+	}
+}

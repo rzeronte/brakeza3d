@@ -76,7 +76,7 @@ private:
 public:
     GUIAddonResourceHub();
     ~GUIAddonResourceHub();
-    
+
     void render();
     void showLogin();
     void showBrowser();

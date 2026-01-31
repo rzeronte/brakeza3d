@@ -1,0 +1,133 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/RainbowCycle.json",
+	"name": "RainbowCycle",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 50, "y": 100 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 2, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Sin Red",
+				"type": "Sin",
+				"position": { "x": 200, "y": 50 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.8, "a": 1.0 },
+				"inputs": [{ "id": 4, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 5, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 6,
+				"name": "Cos Green",
+				"type": "Cos",
+				"position": { "x": 200, "y": 150 },
+				"color": { "r": 0.3, "g": 0.8, "b": 0.7, "a": 1.0 },
+				"inputs": [{ "id": 7, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 8, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 9,
+				"name": "Sin Blue",
+				"type": "Sin",
+				"position": { "x": 200, "y": 250 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.8, "a": 1.0 },
+				"inputs": [{ "id": 10, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 11, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "Red Color",
+				"type": "Color",
+				"position": { "x": 350, "y": 50 },
+				"color": { "r": 1.0, "g": 0.0, "b": 0.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 13, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 14,
+				"name": "Green Color",
+				"type": "Color",
+				"position": { "x": 350, "y": 150 },
+				"color": { "r": 0.0, "g": 1.0, "b": 0.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 15, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 16,
+				"name": "Blue Color",
+				"type": "Color",
+				"position": { "x": 350, "y": 250 },
+				"color": { "r": 0.0, "g": 0.0, "b": 1.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 17, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 18,
+				"name": "Mix RG",
+				"type": "Mix",
+				"position": { "x": 500, "y": 100 },
+				"color": { "r": 0.4, "g": 0.4, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 19, "name": "A", "type": 5 },
+					{ "id": 20, "name": "B", "type": 5 },
+					{ "id": 21, "name": "Factor", "type": 1 }
+				],
+				"outputs": [{ "id": 22, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 23,
+				"name": "Mix Final",
+				"type": "Mix",
+				"position": { "x": 650, "y": 175 },
+				"color": { "r": 0.4, "g": 0.4, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 24, "name": "A", "type": 5 },
+					{ "id": 25, "name": "B", "type": 5 },
+					{ "id": 26, "name": "Factor", "type": 1 }
+				],
+				"outputs": [{ "id": 27, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 28,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 850, "y": 175 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 29, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 30, "startPinId": 2, "endPinId": 4 },
+			{ "id": 31, "startPinId": 2, "endPinId": 7 },
+			{ "id": 32, "startPinId": 2, "endPinId": 10 },
+			{ "id": 33, "startPinId": 5, "endPinId": 21 },
+			{ "id": 34, "startPinId": 13, "endPinId": 19 },
+			{ "id": 35, "startPinId": 15, "endPinId": 20 },
+			{ "id": 36, "startPinId": 22, "endPinId": 24 },
+			{ "id": 37, "startPinId": 17, "endPinId": 25 },
+			{ "id": 38, "startPinId": 11, "endPinId": 26 },
+			{ "id": 39, "startPinId": 27, "endPinId": 29 }
+		],
+		"lastShaderCode": ""
+	}
+}

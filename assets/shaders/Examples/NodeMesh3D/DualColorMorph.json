@@ -1,0 +1,131 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/DualColorMorph.json",
+	"name": "DualColorMorph",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": { "x": 50, "y": 100 },
+				"color": { "r": 0.3, "g": 0.6, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Gradient",
+				"type": "Gradient",
+				"position": { "x": 200, "y": 100 },
+				"color": { "r": 0.5, "g": 0.3, "b": 0.6, "a": 1.0 },
+				"inputs": [{ "id": 4, "name": "UV", "type": 5 }],
+				"outputs": [{ "id": 5, "name": "Color", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 6,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 50, "y": 350 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 7, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 8,
+				"name": "Sin Time",
+				"type": "Sin",
+				"position": { "x": 200, "y": 350 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.8, "a": 1.0 },
+				"inputs": [{ "id": 9, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 10, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 11,
+				"name": "Smoothstep",
+				"type": "Smoothstep",
+				"position": { "x": 350, "y": 350 },
+				"color": { "r": 0.5, "g": 0.7, "b": 0.4, "a": 1.0 },
+				"inputs": [{ "id": 12, "name": "Value", "type": 1 }],
+				"outputs": [{ "id": 13, "name": "Output", "type": 1 }],
+				"userData": { "edge0": -1.0, "edge1": 1.0 }
+			},
+			{
+				"id": 14,
+				"name": "Color A - Cyan",
+				"type": "Color",
+				"position": { "x": 350, "y": 100 },
+				"color": { "r": 0.0, "g": 0.8, "b": 1.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 15, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 16,
+				"name": "Color B - Magenta",
+				"type": "Color",
+				"position": { "x": 350, "y": 200 },
+				"color": { "r": 1.0, "g": 0.0, "b": 0.8, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 17, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 18,
+				"name": "Mix Colors",
+				"type": "Mix",
+				"position": { "x": 550, "y": 150 },
+				"color": { "r": 0.4, "g": 0.4, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 19, "name": "A", "type": 5 },
+					{ "id": 20, "name": "B", "type": 5 },
+					{ "id": 21, "name": "Factor", "type": 1 }
+				],
+				"outputs": [{ "id": 22, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 23,
+				"name": "Add Gradient",
+				"type": "Add",
+				"position": { "x": 750, "y": 150 },
+				"color": { "r": 0.4, "g": 0.6, "b": 0.5, "a": 1.0 },
+				"inputs": [
+					{ "id": 24, "name": "A", "type": 5 },
+					{ "id": 25, "name": "B", "type": 5 }
+				],
+				"outputs": [{ "id": 26, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 27,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 950, "y": 150 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 28, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 30, "startPinId": 2, "endPinId": 4 },
+			{ "id": 31, "startPinId": 7, "endPinId": 9 },
+			{ "id": 32, "startPinId": 10, "endPinId": 12 },
+			{ "id": 33, "startPinId": 15, "endPinId": 19 },
+			{ "id": 34, "startPinId": 17, "endPinId": 20 },
+			{ "id": 35, "startPinId": 13, "endPinId": 21 },
+			{ "id": 36, "startPinId": 22, "endPinId": 24 },
+			{ "id": 37, "startPinId": 5, "endPinId": 25 },
+			{ "id": 38, "startPinId": 26, "endPinId": 28 }
+		],
+		"lastShaderCode": ""
+	}
+}

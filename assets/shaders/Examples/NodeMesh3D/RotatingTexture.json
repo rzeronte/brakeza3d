@@ -1,0 +1,75 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/RotatingTexture.json",
+	"name": "RotatingTexture",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": { "x": 50, "y": 100 },
+				"color": { "r": 0.3, "g": 0.6, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 50, "y": 250 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 4, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "UV Rotate",
+				"type": "UV Rotate",
+				"position": { "x": 250, "y": 150 },
+				"color": { "r": 0.6, "g": 0.7, "b": 0.5, "a": 1.0 },
+				"inputs": [
+					{ "id": 6, "name": "UV", "type": 5 },
+					{ "id": 7, "name": "Angle", "type": 1 }
+				],
+				"outputs": [{ "id": 8, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 9,
+				"name": "Mesh Texture",
+				"type": "Mesh Texture",
+				"position": { "x": 450, "y": 150 },
+				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [{ "id": 10, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 11, "name": "Color", "type": 5 },
+					{ "id": 12, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 13,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 650, "y": 150 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 14, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 20, "startPinId": 2, "endPinId": 6 },
+			{ "id": 21, "startPinId": 4, "endPinId": 7 },
+			{ "id": 22, "startPinId": 8, "endPinId": 10 },
+			{ "id": 23, "startPinId": 11, "endPinId": 14 }
+		],
+		"lastShaderCode": ""
+	}
+}
