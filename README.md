@@ -61,17 +61,17 @@ The engine is currently suitable for:
 
 Editor, scene management, and rendering features during development:
 
-![Screenshot01](/website/static/img/editor/01.png)
-![Screenshot02](/website/static/img/editor/02.png)
-![Screenshot03](/website/static/img/editor/03.png)
-![Screenshot04](/website/static/img/editor/04.png)
-![Screenshot05](/website/static/img/editor/05.png)
-![Screenshot06](/website/static/img/editor/06.png)
-![Screenshot07](/website/static/img/editor/07.png)
-![Screenshot08](/website/static/img/editor/08.png)
-![Screenshot09](/website/static/img/editor/09.png)
-![Screenshot10](/website/static/img/editor/10.png)
-![Screenshot11](/website/static/img/editor/11.png)
+![Screenshot01](/website/static/img/gallery/01.png)
+![Screenshot02](/website/static/img/gallery/02.png)
+![Screenshot03](/website/static/img/gallery/03.png)
+![Screenshot04](/website/static/img/gallery/04.png)
+![Screenshot05](/website/static/img/gallery/05.png)
+![Screenshot06](/website/static/img/gallery/06.png)
+![Screenshot07](/website/static/img/gallery/07.png)
+![Screenshot08](/website/static/img/gallery/08.png)
+![Screenshot09](/website/static/img/gallery/09.png)
+![Screenshot10](/website/static/img/gallery/10.png)
+![Screenshot11](/website/static/img/gallery/11.png)
 
 ---
 
