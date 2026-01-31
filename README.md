@@ -1,54 +1,81 @@
-# Brakeza3D - Free Open-Source 3D Engine
+# Brakeza3D — Free Open-Source 3D Engine
 
-**Brakeza3D** is an open source 3D engine written from scratch in C++
+**Brakeza3D** is a free, open-source 3D engine written from scratch in **C++**, focused on flexibility, learning, and full control over the rendering pipeline.
 
-- Cross Platform (Windows/Linux/OSX checked)
+It is designed to be easy to understand, extensible, and suitable both for experimentation and real-time applications.
+
+---
+
+## Get Started
+
+- **Downloads & binaries**: https://brakeza.com/downloads
+- **Full documentation**: https://brakeza.com/docs/getting-started/intro
+
+---
+
+## Features
+
+### Core
+- Cross-platform (Windows / Linux / macOS)
 - Easy and simple architecture
-- Render Forward/Deferred
-- ADS light system
-- Physics World Integration
-- GUI with docking integration
-- Assimp library for loading models
 - Scene management
-- 2D / 3D features
-- Profiler
+- Multi-threading (thread pool based)
+
+### Rendering
+- Forward and Deferred rendering
 - Shadow mapping
-- LUA Scripting
-- Extensible GLSL Shaders / Nodes editor
-- Code editor with LUA/GLSL syntaxis integration
+- ADS lighting system
+- Extensible GLSL shaders
+- Node-based shader editor
+
+### Tools
+- Dockable GUI system
+- Integrated profiler
+- Code editor with LUA / GLSL syntax support
 - Sound system integration
-- Interface for XBOX/Playstation controller
-- Multi-Thread (Thread pool based)
+
+### Scripting & Input
+- LUA scripting
+- Gamepad support (Xbox / PlayStation controllers)
+
+### Assets & Systems
+- Assimp library for model loading
+- Physics world integration
+- 2D and 3D features
 
 ---
 
-### [Download and install](https://brakeza.com/downloads)
-### [Documentation](https://brakeza.com/docs/getting-started/intro)
+## 📌 Project Status
+
+Brakeza3D is under **active development**.  
+Some systems and APIs may change, and certain features are still experimental.
+
+The engine is currently suitable for:
+- Learning graphics and engine architecture
+- Prototyping
+- Small to medium real-time projects
 
 ---
 
-### Screenshots
+## 🖼 Screenshots
 
-Some snapshots from the development:
+Editor, scene management, and rendering features during development:
 
-![Screenshoot01](/website/static/img/editor/01.png)
+![Screenshot01](/website/static/img/editor/01.png)
+![Screenshot02](/website/static/img/editor/02.png)
+![Screenshot03](/website/static/img/editor/03.png)
+![Screenshot04](/website/static/img/editor/04.png)
+![Screenshot05](/website/static/img/editor/05.png)
+![Screenshot06](/website/static/img/editor/06.png)
+![Screenshot07](/website/static/img/editor/07.png)
+![Screenshot08](/website/static/img/editor/08.png)
+![Screenshot09](/website/static/img/editor/09.png)
+![Screenshot10](/website/static/img/editor/10.png)
+![Screenshot11](/website/static/img/editor/11.png)
 
-![Screenshoot02](/website/static/img/editor/02.png)
+---
 
-![Screenshoot03](/website/static/img/editor/03.png)
+## License
 
-![Screenshoot04](/website/static/img/editor/04.png)
-
-![Screenshoot05](/website/static/img/editor/05.png)
-
-![Screenshoot06](/website/static/img/editor/06.png)
-
-![Screenshoot07](/website/static/img/editor/07.png)
-
-![Screenshoot08](/website/static/img/editor/08.png)
-
-![Screenshoot09](/website/static/img/editor/09.png)
-
-![Screenshoot10](/website/static/img/editor/10.png)
-
-![Screenshoot11](/website/static/img/editor/11.png)
+This project is released as open-source software.  
+See the `LICENSE` file for more details.

@@ -4,69 +4,64 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 const galleryItems = [
   {
-    title: 'Project 1',
+    title: 'Screenshot #01',
     description: 'Game demo built with Brakeza3D Game Engine',
     image: '/img/gallery/01.png',
   },
   {
-    title: 'Project 2',
+    title: 'Screenshot #02',
     description: '3D scene showcasing lighting effects',
     image: '/img/gallery/02.png',
   },
   {
-    title: 'Project 3',
+    title: 'Screenshot #03',
     description: 'Physics simulation demo',
     image: '/img/gallery/03.png',
   },
   {
-    title: 'Project 4',
+    title: 'Screenshot #04',
     description: 'Particle system effects',
     image: '/img/gallery/04.png',
   },
   {
-    title: 'Project 5',
+    title: 'Screenshot #05',
     description: 'Advanced rendering techniques',
     image: '/img/gallery/05.png',
   },
   {
-    title: 'Project 6',
+    title: 'Screenshot #06',
     description: 'Game prototype',
     image: '/img/gallery/06.png',
   },
   {
-    title: 'Project 7',
+    title: 'Screenshot #07',
     description: 'Shader effects demo',
     image: '/img/gallery/07.png',
   },
   {
-    title: 'Project 8',
+    title: 'Screenshot #08',
     description: '3D model showcase',
     image: '/img/gallery/08.png',
   },
   {
-    title: 'Project 9',
+    title: 'Screenshot #09',
     description: 'Interactive scene',
     image: '/img/gallery/09.png',
   },
   {
-    title: 'GUI Demo 1',
+    title: 'Screenshot #10',
     description: 'User interface implementation',
-    image: '/img/gallery/gui_01.png',
+    image: '/img/gallery/10.png',
   },
   {
-    title: 'GUI Demo 2',
+    title: 'Screenshot #11',
     description: 'Menu system example',
-    image: '/img/gallery/gui_02.png',
+    image: '/img/gallery/11.png',
   },
   {
-    title: 'GUI Demo 3',
+    title: 'Screenshot #12',
     description: 'HUD elements showcase',
-    image: '/img/gallery/gui_03.png',
-  },
-  {
-    title: 'GUI Demo 4',
-    description: 'UI components library',
-    image: '/img/gallery/gui_04.png',
+    image: '/img/gallery/12.png',
   },
 ];
 

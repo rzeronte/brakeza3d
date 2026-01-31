@@ -51,36 +51,29 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(CustomTreeNode): Applied CustomTreeNode all">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): Improve editor script/shaders UI experience">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/images/splash.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/splash.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/scripts/Controllers/KinematicFPSController.json" beforeDir="false" afterPath="$PROJECT_DIR$/assets/scripts/Controllers/KinematicFPSController.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/ertert.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/shaders/nodemes.json" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/assets/shaders/pepe.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiCoding.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiCoding.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/ImGuiDefault.ini" beforeDir="false" afterPath="$PROJECT_DIR$/config/ImGuiDefault.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/icons.json" beforeDir="false" afterPath="$PROJECT_DIR$/config/icons.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/CustomTreeNode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/CustomTreeNode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/CustomTreeNode.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/CustomTreeNode.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonResourceHub.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/GUIManager.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/GUIManager.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/Objects/FileSystemGUI.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Brakeza.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Brakeza.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonObjects3D.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonProjectSetup.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonToolbar.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIConsole.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIConsole.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/GUIManager.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/FileSystemGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ScriptLuaGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/Objects/ShadersGUI.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/ProjectLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/Loaders/SceneLoader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/pages/gallery.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/gallery.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/01.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/01.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/02.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/02.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/03.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/03.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/04.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/04.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/05.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/05.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/06.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/06.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/07.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/07.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/08.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/08.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/09.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/09.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/gui_01.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -551,7 +544,10 @@
       <workItem from="1769301398172" duration="19597000" />
       <workItem from="1769366573863" duration="26142000" />
       <workItem from="1769435147521" duration="30391000" />
-      <workItem from="1769511183063" duration="28321000" />
+      <workItem from="1769511183063" duration="30970000" />
+      <workItem from="1769615836035" duration="18705000" />
+      <workItem from="1769716837267" duration="16070000" />
+      <workItem from="1769786013842" duration="19620000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -601,94 +597,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00144" summary="feat(shaders): added node editor for integration with shaders">
-      <option name="closed" value="true" />
-      <created>1767316420971</created>
-      <option name="number" value="00144" />
-      <option name="presentableId" value="LOCAL-00144" />
-      <option name="project" value="LOCAL" />
-      <updated>1767316420971</updated>
-    </task>
-    <task id="LOCAL-00145" summary="feat(nodeeditor): refact ShaderNodeEditorManager operations. Explode in independent files.">
-      <option name="closed" value="true" />
-      <created>1767429280282</created>
-      <option name="number" value="00145" />
-      <option name="presentableId" value="LOCAL-00145" />
-      <option name="project" value="LOCAL" />
-      <updated>1767429280282</updated>
-    </task>
-    <task id="LOCAL-00146" summary="refact(shaders): Create ShaderBaseCustom">
-      <option name="closed" value="true" />
-      <created>1767451009735</created>
-      <option name="number" value="00146" />
-      <option name="presentableId" value="LOCAL-00146" />
-      <option name="project" value="LOCAL" />
-      <updated>1767451009737</updated>
-    </task>
-    <task id="LOCAL-00147" summary="refact(shaders): Create ShaderBaseCustom">
-      <option name="closed" value="true" />
-      <created>1767451034120</created>
-      <option name="number" value="00147" />
-      <option name="presentableId" value="LOCAL-00147" />
-      <option name="project" value="LOCAL" />
-      <updated>1767451034120</updated>
-    </task>
-    <task id="LOCAL-00148" summary="refact(shaders): Create ShaderBaseCustom">
-      <option name="closed" value="true" />
-      <created>1767451630154</created>
-      <option name="number" value="00148" />
-      <option name="presentableId" value="LOCAL-00148" />
-      <option name="project" value="LOCAL" />
-      <updated>1767451630154</updated>
-    </task>
-    <task id="LOCAL-00149" summary="refact(shaders): Create ShaderBaseCustom">
-      <option name="closed" value="true" />
-      <created>1767480444512</created>
-      <option name="number" value="00149" />
-      <option name="presentableId" value="LOCAL-00149" />
-      <option name="project" value="LOCAL" />
-      <updated>1767480444513</updated>
-    </task>
-    <task id="LOCAL-00150" summary="refact(shaders): Create ShaderBaseCustom">
-      <option name="closed" value="true" />
-      <created>1767504131167</created>
-      <option name="number" value="00150" />
-      <option name="presentableId" value="LOCAL-00150" />
-      <option name="project" value="LOCAL" />
-      <updated>1767504131168</updated>
-    </task>
-    <task id="LOCAL-00151" summary="feat(shaders): Integration node shader edition">
-      <option name="closed" value="true" />
-      <created>1767664851433</created>
-      <option name="number" value="00151" />
-      <option name="presentableId" value="LOCAL-00151" />
-      <option name="project" value="LOCAL" />
-      <updated>1767664851434</updated>
-    </task>
-    <task id="LOCAL-00152" summary="feat(shaders): Integration node shader edition">
-      <option name="closed" value="true" />
-      <created>1767750180684</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1767750180685</updated>
-    </task>
-    <task id="LOCAL-00153" summary="feat(shaders): Integration node shader edition">
-      <option name="closed" value="true" />
-      <created>1767841437411</created>
-      <option name="number" value="00153" />
-      <option name="presentableId" value="LOCAL-00153" />
-      <option name="project" value="LOCAL" />
-      <updated>1767841437411</updated>
-    </task>
-    <task id="LOCAL-00154" summary="chore(git): Update .gitignore">
-      <option name="closed" value="true" />
-      <created>1768068907426</created>
-      <option name="number" value="00154" />
-      <option name="presentableId" value="LOCAL-00154" />
-      <option name="project" value="LOCAL" />
-      <updated>1768068907427</updated>
     </task>
     <task id="LOCAL-00155" summary="feat(website): Docusaurus website">
       <option name="closed" value="true" />
@@ -938,7 +846,95 @@
       <option name="project" value="LOCAL" />
       <updated>1769475072790</updated>
     </task>
-    <option name="localTasksCounter" value="186" />
+    <task id="LOCAL-00186" summary="feat(gui): improved user interface">
+      <option name="closed" value="true" />
+      <created>1769561769804</created>
+      <option name="number" value="00186" />
+      <option name="presentableId" value="LOCAL-00186" />
+      <option name="project" value="LOCAL" />
+      <updated>1769561769805</updated>
+    </task>
+    <task id="LOCAL-00187" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769646513105</created>
+      <option name="number" value="00187" />
+      <option name="presentableId" value="LOCAL-00187" />
+      <option name="project" value="LOCAL" />
+      <updated>1769646513105</updated>
+    </task>
+    <task id="LOCAL-00188" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769650267121</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1769650267121</updated>
+    </task>
+    <task id="LOCAL-00189" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769651081107</created>
+      <option name="number" value="00189" />
+      <option name="presentableId" value="LOCAL-00189" />
+      <option name="project" value="LOCAL" />
+      <updated>1769651081107</updated>
+    </task>
+    <task id="LOCAL-00190" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769651262466</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1769651262466</updated>
+    </task>
+    <task id="LOCAL-00191" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769734914790</created>
+      <option name="number" value="00191" />
+      <option name="presentableId" value="LOCAL-00191" />
+      <option name="project" value="LOCAL" />
+      <updated>1769734914790</updated>
+    </task>
+    <task id="LOCAL-00192" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769788758407</created>
+      <option name="number" value="00192" />
+      <option name="presentableId" value="LOCAL-00192" />
+      <option name="project" value="LOCAL" />
+      <updated>1769788758407</updated>
+    </task>
+    <task id="LOCAL-00193" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769805253709</created>
+      <option name="number" value="00193" />
+      <option name="presentableId" value="LOCAL-00193" />
+      <option name="project" value="LOCAL" />
+      <updated>1769805253709</updated>
+    </task>
+    <task id="LOCAL-00194" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769808463442</created>
+      <option name="number" value="00194" />
+      <option name="presentableId" value="LOCAL-00194" />
+      <option name="project" value="LOCAL" />
+      <updated>1769808463442</updated>
+    </task>
+    <task id="LOCAL-00195" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769812310739</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1769812310739</updated>
+    </task>
+    <task id="LOCAL-00196" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769815603338</created>
+      <option name="number" value="00196" />
+      <option name="presentableId" value="LOCAL-00196" />
+      <option name="project" value="LOCAL" />
+      <updated>1769815603338</updated>
+    </task>
+    <option name="localTasksCounter" value="197" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -972,8 +968,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(lua): Transparency  / GLSL Render commons" />
-    <MESSAGE value="fix(picking): Fix outliner on multimesh objects" />
     <MESSAGE value="feat(shaders): added node editor for integration with shaders" />
     <MESSAGE value="feat(nodeeditor): refact ShaderNodeEditorManager operations. Explode in independent files." />
     <MESSAGE value="refact(shaders): Create ShaderBaseCustom" />
@@ -997,7 +991,9 @@
     <MESSAGE value="feat(CustomTreeNode): CustomTreeNode / Project Setup Widget" />
     <MESSAGE value="feat(CustomTreeNode): Applied CustomTreeNode To Addons Objects and ProjectSetup" />
     <MESSAGE value="feat(CustomTreeNode): Applied CustomTreeNode all" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(CustomTreeNode): Applied CustomTreeNode all" />
+    <MESSAGE value="feat(gui): improved user interface" />
+    <MESSAGE value="feat(gui): Improve editor script/shaders UI experience" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): Improve editor script/shaders UI experience" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1091,109 +1087,14 @@
           <option name="timeStamp" value="114" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>432</line>
-          <option name="timeStamp" value="128" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
-          <line>231</line>
-          <option name="timeStamp" value="135" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
-          <line>237</line>
-          <option name="timeStamp" value="136" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
-          <line>253</line>
-          <option name="timeStamp" value="139" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>697</line>
-          <option name="timeStamp" value="142" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>704</line>
-          <option name="timeStamp" value="143" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>706</line>
-          <option name="timeStamp" value="144" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>520</line>
-          <option name="timeStamp" value="145" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>699</line>
-          <option name="timeStamp" value="146" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>526</line>
-          <option name="timeStamp" value="156" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>521</line>
-          <option name="timeStamp" value="157" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>522</line>
-          <option name="timeStamp" value="158" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>531</line>
-          <option name="timeStamp" value="159" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>693</line>
-          <option name="timeStamp" value="160" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/OpenGL/Nodes/ShaderBaseNodes.cpp</url>
-          <line>38</line>
-          <option name="timeStamp" value="161" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>434</line>
-          <option name="timeStamp" value="162" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/GUI/NodeEditorManager.cpp</url>
-          <line>435</line>
-          <option name="timeStamp" value="163" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/OpenGL/Nodes/ShaderBaseNodes.cpp</url>
-          <line>37</line>
-          <option name="timeStamp" value="164" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
-          <line>244</line>
+          <url>file://$PROJECT_DIR$/src/Render/Image.cpp</url>
+          <line>13</line>
           <option name="timeStamp" value="165" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
-          <line>254</line>
+          <url>file://$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp</url>
+          <line>768</line>
           <option name="timeStamp" value="166" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Components/ComponentRender.cpp</url>
-          <line>247</line>
-          <option name="timeStamp" value="167" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
