@@ -1,0 +1,135 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/ZoomPulse.json",
+	"name": "ZoomPulse",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": { "x": 50, "y": 100 },
+				"color": { "r": 0.3, "g": 0.6, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 50, "y": 300 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 4, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Sin Zoom",
+				"type": "Sin",
+				"position": { "x": 200, "y": 300 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.8, "a": 1.0 },
+				"inputs": [{ "id": 6, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 7, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 8,
+				"name": "Base Scale",
+				"type": "Color",
+				"position": { "x": 200, "y": 400 },
+				"color": { "r": 1.0, "g": 1.0, "b": 0.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 9, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "Zoom Range",
+				"type": "Color",
+				"position": { "x": 200, "y": 500 },
+				"color": { "r": 0.3, "g": 0.3, "b": 0.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 11, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "Multiply Zoom",
+				"type": "Multiply",
+				"position": { "x": 400, "y": 400 },
+				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [
+					{ "id": 13, "name": "A", "type": 5 },
+					{ "id": 14, "name": "B", "type": 5 }
+				],
+				"outputs": [{ "id": 15, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 16,
+				"name": "Add Scale",
+				"type": "Add",
+				"position": { "x": 550, "y": 350 },
+				"color": { "r": 0.4, "g": 0.6, "b": 0.5, "a": 1.0 },
+				"inputs": [
+					{ "id": 17, "name": "A", "type": 5 },
+					{ "id": 18, "name": "B", "type": 5 }
+				],
+				"outputs": [{ "id": 19, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 20,
+				"name": "UV Scale",
+				"type": "UV Scale",
+				"position": { "x": 700, "y": 200 },
+				"color": { "r": 0.5, "g": 0.6, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 21, "name": "UV", "type": 5 },
+					{ "id": 22, "name": "Offset", "type": 5 }
+				],
+				"outputs": [{ "id": 23, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 24,
+				"name": "Mesh Texture",
+				"type": "Mesh Texture",
+				"position": { "x": 900, "y": 200 },
+				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [{ "id": 25, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 26, "name": "Color", "type": 5 },
+					{ "id": 27, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 28,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 1100, "y": 200 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 29, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 40, "startPinId": 4, "endPinId": 6 },
+			{ "id": 41, "startPinId": 11, "endPinId": 14 },
+			{ "id": 42, "startPinId": 15, "endPinId": 18 },
+			{ "id": 43, "startPinId": 9, "endPinId": 17 },
+			{ "id": 44, "startPinId": 2, "endPinId": 21 },
+			{ "id": 45, "startPinId": 19, "endPinId": 22 },
+			{ "id": 46, "startPinId": 23, "endPinId": 25 },
+			{ "id": 47, "startPinId": 26, "endPinId": 29 }
+		],
+		"lastShaderCode": ""
+	}
+}

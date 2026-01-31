@@ -1,0 +1,99 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/ScrollingUV.json",
+	"name": "ScrollingUV",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": { "x": 50, "y": 100 },
+				"color": { "r": 0.3, "g": 0.6, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 50, "y": 250 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 4, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Speed Color",
+				"type": "Color",
+				"position": { "x": 50, "y": 400 },
+				"color": { "r": 0.1, "g": 0.05, "b": 0.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 6, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 7,
+				"name": "Multiply Speed",
+				"type": "Multiply",
+				"position": { "x": 250, "y": 300 },
+				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [
+					{ "id": 8, "name": "A", "type": 5 },
+					{ "id": 9, "name": "B", "type": 5 }
+				],
+				"outputs": [{ "id": 10, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 11,
+				"name": "UV Offset",
+				"type": "UV Offset",
+				"position": { "x": 450, "y": 150 },
+				"color": { "r": 0.4, "g": 0.7, "b": 0.6, "a": 1.0 },
+				"inputs": [
+					{ "id": 12, "name": "UV", "type": 5 },
+					{ "id": 13, "name": "Offset", "type": 5 }
+				],
+				"outputs": [{ "id": 14, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 15,
+				"name": "Mesh Texture",
+				"type": "Mesh Texture",
+				"position": { "x": 650, "y": 150 },
+				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [{ "id": 16, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 17, "name": "Color", "type": 5 },
+					{ "id": 18, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 19,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 850, "y": 150 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 20, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 30, "startPinId": 2, "endPinId": 12 },
+			{ "id": 31, "startPinId": 6, "endPinId": 9 },
+			{ "id": 32, "startPinId": 10, "endPinId": 13 },
+			{ "id": 33, "startPinId": 14, "endPinId": 16 },
+			{ "id": 34, "startPinId": 17, "endPinId": 20 }
+		],
+		"lastShaderCode": ""
+	}
+}
