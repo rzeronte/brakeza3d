@@ -36,7 +36,7 @@ public:
         if (angle.empty()) angle = "0.0";
 
         code << "    vec2 center = vec2(0.5, 0.5);\n";
-        code << "    vec2 uv_centered = " << uv << " - center;\n";
+        code << "    vec2 uv_centered = " << uv << ".xy - center;\n";
         code << "    float s = sin(" << angle << ");\n";
         code << "    float c = cos(" << angle << ");\n";
         code << "    vec2 " << varName << " = vec2(\n";

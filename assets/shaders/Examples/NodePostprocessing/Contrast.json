@@ -1,0 +1,50 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/Contrast.json",
+	"name": "Contrast",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": { "x": 100, "y": 150 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.9, "a": 1.0 },
+				"inputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 3, "name": "Color", "type": 5 },
+					{ "id": 4, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Contrast",
+				"type": "Contrast",
+				"position": { "x": 350, "y": 150 },
+				"color": { "r": 0.6, "g": 0.4, "b": 0.3, "a": 1.0 },
+				"inputs": [{ "id": 6, "name": "Color", "type": 5 }],
+				"outputs": [{ "id": 7, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 8,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 600, "y": 150 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 9, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 20, "startPinId": 3, "endPinId": 6 },
+			{ "id": 21, "startPinId": 7, "endPinId": 9 }
+		],
+		"lastShaderCode": ""
+	}
+}

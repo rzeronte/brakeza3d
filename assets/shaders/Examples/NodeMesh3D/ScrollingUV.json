@@ -29,70 +29,111 @@
 			},
 			{
 				"id": 5,
-				"name": "Speed Color",
-				"type": "Color",
-				"position": { "x": 50, "y": 400 },
-				"color": { "r": 0.1, "g": 0.05, "b": 0.0, "a": 1.0 },
+				"name": "Speed X",
+				"type": "FloatValue",
+				"position": { "x": 50, "y": 350 },
+				"color": { "r": 0.5, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [],
-				"outputs": [{ "id": 6, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"outputs": [{ "id": 6, "name": "Value", "type": 1 }],
+				"userData": { "value": 0.1 }
 			},
 			{
 				"id": 7,
-				"name": "Multiply Speed",
-				"type": "Multiply",
-				"position": { "x": 250, "y": 300 },
+				"name": "Multiply Time X",
+				"type": "MultiplyFloat",
+				"position": { "x": 200, "y": 300 },
 				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [
-					{ "id": 8, "name": "A", "type": 5 },
-					{ "id": 9, "name": "B", "type": 5 }
+					{ "id": 8, "name": "A", "type": 1 },
+					{ "id": 9, "name": "B", "type": 1 }
 				],
-				"outputs": [{ "id": 10, "name": "Result", "type": 5 }],
+				"outputs": [{ "id": 10, "name": "Result", "type": 1 }],
 				"userData": {}
 			},
 			{
 				"id": 11,
+				"name": "Speed Y",
+				"type": "FloatValue",
+				"position": { "x": 50, "y": 450 },
+				"color": { "r": 0.5, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 12, "name": "Value", "type": 1 }],
+				"userData": { "value": 0.05 }
+			},
+			{
+				"id": 13,
+				"name": "Multiply Time Y",
+				"type": "MultiplyFloat",
+				"position": { "x": 200, "y": 400 },
+				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [
+					{ "id": 14, "name": "A", "type": 1 },
+					{ "id": 15, "name": "B", "type": 1 }
+				],
+				"outputs": [{ "id": 16, "name": "Result", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 17,
+				"name": "Compose Vec2",
+				"type": "Vec2Compose",
+				"position": { "x": 350, "y": 350 },
+				"color": { "r": 0.4, "g": 0.6, "b": 0.5, "a": 1.0 },
+				"inputs": [
+					{ "id": 18, "name": "X", "type": 1 },
+					{ "id": 19, "name": "Y", "type": 1 }
+				],
+				"outputs": [{ "id": 20, "name": "Vec2", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 21,
 				"name": "UV Offset",
 				"type": "UV Offset",
-				"position": { "x": 450, "y": 150 },
+				"position": { "x": 500, "y": 150 },
 				"color": { "r": 0.4, "g": 0.7, "b": 0.6, "a": 1.0 },
 				"inputs": [
-					{ "id": 12, "name": "UV", "type": 5 },
-					{ "id": 13, "name": "Offset", "type": 5 }
+					{ "id": 22, "name": "UV", "type": 5 },
+					{ "id": 23, "name": "Offset", "type": 5 }
 				],
-				"outputs": [{ "id": 14, "name": "UV", "type": 5 }],
+				"outputs": [{ "id": 24, "name": "UV", "type": 5 }],
 				"userData": {}
 			},
 			{
-				"id": 15,
+				"id": 25,
 				"name": "Mesh Texture",
 				"type": "Mesh Texture",
-				"position": { "x": 650, "y": 150 },
+				"position": { "x": 700, "y": 150 },
 				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
-				"inputs": [{ "id": 16, "name": "UV", "type": 5 }],
+				"inputs": [{ "id": 26, "name": "UV", "type": 5 }],
 				"outputs": [
-					{ "id": 17, "name": "Color", "type": 5 },
-					{ "id": 18, "name": "Alpha", "type": 1 }
+					{ "id": 27, "name": "Color", "type": 5 },
+					{ "id": 28, "name": "Alpha", "type": 1 }
 				],
 				"userData": {}
 			},
 			{
-				"id": 19,
+				"id": 29,
 				"name": "Output",
 				"type": "Output",
-				"position": { "x": 850, "y": 150 },
+				"position": { "x": 900, "y": 150 },
 				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
-				"inputs": [{ "id": 20, "name": "Color", "type": 5 }],
+				"inputs": [{ "id": 30, "name": "Color", "type": 5 }],
 				"outputs": [],
 				"userData": {}
 			}
 		],
 		"links": [
-			{ "id": 30, "startPinId": 2, "endPinId": 12 },
-			{ "id": 31, "startPinId": 6, "endPinId": 9 },
-			{ "id": 32, "startPinId": 10, "endPinId": 13 },
-			{ "id": 33, "startPinId": 14, "endPinId": 16 },
-			{ "id": 34, "startPinId": 17, "endPinId": 20 }
+			{ "id": 40, "startPinId": 4, "endPinId": 8 },
+			{ "id": 41, "startPinId": 6, "endPinId": 9 },
+			{ "id": 42, "startPinId": 4, "endPinId": 14 },
+			{ "id": 43, "startPinId": 12, "endPinId": 15 },
+			{ "id": 44, "startPinId": 10, "endPinId": 18 },
+			{ "id": 45, "startPinId": 16, "endPinId": 19 },
+			{ "id": 46, "startPinId": 2, "endPinId": 22 },
+			{ "id": 47, "startPinId": 20, "endPinId": 23 },
+			{ "id": 48, "startPinId": 24, "endPinId": 26 },
+			{ "id": 49, "startPinId": 27, "endPinId": 30 }
 		],
 		"lastShaderCode": ""
 	}

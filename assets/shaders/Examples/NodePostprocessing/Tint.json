@@ -1,0 +1,64 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/Tint.json",
+	"name": "Tint",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": { "x": 100, "y": 100 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.9, "a": 1.0 },
+				"inputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 3, "name": "Color", "type": 5 },
+					{ "id": 4, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Tint Color",
+				"type": "Color",
+				"position": { "x": 100, "y": 300 },
+				"color": { "r": 1.0, "g": 0.8, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 6, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 7,
+				"name": "Multiply Tint",
+				"type": "Multiply",
+				"position": { "x": 350, "y": 150 },
+				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [
+					{ "id": 8, "name": "A", "type": 5 },
+					{ "id": 9, "name": "B", "type": 5 }
+				],
+				"outputs": [{ "id": 10, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 11,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 550, "y": 150 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 12, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 20, "startPinId": 3, "endPinId": 8 },
+			{ "id": 21, "startPinId": 6, "endPinId": 9 },
+			{ "id": 22, "startPinId": 10, "endPinId": 12 }
+		],
+		"lastShaderCode": ""
+	}
+}

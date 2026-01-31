@@ -35,7 +35,7 @@ public:
         if (uv.empty()) uv = "v_TexCoord";
         if (offset.empty()) offset = "vec2(0.0)";
 
-        code << "    vec2 " << varName << " = " << uv << " + " << offset << ";\n";
+        code << "    vec2 " << varName << " = " << uv << ".xy + " << offset << ".xy;\n";
 
         return varName;
     }

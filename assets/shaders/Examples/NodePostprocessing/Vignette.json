@@ -1,0 +1,87 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/Vignette.json",
+	"name": "Vignette",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": { "x": 100, "y": 100 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.9, "a": 1.0 },
+				"inputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 3, "name": "Color", "type": 5 },
+					{ "id": 4, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": { "x": 100, "y": 300 },
+				"color": { "r": 0.3, "g": 0.6, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 6, "name": "UV", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 7,
+				"name": "Vignette",
+				"type": "Vignette",
+				"position": { "x": 300, "y": 300 },
+				"color": { "r": 0.4, "g": 0.3, "b": 0.5, "a": 1.0 },
+				"inputs": [{ "id": 8, "name": "UV", "type": 5 }],
+				"outputs": [{ "id": 9, "name": "Mask", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "Vignette Color",
+				"type": "Color",
+				"position": { "x": 300, "y": 450 },
+				"color": { "r": 0.0, "g": 0.0, "b": 0.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 11, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "Mix Vignette",
+				"type": "Mix",
+				"position": { "x": 500, "y": 200 },
+				"color": { "r": 0.4, "g": 0.4, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 13, "name": "A", "type": 5 },
+					{ "id": 14, "name": "B", "type": 5 },
+					{ "id": 15, "name": "Factor", "type": 1 }
+				],
+				"outputs": [{ "id": 16, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 17,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 700, "y": 200 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 18, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 30, "startPinId": 6, "endPinId": 8 },
+			{ "id": 31, "startPinId": 11, "endPinId": 13 },
+			{ "id": 32, "startPinId": 3, "endPinId": 14 },
+			{ "id": 33, "startPinId": 9, "endPinId": 15 },
+			{ "id": 34, "startPinId": 16, "endPinId": 18 }
+		],
+		"lastShaderCode": ""
+	}
+}

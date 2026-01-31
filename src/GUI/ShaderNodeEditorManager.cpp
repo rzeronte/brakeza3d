@@ -19,6 +19,17 @@
 #include "NodeTypes/UVScaleNode.h"
 #include "NodeTypes/UVRotateNode.h"
 #include "NodeTypes/OutputNode.h"
+#include "NodeTypes/FloatValueNode.h"
+#include "NodeTypes/MultiplyFloatNode.h"
+#include "NodeTypes/AddFloatNode.h"
+#include "NodeTypes/SubtractFloatNode.h"
+#include "NodeTypes/Vec2ComposeNode.h"
+#include "NodeTypes/Vec2DecomposeNode.h"
+#include "NodeTypes/GrayscaleNode.h"
+#include "NodeTypes/InvertNode.h"
+#include "NodeTypes/VignetteNode.h"
+#include "NodeTypes/ContrastNode.h"
+#include "NodeTypes/SaturationNode.h"
 
 #include <cmath>
 
@@ -90,6 +101,17 @@ void ShaderNodeEditorManager::RegisterNodeTypes()
     RegisterNodeType(new InternalTextureNode());
     RegisterNodeType(new MeshTextureNode());
     RegisterNodeType(new OutputNode());
+    RegisterNodeType(new FloatValueNode());
+    RegisterNodeType(new MultiplyFloatNode());
+    RegisterNodeType(new AddFloatNode());
+    RegisterNodeType(new SubtractFloatNode());
+    RegisterNodeType(new Vec2ComposeNode());
+    RegisterNodeType(new Vec2DecomposeNode());
+    RegisterNodeType(new GrayscaleNode());
+    RegisterNodeType(new InvertNode());
+    RegisterNodeType(new VignetteNode());
+    RegisterNodeType(new ContrastNode());
+    RegisterNodeType(new SaturationNode());
 }
 
 void ShaderNodeEditorManager::RegisterNodeType(NodeType* nodeType)
@@ -367,44 +389,77 @@ void ShaderNodeEditorManager::HandleDeletion()
 
 void ShaderNodeEditorManager::OnCreateNodeMenu()
 {
-    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "GENERATORS");
+    // === INPUTS ===
+    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "INPUTS");
     ImGui::Separator();
 
-    if (ImGui::MenuItem("UV Coordinates")) CreateNodeOfType("UV Coords");
-    if (ImGui::MenuItem("Color")) CreateNodeOfType("Color");
-    if (ImGui::MenuItem("Time")) CreateNodeOfType("Time");
-    if (ImGui::MenuItem("Image Texture")) CreateNodeOfType("Image");
+    if (ImGui::MenuItem("Time (float)")) CreateNodeOfType("Time");
+    if (ImGui::MenuItem("Float Value (float)")) CreateNodeOfType("FloatValue");
+    if (ImGui::MenuItem("UV Coords (vec2)")) CreateNodeOfType("UV Coords");
+    if (ImGui::MenuItem("Color (vec3)")) CreateNodeOfType("Color");
+
+    // === TEXTURES ===
+    ImGui::Spacing();
+    ImGui::TextColored(ImVec4(1.0f, 0.7f, 0.3f, 1.0f), "TEXTURES");
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Image Texture (vec3)")) CreateNodeOfType("Image");
     if (getType() == SHADER_NODE_OBJECT) {
-        if (ImGui::MenuItem("Mesh Texture")) CreateNodeOfType("Mesh Texture");
+        if (ImGui::MenuItem("Mesh Texture (vec3)")) CreateNodeOfType("Mesh Texture");
     } else if (getType() == SHADER_NODE_POSTPROCESSING) {
-        if (ImGui::MenuItem("Internal Texture")) CreateNodeOfType("Internal Texture");
+        if (ImGui::MenuItem("Internal Texture (vec3)")) CreateNodeOfType("Internal Texture");
     }
 
+    // === MATH FLOAT ===
     ImGui::Spacing();
-    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "MATH");
+    ImGui::TextColored(ImVec4(0.5f, 0.8f, 1.0f, 1.0f), "MATH (float)");
     ImGui::Separator();
 
-    if (ImGui::MenuItem("Add")) CreateNodeOfType("Add");
-    if (ImGui::MenuItem("Subtract")) CreateNodeOfType("Subtract");
-    if (ImGui::MenuItem("Multiply")) CreateNodeOfType("Multiply");
-    if (ImGui::MenuItem("Mix")) CreateNodeOfType("Mix");
-    if (ImGui::MenuItem("Sin")) CreateNodeOfType("Sin");
-    if (ImGui::MenuItem("Cos")) CreateNodeOfType("Cos");
-    if (ImGui::MenuItem("Smoothstep")) CreateNodeOfType("Smoothstep");
+    if (ImGui::MenuItem("Add (float)")) CreateNodeOfType("AddFloat");
+    if (ImGui::MenuItem("Subtract (float)")) CreateNodeOfType("SubtractFloat");
+    if (ImGui::MenuItem("Multiply (float)")) CreateNodeOfType("MultiplyFloat");
+    if (ImGui::MenuItem("Sin (float)")) CreateNodeOfType("Sin");
+    if (ImGui::MenuItem("Cos (float)")) CreateNodeOfType("Cos");
+    if (ImGui::MenuItem("Smoothstep (float)")) CreateNodeOfType("Smoothstep");
 
+    // === MATH VEC3 ===
     ImGui::Spacing();
-    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.5f, 1.0f), "UV");
+    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "MATH (vec3)");
     ImGui::Separator();
 
-    if (ImGui::MenuItem("UV Offset")) CreateNodeOfType("UV Offset");
-    if (ImGui::MenuItem("UV Scale")) CreateNodeOfType("UV Scale");
-    if (ImGui::MenuItem("UV Rotate")) CreateNodeOfType("UV Rotate");
+    if (ImGui::MenuItem("Add (vec3)")) CreateNodeOfType("Add");
+    if (ImGui::MenuItem("Subtract (vec3)")) CreateNodeOfType("Subtract");
+    if (ImGui::MenuItem("Multiply (vec3)")) CreateNodeOfType("Multiply");
+    if (ImGui::MenuItem("Mix (vec3)")) CreateNodeOfType("Mix");
 
+    // === CONVERTERS ===
+    ImGui::Spacing();
+    ImGui::TextColored(ImVec4(0.8f, 1.0f, 0.5f, 1.0f), "CONVERTERS");
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("Vec2 Compose (float->vec2)")) CreateNodeOfType("Vec2Compose");
+    if (ImGui::MenuItem("Vec2 Decompose (vec2->float)")) CreateNodeOfType("Vec2Decompose");
+
+    // === UV OPERATIONS ===
+    ImGui::Spacing();
+    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.5f, 1.0f), "UV (vec2)");
+    ImGui::Separator();
+
+    if (ImGui::MenuItem("UV Offset (vec2)")) CreateNodeOfType("UV Offset");
+    if (ImGui::MenuItem("UV Scale (vec2)")) CreateNodeOfType("UV Scale");
+    if (ImGui::MenuItem("UV Rotate (vec2)")) CreateNodeOfType("UV Rotate");
+
+    // === EFFECTS ===
     ImGui::Spacing();
     ImGui::TextColored(ImVec4(1.0f, 0.5f, 1.0f, 1.0f), "EFFECTS");
     ImGui::Separator();
 
-    if (ImGui::MenuItem("Gradient")) CreateNodeOfType("Gradient");
+    if (ImGui::MenuItem("Gradient (vec3)")) CreateNodeOfType("Gradient");
+    if (ImGui::MenuItem("Grayscale (vec3->float)")) CreateNodeOfType("Grayscale");
+    if (ImGui::MenuItem("Invert (vec3)")) CreateNodeOfType("Invert");
+    if (ImGui::MenuItem("Contrast (vec3)")) CreateNodeOfType("Contrast");
+    if (ImGui::MenuItem("Saturation (vec3)")) CreateNodeOfType("Saturation");
+    if (ImGui::MenuItem("Vignette (float)")) CreateNodeOfType("Vignette");
 }
 
 void ShaderNodeEditorManager::Clear()
