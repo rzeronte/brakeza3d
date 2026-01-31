@@ -158,9 +158,15 @@ void GUI::ImGuiSetColors()
     colors[ImGuiCol_FrameBgHovered]         = ImVec4(0.35f, 0.65f, 0.45f, 0.40f);
     colors[ImGuiCol_FrameBgActive]          = ImVec4(0.52f, 0.80f, 0.09f, 0.67f);
 
-    colors[ImGuiCol_TitleBg]                = ImVec4(0.13f, 0.14f, 0.15f, 1.00f);
-    colors[ImGuiCol_TitleBgActive]          = ImVec4(0.25f, 0.60f, 0.45f, 1.00f);
-    colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(0.13f, 0.14f, 0.15f, 0.80f);
+    colors[ImGuiCol_TitleBg]                = ImVec4(0.15f, 0.20f, 0.18f, 1.00f);
+    colors[ImGuiCol_TitleBgActive]          = ImVec4(0.20f, 0.45f, 0.35f, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed]       = ImVec4(0.12f, 0.16f, 0.14f, 1.00f);
+
+    colors[ImGuiCol_Tab]                    = ImVec4(0.13f, 0.18f, 0.15f, 1.00f);
+    colors[ImGuiCol_TabHovered]             = ImVec4(0.20f, 0.40f, 0.30f, 1.00f);
+    colors[ImGuiCol_TabActive]              = ImVec4(0.30f, 0.70f, 0.52f, 1.00f);
+    colors[ImGuiCol_TabUnfocused]           = ImVec4(0.10f, 0.14f, 0.12f, 0.97f);
+    colors[ImGuiCol_TabUnfocusedActive]     = ImVec4(0.18f, 0.35f, 0.26f, 1.00f);
 
     colors[ImGuiCol_MenuBarBg]              = ImVec4(0.15f, 0.16f, 0.18f, 1.00f);
     colors[ImGuiCol_ScrollbarBg]            = ImVec4(0.11f, 0.11f, 0.11f, 0.53f);
@@ -187,13 +193,6 @@ void GUI::ImGuiSetColors()
     colors[ImGuiCol_ResizeGrip]             = ImVec4(0.35f, 0.65f, 0.45f, 0.25f);
     colors[ImGuiCol_ResizeGripHovered]      = ImVec4(0.35f, 0.65f, 0.45f, 0.67f);
     colors[ImGuiCol_ResizeGripActive]       = ImVec4(0.52f, 0.80f, 0.09f, 0.95f);
-
-    // ✨ TABS - Tab activa SÚPER BRILLANTE para mejor contraste de texto ✨
-    colors[ImGuiCol_Tab]                    = ImVec4(0.25f, 0.35f, 0.30f, 1.00f);  // Verde grisáceo visible
-    colors[ImGuiCol_TabHovered]             = ImVec4(0.35f, 0.65f, 0.45f, 0.90f);  // Verde intermedio
-    colors[ImGuiCol_TabActive]              = ImVec4(0.65f, 0.95f, 0.12f, 1.00f);  // LIME SÚPER BRILLANTE ✨🟢
-    colors[ImGuiCol_TabUnfocused]           = ImVec4(0.20f, 0.25f, 0.22f, 0.97f);  // Verde oscuro
-    colors[ImGuiCol_TabUnfocusedActive]     = ImVec4(0.30f, 0.50f, 0.38f, 1.00f);  // Verde medio
 
     colors[ImGuiCol_DockingPreview]         = ImVec4(0.35f, 0.65f, 0.45f, 0.70f);
     colors[ImGuiCol_DockingEmptyBg]         = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);

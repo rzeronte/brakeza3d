@@ -519,7 +519,7 @@ void GUIAddonResourceHub::renderResourceDetail() {
             ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 8.0f)); // Más padding
             if (ImGui::BeginTable("FilesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 200))) {
                 ImGui::TableSetupColumn("Filename", ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthFixed);
 
                 for (int i = 0; i < fileCount; i++) {
                     cJSON* file = cJSON_GetArrayItem(files, i);
@@ -598,7 +598,7 @@ void GUIAddonResourceHub::renderResourceDetail() {
         ImGui::SetNextItemWidth(150);
         ImGui::SliderInt("##rating", &userRating, 1, 5, "%d stars");
         ImGui::SameLine();
-        GUI::ImageButtonNormal(IconGUI::HUB_ASSET_SUBMIT_RATING, "Submiting rating", [&, id] {
+        GUI::ImageButtonNormal(IconGUI::HUB_ASSET_SUBMIT_RATING, "Submit rating", [&, id] {
             if (id) {
                 if (client->rateResource(id->valueint, userRating)) {
                     std::cout << "Rating submitted successfully!" << std::endl;
@@ -614,7 +614,7 @@ void GUIAddonResourceHub::renderResourceDetail() {
         ImGui::Spacing();
 
         // Close button
-        float buttonWidth = 120.0f;
+        float buttonWidth = 75.0f;
         ImGui::SetCursorPosX(ImGui::GetWindowWidth() - buttonWidth - ImGui::GetStyle().WindowPadding.x);
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {

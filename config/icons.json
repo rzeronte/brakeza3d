@@ -713,8 +713,8 @@
 			"y":	27
 		}, {
 			"name":	"MNU_RESOURCESHUB",
-			"x":	0,
-			"y":	0
+			"x":	12,
+			"y":	1
 		}, {
 			"name":	"SESSION_ON",
 			"x":	6,
@@ -753,8 +753,8 @@
 			"y":	0
 		}, {
 			"name":	"DOWNLOAD_RESOURCE",
-			"x":	0,
-			"y":	0
+			"x":	4,
+			"y":	3
 		}, {
 			"name":	"HUB_URL_LINK",
 			"x":	1,
@@ -781,7 +781,7 @@
 			"y":	30
 		}, {
 			"name":	"SEARCH",
-			"x":	0,
+			"x":	4,
 			"y":	0
 		}, {
 			"name":	"FOLDER_BACK",
@@ -827,6 +827,22 @@
 			"name":	"WIN_OBJECT_AUTOHIDE_OFF",
 			"x":	4,
 			"y":	1
+		}, {
+			"name":	"DOWNLOAD_ALL_RESOURCE",
+			"x":	5,
+			"y":	3
+		}, {
+			"name":	"HUB_ASSET_AUTHOR",
+			"x":	0,
+			"y":	36
+		}, {
+			"name":	"HUB_ASSET_SUBMIT_RATING",
+			"x":	6,
+			"y":	6
+		}, {
+			"name":	"CLEAR_FILTERS",
+			"x":	3,
+			"y":	10
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
