@@ -1,0 +1,112 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/PulsingTint.json",
+	"name": "PulsingTint",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": { "x": 100, "y": 100 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.9, "a": 1.0 },
+				"inputs": [{ "id": 2, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 3, "name": "Color", "type": 5 },
+					{ "id": 4, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Time",
+				"type": "Time",
+				"position": { "x": 100, "y": 350 },
+				"color": { "r": 0.3, "g": 0.5, "b": 0.6, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 6, "name": "Time", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 7,
+				"name": "Sin Pulse",
+				"type": "Sin",
+				"position": { "x": 250, "y": 350 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.8, "a": 1.0 },
+				"inputs": [{ "id": 8, "name": "Input", "type": 1 }],
+				"outputs": [{ "id": 9, "name": "Output", "type": 1 }],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "Tint A",
+				"type": "Color",
+				"position": { "x": 100, "y": 450 },
+				"color": { "r": 1.0, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 11, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "Tint B",
+				"type": "Color",
+				"position": { "x": 100, "y": 550 },
+				"color": { "r": 0.3, "g": 0.5, "b": 1.0, "a": 1.0 },
+				"inputs": [],
+				"outputs": [{ "id": 13, "name": "RGB", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 14,
+				"name": "Mix Tint",
+				"type": "Mix",
+				"position": { "x": 400, "y": 450 },
+				"color": { "r": 0.4, "g": 0.4, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 15, "name": "A", "type": 5 },
+					{ "id": 16, "name": "B", "type": 5 },
+					{ "id": 17, "name": "Factor", "type": 1 }
+				],
+				"outputs": [{ "id": 18, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 19,
+				"name": "Apply Tint",
+				"type": "Multiply",
+				"position": { "x": 600, "y": 200 },
+				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [
+					{ "id": 20, "name": "A", "type": 5 },
+					{ "id": 21, "name": "B", "type": 5 }
+				],
+				"outputs": [{ "id": 22, "name": "Result", "type": 5 }],
+				"userData": {}
+			},
+			{
+				"id": 23,
+				"name": "Output",
+				"type": "Output",
+				"position": { "x": 800, "y": 200 },
+				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
+				"inputs": [{ "id": 24, "name": "Color", "type": 5 }],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{ "id": 30, "startPinId": 6, "endPinId": 8 },
+			{ "id": 31, "startPinId": 9, "endPinId": 17 },
+			{ "id": 32, "startPinId": 11, "endPinId": 15 },
+			{ "id": 33, "startPinId": 13, "endPinId": 16 },
+			{ "id": 34, "startPinId": 3, "endPinId": 20 },
+			{ "id": 35, "startPinId": 18, "endPinId": 21 },
+			{ "id": 36, "startPinId": 22, "endPinId": 24 }
+		],
+		"lastShaderCode": ""
+	}
+}

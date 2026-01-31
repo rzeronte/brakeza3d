@@ -1,11 +1,11 @@
 {
-	"typesFile": "../assets/shaders/Examples/NodeMesh3D/WavyDistortion.json",
-	"name": "WavyDistortion",
-	"type": "NodeMesh3D",
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/WavyScreen.json",
+	"name": "WavyScreen",
+	"type": "NodePostProcessing",
 	"types": {
 		"version": "1.0",
 		"editorType": "base",
-		"type": "NodeMesh3D",
+		"type": "NodePostProcessing",
 		"nodes": [
 			{
 				"id": 1,
@@ -55,7 +55,7 @@
 				"color": { "r": 0.5, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [],
 				"outputs": [{ "id": 12, "name": "Value", "type": 1 }],
-				"userData": { "value": 0.02 }
+				"userData": { "value": 0.01 }
 			},
 			{
 				"id": 13,
@@ -111,10 +111,10 @@
 			},
 			{
 				"id": 29,
-				"name": "Mesh Texture",
-				"type": "Mesh Texture",
+				"name": "Scene Color",
+				"type": "Internal Texture",
 				"position": { "x": 850, "y": 200 },
-				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"color": { "r": 0.3, "g": 0.7, "b": 0.9, "a": 1.0 },
 				"inputs": [{ "id": 30, "name": "UV", "type": 5 }],
 				"outputs": [
 					{ "id": 31, "name": "Color", "type": 5 },

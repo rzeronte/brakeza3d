@@ -39,96 +39,112 @@
 			},
 			{
 				"id": 8,
-				"name": "Base Scale",
-				"type": "Color",
+				"name": "Zoom Range",
+				"type": "FloatValue",
 				"position": { "x": 200, "y": 400 },
-				"color": { "r": 1.0, "g": 1.0, "b": 0.0, "a": 1.0 },
+				"color": { "r": 0.5, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [],
-				"outputs": [{ "id": 9, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"outputs": [{ "id": 9, "name": "Value", "type": 1 }],
+				"userData": { "value": 0.3 }
 			},
 			{
 				"id": 10,
-				"name": "Zoom Range",
-				"type": "Color",
+				"name": "Base Scale",
+				"type": "FloatValue",
 				"position": { "x": 200, "y": 500 },
-				"color": { "r": 0.3, "g": 0.3, "b": 0.0, "a": 1.0 },
+				"color": { "r": 0.5, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [],
-				"outputs": [{ "id": 11, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"outputs": [{ "id": 11, "name": "Value", "type": 1 }],
+				"userData": { "value": 1.0 }
 			},
 			{
 				"id": 12,
 				"name": "Multiply Zoom",
-				"type": "Multiply",
-				"position": { "x": 400, "y": 400 },
+				"type": "MultiplyFloat",
+				"position": { "x": 350, "y": 350 },
 				"color": { "r": 0.6, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [
-					{ "id": 13, "name": "A", "type": 5 },
-					{ "id": 14, "name": "B", "type": 5 }
+					{ "id": 13, "name": "A", "type": 1 },
+					{ "id": 14, "name": "B", "type": 1 }
 				],
-				"outputs": [{ "id": 15, "name": "Result", "type": 5 }],
+				"outputs": [{ "id": 15, "name": "Result", "type": 1 }],
 				"userData": {}
 			},
 			{
 				"id": 16,
-				"name": "Add Scale",
-				"type": "Add",
-				"position": { "x": 550, "y": 350 },
+				"name": "Add Base",
+				"type": "AddFloat",
+				"position": { "x": 500, "y": 400 },
 				"color": { "r": 0.4, "g": 0.6, "b": 0.5, "a": 1.0 },
 				"inputs": [
-					{ "id": 17, "name": "A", "type": 5 },
-					{ "id": 18, "name": "B", "type": 5 }
+					{ "id": 17, "name": "A", "type": 1 },
+					{ "id": 18, "name": "B", "type": 1 }
 				],
-				"outputs": [{ "id": 19, "name": "Result", "type": 5 }],
+				"outputs": [{ "id": 19, "name": "Result", "type": 1 }],
 				"userData": {}
 			},
 			{
 				"id": 20,
-				"name": "UV Scale",
-				"type": "UV Scale",
-				"position": { "x": 700, "y": 200 },
-				"color": { "r": 0.5, "g": 0.6, "b": 0.7, "a": 1.0 },
+				"name": "Compose Scale",
+				"type": "Vec2Compose",
+				"position": { "x": 650, "y": 350 },
+				"color": { "r": 0.4, "g": 0.6, "b": 0.5, "a": 1.0 },
 				"inputs": [
-					{ "id": 21, "name": "UV", "type": 5 },
-					{ "id": 22, "name": "Offset", "type": 5 }
+					{ "id": 21, "name": "X", "type": 1 },
+					{ "id": 22, "name": "Y", "type": 1 }
 				],
-				"outputs": [{ "id": 23, "name": "UV", "type": 5 }],
+				"outputs": [{ "id": 23, "name": "Vec2", "type": 5 }],
 				"userData": {}
 			},
 			{
 				"id": 24,
-				"name": "Mesh Texture",
-				"type": "Mesh Texture",
-				"position": { "x": 900, "y": 200 },
-				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
-				"inputs": [{ "id": 25, "name": "UV", "type": 5 }],
-				"outputs": [
-					{ "id": 26, "name": "Color", "type": 5 },
-					{ "id": 27, "name": "Alpha", "type": 1 }
+				"name": "UV Scale",
+				"type": "UV Scale",
+				"position": { "x": 800, "y": 200 },
+				"color": { "r": 0.5, "g": 0.6, "b": 0.7, "a": 1.0 },
+				"inputs": [
+					{ "id": 25, "name": "UV", "type": 5 },
+					{ "id": 26, "name": "Scale", "type": 5 }
 				],
+				"outputs": [{ "id": 27, "name": "UV", "type": 5 }],
 				"userData": {}
 			},
 			{
 				"id": 28,
+				"name": "Mesh Texture",
+				"type": "Mesh Texture",
+				"position": { "x": 1000, "y": 200 },
+				"color": { "r": 0.9, "g": 0.5, "b": 0.3, "a": 1.0 },
+				"inputs": [{ "id": 29, "name": "UV", "type": 5 }],
+				"outputs": [
+					{ "id": 30, "name": "Color", "type": 5 },
+					{ "id": 31, "name": "Alpha", "type": 1 }
+				],
+				"userData": {}
+			},
+			{
+				"id": 32,
 				"name": "Output",
 				"type": "Output",
-				"position": { "x": 1100, "y": 200 },
+				"position": { "x": 1200, "y": 200 },
 				"color": { "r": 0.8, "g": 0.2, "b": 0.2, "a": 1.0 },
-				"inputs": [{ "id": 29, "name": "Color", "type": 5 }],
+				"inputs": [{ "id": 33, "name": "Color", "type": 5 }],
 				"outputs": [],
 				"userData": {}
 			}
 		],
 		"links": [
 			{ "id": 40, "startPinId": 4, "endPinId": 6 },
-			{ "id": 41, "startPinId": 11, "endPinId": 14 },
-			{ "id": 42, "startPinId": 15, "endPinId": 18 },
-			{ "id": 43, "startPinId": 9, "endPinId": 17 },
-			{ "id": 44, "startPinId": 2, "endPinId": 21 },
-			{ "id": 45, "startPinId": 19, "endPinId": 22 },
-			{ "id": 46, "startPinId": 23, "endPinId": 25 },
-			{ "id": 47, "startPinId": 26, "endPinId": 29 }
+			{ "id": 41, "startPinId": 7, "endPinId": 13 },
+			{ "id": 42, "startPinId": 9, "endPinId": 14 },
+			{ "id": 43, "startPinId": 15, "endPinId": 17 },
+			{ "id": 44, "startPinId": 11, "endPinId": 18 },
+			{ "id": 45, "startPinId": 19, "endPinId": 21 },
+			{ "id": 46, "startPinId": 19, "endPinId": 22 },
+			{ "id": 47, "startPinId": 2, "endPinId": 25 },
+			{ "id": 48, "startPinId": 23, "endPinId": 26 },
+			{ "id": 49, "startPinId": 27, "endPinId": 29 },
+			{ "id": 50, "startPinId": 30, "endPinId": 33 }
 		],
 		"lastShaderCode": ""
 	}

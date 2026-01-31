@@ -35,7 +35,7 @@ public:
         if (uv.empty()) uv = "v_TexCoord";
         if (scale.empty()) scale = "vec2(1.0)";
 
-        code << "    vec2 " << varName << " = " << uv << " * " << scale << ";\n";
+        code << "    vec2 " << varName << " = " << uv << ".xy * " << scale << ".xy;\n";
 
         return varName;
     }
