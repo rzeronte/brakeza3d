@@ -65,7 +65,9 @@ void GUI::DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 siz
     }
     ImGui::PopStyleColor();
     ImGui::PopID();
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
     ImGui::SetItemTooltip(tooltip.c_str());
+    ImGui::PopStyleVar();
 }
 
 void GUI::DrawButtonTransparent(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()>& cb)

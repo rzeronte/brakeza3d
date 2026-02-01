@@ -65,7 +65,6 @@ void GUIAddonToolbar::Draw()
                              ImGuiWindowFlags_NoSavedSettings |
                              ImGuiWindowFlags_NoDocking;
 
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 8));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
@@ -93,7 +92,6 @@ void GUIAddonToolbar::Draw()
         VerticalSeparator();
         Helpers();
         ImGui::PopStyleVar();
-
         DrawBaseLine();
     }
     ImGui::End();
