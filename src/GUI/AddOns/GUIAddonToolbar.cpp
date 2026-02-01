@@ -68,8 +68,8 @@ void GUIAddonToolbar::Draw()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 8));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));        // Añade esto
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));   // Y esto
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(4, 4));
 
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
 
@@ -212,14 +212,19 @@ void GUIAddonToolbar::Helpers()
     GUI::DrawButton("Documentation", IconGUI::WIN_DOCUMENTATION, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen,[&]() {
         Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen;
     });
+    VerticalSeparator();
     ImGui::SameLine();
     if (!Brakeza::get()->GUI()->getResourcesHub()->isAuthenticated()) {
         GUI::DrawButton("Assets Hub - Login", IconGUI::SESSION_OPEN, GUIType::Sizes::ICONS_TOOLBAR, false,[&]() {
             Brakeza::get()->GUI()->getResourcesHub()->showLogin();
         });
     } else {
-       GUI::DrawButton("Assets Hub - Logout", IconGUI::SESSION_CLOSE, GUIType::Sizes::ICONS_TOOLBAR, false,[&]() {
-            //Brakeza::get()->GUI()->getResourcesHub()->lo();
+        GUI::DrawButton("Assets Hub - Browser", IconGUI::MNU_RESOURCESHUB, GUIType::Sizes::ICONS_TOOLBAR, false,[&]() {
+             Brakeza::get()->GUI()->getResourcesHub()->showBrowser();
+        });
+        ImGui::SameLine();
+        GUI::DrawButton("Assets Hub - Logout", IconGUI::SESSION_CLOSE, GUIType::Sizes::ICONS_TOOLBAR, false,[&]() {
+            Brakeza::get()->GUI()->getResourcesHub()->performLogout();
        });
     }
 }
