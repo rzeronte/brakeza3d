@@ -38,6 +38,11 @@ export default [
     exact: true
   },
   {
+    path: '/assets-hub',
+    component: ComponentCreator('/assets-hub', 'd59'),
+    exact: true
+  },
+  {
     path: '/blog',
     component: ComponentCreator('/blog', 'ef3'),
     exact: true
