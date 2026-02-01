@@ -1,6 +1,7 @@
 ---
 sidebar_position: 8
 title: Lighting system
+description: Lighting system API in Brakeza3D including global illumination, ADS components, LightPoint, and LightSpot objects.
 ---
 
 # Lighting system

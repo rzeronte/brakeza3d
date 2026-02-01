@@ -1,5 +1,6 @@
 ---
 title: Scripts
+description: Managing Lua scripts in Brakeza3D, including the scripts browser, variables, code editor, and script assignment.
 ---
 
 # Scripts

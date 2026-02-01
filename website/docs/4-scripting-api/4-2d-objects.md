@@ -2,6 +2,7 @@
 sidebar_position: 4
 slug: 2d-objects
 title: 2D Objects
+description: 2D objects in Brakeza3D including Image2D, Image2DAnimation, and text rendering with TTF fonts.
 ---
 
 # 2D objects

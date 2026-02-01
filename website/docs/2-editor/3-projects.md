@@ -1,5 +1,6 @@
 ---
 title: Projects
+description: Understanding projects in Brakeza3D, including global settings, scripts, shaders, and project lifecycle management.
 ---
 
 # Projects

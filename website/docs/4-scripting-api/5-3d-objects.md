@@ -2,6 +2,7 @@
 sidebar_position: 5
 slug: 3d-objects
 title: 3D Objects
+description: 3D objects in Brakeza3D including Image3D, Mesh3D, Mesh3DAnimation, and line drawing.
 ---
 
 # 3D objects

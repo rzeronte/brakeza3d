@@ -1,5 +1,6 @@
 ---
 title: Overview
+description: Overview of the Brakeza3D integrated development environment, docking system, main menu, and navigation controls.
 ---
 
 # Overview

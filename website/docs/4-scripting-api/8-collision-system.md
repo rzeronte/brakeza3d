@@ -1,6 +1,7 @@
 ---
 sidebar_position: 9
 title: Collision system
+description: Collision system API in Brakeza3D with collision modes, shapes, forces, and bone mapping for animations.
 ---
 
 # Collision system
