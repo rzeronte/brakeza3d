@@ -1,5 +1,5 @@
 ---
-title: 3.5) Components
+title: Components
 ---
 
 # Components

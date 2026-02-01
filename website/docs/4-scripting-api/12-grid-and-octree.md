@@ -1,6 +1,6 @@
 ---
 sidebar_position: 13
-title: 4.12) Grid and Octree
+title: Grid and Octree
 ---
 
 # Grid3D and Octree

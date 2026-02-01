@@ -1,5 +1,6 @@
 ---
-title: 1.1) Welcome to Brakeza3D!
+title: Welcome to Brakeza3D!
+description: 
 ---
 
 # Welcome to Brakeza3D!

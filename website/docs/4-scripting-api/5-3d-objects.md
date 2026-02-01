@@ -1,7 +1,7 @@
 ---
 sidebar_position: 5
 slug: 3d-objects
-title: 4.5) 3D Objects
+title: 3D Objects
 ---
 
 # 3D objects

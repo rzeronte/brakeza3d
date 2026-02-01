@@ -1,8 +1,8 @@
 ---
-title: 2.4) Scenes
+title: Scenes
 ---
 
-# 2.4) Scenes
+# Scenes
 ---
 
 A `Scene` is a container for objects and scripts. Scenes can be stored on disk in `JSON` and loaded at any time. The content of a scene includes:

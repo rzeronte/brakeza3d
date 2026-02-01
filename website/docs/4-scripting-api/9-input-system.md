@@ -1,6 +1,6 @@
 ---
 sidebar_position: 10
-title: 4.9) Input system
+title: Input system
 ---
 
 # Input system

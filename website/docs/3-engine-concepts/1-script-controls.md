@@ -1,6 +1,8 @@
 ---
-title: 3.1) Script controls
+title: Script controls
 ---
+
+# Script controls
 
 A fundamental aspect of **Brakeza3D** is the script execution controls. You can access them from the **main menu** under the `Script Controls` section. You will also find these options in the **toolbar**.
 

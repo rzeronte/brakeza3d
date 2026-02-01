@@ -1,6 +1,6 @@
 ---
 sidebar_position: 7
-title: 4.6) Particle emitter
+title: Particle emitter
 ---
 
 # Particle emitter

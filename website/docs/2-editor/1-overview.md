@@ -1,8 +1,8 @@
 ---
-title: 2.1) Overview
+title: Overview
 ---
 
-# 2.1) Overview
+# Overview
 ---
 The engine provides an **integrated 3D development environment** focused on real-time editing and iteration. The GUI is designed to centralize scene creation, asset management, scripting, rendering, and debugging within a single workflow.
 

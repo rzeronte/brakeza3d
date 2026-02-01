@@ -51,29 +51,49 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(gui): Improve editor script/shaders UI experience">
+    <list default="true" id="c6fac45a-30c8-484f-b78b-d3707126fb66" name="Default Changelist" comment="feat(nodes): more nodes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/nodemes.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/assets/shaders/pepe.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Config.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Config.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/GUI/AddOns/GUIAddonResourceHub.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Misc/PathFinding.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Misc/PathFinding.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonResourceHub.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/GUI/AddOns/GUIAddonResourceHub.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/client-modules.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-docs/default/p/docs-175.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-content-docs/default/p/docs-175.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-debug/default/p/docusaurus-debug-content-0d5.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/docusaurus-plugin-debug/default/p/docusaurus-debug-content-0d5.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/globalData.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/globalData.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/registry.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/registry.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/routesChunkNames.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/website/.docusaurus/site-metadata.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/src/pages/gallery.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/gallery.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/01.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/01.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/02.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/02.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/03.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/03.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/04.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/04.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/05.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/05.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/06.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/06.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/07.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/07.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/08.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/08.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/09.png" beforeDir="false" afterPath="$PROJECT_DIR$/website/static/img/gallery/09.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/website/static/img/gallery/gui_01.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/1-getting-started/1-intro.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/1-getting-started/1-intro.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/1-getting-started/2-download-and-install.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/1-overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/1-overview.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/2-layout-modes.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/2-layout-modes.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/3-projects.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/3-projects.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/4-scenes.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/4-scenes.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/5-scripts.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/5-scripts.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/2-editor/6-shaders.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/2-editor/6-shaders.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/3-engine-concepts/1-script-controls.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/3-engine-concepts/1-script-controls.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/3-engine-concepts/2-global-illumination.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/3-engine-concepts/2-global-illumination.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/3-engine-concepts/3-collisions.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/3-engine-concepts/3-collisions.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/3-engine-concepts/4-assets-folder.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/3-engine-concepts/4-assets-folder.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/3-engine-concepts/5-components.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/3-engine-concepts/5-components.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/1-index.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/1-index.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/10-sound-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/10-sound-system.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/11-shaders-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/11-shaders-system.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/12-grid-and-octree.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/12-grid-and-octree.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/13-components.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/13-components.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/2-basic-object-types.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/2-basic-object-types.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/3-camera-object.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/3-camera-object.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/4-2d-objects.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/4-2d-objects.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/5-3d-objects.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/5-3d-objects.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/6-particle-emitter.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/6-particle-emitter.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/7-lighting-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/7-lighting-system.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/8-collision-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/8-collision-system.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/4-scripting-api/9-input-system.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/4-scripting-api/9-input-system.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/5-advanced/1-core-shaders.md" beforeDir="false" afterPath="$PROJECT_DIR$/website/docs/5-advanced/1-core-shaders.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/docs/5-advanced/2-building-from-sources.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/website/src/pages/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/website/src/pages/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,48 +159,48 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;CMake Application.Brakeza3D.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;cf.advertisement.text.has.clang-format&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/darkh/CLionProjects/brakeza3d&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;CMakeSettings&quot;,
-    &quot;structure.view.defaults.are.configured&quot;: &quot;true&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "CMake Application.Brakeza3D.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "cf.advertisement.text.has.clang-format": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/darkh/CLionProjects/brakeza3d/assets/shaders",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "CMakeSettings",
+    "structure.view.defaults.are.configured": "true",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\darkh\CLionProjects\brakeza3d\assets\shaders" />
       <recent name="C:\Users\darkh\CLionProjects\brakeza3d\website" />
       <recent name="C:\Users\darkh\CLionProjects\BrakezaGitHub\include\GUI\AddOns" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\website" />
       <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons\ChangeMouseIcon" />
-      <recent name="C:\Users\Eduardo\CLionProjects\BrakezaGitHub\assets\scripts\Examples\Commons" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\darkh\CLionProjects\brakeza3d\src\GUI\AddOns" />
@@ -191,17 +211,17 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release-MinGW" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="Brakeza3D" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="Brakeza3D" TARGET_NAME="Brakeza3D" CONFIG_NAME="Release" RUN_TARGET_PROJECT_NAME="Brakeza3D" RUN_TARGET_NAME="Brakeza3D">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -547,7 +567,10 @@
       <workItem from="1769511183063" duration="30970000" />
       <workItem from="1769615836035" duration="18705000" />
       <workItem from="1769716837267" duration="16070000" />
-      <workItem from="1769786013842" duration="19620000" />
+      <workItem from="1769786013842" duration="21605000" />
+      <workItem from="1769827882436" duration="11935000" />
+      <workItem from="1769877590636" duration="11349000" />
+      <workItem from="1769899989418" duration="8084000" />
     </task>
     <task id="LOCAL-00001" summary="CL Shaders">
       <created>1653612711515</created>
@@ -597,62 +620,6 @@
       <option name="presentableId" value="LOCAL-00007" />
       <option name="project" value="LOCAL" />
       <updated>1665612678198</updated>
-    </task>
-    <task id="LOCAL-00155" summary="feat(website): Docusaurus website">
-      <option name="closed" value="true" />
-      <created>1768068950653</created>
-      <option name="number" value="00155" />
-      <option name="presentableId" value="LOCAL-00155" />
-      <option name="project" value="LOCAL" />
-      <updated>1768068950653</updated>
-    </task>
-    <task id="LOCAL-00156" summary="feat(website): Docusaurus website">
-      <option name="closed" value="true" />
-      <created>1768088531517</created>
-      <option name="number" value="00156" />
-      <option name="presentableId" value="LOCAL-00156" />
-      <option name="project" value="LOCAL" />
-      <updated>1768088531517</updated>
-    </task>
-    <task id="LOCAL-00157" summary="feat(imgui): upgrade imgui docking version">
-      <option name="closed" value="true" />
-      <created>1768174725730</created>
-      <option name="number" value="00157" />
-      <option name="presentableId" value="LOCAL-00157" />
-      <option name="project" value="LOCAL" />
-      <updated>1768174725730</updated>
-    </task>
-    <task id="LOCAL-00158" summary="feat(nodes): styles / layout nodes">
-      <option name="closed" value="true" />
-      <created>1768262789665</created>
-      <option name="number" value="00158" />
-      <option name="presentableId" value="LOCAL-00158" />
-      <option name="project" value="LOCAL" />
-      <updated>1768262789665</updated>
-    </task>
-    <task id="LOCAL-00159" summary="feat(nodes): switch popup/tab">
-      <option name="closed" value="true" />
-      <created>1768267401087</created>
-      <option name="number" value="00159" />
-      <option name="presentableId" value="LOCAL-00159" />
-      <option name="project" value="LOCAL" />
-      <updated>1768267401089</updated>
-    </task>
-    <task id="LOCAL-00160" summary="feat(gui): improved images window">
-      <option name="closed" value="true" />
-      <created>1768354064468</created>
-      <option name="number" value="00160" />
-      <option name="presentableId" value="LOCAL-00160" />
-      <option name="project" value="LOCAL" />
-      <updated>1768354064469</updated>
-    </task>
-    <task id="LOCAL-00161" summary="feat(gui): imguilink / improved win images / project context improved">
-      <option name="closed" value="true" />
-      <created>1768362257788</created>
-      <option name="number" value="00161" />
-      <option name="presentableId" value="LOCAL-00161" />
-      <option name="project" value="LOCAL" />
-      <updated>1768362257790</updated>
     </task>
     <task id="LOCAL-00162" summary="feat(gui): imguilink / improved win images / project context improved">
       <option name="closed" value="true" />
@@ -934,7 +901,63 @@
       <option name="project" value="LOCAL" />
       <updated>1769815603338</updated>
     </task>
-    <option name="localTasksCounter" value="197" />
+    <task id="LOCAL-00197" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769822748844</created>
+      <option name="number" value="00197" />
+      <option name="presentableId" value="LOCAL-00197" />
+      <option name="project" value="LOCAL" />
+      <updated>1769822748846</updated>
+    </task>
+    <task id="LOCAL-00198" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769823401949</created>
+      <option name="number" value="00198" />
+      <option name="presentableId" value="LOCAL-00198" />
+      <option name="project" value="LOCAL" />
+      <updated>1769823401949</updated>
+    </task>
+    <task id="LOCAL-00199" summary="feat(gui): Improve editor script/shaders UI experience">
+      <option name="closed" value="true" />
+      <created>1769838687505</created>
+      <option name="number" value="00199" />
+      <option name="presentableId" value="LOCAL-00199" />
+      <option name="project" value="LOCAL" />
+      <updated>1769838687506</updated>
+    </task>
+    <task id="LOCAL-00200" summary="feat(gui): theme colors upgrade">
+      <option name="closed" value="true" />
+      <created>1769881728758</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1769881728758</updated>
+    </task>
+    <task id="LOCAL-00201" summary="feat(web): pic for gallery">
+      <option name="closed" value="true" />
+      <created>1769881752227</created>
+      <option name="number" value="00201" />
+      <option name="presentableId" value="LOCAL-00201" />
+      <option name="project" value="LOCAL" />
+      <updated>1769881752227</updated>
+    </task>
+    <task id="LOCAL-00202" summary="feat(nodes): debug shader nodes">
+      <option name="closed" value="true" />
+      <created>1769883205101</created>
+      <option name="number" value="00202" />
+      <option name="presentableId" value="LOCAL-00202" />
+      <option name="project" value="LOCAL" />
+      <updated>1769883205101</updated>
+    </task>
+    <task id="LOCAL-00203" summary="feat(nodes): more nodes">
+      <option name="closed" value="true" />
+      <created>1769886727349</created>
+      <option name="number" value="00203" />
+      <option name="presentableId" value="LOCAL-00203" />
+      <option name="project" value="LOCAL" />
+      <updated>1769886727349</updated>
+    </task>
+    <option name="localTasksCounter" value="204" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -968,10 +991,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(shaders): added node editor for integration with shaders" />
-    <MESSAGE value="feat(nodeeditor): refact ShaderNodeEditorManager operations. Explode in independent files." />
-    <MESSAGE value="refact(shaders): Create ShaderBaseCustom" />
-    <MESSAGE value="feat(shaders): Integration node shader edition" />
     <MESSAGE value="chore(git): Update .gitignore" />
     <MESSAGE value="feat(website): Docusaurus website" />
     <MESSAGE value="feat(imgui): upgrade imgui docking version" />
@@ -993,7 +1012,11 @@
     <MESSAGE value="feat(CustomTreeNode): Applied CustomTreeNode all" />
     <MESSAGE value="feat(gui): improved user interface" />
     <MESSAGE value="feat(gui): Improve editor script/shaders UI experience" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(gui): Improve editor script/shaders UI experience" />
+    <MESSAGE value="feat(gui): theme colors upgrade" />
+    <MESSAGE value="feat(web): pic for gallery" />
+    <MESSAGE value="feat(nodes): debug shader nodes" />
+    <MESSAGE value="feat(nodes): more nodes" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(nodes): more nodes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1087,13 +1110,8 @@
           <option name="timeStamp" value="114" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/Render/Image.cpp</url>
-          <line>13</line>
-          <option name="timeStamp" value="165" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/GUI/ShaderNodeEditorManager.cpp</url>
-          <line>768</line>
+          <line>823</line>
           <option name="timeStamp" value="166" />
         </line-breakpoint>
       </breakpoints>

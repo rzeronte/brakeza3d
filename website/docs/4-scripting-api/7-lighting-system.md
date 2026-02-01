@@ -1,6 +1,6 @@
 ---
 sidebar_position: 8
-title: 4.7) Lighting system
+title: Lighting system
 ---
 
 # Lighting system

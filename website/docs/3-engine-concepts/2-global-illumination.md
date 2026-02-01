@@ -1,8 +1,8 @@
 ---
-title: 3.2) Global illumination
+title: Global illumination
 ---
 
-# 3.2) Global illumination
+# Global illumination
 ---
 
 **Brakeza3D** includes a default light in the scene, which can be thought of as the sun.

@@ -1,5 +1,5 @@
 ---
-title: 3.4) Assets folder
+title: Assets folder
 ---
 
 **Brakeza3D** expects to find each type of resource in its corresponding root folder. Inside the assets

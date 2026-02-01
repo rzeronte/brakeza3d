@@ -1,8 +1,8 @@
 ---
-title: 2.3) Projects
+title: Projects
 ---
 
-# 2.3) Projects
+# Projects
 ---
 
 A `Project` is a container for scenes, scripts, and global settings. It can be stored on disk as a `JSON` file and loaded at any time.

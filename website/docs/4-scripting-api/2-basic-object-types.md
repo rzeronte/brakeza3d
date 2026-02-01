@@ -1,6 +1,6 @@
 ---
 sidebar_position: 2
-title: 4.2) Basic object types
+title: Basic object types
 ---
 
 # Basic object types

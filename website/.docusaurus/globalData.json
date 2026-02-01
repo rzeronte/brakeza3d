@@ -11,11 +11,6 @@
           "mainDocId": "getting-started/intro",
           "docs": [
             {
-              "id": "advanced/building-from-sources",
-              "path": "/docs/advanced/building-from-sources",
-              "sidebar": "tutorialSidebar"
-            },
-            {
               "id": "advanced/core-shaders",
               "path": "/docs/advanced/core-shaders",
               "sidebar": "tutorialSidebar"
@@ -163,15 +158,6 @@
         }
       ],
       "breadcrumbs": true
-    }
-  },
-  "docusaurus-plugin-google-gtag": {
-    "default": {
-      "trackingID": [
-        "G-WYRLFVTYQN"
-      ],
-      "anonymizeIP": true,
-      "id": "default"
     }
   }
 }

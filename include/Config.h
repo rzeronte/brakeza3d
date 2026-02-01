@@ -59,6 +59,9 @@ public:
     std::string SPLASH_FILENAME       = "splash.png";
     std::string ICONS_CONFIG          = "icons.json";
 
+    std::string DOWNLOADS_SCRIPTS_FOLDER = SCRIPTS_FOLDER + "Downloads/";
+    std::string DOWNLOADS_SHADERS_FOLDER = CUSTOM_SHADERS_FOLDER + "Downloads/";
+
     std::string SCRIPTS_EXT     = "json";
     std::string SCENES_EXT      = "json";
     std::string SHADERS_EXT     = "json";

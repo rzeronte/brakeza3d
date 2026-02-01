@@ -1,5 +1,5 @@
 ---
-title: 3.3) Collisions
+title: Collisions
 ---
 
 # Collisions
