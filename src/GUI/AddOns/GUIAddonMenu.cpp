@@ -649,7 +649,7 @@ void GUIAddonMenu::MenuResourcesHub()
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SESSION_CLOSE), GUIType::Sizes::ICON_SIZE_MENUS);
             ImGui::SameLine();
             if (ImGui::MenuItem("Logout")) {
-                //hub->performLogout();
+                hub->performLogout();
             }
         }
 

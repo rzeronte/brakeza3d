@@ -68,7 +68,7 @@ private:
     void renderSearchFilters();
     
     void performLogin();
-    void performLogout();
+
     void loadResources();
     void loadResourceDetail(int resourceId);
     void parseResourcesFromJSON(cJSON* json);
@@ -79,6 +79,7 @@ public:
     ~GUIAddonResourceHub();
 
     void render();
+    void performLogout();
     void showLogin();
     void showBrowser();
     [[nodiscard]] bool isAuthenticated() const { return isLoggedIn; }
