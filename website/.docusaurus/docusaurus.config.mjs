@@ -76,13 +76,13 @@ export default {
           "position": "left"
         },
         {
-          "to": "/blog",
-          "label": "Blog",
+          "to": "/assets-hub",
+          "label": "Assets Hub",
           "position": "left"
         },
         {
-          "to": "/assets-hub",
-          "label": "Assets Hub",
+          "to": "/blog",
+          "label": "Blog",
           "position": "left"
         },
         {

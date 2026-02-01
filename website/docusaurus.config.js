@@ -90,8 +90,8 @@ const config = {
           },
           {to: '/downloads', label: 'Downloads', position: 'left'},
           {to: '/gallery', label: 'Gallery', position: 'left'},
-          {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/assets-hub', label: 'Assets Hub', position: 'left'},
+          {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/contact', label: 'Contact', position: 'left'},
           {
             href: 'https://github.com/rzeronte/brakeza3d',

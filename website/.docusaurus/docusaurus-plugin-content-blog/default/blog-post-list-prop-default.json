@@ -2,8 +2,14 @@
   "title": "Recent posts",
   "items": [
     {
-      "title": "¡Welcome to Brakeza3D!",
-      "permalink": "/blog/bienvenida",
+      "title": "Assets Hub Alpha released!",
+      "permalink": "/blog/assets-hub",
+      "unlisted": false,
+      "date": "2025-02-01T00:00:00.000Z"
+    },
+    {
+      "title": "Welcome to Brakeza3D!",
+      "permalink": "/blog/welcome",
       "unlisted": false,
       "date": "2025-01-07T00:00:00.000Z"
     }
