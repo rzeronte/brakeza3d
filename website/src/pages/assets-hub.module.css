@@ -1,0 +1,43 @@
+.mainContent {
+    padding: 3rem 0;
+}
+
+.description {
+    font-size: 1.2rem;
+    color: var(--ifm-font-color-secondary);
+    max-width: 700px;
+    margin-bottom: 2rem;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+@media screen and (max-width: 600px) {
+    .buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .buttons a {
+        width: 100%;
+        max-width: 280px;
+        text-align: center;
+    }
+}
+
+.imagesSection {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.hubImage {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}

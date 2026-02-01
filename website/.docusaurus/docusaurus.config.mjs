@@ -81,6 +81,11 @@ export default {
           "position": "left"
         },
         {
+          "to": "/assets-hub",
+          "label": "Assets Hub",
+          "position": "left"
+        },
+        {
           "to": "/contact",
           "label": "Contact",
           "position": "left"
