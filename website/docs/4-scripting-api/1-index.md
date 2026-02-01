@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 title: Scripting introduction
+description: Introduction to Lua scripting in Brakeza3D, including object lifecycle, variables, scene management, and components.
 ---
 
 # Scripting introduction

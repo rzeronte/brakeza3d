@@ -1,5 +1,6 @@
 ---
 title: Download and Install
+description: How to download precompiled binaries or build Brakeza3D from source on Windows and Linux.
 ---
 
 # Download and Install

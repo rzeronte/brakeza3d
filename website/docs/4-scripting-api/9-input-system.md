@@ -1,6 +1,7 @@
 ---
 sidebar_position: 10
 title: Input system
+description: Input system API in Brakeza3D for handling keyboard, mouse, and gamepad input in Lua scripts.
 ---
 
 # Input system

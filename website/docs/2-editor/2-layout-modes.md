@@ -1,5 +1,9 @@
 ---
 title: Layout modes
+description: Default widget layouts in Brakeza3D for different workflows including development, design, and general use.
+---
+
+# Layout modes
 ---
 
 **Brakeza3D** offers three default widget layouts, designed for different workflow types.

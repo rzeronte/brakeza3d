@@ -1,5 +1,6 @@
 ---
 title: Collisions
+description: Collision system in Brakeza3D with ghost, rigid body, and kinematic modes, plus various collider shapes.
 ---
 
 # Collisions

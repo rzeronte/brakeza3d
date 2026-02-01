@@ -1,5 +1,6 @@
 ---
 title: Components
+description: Core components in Brakeza3D including Window, Render, Input, Camera, Collisions, and Scripting.
 ---
 
 # Components

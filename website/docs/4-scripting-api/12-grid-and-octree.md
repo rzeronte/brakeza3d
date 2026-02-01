@@ -1,6 +1,7 @@
 ---
 sidebar_position: 13
 title: Grid and Octree
+description: Grid3D and Octree data structures in Brakeza3D for spatial partitioning and A* pathfinding.
 ---
 
 # Grid3D and Octree

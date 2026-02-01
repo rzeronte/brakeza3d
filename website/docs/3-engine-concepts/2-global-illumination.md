@@ -1,5 +1,6 @@
 ---
 title: Global illumination
+description: Global illumination system in Brakeza3D including ADS lighting model, light types, and shadow mapping.
 ---
 
 # Global illumination

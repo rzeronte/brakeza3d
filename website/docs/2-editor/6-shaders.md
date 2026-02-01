@@ -1,5 +1,9 @@
 ---
 title: Shaders
+description: Shader integration in Brakeza3D including GLSL shaders, node-based visual shaders, and postprocessing effects.
+---
+
+# Shaders
 ---
 
 ## Shader Integration

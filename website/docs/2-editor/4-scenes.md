@@ -1,5 +1,6 @@
 ---
 title: Scenes
+description: Working with scenes in Brakeza3D, including objects, scripts, shaders, and scene browser functionality.
 ---
 
 # Scenes

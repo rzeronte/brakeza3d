@@ -1,6 +1,7 @@
 ---
 sidebar_position: 7
 title: Particle emitter
+description: ParticleEmitter object in Brakeza3D for creating particle effects with configurable context and colors.
 ---
 
 # Particle emitter

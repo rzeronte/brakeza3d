@@ -1,6 +1,7 @@
 ---
 sidebar_position: 14
 title: Components
+description: Complete API reference for Brakeza3D components including Window, Render, Input, Camera, Collisions, and Scripting.
 ---
 
 # Components

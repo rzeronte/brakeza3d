@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 title: The Camera object
+description: Camera3D object in Brakeza3D with view and projection matrices, movement controls, and FOV configuration.
 ---
 
 # Camera

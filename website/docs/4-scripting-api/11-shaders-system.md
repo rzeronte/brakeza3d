@@ -1,6 +1,10 @@
 ---
 sidebar_position: 12
 title: Shaders system
+description: Shaders system API in Brakeza3D including uniforms, GLSL templates, and internal shader reference.
+---
+
+# Shaders system
 ---
 
 ## Shader Variables (uniforms)

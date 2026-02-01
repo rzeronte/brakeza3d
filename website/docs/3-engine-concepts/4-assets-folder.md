@@ -1,5 +1,9 @@
 ---
 title: Assets folder
+description: Assets folder structure in Brakeza3D for organizing models, textures, scripts, shaders, and other resources.
+---
+
+# Assets folder
 ---
 
 **Brakeza3D** expects to find each type of resource in its corresponding root folder. Inside the assets

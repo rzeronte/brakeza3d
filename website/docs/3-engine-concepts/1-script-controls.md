@@ -1,5 +1,6 @@
 ---
 title: Script controls
+description: Script execution controls in Brakeza3D for playing, stopping, and reloading Lua scripts.
 ---
 
 # Script controls

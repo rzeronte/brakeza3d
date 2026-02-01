@@ -1,6 +1,7 @@
 ---
 sidebar_position: 2
 title: Basic object types
+description: Basic object types in Brakeza3D including Object3D, Vertex3D, M3 matrices, AABB, Point2D, and Color.
 ---
 
 # Basic object types

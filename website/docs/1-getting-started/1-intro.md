@@ -1,6 +1,6 @@
 ---
 title: Welcome to Brakeza3D!
-description: 
+description: Introduction to Brakeza3D, a cross-platform 2D/3D game engine for indie developers with Lua scripting and GLSL shaders support.
 ---
 
 # Welcome to Brakeza3D!

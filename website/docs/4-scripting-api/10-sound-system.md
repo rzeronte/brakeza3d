@@ -1,6 +1,7 @@
 ---
 sidebar_position: 11
 title: Sound system
+description: Sound system API in Brakeza3D for playing music and sound effects with volume control.
 ---
 
 # Sound system
