@@ -62,7 +62,10 @@ ResourceHubClient::HttpResponse ResourceHubClient::makeRequest(
     curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-    
+    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
     // Headers
     struct curl_slist* headers = nullptr;
     headers = curl_slist_append(headers, "Content-Type: application/json");
@@ -213,7 +216,7 @@ bool ResourceHubClient::login(const std::string& username, const std::string& pa
         return false;
     }
 
-    LOG_ERROR("[Login] Login failed, StatusCode: %d", response.statusCode);
+    LOG_ERROR("[Login] Login failed, StatusCode: %d, %s", response.statusCode, response.body.c_str());
     return false;
 }
 

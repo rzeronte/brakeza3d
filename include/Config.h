@@ -199,7 +199,7 @@ public:
     std::string TEMPLATE_SCRIPT = TEMPLATES_FOLDER + "script-template.lua";
 
     // API ENDPOINT
-    std::string URL_ASSETS_HUB_API = "http://localhost:3000";
+    std::string URL_ASSETS_HUB_API = "https://api.brakeza.com";
     std::string URL_ASSETS_HUB_URL = "https://hub.brakeza.com";
 
     std::string MODAL_CREATE_PROJECT_TITLE_ID = "Create project dialog";
