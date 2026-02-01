@@ -260,8 +260,8 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 }
 
                 o->drawWorldPhysicVariables();
+                ImGui::PopStyleVar(2);
             }
-            ImGui::PopStyleVar(2);
         }
         // alpha
         if (o->featuresGUI.misc) {

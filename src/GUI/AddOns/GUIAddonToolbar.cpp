@@ -97,7 +97,7 @@ void GUIAddonToolbar::Draw()
     ImGui::End();
 
     ImGui::PopStyleColor();
-    ImGui::PopStyleVar(5);
+    ImGui::PopStyleVar(4);
 }
 
 void GUIAddonToolbar::LayoutIcons()
