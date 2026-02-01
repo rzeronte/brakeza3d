@@ -1,5 +1,5 @@
 ---
-title: 1.2) Download and Install
+title: Download and Install
 ---
 
 # Download and Install

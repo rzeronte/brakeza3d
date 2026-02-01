@@ -1,6 +1,6 @@
 ---
 sidebar_position: 9
-title: 4.8) Collision system
+title: Collision system
 ---
 
 # Collision system

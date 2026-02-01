@@ -1,7 +1,7 @@
 ---
 sidebar_position: 4
 slug: 2d-objects
-title: 4.4) 2D Objects
+title: 2D Objects
 ---
 
 # 2D objects

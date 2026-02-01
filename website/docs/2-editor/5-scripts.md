@@ -1,6 +1,8 @@
 ---
-title: 2.5) Scripts
+title: Scripts
 ---
+
+# Scripts
 
 `Scripts` are **Lua source code files** used to interact with the engine. They execute the logic that brings your application to life.
 

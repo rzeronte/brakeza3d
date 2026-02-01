@@ -1,6 +1,6 @@
 ---
 sidebar_position: 3
-title: 4.3) The Camera object
+title: The Camera object
 ---
 
 # Camera

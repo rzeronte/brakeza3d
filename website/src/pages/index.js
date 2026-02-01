@@ -207,7 +207,7 @@ export default function Home() {
     const {siteConfig} = useDocusaurusContext();
     return (
         <Layout
-            title={`Home`}
+            title={`Brakeza3D Official Website`}
             description="Build amazing 2D and 3D games with Brakeza3D Game Engine">
             <HomepageHeader />
             <main>

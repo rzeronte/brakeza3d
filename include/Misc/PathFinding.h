@@ -108,8 +108,11 @@ public:
                     int neighborIndex = getIndex(nx, ny, nz);
                     if (closedSet[neighborIndex]) continue;
 
-                    float movementCost = (dx != 0 && dy != 0 && dz != 0) ? 1.732f :
-                                         (dx != 0 && dy != 0 || dy != 0 && dz != 0 || dx != 0 && dz != 0) ? 1.414f : 1.0f;
+                    float movementCost = (
+                        (dx != 0 && dy != 0) ||
+                        (dy != 0 && dz != 0) ||
+                        (dx != 0 && dz != 0)
+                    ) ? 1.414f : 1.0f;
 
                     float gNew = current->g + movementCost;
                     float hNew = heuristic(nx, ny, nz, x2, y2, z2);

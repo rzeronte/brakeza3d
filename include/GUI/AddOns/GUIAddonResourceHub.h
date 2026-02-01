@@ -41,6 +41,8 @@ private:
         int ratingCount;
         std::string scriptType;
         std::string shaderType;
+        std::string createdAt;
+        std::string updatedAt;
     };
     
     std::vector<ResourceInfo> resources;
@@ -53,7 +55,6 @@ private:
 
 
     // Variables para descarga
-    std::string downloadPath = Config::get()->DOWNLOADS_FOLDER;;
     std::map<std::string, bool> downloadingFiles;
     std::map<std::string, bool> downloadSuccess;
     std::map<std::string, std::string> downloadErrors;

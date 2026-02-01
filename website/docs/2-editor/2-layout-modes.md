@@ -1,5 +1,5 @@
 ---
-title: 2.2) Layout modes
+title: Layout modes
 ---
 
 **Brakeza3D** offers three default widget layouts, designed for different workflow types.

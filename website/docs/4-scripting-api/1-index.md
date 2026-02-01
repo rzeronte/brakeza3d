@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: 4.1) Scripting introduction
+title: Scripting introduction
 ---
 
 # Scripting introduction

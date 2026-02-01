@@ -236,21 +236,30 @@ void GUIAddonResourceHub::renderResourceList() {
     
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8.0f, 8.0f));
 
-    if (ImGui::BeginTable("ResourcesTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 350))) {
+    if (ImGui::BeginTable("ResourcesTable", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 350))) {
         ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Category", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Author", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Rating", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 60);
+        ImGui::TableSetupColumn("Category", ImGuiTableColumnFlags_WidthFixed, 100);
+        ImGui::TableSetupColumn("Author", ImGuiTableColumnFlags_WidthFixed, 100);
+        ImGui::TableSetupColumn("Rating", ImGuiTableColumnFlags_WidthFixed, 100);
+        ImGui::TableSetupColumn("Created", ImGuiTableColumnFlags_WidthFixed, 90);
         ImGui::TableHeadersRow();
+
+        float rowHeight = 24.0f;
+        float textOffsetY = (rowHeight - ImGui::GetTextLineHeight()) * 0.5f;
+        ImVec2 starSize = ImVec2(12, 12);
+        float starOffsetY = (rowHeight - starSize.y) * 0.5f;
+        ImVec2 iconSize = GUIType::Sizes::ICON_SIZE_MENUS;
+        float iconOffsetY = (rowHeight - iconSize.y) * 0.5f;
 
         for (size_t i = 0; i < resources.size(); i++) {
             const ResourceInfo& res = resources[i];
 
-            ImGui::TableNextRow();
+            ImGui::TableNextRow(ImGuiTableRowFlags_None, rowHeight);
 
             // Name (clickable)
             ImGui::TableSetColumnIndex(0);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textOffsetY);
             if (ImGui::Selectable(res.name.c_str(), selectedResourceIndex == (int)i, ImGuiSelectableFlags_SpanAllColumns)) {
                 selectedResourceIndex = i;
                 loadResourceDetail(res.id);
@@ -258,6 +267,7 @@ void GUIAddonResourceHub::renderResourceList() {
 
             // Type
             ImGui::TableSetColumnIndex(1);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textOffsetY);
             if (res.type == "script") {
                 ImGui::TextColored(ImVec4(0.4f, 1.0f, 0.4f, 1.0f), "Script");
             } else {
@@ -266,12 +276,16 @@ void GUIAddonResourceHub::renderResourceList() {
 
             // Category
             ImGui::TableSetColumnIndex(2);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textOffsetY);
             ImGui::Text("%s", res.type == "script" ? res.scriptType.c_str() : res.shaderType.c_str());
 
             // Author
             ImGui::TableSetColumnIndex(3);
-            ImGui::Image(FileSystemGUI::Icon(IconGUI::HUB_ASSET_AUTHOR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+            float cursorY = ImGui::GetCursorPosY();
+            ImGui::SetCursorPosY(cursorY + iconOffsetY);
+            ImGui::Image(FileSystemGUI::Icon(IconGUI::HUB_ASSET_AUTHOR), iconSize);
             ImGui::SameLine();
+            ImGui::SetCursorPosY(cursorY + textOffsetY);
             ImGui::Text("%s", res.author.c_str());
 
             // Rating
@@ -279,10 +293,11 @@ void GUIAddonResourceHub::renderResourceList() {
             {
                 auto starOn = FileSystemGUI::Icon(IconGUI::STAR_ON);
                 auto starOff = FileSystemGUI::Icon(IconGUI::STAR_OFF);
-                ImVec2 starSize = ImVec2(12, 12);
+                float baseCursorY = ImGui::GetCursorPosY();
 
                 for (int s = 0; s < 5; s++) {
                     if (s > 0) ImGui::SameLine(0, 1);
+                    ImGui::SetCursorPosY(baseCursorY + starOffsetY);
                     if (s < (int)res.rating) {
                         ImGui::Image(starOn, starSize);
                     } else {
@@ -290,7 +305,19 @@ void GUIAddonResourceHub::renderResourceList() {
                     }
                 }
                 ImGui::SameLine();
+                ImGui::SetCursorPosY(baseCursorY + textOffsetY);
                 ImGui::Text("(%d)", res.ratingCount);
+            }
+
+            // Created date
+            ImGui::TableSetColumnIndex(5);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + textOffsetY);
+            if (!res.createdAt.empty()) {
+                std::string dateOnly = res.createdAt.length() >= 10 ? res.createdAt.substr(0, 10) : res.createdAt;
+                ImGui::TextColored(ImVec4(0.6f, 0.6f, 0.6f, 1.0f), "%s", dateOnly.c_str());
+                if (ImGui::IsItemHovered() && !res.updatedAt.empty()) {
+                    ImGui::SetTooltip("Updated: %s", res.updatedAt.c_str());
+                }
             }
         }
 
@@ -398,16 +425,20 @@ void GUIAddonResourceHub::parseResourcesFromJSON(cJSON* json) {
         cJSON* ratingCount = cJSON_GetObjectItem(item, "rating_count");
         cJSON* scriptType = cJSON_GetObjectItem(item, "script_type");
         cJSON* shaderType = cJSON_GetObjectItem(item, "shader_type");
-        
-        if (id) info.id = id->valueint;
-        if (name) info.name = name->valuestring;
-        if (description) info.description = description->valuestring;
-        if (type) info.type = type->valuestring;
-        if (author) info.author = author->valuestring;
-        if (rating) info.rating = rating->valuedouble;
-        if (ratingCount) info.ratingCount = ratingCount->valueint;
-        if (scriptType) info.scriptType = scriptType->valuestring;
-        if (shaderType) info.shaderType = shaderType->valuestring;
+        cJSON* createdAt = cJSON_GetObjectItem(item, "created_at");
+        cJSON* updatedAt = cJSON_GetObjectItem(item, "updated_at");
+
+        if (id && cJSON_IsNumber(id)) info.id = id->valueint;
+        if (name && cJSON_IsString(name)) info.name = name->valuestring;
+        if (description && cJSON_IsString(description)) info.description = description->valuestring;
+        if (type && cJSON_IsString(type)) info.type = type->valuestring;
+        if (author && cJSON_IsString(author)) info.author = author->valuestring;
+        if (rating && cJSON_IsNumber(rating)) info.rating = rating->valuedouble;
+        if (ratingCount && cJSON_IsNumber(ratingCount)) info.ratingCount = ratingCount->valueint;
+        if (scriptType && cJSON_IsString(scriptType)) info.scriptType = scriptType->valuestring;
+        if (shaderType && cJSON_IsString(shaderType)) info.shaderType = shaderType->valuestring;
+        if (createdAt && cJSON_IsString(createdAt)) info.createdAt = createdAt->valuestring;
+        if (updatedAt && cJSON_IsString(updatedAt)) info.updatedAt = updatedAt->valuestring;
         
         resources.push_back(info);
     }
@@ -436,6 +467,8 @@ void GUIAddonResourceHub::renderResourceDetail() {
         cJSON* ratingCount = cJSON_GetObjectItem(selectedResourceDetail, "rating_count");
         cJSON* files = cJSON_GetObjectItem(selectedResourceDetail, "files");
         cJSON* id = cJSON_GetObjectItem(selectedResourceDetail, "id");
+        cJSON* createdAt = cJSON_GetObjectItem(selectedResourceDetail, "created_at");
+        cJSON* updatedAt = cJSON_GetObjectItem(selectedResourceDetail, "updated_at");
 
         // Title
         if (name) {
@@ -482,6 +515,21 @@ void GUIAddonResourceHub::renderResourceDetail() {
         }
 
         ImGui::Spacing();
+
+        // Dates
+        if (createdAt && cJSON_IsString(createdAt)) {
+            ImGui::Text("Created:");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(0.6f, 0.8f, 0.6f, 1.0f), "%s", createdAt->valuestring);
+        }
+        if (updatedAt && cJSON_IsString(updatedAt)) {
+            ImGui::SameLine();
+            ImGui::Text("  |  Updated:");
+            ImGui::SameLine();
+            ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.6f, 1.0f), "%s", updatedAt->valuestring);
+        }
+
+        ImGui::Spacing();
         ImGui::Separator();
         ImGui::Spacing();
 
@@ -497,94 +545,99 @@ void GUIAddonResourceHub::renderResourceDetail() {
         ImGui::Spacing();
         ImGui::Separator();
 
+        // Helper lambda para renderizar fila de archivo
+        auto renderFileRow = [&](const std::string& fname, int index) {
+            ImGui::TableNextRow();
+
+            // Columna: Nombre del archivo
+            ImGui::TableSetColumnIndex(0);
+            ImGui::AlignTextToFramePadding();
+            ImGui::Text("%s", fname.c_str());
+
+            // Columna: Botón de descarga
+            ImGui::TableSetColumnIndex(1);
+
+            std::string buttonId = "##download_" + std::to_string(index);
+
+            if (downloadingFiles[fname]) {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+                ImGui::Button("Downloading...", ImVec2(-FLT_MIN, 0));
+                ImGui::PopStyleColor();
+
+            } else if (downloadSuccess.count(fname) && downloadSuccess[fname]) {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.7f, 0.0f, 1.0f));
+                ImGui::Button("Downloaded", ImVec2(-FLT_MIN, 0));
+                ImGui::PopStyleColor();
+
+            } else if (downloadErrors.count(fname)) {
+                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
+                if (ImGui::Button(("Error" + buttonId).c_str(), ImVec2(50, 0))) {
+                }
+                ImGui::PopStyleColor();
+
+                if (ImGui::IsItemHovered()) {
+                    ImGui::SetTooltip("%s", downloadErrors[fname].c_str());
+                }
+
+                ImGui::SameLine();
+                if (ImGui::SmallButton(("Retry" + buttonId).c_str())) {
+                    downloadFile(id->valueint, fname);
+                }
+
+            } else {
+                GUI::ImageButtonNormal(IconGUI::DOWNLOAD_RESOURCE, "Download file", [&, fname, id] {
+                    downloadFile(id->valueint, fname);
+                });
+            }
+        };
+
         // Files list with individual download buttons
+        bool hasFiles = false;
+
+        // Caso 1: Array de archivos (scripts)
         if (files && cJSON_IsArray(files)) {
             int fileCount = cJSON_GetArraySize(files);
+            if (fileCount > 0) {
+                hasFiles = true;
 
-            // Download All button
-            if (fileCount > 1) {
-                if (downloadingAll) {
-                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-                    ImGui::Button("Downloading...", ImVec2(150, 0));
-                    ImGui::PopStyleColor();
-                } else {
-                    GUI::ImageButtonNormal(IconGUI::DOWNLOAD_ALL_RESOURCE, "Download ALL", [&] {
-                        downloadAllFiles(id->valueint, files);
-                    });
+                // Download All button
+                if (fileCount > 1) {
+                    if (downloadingAll) {
+                        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+                        ImGui::Button("Downloading...", ImVec2(150, 0));
+                        ImGui::PopStyleColor();
+                    } else {
+                        GUI::ImageButtonNormal(IconGUI::DOWNLOAD_ALL_RESOURCE, "Download ALL", [&] {
+                            downloadAllFiles(id->valueint, files);
+                        });
+                    }
+                    ImGui::Spacing();
                 }
-                ImGui::Spacing();
-            }
 
-            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 8.0f)); // Más padding
-            if (ImGui::BeginTable("FilesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 200))) {
-                ImGui::TableSetupColumn("Filename", ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 8.0f));
+                if (ImGui::BeginTable("FilesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY, ImVec2(0, 200))) {
+                    ImGui::TableSetupColumn("Filename", ImGuiTableColumnFlags_WidthStretch);
+                    ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthFixed);
 
-                for (int i = 0; i < fileCount; i++) {
-                    cJSON* file = cJSON_GetArrayItem(files, i);
-                    cJSON* filename = cJSON_GetObjectItem(file, "filename");
+                    for (int i = 0; i < fileCount; i++) {
+                        cJSON* file = cJSON_GetArrayItem(files, i);
+                        cJSON* filename = cJSON_GetObjectItem(file, "filename");
 
-                    if (filename) {
-                        std::string fname = filename->valuestring;
-
-                        ImGui::TableNextRow();
-
-                        // Columna: Nombre del archivo
-                        ImGui::TableSetColumnIndex(0);
-                        ImGui::AlignTextToFramePadding(); // Alineación vertical
-                        ImGui::Text("%s", fname.c_str());
-
-                        // Columna: Botón de descarga
-                        ImGui::TableSetColumnIndex(1);
-
-                        std::string buttonId = "##download_" + std::to_string(i);
-
-                        if (downloadingFiles[fname]) {
-                            // Downloading...
-                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-                            ImGui::Button("Downloading...", ImVec2(-FLT_MIN, 0)); // -FLT_MIN ocupa todo el ancho
-                            ImGui::PopStyleColor();
-
-                        } else if (downloadSuccess.count(fname) && downloadSuccess[fname]) {
-                            // Success
-                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.7f, 0.0f, 1.0f));
-                            ImGui::Button("Downloaded", ImVec2(-FLT_MIN, 0));
-                            ImGui::PopStyleColor();
-
-                        } else if (downloadErrors.count(fname)) {
-                            // Error
-                            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.8f, 0.0f, 0.0f, 1.0f));
-                            if (ImGui::Button(("Error" + buttonId).c_str(), ImVec2(50, 0))) {
-                                // Mostrar error en tooltip
-                            }
-                            ImGui::PopStyleColor();
-
-                            if (ImGui::IsItemHovered()) {
-                                ImGui::SetTooltip("%s", downloadErrors[fname].c_str());
-                            }
-
-                            // Botón retry en la misma línea
-                            ImGui::SameLine();
-                            if (ImGui::SmallButton(("Retry" + buttonId).c_str())) {
-                                downloadFile(id->valueint, fname);
-                            }
-
-                        } else {
-                            // Download button
-                            GUI::ImageButtonNormal(IconGUI::DOWNLOAD_RESOURCE, "Download file", [&, fname, id] {
-                                downloadFile(id->valueint, fname);
-                            });
+                        if (filename) {
+                            renderFileRow(filename->valuestring, i);
                         }
                     }
+
+                    ImGui::EndTable();
                 }
-
-                ImGui::EndTable();
+                ImGui::PopStyleVar();
             }
+        }
 
-            ImGui::PopStyleVar();
-            } else {
-                ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No files available");
-            }
+        if (!hasFiles) {
+            ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "No files available");
+        }
+
         ImGui::Spacing();
 
         // ============================================
@@ -633,6 +686,20 @@ void GUIAddonResourceHub::downloadFile(int resourceId, const std::string& filena
     downloadSuccess[filename] = false;
     downloadErrors.erase(filename);
 
+    // Determinar carpeta de descarga según tipo de recurso
+    std::string downloadPath = Config::get()->DOWNLOADS_FOLDER; // Fallback
+    if (selectedResourceDetail) {
+        cJSON* type = cJSON_GetObjectItem(selectedResourceDetail, "type");
+        if (type && type->valuestring) {
+            std::string resourceType = type->valuestring;
+            if (resourceType == "script") {
+                downloadPath = Config::get()->DOWNLOADS_SCRIPTS_FOLDER;
+            } else if (resourceType == "shader") {
+                downloadPath = Config::get()->DOWNLOADS_SHADERS_FOLDER;
+            }
+        }
+    }
+
     // Construir ruta de salida
     std::string outputPath = downloadPath + filename;
 
@@ -666,10 +733,24 @@ void GUIAddonResourceHub::downloadAllFiles(int resourceId, cJSON* files) {
 
     int fileCount = cJSON_GetArraySize(files);
 
-    std::cout << "Downloading all files (" << fileCount << ")..." << std::endl;
+    // Determinar carpeta de descarga según tipo de recurso
+    std::string downloadPath = Config::get()->DOWNLOADS_FOLDER; // Fallback
+    if (selectedResourceDetail) {
+        cJSON* type = cJSON_GetObjectItem(selectedResourceDetail, "type");
+        if (type && type->valuestring) {
+            std::string resourceType = type->valuestring;
+            if (resourceType == "script") {
+                downloadPath = Config::get()->DOWNLOADS_SCRIPTS_FOLDER;
+            } else if (resourceType == "shader") {
+                downloadPath = Config::get()->DOWNLOADS_SHADERS_FOLDER;
+            }
+        }
+    }
+
+    std::cout << "Downloading all files (" << fileCount << ") to " << downloadPath << std::endl;
 
     // Descargar todos en thread separado
-    std::thread([this, resourceId, files, fileCount]() {
+    std::thread([this, resourceId, files, fileCount, downloadPath]() {
         for (int i = 0; i < fileCount; i++) {
             cJSON* file = cJSON_GetArrayItem(files, i);
             cJSON* filename = cJSON_GetObjectItem(file, "filename");

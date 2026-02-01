@@ -1,5 +1,5 @@
 ---
-title: 2.6) Shaders
+title: Shaders
 ---
 
 ## Shader Integration
