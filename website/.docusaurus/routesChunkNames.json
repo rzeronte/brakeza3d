@@ -1,297 +1,254 @@
 {
-  "/__docusaurus/debug-5ff": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/config-5ba": {
-    "__comp": "__comp---theme-debug-config-23-a-2ff",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/content-a2b": {
-    "__comp": "__comp---theme-debug-contentba-8-ce7",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    },
-    "__props": "__props---docusaurus-debug-content-3-c-0-be2"
-  },
-  "/__docusaurus/debug/globalData-c3c": {
-    "__comp": "__comp---theme-debug-global-dataede-0fa",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/metadata-156": {
-    "__comp": "__comp---theme-debug-site-metadata-68-e-3d4",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/registry-88c": {
-    "__comp": "__comp---theme-debug-registry-679-501",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
-  "/__docusaurus/debug/routes-000": {
-    "__comp": "__comp---theme-debug-routes-946-699",
-    "__context": {
-      "plugin": "plugin---docusaurus-debugb-38-ad3"
-    }
-  },
   "/assets-hub-d59": {
-    "__comp": "__comp---site-src-pages-assets-hub-js-9-bb-2ff",
+    "__comp": "9bb910b7",
     "__context": {
-      "plugin": "plugin---assets-huba-74-de8"
+      "plugin": "a7456010"
     },
-    "config": "config---assets-hub-5-e-9-06c"
+    "config": "5e9f5e1a"
   },
   "/blog-ef3": {
-    "__comp": "__comp---theme-blog-list-pagea-6-a-7ba",
+    "__comp": "a6aa9e1f",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
+    "sidebar": "814f3328",
     "items": [
       {
-        "content": "content---blog-9-f-2-b9c"
+        "content": "9f2b0632"
       }
     ],
-    "__props": "__props---blogc-15-573"
+    "__props": "c15d9823"
   },
   "/blog/archive-182": {
-    "__comp": "__comp---theme-blog-archive-page-9-e-4-1d8",
+    "__comp": "9e4087bc",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "__props": "__props---blog-archivef-81-229"
+    "__props": "f81c1134"
   },
   "/blog/authors-0b7": {
-    "__comp": "__comp---theme-blog-pages-blog-authors-list-page-621-70c",
+    "__comp": "621db11d",
     "__context": {
       "data": {
-        "blogMetadata": "blogMetadata---blog-authorsace-e7d"
+        "blogMetadata": "acecf23e"
       },
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
-    "__props": "__props---blog-authorsef-8-44f"
+    "sidebar": "814f3328",
+    "__props": "ef8b811a"
   },
   "/blog/bienvenida-05a": {
-    "__comp": "__comp---theme-blog-post-pageccc-cab",
+    "__comp": "ccc49370",
     "__context": {
       "data": {
-        "blogMetadata": "blogMetadata---blog-authorsace-e7d"
+        "blogMetadata": "acecf23e"
       },
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
-    "content": "content---blog-bienvenida-16-e-699"
+    "sidebar": "814f3328",
+    "content": "16e9bfe7"
   },
   "/blog/tags-287": {
-    "__comp": "__comp---theme-blog-tags-list-page-01-a-d0b",
+    "__comp": "01a85c17",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
-    "__props": "__props---blog-tags-3-a-2-fa2"
+    "sidebar": "814f3328",
+    "__props": "3a2db09e"
   },
   "/blog/tags/brakeza-3-d-615": {
-    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__comp": "6875c492",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
+    "sidebar": "814f3328",
     "items": [
       {
-        "content": "content---blog-9-f-2-b9c"
+        "content": "9f2b0632"
       }
     ],
-    "__props": "__props---blog-tags-brakeza-3-d-96-a-3e8"
+    "__props": "96aba2d4"
   },
   "/blog/tags/news-7df": {
-    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__comp": "6875c492",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
+    "sidebar": "814f3328",
     "items": [
       {
-        "content": "content---blog-9-f-2-b9c"
+        "content": "9f2b0632"
       }
     ],
-    "__props": "__props---blog-tags-news-4-f-0-48b"
+    "__props": "4f033264"
   },
   "/blog/tags/welcome-583": {
-    "__comp": "__comp---theme-blog-tags-posts-page-687-b6c",
+    "__comp": "6875c492",
     "__context": {
-      "plugin": "plugin---blog-369-22e"
+      "plugin": "36994c47"
     },
-    "sidebar": "sidebar---blog-814-8ac",
+    "sidebar": "814f3328",
     "items": [
       {
-        "content": "content---blog-9-f-2-b9c"
+        "content": "9f2b0632"
       }
     ],
-    "__props": "__props---blog-tags-welcome-436-c4b"
+    "__props": "436029cc"
   },
   "/contact-7ad": {
-    "__comp": "__comp---site-src-pages-contact-jsxa-1-a-0d4",
+    "__comp": "a1a65def",
     "__context": {
-      "plugin": "plugin---assets-huba-74-de8"
+      "plugin": "a7456010"
     },
-    "config": "config---assets-hub-5-e-9-06c"
+    "config": "5e9f5e1a"
   },
   "/downloads-af8": {
-    "__comp": "__comp---theme-mdx-page-1-f-3-b90",
+    "__comp": "1f391b9e",
     "__context": {
-      "plugin": "plugin---assets-huba-74-de8"
+      "plugin": "a7456010"
     },
-    "content": "content---downloadsda-5-edc"
+    "content": "da5fc804"
   },
   "/gallery-14e": {
-    "__comp": "__comp---site-src-pages-gallery-jsxa-7-d-13f",
+    "__comp": "a7da46a6",
     "__context": {
-      "plugin": "plugin---assets-huba-74-de8"
+      "plugin": "a7456010"
     },
-    "config": "config---assets-hub-5-e-9-06c"
+    "config": "5e9f5e1a"
   },
   "/markdown-page-3d7": {
-    "__comp": "__comp---theme-mdx-page-1-f-3-b90",
+    "__comp": "1f391b9e",
     "__context": {
-      "plugin": "plugin---assets-huba-74-de8"
+      "plugin": "a7456010"
     },
-    "content": "content---markdown-page-393-028"
+    "content": "393be207"
   },
   "/docs-41e": {
-    "__comp": "__comp---theme-docs-root-5-e-9-0b6",
+    "__comp": "5e95c892",
     "__context": {
-      "plugin": "plugin---docsaba-d7c"
+      "plugin": "aba21aa0"
     }
   },
   "/docs-dae": {
-    "__comp": "__comp---theme-doc-version-roota-7-b-5de",
-    "__props": "__props---docs-005-788"
+    "__comp": "a7bd4aaa",
+    "__props": "0058b4c6"
   },
   "/docs-eec": {
-    "__comp": "__comp---theme-doc-roota-94-67a"
+    "__comp": "a94703ab"
   },
   "/docs/advanced/core-shaders-1a7": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-advanced-core-shaders-669-606"
+    "__comp": "17896441",
+    "content": "669c000e"
   },
   "/docs/editor/layout-modes-477": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-editor-layout-modes-33-e-589"
+    "__comp": "17896441",
+    "content": "33ea2db4"
   },
   "/docs/editor/overview-73d": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-editor-overviewa-07-b02"
+    "__comp": "17896441",
+    "content": "a0708922"
   },
   "/docs/editor/projects-015": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-editor-projects-2-b-0-f93"
+    "__comp": "17896441",
+    "content": "2b0078d8"
   },
   "/docs/editor/scenes-85b": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-editor-scenes-17-d-9e2"
+    "__comp": "17896441",
+    "content": "17da6cb7"
   },
   "/docs/editor/scripts-f38": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-editor-scriptsd-6-b-fef"
+    "__comp": "17896441",
+    "content": "d6bb92cf"
   },
   "/docs/editor/shaders-f1a": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-editor-shaders-9-e-6-2d6"
+    "__comp": "17896441",
+    "content": "9e6cb0f0"
   },
   "/docs/engine-concepts/assets-folder-75c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-engine-concepts-assets-folderdfe-2f3"
+    "__comp": "17896441",
+    "content": "dfee648e"
   },
   "/docs/engine-concepts/collisions-cdc": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-engine-concepts-collisionsadc-0b2"
+    "__comp": "17896441",
+    "content": "adc21ecc"
   },
   "/docs/engine-concepts/components-637": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-engine-concepts-components-5-ab-707"
+    "__comp": "17896441",
+    "content": "5ab59bae"
   },
   "/docs/engine-concepts/global-illumination-28b": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-engine-concepts-global-illuminationb-63-af7"
+    "__comp": "17896441",
+    "content": "b63f749b"
   },
   "/docs/engine-concepts/script-controls-c4f": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-engine-concepts-script-controlsd-26-8ad"
+    "__comp": "17896441",
+    "content": "d26697f2"
   },
   "/docs/getting-started/download-and-install-6e8": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-getting-started-download-and-installf-03-6ee"
+    "__comp": "17896441",
+    "content": "f0326e27"
   },
   "/docs/getting-started/intro-a4c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-getting-started-intro-39-d-4e4"
+    "__comp": "17896441",
+    "content": "39d1df33"
   },
   "/docs/scripting-api/2d-objects-62c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-2-d-objects-36-e-7fc"
+    "__comp": "17896441",
+    "content": "36ec7162"
   },
   "/docs/scripting-api/3d-objects-e87": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-3-d-objectsd-43-0a7"
+    "__comp": "17896441",
+    "content": "d437b706"
   },
   "/docs/scripting-api/basic-object-types-5f8": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-basic-object-types-995-93b"
+    "__comp": "17896441",
+    "content": "995a250f"
   },
   "/docs/scripting-api/camera-object-ee3": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-camera-object-247-0c8"
+    "__comp": "17896441",
+    "content": "247e1b09"
   },
   "/docs/scripting-api/collision-system-e77": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-collision-system-4-c-3-1b4"
+    "__comp": "17896441",
+    "content": "4c3b16ac"
   },
   "/docs/scripting-api/components-6d9": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-components-60-a-090"
+    "__comp": "17896441",
+    "content": "60a2b713"
   },
   "/docs/scripting-api/grid-and-octree-086": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-grid-and-octreeaf-1-bd1"
+    "__comp": "17896441",
+    "content": "af161579"
   },
   "/docs/scripting-api/index-00c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-index-6-bb-415"
+    "__comp": "17896441",
+    "content": "6bb807c6"
   },
   "/docs/scripting-api/input-system-784": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-input-system-10-b-805"
+    "__comp": "17896441",
+    "content": "10b7bde0"
   },
   "/docs/scripting-api/lighting-system-13c": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-lighting-system-52-c-761"
+    "__comp": "17896441",
+    "content": "52ce65c2"
   },
   "/docs/scripting-api/particle-emitter-c36": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-particle-emitter-30-d-d16"
+    "__comp": "17896441",
+    "content": "30d8cacc"
   },
   "/docs/scripting-api/shaders-system-faf": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-shaders-systemb-11-988"
+    "__comp": "17896441",
+    "content": "b11467dc"
   },
   "/docs/scripting-api/sound-system-e83": {
-    "__comp": "__comp---theme-doc-item-178-a40",
-    "content": "content---docs-scripting-api-sound-system-126-cb7"
+    "__comp": "17896441",
+    "content": "1260a475"
   },
   "/-2e1": {
-    "__comp": "__comp---site-src-pages-index-jsc-4-f-f99",
+    "__comp": "c4f5d8e4",
     "__context": {
-      "plugin": "plugin---assets-huba-74-de8"
+      "plugin": "a7456010"
     },
-    "config": "config---assets-hub-5-e-9-06c"
+    "config": "5e9f5e1a"
   }
 }
