@@ -27,13 +27,13 @@ function HomepageHeader() {
                     <Link
                         className="button button--secondary button--lg"
                         to="/downloads"
-                        style={{marginLeft: '1rem', color: 'white'}}>
+                        style={{color: 'white'}}>
                         ⬇️ Downloads
                     </Link>
                     <Link
                         className="button button--secondary button--lg"
                         to="/gallery"
-                        style={{marginLeft: '1rem', color: 'white'}}>
+                        style={{color: 'white'}}>
                         🎨 Show me more
                     </Link>
                 </div>
@@ -178,7 +178,7 @@ function FinalCTA() {
                 <p style={{fontSize: '1.3rem', marginBottom: '2rem', color: 'rgba(255, 255, 255, 0.95)', textShadow: '0 1px 5px rgba(0,0,0,0.2)'}}>
                     Join developers worldwide building amazing games with Brakeza3D
                 </p>
-                <div>
+                <div className={styles.buttons}>
                     <Link
                         className="button button--secondary button--lg"
                         to="/docs/getting-started/intro"
@@ -188,13 +188,13 @@ function FinalCTA() {
                     <Link
                         className="button button--secondary button--lg"
                         to="/downloads"
-                        style={{marginLeft: '1rem', color: 'white'}}>
+                        style={{color: 'white'}}>
                         ⬇️ Downloads
                     </Link>
                     <Link
                         className="button button--secondary button--lg"
                         to="/gallery"
-                        style={{marginLeft: '1rem', color: 'white'}}>
+                        style={{color: 'white'}}>
                         🎨 Show me more
                     </Link>
                 </div>

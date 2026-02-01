@@ -471,6 +471,33 @@ tbody tr:hover {
   color: #5eead4;
 }
 
+/* Footer responsive */
+@media screen and (max-width: 996px) {
+  .footer__links {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer__col {
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .footer {
+    padding: 2rem 1rem;
+  }
+
+  .footer__title {
+    font-size: 1.1rem;
+  }
+
+  .footer__link-item {
+    font-size: 0.95rem;
+  }
+}
+
 /* Scrollbar con gradiente animado */
 ::-webkit-scrollbar {
   width: 12px;
