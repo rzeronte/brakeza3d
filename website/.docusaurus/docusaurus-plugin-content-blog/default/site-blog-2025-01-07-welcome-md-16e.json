@@ -1,7 +1,7 @@
 {
-  "permalink": "/blog/bienvenida",
+  "permalink": "/blog/welcome",
   "source": "@site/blog/2025-01-07-welcome.md",
-  "title": "¡Welcome to Brakeza3D!",
+  "title": "Welcome to Brakeza3D!",
   "description": "The Brakeza3D website has been completely relaunched as a site dedicated to providing solid and up-to-date documentation.",
   "date": "2025-01-07T00:00:00.000Z",
   "tags": [
@@ -34,8 +34,8 @@
     }
   ],
   "frontMatter": {
-    "slug": "bienvenida",
-    "title": "¡Welcome to Brakeza3D!",
+    "slug": "welcome",
+    "title": "Welcome to Brakeza3D!",
     "authors": [
       "eduardo"
     ],
@@ -45,5 +45,9 @@
       "welcome"
     ]
   },
-  "unlisted": false
+  "unlisted": false,
+  "prevItem": {
+    "title": "Assets Hub Alpha released!",
+    "permalink": "/blog/assets-hub"
+  }
 }
