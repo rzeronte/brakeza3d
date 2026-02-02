@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_11385.png",
+	"screenshot":	"../assets/screenshots/scene_125077.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.17000000178813934,
@@ -35,7 +35,7 @@
 			"rotation":	{
 				"x":	41.436470031738281,
 				"y":	10.452261924743652,
-				"z":	-141.29428100585938
+				"z":	-141.298583984375
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -49,6 +49,111 @@
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models//SpaceShuttle.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"LightPoint_1",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	8.7393627166748047,
+				"y":	4.3703708648681641,
+				"z":	-6.3410248756408691
+			},
+			"rotation":	{
+				"x":	-179.99998474121094,
+				"y":	89.731239318847656,
+				"z":	-179.99998474121094
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.16319525241851807,
+				"y":	0.036885261535644531,
+				"z":	1
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0.9303278923034668,
+				"z":	0.93889415264129639
+			},
+			"specular":	{
+				"x":	0.45790085196495056,
+				"y":	0.25184762477874756,
+				"z":	0.62704920768737793
+			},
+			"constant":	0.40999901294708252,
+			"linear":	0.20000000298023224,
+			"quadratic":	0.039999999105930328,
+			"type":	4
+		}, {
+			"name":	"Mesh3D_19789",
+			"scale":	3.7655229568481445,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	5.1154518127441406,
+				"y":	9.7454662322998047,
+				"z":	-7.1489973068237305
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//Mask.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Eye",
+			"scale":	0.87999999523162842,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	4.78808069229126,
+				"y":	-1.0186058282852173,
+				"z":	-4.9228363037109375
+			},
+			"rotation":	{
+				"x":	-166.75724792480469,
+				"y":	-26.889076232910156,
+				"z":	165.77473449707031
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//Eye.fbx",
 			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
@@ -98,51 +203,6 @@
 			"quadratic":	0.02199999988079071,
 			"type":	4
 		}, {
-			"name":	"LightPoint_1",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	8.7393627166748047,
-				"y":	4.3703708648681641,
-				"z":	-6.3410248756408691
-			},
-			"rotation":	{
-				"x":	-179.99998474121094,
-				"y":	89.731239318847656,
-				"z":	-179.99998474121094
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"blend_function_src":	771,
-				"blend_function_dst":	771
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"ambient":	{
-				"x":	0.16319525241851807,
-				"y":	0.036885261535644531,
-				"z":	1
-			},
-			"diffuse":	{
-				"x":	1,
-				"y":	0.9303278923034668,
-				"z":	0.93889415264129639
-			},
-			"specular":	{
-				"x":	0.45790085196495056,
-				"y":	0.25184762477874756,
-				"z":	0.62704920768737793
-			},
-			"constant":	0.40999901294708252,
-			"linear":	0.20000000298023224,
-			"quadratic":	0.039999999105930328,
-			"type":	4
-		}, {
 			"name":	"Image3D_86",
 			"scale":	2.7799990177154541,
 			"alpha":	1,
@@ -155,7 +215,7 @@
 			"rotation":	{
 				"x":	0,
 				"y":	-0,
-				"z":	146.6109619140625
+				"z":	146.614990234375
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -173,19 +233,19 @@
 			"image":	"../assets/images/beach.png",
 			"type":	10
 		}, {
-			"name":	"Eye",
-			"scale":	0.87999999523162842,
+			"name":	"Stairs",
+			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	4.78808069229126,
-				"y":	-1.0186058282852173,
-				"z":	-4.9228363037109375
+				"x":	7.9173827171325684,
+				"y":	-3.068122386932373,
+				"z":	3.9494373798370361
 			},
 			"rotation":	{
-				"x":	-166.75724792480469,
-				"y":	-26.889076232910156,
-				"z":	165.77265930175781
+				"x":	90,
+				"y":	-5.0089556680177338e-06,
+				"z":	4.9645877879811451e-06
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -198,7 +258,7 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
-			"model":	"../assets/models//Eye.fbx",
+			"model":	"../assets/models//Stairs.fbx",
 			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
@@ -245,7 +305,7 @@
 			"rotation":	{
 				"x":	-72.918426513671875,
 				"y":	-12.292998313903809,
-				"z":	-145.35063171386719
+				"z":	-145.354736328125
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -310,66 +370,6 @@
 			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"Stairs",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	7.9173827171325684,
-				"y":	-3.068122386932373,
-				"z":	3.9494373798370361
-			},
-			"rotation":	{
-				"x":	90,
-				"y":	-5.0089556680177338e-06,
-				"z":	4.96534948979388e-06
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"blend_function_src":	771,
-				"blend_function_dst":	771
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models//Stairs.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Pawn",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-9.3948392868042,
-				"y":	-2.5544748306274414,
-				"z":	3.9950590133666992
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"blend_function_src":	771,
-				"blend_function_dst":	771
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models//ChessPawn.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
-		}, {
 			"name":	"Mesh3D_99",
 			"scale":	4,
 			"alpha":	1,
@@ -403,6 +403,36 @@
 			"indexCurrentAnimation":	9,
 			"bonesColliders":	[],
 			"type":	3
+		}, {
+			"name":	"Pawn",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-9.3948392868042,
+				"y":	-2.5544748306274414,
+				"z":	3.9950590133666992
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
 		}, {
 			"name":	"SpotLight3D_77",
 			"scale":	1,
@@ -455,13 +485,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-2.7924890518188477,
-			"y":	7.9724855422973633,
-			"z":	27.498968124389648
+			"x":	-9.8167428970336914,
+			"y":	6.4173173904418945,
+			"z":	25.142610549926758
 		},
 		"rotation":	{
-			"x":	15.750188827514648,
-			"y":	9.3998956680297852,
+			"x":	11.400193214416504,
+			"y":	17.349887847900391,
 			"z":	0
 		}
 	}

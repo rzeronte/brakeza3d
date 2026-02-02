@@ -28,7 +28,8 @@ export default function Contact() {
                     <h3>🐙 GitHub</h3>
                     <p>
                       Report issues: <a href="https://github.com/rzeronte/brakeza3d/issues" target="_blank" rel="noopener noreferrer">GitHub Issues</a><br/>
-                      Contribute: <a href="https://github.com/rzeronte/brakeza3d" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                      Contribute: <a href="https://github.com/rzeronte/brakeza3d" target="_blank" rel="noopener noreferrer">GitHub Repository</a><br/>
+                      Become a sponsor: <a href="https://github.com/sponsors/rzeronte" target="_blank" rel="noopener noreferrer">GitHub Sponsors</a>
                     </p>
                   </div>
 

@@ -152,6 +152,10 @@ const config = {
                 label: 'GitHub',
                 href: 'https://github.com/rzeronte/brakeza3d',
               },
+              {
+                label: 'Become a sponsor',
+                href: 'https://github.com/sponsors/rzeronte',
+              },
             ],
           },
         ],

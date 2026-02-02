@@ -10,7 +10,7 @@
 #include "../../include/Misc/ToolsJSON.h"
 
 
-void ProjectLoader::LoadProject(const std::string &filename)
+void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 {
     RemoveProjectScripts();
     RemoveProjectScenes();
@@ -79,7 +79,7 @@ void ProjectLoader::LoadProject(const std::string &filename)
     FileSystemGUI::autoExpandProject = true;
 }
 
-void ProjectLoader::SaveProject(const std::string &filename)
+void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
@@ -148,7 +148,7 @@ void ProjectLoader::CloseCurrentProject()
     FileSystemGUI::autoExpandProject = false;
 }
 
-void ProjectLoader::CreateProject(const std::string &filename)
+void ProjectLoader::CreateProject(const FilePath::ProjectFile &filename)
 {
     LOG_MESSAGE("Creating new project file: %s", filename.c_str());
 
@@ -160,7 +160,7 @@ void ProjectLoader::CreateProject(const std::string &filename)
     Tools::WriteToFile(projectJsonFile, cJSON_Print(root));
 }
 
-void ProjectLoader::RemoveProject(const std::string &filename)
+void ProjectLoader::RemoveProject(const FilePath::ProjectFile &filename)
 {
     LOG_MESSAGE("Deleting project: %s", filename.c_str());
 
