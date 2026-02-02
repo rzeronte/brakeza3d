@@ -1,6 +1,7 @@
 .idea/inspectionProfiles/
 .idea/vcs.xml
 .idea/*
+website/.claude
 build/
 /cmake-build-debug/
 /cmake-build-debug-coverage/
