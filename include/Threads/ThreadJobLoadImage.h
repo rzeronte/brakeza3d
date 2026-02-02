@@ -6,13 +6,14 @@
 #include "ThreadJobBase.h"
 #include "../Render/Image.h"
 #include "../Render/Profiler.h"
+#include "../Misc/FilePaths.h"
 
 class ThreadJobLoadImage : public ThreadJobBase
 {
-    std::string filename;
+    FilePath::ImageFile filename;
     Image* image = nullptr;
 public:
-    ThreadJobLoadImage(Image* image, std::string filename)
+    ThreadJobLoadImage(Image* image, const FilePath::ImageFile& filename)
     :
         filename(filename),
         image(image)

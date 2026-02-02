@@ -23,7 +23,7 @@ Mesh3D::Mesh3D()
     luaEnvironment["this"] = this;
 }
 
-Mesh3D::Mesh3D(std::string modelFile)
+Mesh3D::Mesh3D(const FilePath::ModelFile& modelFile)
 :
     sourceFile(modelFile)
 {
@@ -54,7 +54,7 @@ Mesh3D::~Mesh3D()
     }
 }
 
-void Mesh3D::AssimpLoadGeometryFromFile(const std::string &fileName)
+void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
 {
     LOG_MESSAGE("[Mesh3D] Loading geometry for %s...", fileName.c_str());
 
@@ -557,7 +557,7 @@ void Mesh3D::AddCustomShader(ShaderBaseCustom *s)
     customShaders.emplace_back(s);
 }
 
-void Mesh3D::LoadShader(const std::string &jsonFilename)
+void Mesh3D::LoadShader(const FilePath::ShaderConfigFile &jsonFilename)
 {
     auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(jsonFilename);
 
@@ -679,7 +679,7 @@ void Mesh3D::FillOGLBuffers()
     ComponentRender::FillOGLBuffers(meshes);
 }
 
-void Mesh3D::setSourceFile(const std::string &sourceFile)
+void Mesh3D::setSourceFile(const FilePath::ModelFile &sourceFile)
 {
     Mesh3D::sourceFile = sourceFile;
 }

@@ -10,6 +10,7 @@
 #include "Vertex3D.h"
 #include "../Render/Triangle3D.h"
 #include "../Misc/Tools.h"
+#include "../Misc/FilePaths.h"
 #include "../Render/Octree.h"
 #include "../Render/Grid3D.h"
 #include "../Render/Collider.h"
@@ -41,7 +42,7 @@ class Mesh3D : public Object3D
     std::mutex mtx;
 
 protected:
-    std::string sourceFile;
+    FilePath::ModelFile sourceFile;
     Vertex3D drawOffset = Vertex3D::zero();
 
     std::vector<Image *> modelTextures;
@@ -59,10 +60,10 @@ public:
 
 
     Mesh3D();
-    Mesh3D(std::string modelFile);
+    Mesh3D(const FilePath::ModelFile& modelFile);
     ~Mesh3D() override;
 
-    void AssimpLoadGeometryFromFile(const std::string &fileName);
+    void AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName);
     void AssimpInitMaterials(const aiScene *pScene);
     void ProcessNodes(const aiScene *scene, const aiNode *node);
     void LoadMesh(int meshId, const aiMesh *mesh);
@@ -82,7 +83,7 @@ public:
     void BuildGrid3D(int sizeX, int sizeY, int sizeZ);
     void FillGrid3DFromGeometry();
     void AddCustomShader(ShaderBaseCustom *);
-    void LoadShader(const std::string &jsonFilename);
+    void LoadShader(const FilePath::ShaderConfigFile &jsonFilename);
     void RemoveShader(int i);
     void FillOGLBuffers();
     virtual void ShadowMappingPass();
@@ -90,7 +91,7 @@ public:
     [[nodiscard]] btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
     [[nodiscard]] btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
 
-    void setSourceFile(const std::string &sourceFile);
+    void setSourceFile(const FilePath::ModelFile &sourceFile);
 
     void setRenderPipelineDefault(bool value);
 
