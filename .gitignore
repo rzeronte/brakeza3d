@@ -1,6 +1,6 @@
 .idea/inspectionProfiles/
 .idea/vcs.xml
-.idea/
+.idea/*
 build/
 /cmake-build-debug/
 /cmake-build-debug-coverage/
