@@ -8,12 +8,13 @@
 #include <glm/ext/matrix_float3x3.hpp>
 #include <GL/glew.h>
 #include <vector>
+#include "../../Misc/FilePaths.h"
 
 class ShaderBaseOpenGL {
 protected:
     GLuint programID = 0;
-    std::string vertexFilename;
-    std::string fragmentFilename;
+    FilePath::VertexShaderFile vertexFilename;
+    FilePath::FragmentShaderFile fragmentFilename;
     std::string commonCodeFile;
     bool enableFeedback = false;
 
@@ -22,8 +23,8 @@ protected:
     std::string commonCode;
 public:
     ShaderBaseOpenGL() = default;
-    ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback);
-    ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback);
+    ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename, bool enableFeedback);
+    ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilename, bool enableFeedback);
 
     virtual void LoadUniforms() = 0;
     virtual void PrepareBackground();
@@ -66,11 +67,11 @@ public:
     static void setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4> &Transforms);
 
     [[nodiscard]] GLuint getProgramID() const;
-    [[nodiscard]] std::string getVertexFilename() const;
-    [[nodiscard]] std::string getFragmentFilename() const;
+    [[nodiscard]] const FilePath::VertexShaderFile& getVertexFilename() const;
+    [[nodiscard]] const FilePath::FragmentShaderFile& getFragmentFilename() const;
 
     static void setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer);
-    void ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename);
+    void ReadShaderFiles(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename);
 };
 
 

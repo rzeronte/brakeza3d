@@ -9,7 +9,9 @@
 #include "../../include/Threads/ThreadJobLoadImage.h"
 #include "../../include/Render/Profiler.h"
 
-Image::Image(const std::string& filename)
+Image::Image(const FilePath::ImageFile& filename)
+:
+    fileName(filename)
 {
     auto job = std::make_shared<ThreadJobLoadImage>(this, filename);
     Brakeza::get()->PoolImages().enqueueWithMainThreadCallback(job);
@@ -19,11 +21,10 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
 :
     loaded(true),
     textureId(MakeOGLImage(surface)),
+    fileName("BySDLTexture"),
     surface(surface),
     texture(texture)
 {
-    std::string n = "BySDLTexture";
-    setFilePath(n);
     Profiler::get()->AddImage(this);
 }
 
@@ -31,7 +32,7 @@ Image::Image(GLuint externalTextureId, int width, int height)
     : loaded(true)
     , alpha(1.0f)
     , textureId(externalTextureId)
-    , fileName("[External Texture]")
+    , fileName(FilePath::ImageFile("[External Texture]"))
 {
     // Crear una superficie SDL vacía solo para almacenar dimensiones
     // (necesaria porque otros métodos usan surface->w y surface->h)
@@ -53,7 +54,7 @@ void Image::LoadSDLSurface()
     surface = IMG_Load(fileName.c_str());
 }
 
-void Image::setImage(const std::string &filename)
+void Image::setImage(const FilePath::ImageFile &filename)
 {
     if (!Tools::FileExists(filename.c_str())) {
         LOG_ERROR("[Image] Error loading file '%s'", filename.c_str());
@@ -221,7 +222,7 @@ void Image::setAlreadyLoaded()
     loaded = true;
 }
 
-void Image::setFilePath(std::string &path)
+void Image::setFilePath(const FilePath::ImageFile &path)
 {
     fileName = path;
 }
