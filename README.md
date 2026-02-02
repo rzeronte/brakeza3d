@@ -1,6 +1,5 @@
-<div align="center">
 
-# 🎮 Brakeza3D
+# ![Brakeza3D](website/static/img/favicon.ico) Brakeza3D Game Engine
 
 ### A Powerful 2D/3D Game Engine for Indie Developers
 
@@ -13,7 +12,6 @@
 
 ![Brakeza3D Editor](website/static/img/gallery/01.png)
 
-</div>
 
 ---
 
