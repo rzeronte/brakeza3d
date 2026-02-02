@@ -1,0 +1,96 @@
+name: brakeza3d
+base: core22
+version: '0.26.1'
+summary: Open-source 3D game engine with built-in editor and Lua scripting
+description: |
+  Brakeza3D is a free and open-source 3D game engine designed for rapid game development.
+  
+  Features:
+  - Built-in visual editor with ImGui interface
+  - Lua scripting for game logic and behavior
+  - OpenGL rendering with forward and deferred pipelines
+  - Bullet Physics integration for realistic simulations
+  - 3D model loading (via Assimp) with skeletal animation support
+  - Particle system for visual effects
+  - Point and spot lighting with shadow mapping
+  - Custom shader support (GLSL)
+  - Post-processing effects (fog, depth of field, outlines)
+  - Audio system with SDL2_mixer
+  - Scene management with serialization
+  - Node-based shader editor
+  
+  Perfect for indie developers, students, and hobbyists looking to create 3D games
+  and interactive experiences with a lightweight, hackable engine.
+
+website: https://github.com/rzeronte/brakeza3d
+source-code: https://github.com/rzeronte/brakeza3d
+issues: https://github.com/rzeronte/brakeza3d/issues
+license: GPL-3.0
+
+grade: stable
+confinement: classic
+
+apps:
+  brakeza3d:
+    command: usr/local/brakeza3d/bin/wrapper.sh
+    environment:
+      LD_LIBRARY_PATH: $SNAP/usr/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu/pulseaudio:$SNAP/usr/lib:/usr/lib/x86_64-linux-gnu:/usr/lib
+    plugs:
+      - x11
+      - wayland
+      - opengl
+      - home
+      - network
+      - pulseaudio
+
+parts:
+  brakeza3d:
+    plugin: cmake
+    source: .
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+    build-packages:
+      - build-essential
+      - cmake
+      - git
+      - libsdl2-dev
+      - libsdl2-image-dev
+      - libsdl2-ttf-dev
+      - libsdl2-mixer-dev
+      - libbullet-dev
+      - libassimp-dev
+      - liblua5.2-dev
+      - libgl1-mesa-dev
+      - libglu1-mesa-dev
+      - libglew-dev
+      - libcurl4-openssl-dev
+      - libglm-dev
+      - libpulse-dev
+    stage-packages:
+      - libpulse0
+      - libunistring2
+      - libsdl2-2.0-0
+      - libsdl2-image-2.0-0
+      - libsdl2-ttf-2.0-0
+      - libsdl2-mixer-2.0-0
+      - libbullet3.06
+      - libassimp5
+      - liblua5.2-0
+      - libcurl4
+    override-build: |
+      cmake $CRAFT_PART_SRC -DCMAKE_BUILD_TYPE=Release
+      make -j$(nproc)
+      
+      BINARY=$(find . -name "Brakeza3D" -type f -executable | head -n 1)
+      echo "Binario encontrado en: $BINARY"
+      
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/brakeza3d/bin
+      cp $BINARY $CRAFT_PART_INSTALL/usr/local/brakeza3d/bin/
+      cp -r $CRAFT_PART_SRC/assets  $CRAFT_PART_INSTALL/usr/local/brakeza3d/assets
+      cp -r $CRAFT_PART_SRC/GLSL    $CRAFT_PART_INSTALL/usr/local/brakeza3d/GLSL
+      cp -r $CRAFT_PART_SRC/config  $CRAFT_PART_INSTALL/usr/local/brakeza3d/config
+      
+      echo '#!/bin/bash' > $CRAFT_PART_INSTALL/usr/local/brakeza3d/bin/wrapper.sh
+      echo 'cd "$SNAP/usr/local/brakeza3d/bin"' >> $CRAFT_PART_INSTALL/usr/local/brakeza3d/bin/wrapper.sh
+      echo 'exec ./Brakeza3D "$@"' >> $CRAFT_PART_INSTALL/usr/local/brakeza3d/bin/wrapper.sh
+      chmod 755 $CRAFT_PART_INSTALL/usr/local/brakeza3d/bin/wrapper.sh
