@@ -8,7 +8,7 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/OpenGL/ShaderPreProcessor.h"
 
-ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, const std::string &fragmentFilename, bool enableFeedback)
+ShaderBaseOpenGL::ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename),
     fragmentFilename(fragmentFilename),
@@ -32,7 +32,7 @@ void ShaderBaseOpenGL::PrepareSync()
     PrepareMainThread();
 }
 
-ShaderBaseOpenGL::ShaderBaseOpenGL(const std::string &vertexFilename, bool enableFeedback)
+ShaderBaseOpenGL::ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilename, bool enableFeedback)
 :
     vertexFilename(vertexFilename),
     enableFeedback(enableFeedback)
@@ -288,12 +288,12 @@ void ShaderBaseOpenGL::setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4
 }
 // ------------------------------------------------------------------------
 
-std::string ShaderBaseOpenGL::getVertexFilename() const
+const FilePath::VertexShaderFile& ShaderBaseOpenGL::getVertexFilename() const
 {
     return vertexFilename;
 }
 
-std::string ShaderBaseOpenGL::getFragmentFilename() const
+const FilePath::FragmentShaderFile& ShaderBaseOpenGL::getFragmentFilename() const
 {
     return fragmentFilename;
 }
@@ -376,7 +376,7 @@ void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int
     glUniform1i(glGetUniformLocation(programID, name.c_str()), index);
 }
 
-void ShaderBaseOpenGL::ReadShaderFiles(const std::string &vertexFilename, const std::string &fragmentFilename)
+void ShaderBaseOpenGL::ReadShaderFiles(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename)
 {
     if (!Tools::FileExists(vertexFilename.c_str()) || !Tools::FileExists(fragmentFilename.c_str())) {
         LOG_ERROR("[ShaderBaseOpenGL] Cannot open shader files (%s, %s)", vertexFilename.c_str(), fragmentFilename.c_str());

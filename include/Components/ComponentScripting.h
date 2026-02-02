@@ -9,6 +9,7 @@
 #include "Component.h"
 #include "../Loaders/Project.h"
 #include "../Loaders/Scene.h"
+#include "../Misc/FilePaths.h"
 
 class ComponentScripting : public Component
 {
@@ -57,9 +58,9 @@ public:
     [[nodiscard]] Scene *getCurrentScene() const                            { return currentScene;}
     [[nodiscard]] Project *getCurrentProject() const                        { return currentProject; }
 
-    static void CreateScriptLUAFile(const std::string& path);
-    static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const std::string &codeFile, const std::string &typesFile);
-    static void RemoveScriptLUAFile(const std::string& path);
+    static void CreateScriptLUAFile(const FilePath::ScriptFile& path);
+    static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile);
+    static void RemoveScriptLUAFile(const FilePath::ScriptFile& path);
 
     void setCurrentScene(Scene *current_scene);
     void setCurrentProject(Project *current_project);

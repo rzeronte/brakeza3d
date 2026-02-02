@@ -75,7 +75,7 @@ void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
     LOG_MESSAGE("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
 }
 
-void SceneLoader::LoadScene(const std::string& filename)
+void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
 {
     if (isLoading) {
         LOG_ERROR("[SceneLoader] Cannot do loading or cleaning while another same operation is working... Ignoring : '%s'", filename.c_str());
@@ -89,7 +89,7 @@ void SceneLoader::LoadScene(const std::string& filename)
     FileSystemGUI::autoExpandScene = true;
 }
 
-void SceneLoader::SaveScene(const std::string &filename)
+void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
@@ -155,7 +155,7 @@ void SceneLoader::ClearScene()
     Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobClearScene>());
 }
 
-void SceneLoader::CreateScene(const std::string &filename)
+void SceneLoader::CreateScene(const FilePath::SceneFile &filename)
 {
     auto sceneJsonFile = std::string(filename + ".json");
 
@@ -163,7 +163,7 @@ void SceneLoader::CreateScene(const std::string &filename)
     SaveScene(sceneJsonFile);
 }
 
-void SceneLoader::RemoveScene(const std::string &filename)
+void SceneLoader::RemoveScene(const FilePath::SceneFile &filename)
 {
     if (!Tools::FileExists(filename.c_str())) {
         LOG_MESSAGE("File %s not found", filename.c_str());

@@ -374,9 +374,7 @@ add_executable(Brakeza3D
         include/GUI/Objects/ThreadGUI.h
         src/GUI/Objects/StatusBarGUI.cpp
         include/GUI/Objects/StatusBarGUI.h
-        include/Loaders/Scene.cpp
         include/Loaders/Scene.h
-        include/Loaders/Project.cpp
         include/Loaders/Project.h
         include/GUI/AddOns/CustomTreeNode.h
         src/GUI/AddOns/CustomTreeNode.cpp

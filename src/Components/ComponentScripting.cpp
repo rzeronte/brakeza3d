@@ -228,12 +228,12 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
     return sol::nil;
 }
 
-void ComponentScripting::CreateScriptLUAFile(const std::string& path)
+void ComponentScripting::CreateScriptLUAFile(const FilePath::ScriptFile& path)
 {
     LOG_MESSAGE("[Scripting] Creating new Script in '%s'...", path.c_str());
 
-    auto codeFile = std::string(path + ".lua");
-    auto typesFile = std::string(path + ".json");
+    FilePath::ScriptFile codeFile(path.str() + ".lua");
+    FilePath::TypesFile typesFile(path.str() + ".json");
     auto name = Tools::getFilenameWithoutExtension(codeFile);
 
     auto content = Tools::ReadFile(Config::get()->TEMPLATE_SCRIPT);
@@ -245,7 +245,7 @@ void ComponentScripting::CreateScriptLUAFile(const std::string& path)
     delete[] content;
 }
 
-cJSON* ComponentScripting::CreateEmptyTypesFileJSON(const std::string &name, const std::string &codeFile, const std::string &typesFile)
+cJSON* ComponentScripting::CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile)
 {
     cJSON* root = cJSON_CreateObject();
 
@@ -258,7 +258,7 @@ cJSON* ComponentScripting::CreateEmptyTypesFileJSON(const std::string &name, con
     return root;
 }
 
-void ComponentScripting::RemoveScriptLUAFile(const std::string& path)
+void ComponentScripting::RemoveScriptLUAFile(const FilePath::ScriptFile& path)
 {
     auto meta = ScriptLuaGUI::ExtractScriptMetainfo(path);
 

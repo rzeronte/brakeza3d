@@ -9,6 +9,7 @@
 #include <map>
 #include "../SceneObjectTypes.h"
 #include "../Misc/cJSON.h"
+#include "../Misc/FilePaths.h"
 
 class Object3D;
 
@@ -22,10 +23,10 @@ public:
     static bool isClearing;
     static void LoadSceneSettings(const cJSON *contentJSON);
     static void InitSerializers();
-    static void LoadScene(const std::string& filename);
-    static void SaveScene(const std::string& filename);
-    static void CreateScene(const std::string &filename);
-    static void RemoveScene(const std::string &filename);
+    static void LoadScene(const FilePath::SceneFile& filename);
+    static void SaveScene(const FilePath::SceneFile& filename);
+    static void CreateScene(const FilePath::SceneFile& filename);
+    static void RemoveScene(const FilePath::SceneFile& filename);
     static void ClearScene();
     static void SceneLoaderCreateObject(cJSON *object);
 

@@ -6,17 +6,18 @@
 #define BRAKEZA3D_PROJECTLOADER_H
 
 #include <string>
+#include "../Misc/FilePaths.h"
 
-class ProjectLoader 
+class ProjectLoader
 {
 public:
     ProjectLoader() = default;
 
-    static void LoadProject(const std::string& filename);
-    static void SaveProject(const std::string& filename);
+    static void LoadProject(const FilePath::ProjectFile& filename);
+    static void SaveProject(const FilePath::ProjectFile& filename);
     static void RemoveProjectScenes();
-    static void CreateProject(const std::string &filename);
-    static void RemoveProject(const std::string &filename);
+    static void CreateProject(const FilePath::ProjectFile& filename);
+    static void RemoveProject(const FilePath::ProjectFile& filename);
     static void RemoveProjectScripts();
     static void CloseCurrentProject();
 };

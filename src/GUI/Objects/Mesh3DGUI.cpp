@@ -6,8 +6,6 @@
 
 void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
 {
-    std::string title = "Mesh3D (File: " + o->sourceFile + ")";
-
     if (ImGui::CollapsingHeader("Mesh3D")) {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));

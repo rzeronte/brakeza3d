@@ -10,17 +10,18 @@
 #include "../Misc/cJSON.h"
 #include "../Misc/Logging.h"
 #include "../Misc/Tools.h"
+#include "../Misc/FilePaths.h"
 #include "../Loaders/SceneLoader.h"
 
 class ThreadJobReadFileScene : public ThreadJobBase
 {
-    std::string filename;
+    FilePath::SceneFile filename;
     cJSON* json = nullptr;
 
 public:
-    explicit ThreadJobReadFileScene(std::string file)
+    explicit ThreadJobReadFileScene(const FilePath::SceneFile& file)
     :
-        filename(std::move(file))
+        filename(file)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
