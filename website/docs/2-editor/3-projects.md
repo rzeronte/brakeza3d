@@ -55,15 +55,17 @@ Each of these options can receive items via drag and drop. Use the file browser 
 
 You can enable/disable the widget from the main menu: `Window` -> `Project setup`.
 
-## Projects browser window
+## Managing Projects
 ---
 
-The `Projects browser` widget allows you to navigate through the projects folder. From this section, you can load or delete existing projects.
+Projects are managed through the **File Browser** window (**Window** → **File Browser**). Navigate to the **Projects** section to:
 
-![Projects browser](/img/editor/15.png)
+- **Load** an existing project
+- **Save** the current project
+- **Delete** a project
 
-For each `Project`, you can perform the following actions using the available buttons:
+![Projects in File Browser](/img/editor/15.png)
 
-- Load project
-- Save project
-- Remove project
+:::tip
+Use drag and drop from the File Browser to add scripts and shaders to your project setup.
+:::

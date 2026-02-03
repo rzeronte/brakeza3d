@@ -12,10 +12,11 @@ The **Node Editor** provides a visual way to create shaders without writing GLSL
 ## Getting Started
 ---
 
-1. Open the **Shaders Browser** (Window → Shaders Browser)
-2. Create a new shader or select an existing one
-3. Choose **Node-based** as the shader type
-4. The Node Editor will open automatically
+1. Open **Window** → **File Browser**
+2. Navigate to the **Shaders** section
+3. Create a new shader or select an existing one
+4. Choose **Node-based** as the shader type
+5. The Node Editor will open automatically
 
 ## Node Editor Interface
 ---

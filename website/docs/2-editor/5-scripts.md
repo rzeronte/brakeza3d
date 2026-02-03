@@ -1,6 +1,6 @@
 ---
 title: Scripts
-description: Managing Lua scripts in Brakeza3D, including the scripts browser, variables, code editor, and script assignment.
+description: Managing Lua scripts in Brakeza3D, including the File Browser, variables, code editor, and script assignment.
 ---
 
 # Scripts
@@ -15,13 +15,18 @@ As we’ll cover in the [4) Scripting API](../scripting-api/index) section, Scri
 To keep this information organized, several dedicated windows are provided, as outlined below.
 
 
-## Scripts browser widget
+## Managing Scripts
 ---
 
-The `Scripts browser` widget allows you to navigate through the scenes folder. From this section, you can load or delete existing scenes.
+Scripts are managed through the **File Browser** window (**Window** → **File Browser**). Navigate to the **Scripts** section to browse, create, edit, or delete scripts.
 
+![Scripts in File Browser](/img/editor/18.png)
 
-![Scripts browser](/img/editor/18.png)
+From the File Browser you can:
+- **Create** new script files
+- **Open** scripts in the Code Editor (double-click)
+- **Delete** existing scripts
+- **Drag and drop** scripts to objects or project setup
 
 ## Global variables widget
 ---
