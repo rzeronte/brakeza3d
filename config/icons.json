@@ -843,6 +843,14 @@
 			"name":	"CLEAR_FILTERS",
 			"x":	3,
 			"y":	10
+		}, {
+			"name":	"DOCKING_ON",
+			"x":	1,
+			"y":	6
+		}, {
+			"name":	"DOCKING_OFF",
+			"x":	0,
+			"y":	6
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

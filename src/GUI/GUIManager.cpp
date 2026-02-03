@@ -298,10 +298,6 @@ void GUIManager::DrawRegisteredWindows()
 
         if (!window.isDockable) {
             flags |= ImGuiWindowFlags_NoDocking;
-        }
-
-        // Centrar ventanas no dockables al aparecer
-        if (!window.isDockable) {
             ImGuiViewport* viewport = ImGui::GetMainViewport();
             ImVec2 center = viewport->GetCenter();
             ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -312,22 +308,7 @@ void GUIManager::DrawRegisteredWindows()
 
         if (ImGui::Begin(window.label.c_str(), &window.isOpen, flags)) {
             window.functionCallBack();
-
-            if (window.isObjectWindow) {
-                float statusBarHeight = GetObjectStatusBarHeight();
-
-                float availableHeight = ImGui::GetContentRegionAvail().y - statusBarHeight + 8.0f;
-
-                ImGui::BeginChild(
-                    "WindowContent",
-                    ImVec2(0, availableHeight),
-                    false,
-                    ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
-                );
-                ImGui::EndChild();
-
-                DrawObjectWindowStatusBar(window);
-            }
+            DrawObjectWindowStatusBar(window);
         }
         ImGui::End();
     }
@@ -335,17 +316,43 @@ void GUIManager::DrawRegisteredWindows()
 
 void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
 {
+    ImGui::BeginChild(
+        "WindowContent",
+        ImVec2(0, ImGui::GetContentRegionAvail().y - GetObjectStatusBarHeight() + 8.0f),
+        false,
+        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
+    );
+    ImGui::EndChild();
+
+    bool isDocked = ImGui::IsWindowDocked();
+
     ImGui::Separator();
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, ImGui::GetStyle().ItemSpacing.y));
+
+    if (window.isObjectWindow) {
+        GUI::DrawButtonTransparent(
+            "Auto-hide when no object is selected",
+            window.autoHideIfNotSelected ? IconGUI::WIN_OBJECT_AUTOHIDE_OFF : IconGUI::WIN_OBJECT_AUTOHIDE_ON,
+            GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
+            window.autoHideIfNotSelected,
+            [&] {
+                window.autoHideIfNotSelected = !window.autoHideIfNotSelected;
+            }
+        );
+        ImGui::SameLine();
+    }
 
     GUI::DrawButtonTransparent(
-        "Auto-hide when no object is selected",
-        window.autoHideIfNotSelected ? IconGUI::WIN_OBJECT_AUTOHIDE_OFF : IconGUI::WIN_OBJECT_AUTOHIDE_ON,
+        window.isDockable ? "Avoid Docking" : "Active docking",
+        window.isDockable ? IconGUI::DOCKING_ON : IconGUI::DOCKING_OFF,
         GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
-        window.autoHideIfNotSelected,
+        window.isDockable,
         [&] {
-            window.autoHideIfNotSelected = !window.autoHideIfNotSelected;
+            window.isDockable = !window.isDockable;
         }
     );
+
+    ImGui::PopStyleVar();
 }
 
 float GUIManager::GetObjectStatusBarHeight()
