@@ -42,37 +42,56 @@ scripting chapter.
 ## Mesh3DAnimation
 ---
 
-An animated 3D model.
+An animated 3D model loaded from an FBX file containing skeletal animations.
 
 ```lua
-man = ObjectFactory.Image3DAnimation(
-    "../assets/animations/walking.fbx",
-    Vertex3D.new(0, -10, 40),                           -- path file
-    100,                                                -- width
-    100,                                                -- height
-    128,                                                -- sprite width
-    128,                                                -- sprite height
-    64,                                                 -- num frames
-    25                                                  -- frames per second
-);
+man = ObjectFactory.Mesh3DAnimation(
+    "../assets/animations/walking.fbx",                 -- file path
+    Vertex3D.new(0, -10, 40)                            -- position
+)
 ```
 
-### Change current animation
+### Mesh3DAnimation Methods
+
+| Method | Parameters | Return | Description |
+|--------|------------|--------|-------------|
+| `setIndexCurrentAnimation()` | `int index` | void | Changes the active animation by index |
+| `setAnimationByName()` | `string name` | void | Changes the active animation by name |
+| `setAnimationSpeed()` | `float speed` | void | Sets playback speed (0.0 - 1.0) |
+| `isAnimationEnds()` | - | bool | Returns true if the current animation has finished |
+| `setLoop()` | `bool loop` | void | Enables or disables animation looping |
+| `isLoop()` | - | bool | Returns whether the animation loops |
+
+### Change Current Animation
 
 If the model contains more than one animation, the first one will be selected by default.
-You can choose a different active animation from the GUI. To do so from LUA scripts, you can use
-setIndexCurrentAnimation() or setAnimationByName():
+You can choose a different active animation from the GUI or via LUA scripts:
 
 ```lua
-man:setIndexCurrentAnimation(2)                         -- change animation index
+man:setIndexCurrentAnimation(2)                         -- change animation by index
+man:setAnimationByName("Run")                           -- change animation by name
 ```
 
-### Change speed animation
+### Change Animation Speed
 
-To modify the animation playback speed, you can also do it from the UI or via scripts:
+To modify the animation playback speed:
 
 ```lua
-man:setAnimationSpeed(0.5)                              -- speed animation [0-1]
+man:setAnimationSpeed(0.5)                              -- 50% speed
+man:setAnimationSpeed(1.0)                              -- normal speed
+```
+
+### Animation Looping and Completion
+
+```lua
+man:setLoop(false)                                      -- disable looping
+
+function onUpdate()
+    if man:isAnimationEnds() then
+        print("Animation finished!")
+        man:setIndexCurrentAnimation(0)                 -- switch to idle
+    end
+end
 ```
 
 ## Drawing Lines

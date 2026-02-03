@@ -15,7 +15,7 @@ The most basic object in **Brakeza3D** is `Object3D`. Any element in the scene i
 
 ### Common properties
 
-| Propiedad  | Tipo       | Descripción                                  |
+| Property   | Type       | Description                                  |
 |------------|------------|----------------------------------------------|
 | `Name`     | `string`   | Name of object                               |
 | `Position` | `Vertex3D` | Position in the world                        |
@@ -68,7 +68,7 @@ We can interact with an Object3D using several methods:
 
 ### Actions
 
-| Método     | Parametrise        | Descripción                               |
+| Method     | Parameters         | Description                               |
 |------------|--------------------|-------------------------------------------|
 | `LookAt()` | `target: Object3D` | Rotates the object to face another object |
 

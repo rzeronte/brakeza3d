@@ -17,14 +17,9 @@
       "name": "@docusaurus/plugin-content-pages",
       "version": "3.9.2"
     },
-    "docusaurus-plugin-google-gtag": {
+    "docusaurus-plugin-debug": {
       "type": "package",
-      "name": "@docusaurus/plugin-google-gtag",
-      "version": "3.9.2"
-    },
-    "docusaurus-plugin-sitemap": {
-      "type": "package",
-      "name": "@docusaurus/plugin-sitemap",
+      "name": "@docusaurus/plugin-debug",
       "version": "3.9.2"
     },
     "docusaurus-plugin-svgr": {
