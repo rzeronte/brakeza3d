@@ -1,5 +1,5 @@
 function onStart()
-    Components:Render():getSceneLoader():LoadScene("../assets/scenes/scene_example.json")
+    Components:Render():getSceneLoader():LoadScene("../assets/scenes/DemoScene.json")
 end
 
 function onUpdate()

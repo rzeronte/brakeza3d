@@ -212,7 +212,6 @@ void ScriptLuaGUI::DrawScriptConfig(EditableOpenScriptFile &file)
     DrawScriptConfigEditName(file);
     DrawScriptConfigVarCreator(file);
     DrawScriptConfigVarsTable(file);
-    DrawScriptConfigEmptyStateWarning(file);
     ImGui::Separator();
     DrawScriptConfigActionButtons(file);
 }
@@ -431,13 +430,6 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
         DrawTypeImGuiControl(*type, false, true);
 
         ImGui::PopID();
-    }
-}
-
-void ScriptLuaGUI::DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &file)
-{
-    if (file.getScript()->dataTypes.empty()) {
-        Drawable::WarningMessage("No variables defined");
     }
 }
 

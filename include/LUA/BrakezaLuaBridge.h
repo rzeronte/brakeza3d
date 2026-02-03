@@ -374,9 +374,13 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<SceneLoader>("SceneLoader",
-    "clearScene", &SceneLoader::ClearScene,
-        "SaveScene", &SceneLoader::SaveScene,
-        "LoadScene", &SceneLoader::LoadScene
+        "clearScene", &SceneLoader::ClearScene,
+        "SaveScene", [](SceneLoader*, std::string path) {
+            SceneLoader::SaveScene(FilePath::SceneFile(path));
+        },
+        "LoadScene", [](SceneLoader*, std::string path) {
+            SceneLoader::LoadScene(FilePath::SceneFile(path));
+        }
     );
 
     lua.new_usertype<Image2D>("Image2D",

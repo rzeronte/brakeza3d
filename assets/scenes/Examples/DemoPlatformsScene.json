@@ -1,9 +1,5 @@
 {
-	"gravity":	{
-		"x":	0,
-		"y":	-18.799999237060547,
-		"z":	0
-	},
+	"screenshot":	"../assets/screenshots/scene_939852.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.15999999642372131,
@@ -28,11 +24,12 @@
 	},
 	"objects":	[{
 			"name":	"capsule",
-			"enabled": true,
 			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
 			"position":	{
-				"x":	-43.188507080078125,
-				"y":	-2.7056727409362793,
+				"x":	-45.1749382019043,
+				"y":	16.951385498046875,
 				"z":	-43.219985961914063
 			},
 			"rotation":	{
@@ -40,12 +37,24 @@
 				"y":	-0,
 				"z":	0
 			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	2,
-				"shape":	0,
+				"shape":	1,
 				"friction":	1,
 				"mass":	100,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
 				"linearDamping":	1,
 				"angularDamping":	1,
 				"restitution":	0,
@@ -116,17 +125,18 @@
 							}
 						}]
 				}],
-			"shaders":	[],
 			"model":	"../assets/models//Capsule.fbx",
-			"enableLights":	false,
+			"enableLights":	true,
+			"shaders":	[],
 			"type":	2
 		}, {
 			"name":	"Mesh3D_46",
-			"enabled": true,
 			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
 			"position":	{
 				"x":	-38.931137084960938,
-				"y":	-12.569705963134766,
+				"y":	4.8816728591918945,
 				"z":	-43.248760223388672
 			},
 			"rotation":	{
@@ -134,12 +144,24 @@
 				"y":	-0,
 				"z":	0
 			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
 				"shape":	2,
 				"friction":	1,
 				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
 				"linearDamping":	1,
 				"angularDamping":	1,
 				"restitution":	0,
@@ -165,22 +187,22 @@
 				}
 			},
 			"scripts":	[],
-			"shaders":	[],
 			"model":	"../assets/models//DevLevelPlatforms.fbx",
-			"enableLights":	false,
+			"enableLights":	true,
+			"shaders":	[],
 			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-43.188507080078125,
-			"y":	-14.913570404052734,
-			"z":	-63.253883361816406
+			"x":	-40.282882690429688,
+			"y":	6.6230859756469727,
+			"z":	-77.937408447265625
 		},
 		"rotation":	{
-			"x":	-8.2000093460083,
-			"y":	176.80003356933594,
+			"x":	-0.92501050233840942,
+			"y":	176.425048828125,
 			"z":	0
 		}
 	}

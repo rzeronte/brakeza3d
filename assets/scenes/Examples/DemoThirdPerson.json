@@ -1,14 +1,10 @@
 {
-	"gravity":	{
-		"x":	0,
-		"y":	-18.799999237060547,
-		"z":	0
-	},
+	"screenshot":	"../assets/screenshots/scene_1110606.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.15999999642372131,
-			"y":	-0.60000002384185791,
-			"z":	1
+			"y":	-1,
+			"z":	-0.37999999523162842
 		},
 		"diffuse":	{
 			"x":	0.85655736923217773,
@@ -29,16 +25,26 @@
 	"objects":	[{
 			"name":	"capsule",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	-44.067607879638672,
-				"y":	-7.520592212677002,
-				"z":	-32.555183410644531
+				"x":	-7.7486324310302734,
+				"y":	8.5926933288574219,
+				"z":	-21.433120727539063
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	-0,
 				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -74,9 +80,9 @@
 				}
 			},
 			"scripts":	[{
-					"codeFile":	 "../assets/scripts/Controllers/KinematicThirdPersonController.lua",
-					"typesFile": "../assets/scripts/Controllers/KinematicThirdPersonController.json",
-					"name":	"KinematicThirdPersonController.lua",
+					"codeFile":	"../assets/scripts/Controllers/KinematicThirdPersonController.lua",
+					"typesFile":	"../assets/scripts/Controllers/KinematicThirdPersonController.json",
+					"name":	"KinematicThirdPersonController",
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
@@ -120,22 +126,32 @@
 						}]
 				}],
 			"model":	"../assets/models//Capsule.fbx",
-			"enableLights":	false,
+			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
 		}, {
 			"name":	"Mesh3D_97",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	-43.280624389648438,
-				"y":	-11.2020263671875,
-				"z":	-30.593469619750977
+				"x":	-7.9756498336791992,
+				"y":	0.45587682723999023,
+				"z":	-18.668369293212891
 			},
 			"rotation":	{
 				"x":	0,
 				"y":	-0,
 				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -172,7 +188,7 @@
 			},
 			"scripts":	[],
 			"model":	"../assets/models//DevLevel.fbx",
-			"enableLights":	false,
+			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
 		}],
@@ -180,13 +196,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-44.067607879638672,
-			"y":	-10.020591735839844,
-			"z":	-37.555183410644531
+			"x":	-26.977243423461914,
+			"y":	13.219217300415039,
+			"z":	17.093332290649414
 		},
 		"rotation":	{
-			"x":	22.949979782104492,
-			"y":	-149.37501525878906,
+			"x":	25.724977493286133,
+			"y":	-334.40005493164063,
 			"z":	0
 		}
 	}

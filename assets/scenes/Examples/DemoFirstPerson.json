@@ -1,14 +1,10 @@
 {
-	"gravity":	{
-		"x":	0,
-		"y":	-18.799999237060547,
-		"z":	0
-	},
+	"screenshot":	"../assets/screenshots/scene_302549.png",
 	"ads":	{
 		"direction":	{
-			"x":	-0.15999999642372131,
-			"y":	-0.60000002384185791,
-			"z":	1
+			"x":	1,
+			"y":	-0.56000000238418579,
+			"z":	-0.46000000834465027
 		},
 		"diffuse":	{
 			"x":	0.85655736923217773,
@@ -27,18 +23,90 @@
 		}
 	},
 	"objects":	[{
-			"name":	"capsule",
+			"name":	"level",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	-47.59503173828125,
-				"y":	-13.776888847351074,
-				"z":	-34.641162872314453
+				"x":	-12.520256042480469,
+				"y":	2.8399512767791748,
+				"z":	-17.871551513671875
 			},
 			"rotation":	{
-				"x":	-69.800003051757813,
-				"y":	-6.6000008583068848,
+				"x":	0,
+				"y":	-0,
 				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	1,
+				"angularDamping":	1,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//DevLevel.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"capsule",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-16.9927978515625,
+				"y":	8.4709224700927734,
+				"z":	-14.429327011108398
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
@@ -120,59 +188,7 @@
 						}]
 				}],
 			"model":	"../assets/models//Capsule.fbx",
-			"enableLights":	false,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"level",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-49.247165679931641,
-				"y":	-17.058322906494141,
-				"z":	-32.142459869384766
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	true,
-			"collider":	{
-				"mode":	1,
-				"shape":	2,
-				"friction":	1,
-				"mass":	0,
-				"margin":	0.0040000001899898052,
-				"ccdMotionThreshold":	0,
-				"ccdSweptSphereRadius":	0,
-				"linearDamping":	1,
-				"angularDamping":	1,
-				"restitution":	0,
-				"colliderStatic":	true,
-				"simpleShapeSize":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"kinematicCapsuleSize":	{
-					"x":	0.5,
-					"y":	1.7999999523162842
-				},
-				"angularFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				},
-				"linearFactor":	{
-					"x":	1,
-					"y":	1,
-					"z":	1
-				}
-			},
-			"scripts":	[],
-			"model":	"../assets/models//DevLevel.fbx",
-			"enableLights":	false,
+			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
 		}],
@@ -180,13 +196,13 @@
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-87.581260681152344,
-			"y":	-6.7680540084838867,
-			"z":	-33.276447296142578
+			"x":	-26.397590637207031,
+			"y":	12.078845977783203,
+			"z":	18.043094635009766
 		},
 		"rotation":	{
-			"x":	17.024997711181641,
-			"y":	-274.82504272460938,
+			"x":	19.8749942779541,
+			"y":	-347.20010375976563,
 			"z":	0
 		}
 	}

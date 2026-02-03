@@ -22,7 +22,6 @@ public:
     static void DrawScriptConfigEditName(EditableOpenScriptFile &file);
     static void DrawScriptConfigVarCreator(EditableOpenScriptFile &file);
     static void DrawScriptConfigVarsTable(EditableOpenScriptFile &file);
-    static void DrawScriptConfigEmptyStateWarning(EditableOpenScriptFile &file);
     static void DrawScriptConfigActionButtons(EditableOpenScriptFile &file);
     static void DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon);
     static void DrawWinObjectVars(GUIManager *gui);
