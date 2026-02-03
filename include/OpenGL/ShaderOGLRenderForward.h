@@ -91,10 +91,10 @@ public:
     void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void FillUBOLights();
     void ExtractLights(Object3D *o);
-    void setGlobalIlluminationDirection(const Vertex3D &d);
-    void setGlobalIlluminationAmbient(const Vertex3D &a);
-    void setGlobalIlluminationDiffuse(const Vertex3D &d);
-    void setGlobalIlluminationSpecular(const Vertex3D &s);
+    void setGlobalIlluminationDirection(Vertex3D d);
+    void setGlobalIlluminationAmbient(Vertex3D a);
+    void setGlobalIlluminationDiffuse(Vertex3D d);
+    void setGlobalIlluminationSpecular(Vertex3D s);
     bool hasSpotLightsChanged() const;
     bool HasPointLightsChanged() const;
     void setLastSpotLightsSize(int v);

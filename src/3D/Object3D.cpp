@@ -82,7 +82,7 @@ void Object3D::RunScripts()
     for (auto &script: scripts) {
         script->RunEnvironment(luaEnvironment, "onUpdate");
         if (isGUISelected()) {
-            script->RunEnvironment(luaEnvironment, "onClick");
+            //script->RunEnvironment(luaEnvironment, "onClick");
         }
     }
 }

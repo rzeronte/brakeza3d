@@ -1,0 +1,6 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Global/01_HelloWorld.lua",
+	"typesFile": "../assets/scripts/Tutorials/Global/01_HelloWorld.json",
+	"name": "HelloWorld",
+	"types": []
+}

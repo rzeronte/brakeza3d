@@ -1,0 +1,14 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/05_Animation.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/05_Animation.json",
+	"name": "AnimationTutorial",
+	"types": [{
+			"name": "defaultAnimation",
+			"type": "string",
+			"value": "idle"
+		}, {
+			"name": "animationSpeed",
+			"type": "float",
+			"value": 1.0
+		}]
+}

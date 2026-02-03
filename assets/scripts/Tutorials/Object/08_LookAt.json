@@ -1,0 +1,18 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/08_LookAt.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/08_LookAt.json",
+	"name": "LookAtTutorial",
+	"types": [{
+			"name": "targetName",
+			"type": "string",
+			"value": "Player"
+		}, {
+			"name": "lookSpeed",
+			"type": "float",
+			"value": 5.0
+		}, {
+			"name": "smoothLookAt",
+			"type": "int",
+			"value": 1
+		}]
+}

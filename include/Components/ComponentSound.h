@@ -10,6 +10,11 @@
 #include "Component.h"
 #include "../include/Misc/SoundPackage.h"
 
+// Undefine Windows API macro that conflicts with our PlaySound method
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
 class ComponentSound : public Component
 {
     SoundPackage soundPackage;

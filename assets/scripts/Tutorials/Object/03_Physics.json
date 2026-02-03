@@ -1,0 +1,22 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/03_Physics.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/03_Physics.json",
+	"name": "PhysicsTutorial",
+	"types": [{
+			"name": "jumpForce",
+			"type": "float",
+			"value": 10.0
+		}, {
+			"name": "moveForce",
+			"type": "float",
+			"value": 5.0
+		}, {
+			"name": "mass",
+			"type": "float",
+			"value": 1.0
+		}, {
+			"name": "friction",
+			"type": "float",
+			"value": 0.5
+		}]
+}

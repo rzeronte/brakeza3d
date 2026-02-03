@@ -1,0 +1,14 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/01_Movement.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/01_Movement.json",
+	"name": "MovementTutorial",
+	"types": [{
+			"name": "speed",
+			"type": "float",
+			"value": 5.0
+		}, {
+			"name": "rotationSpeed",
+			"type": "float",
+			"value": 2.0
+		}]
+}

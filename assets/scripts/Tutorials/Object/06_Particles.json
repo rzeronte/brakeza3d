@@ -1,0 +1,22 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/06_Particles.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/06_Particles.json",
+	"name": "ParticlesTutorial",
+	"types": [{
+			"name": "particlesPerSecond",
+			"type": "int",
+			"value": 50
+		}, {
+			"name": "particleLifespan",
+			"type": "float",
+			"value": 2.0
+		}, {
+			"name": "gravity",
+			"type": "float",
+			"value": -2.0
+		}, {
+			"name": "emitterOffset",
+			"type": "Vertex3D",
+			"value": {"x": 0.0, "y": 1.0, "z": 0.0}
+		}]
+}

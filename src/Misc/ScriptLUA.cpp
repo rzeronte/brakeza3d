@@ -143,13 +143,16 @@ void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string&
     }
 }
 
-void ScriptLUA::RunGlobal(const std::string& func) const
+void ScriptLUA::RunGlobal(const std::string& func)
 {
     if (paused) return;
     sol::state &lua = Components::get()->Scripting()->getLua();
 
     try {
-        lua.script(content);
+        if (!globalLoaded) {
+            lua.script(content);
+            globalLoaded = true;
+        }
 
         sol::function f = lua[func];
         sol::function_result result = f();
@@ -389,6 +392,11 @@ void ScriptLUA::setPaused(bool value)
 {
     LOG_MESSAGE("Script %s has been paused to %d", scriptFilename.c_str(), value);
     paused = value;
+}
+
+void ScriptLUA::setGlobalLoaded(bool value)
+{
+    globalLoaded = value;
 }
 
 void ScriptLUA::DrawImGuiProperties()

@@ -70,6 +70,7 @@ struct ScriptMetaInfo {
 class ScriptLUA
 {
     bool paused = false;
+    bool globalLoaded = false;
 
 public:
     std::string content;
@@ -85,7 +86,7 @@ public:
 
     bool hasDataType(const char *name, const char *type) const;
     void RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
-    void RunGlobal(const std::string& func) const;
+    void RunGlobal(const std::string& func);
     void AddDataType(const char *name, const char *type, cJSON *value);
     void ProcessFileTypes();
     void RemoveDataType(const ScriptLUATypeData& data);
@@ -111,6 +112,7 @@ public:
 
     void setName(const std::string &name);
     void setPaused(bool value);
+    void setGlobalLoaded(bool value);
     void setDataTypesFromJSON(const cJSON *typesJSON);
 
     friend class ScriptLuaGUI;

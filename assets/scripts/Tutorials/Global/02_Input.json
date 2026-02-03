@@ -1,0 +1,6 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Global/02_Input.lua",
+	"typesFile": "../assets/scripts/Tutorials/Global/02_Input.json",
+	"name": "InputTutorial",
+	"types": []
+}

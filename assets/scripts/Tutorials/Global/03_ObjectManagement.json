@@ -1,0 +1,10 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Global/03_ObjectManagement.lua",
+	"typesFile": "../assets/scripts/Tutorials/Global/03_ObjectManagement.json",
+	"name": "ObjectManagement",
+	"types": [{
+		"name": "objectCount",
+		"type": "int",
+		"value": 0
+	}]
+}
