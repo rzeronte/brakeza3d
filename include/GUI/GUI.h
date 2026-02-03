@@ -389,6 +389,8 @@ namespace GUIType
     X(HUB_ASSET_AUTHOR, 0, 0) \
     X(HUB_ASSET_SUBMIT_RATING, 0, 0) \
     X(CLEAR_FILTERS, 0, 0) \
+    X(DOCKING_ON, 0, 0) \
+    X(DOCKING_OFF, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

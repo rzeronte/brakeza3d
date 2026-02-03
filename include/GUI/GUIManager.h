@@ -72,7 +72,7 @@ class GUIManager
 
     static void DrawObjectWindowStatusBar(GUIType::WindowGUI &window);
 
-    float GetObjectStatusBarHeight();
+    static float GetObjectStatusBarHeight();
 
     void DrawWinKeyboardMouse();
     void DrawSplashWindow();
