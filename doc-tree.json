@@ -5,13 +5,18 @@
       "url": "",
       "children": [
         {
-          "name": "1.1) Welcome to Brakeza3D!",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/intro/",
+          "name": "Welcome to Brakeza3D!",
+          "url": "https://brakeza.com/docs/getting-started/intro/",
           "children": []
         },
         {
-          "name": "1.2) Download and install",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/download-and-install/",
+          "name": "Download and Install",
+          "url": "https://brakeza.com/docs/getting-started/download-and-install/",
+          "children": []
+        },
+        {
+          "name": "Your First Project",
+          "url": "https://brakeza.com/docs/getting-started/first-project/",
           "children": []
         }
       ]
@@ -21,33 +26,38 @@
       "url": "",
       "children": [
         {
-          "name": "2.1) Overview",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/editor/overview/",
+          "name": "Overview",
+          "url": "https://brakeza.com/docs/editor/overview/",
           "children": []
         },
         {
-          "name": "2.2) Layout modes",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/editor/layout-modes/",
+          "name": "Layout modes",
+          "url": "https://brakeza.com/docs/editor/layout-modes/",
           "children": []
         },
         {
-          "name": "2.3) Projects",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/editor/projects/",
+          "name": "Projects",
+          "url": "https://brakeza.com/docs/editor/projects/",
           "children": []
         },
         {
-          "name": "2.4) Scenes",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/editor/scenes/",
+          "name": "Scenes",
+          "url": "https://brakeza.com/docs/editor/scenes/",
           "children": []
         },
         {
-          "name": "2.5) Scripts",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/editor/scripts/",
+          "name": "Scripts",
+          "url": "https://brakeza.com/docs/editor/scripts/",
           "children": []
         },
         {
-          "name": "2.6) Shaders",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/editor/shaders/",
+          "name": "Shaders",
+          "url": "https://brakeza.com/docs/editor/shaders/",
+          "children": []
+        },
+        {
+          "name": "Shader Node Editor",
+          "url": "https://brakeza.com/docs/editor/node-editor/",
           "children": []
         }
       ]
@@ -57,28 +67,28 @@
       "url": "",
       "children": [
         {
-          "name": "3.1) Script controls",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/script-controls/",
+          "name": "Script controls",
+          "url": "https://brakeza.com/docs/engine-concepts/script-controls/",
           "children": []
         },
         {
-          "name": "3.2) Global illumination",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/global-illumination/",
+          "name": "Global illumination",
+          "url": "https://brakeza.com/docs/engine-concepts/global-illumination/",
           "children": []
         },
         {
-          "name": "3.3) Collisions",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/collisions/",
+          "name": "Collisions",
+          "url": "https://brakeza.com/docs/engine-concepts/collisions/",
           "children": []
         },
         {
-          "name": "3.4) Assets folder",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/assets-folder/",
+          "name": "Assets folder",
+          "url": "https://brakeza.com/docs/engine-concepts/assets-folder/",
           "children": []
         },
         {
-          "name": "3.5) Components",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/components/",
+          "name": "Components",
+          "url": "https://brakeza.com/docs/engine-concepts/components/",
           "children": []
         }
       ]
@@ -88,68 +98,73 @@
       "url": "",
       "children": [
         {
-          "name": "4.1) Scripting introduction",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/index/",
+          "name": "Scripting introduction",
+          "url": "https://brakeza.com/docs/scripting-api/index/",
           "children": []
         },
         {
-          "name": "4.2) Basic object types",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/basic-object-types/",
+          "name": "Basic object types",
+          "url": "https://brakeza.com/docs/scripting-api/basic-object-types/",
           "children": []
         },
         {
-          "name": "4.3) The Camera object",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/camera-object/",
+          "name": "The Camera object",
+          "url": "https://brakeza.com/docs/scripting-api/camera-object/",
           "children": []
         },
         {
-          "name": "4.4) 2D Objects",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/2d-objects/",
+          "name": "2D Objects",
+          "url": "https://brakeza.com/docs/scripting-api/2d-objects/",
           "children": []
         },
         {
-          "name": "4.5) 3D Objects",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/3d-objects/",
+          "name": "3D Objects",
+          "url": "https://brakeza.com/docs/scripting-api/3d-objects/",
           "children": []
         },
         {
-          "name": "4.6) Particle emitter",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/particle-emitter/",
+          "name": "Particle emitter",
+          "url": "https://brakeza.com/docs/scripting-api/particle-emitter/",
           "children": []
         },
         {
-          "name": "4.7) Lighting system",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/lighting-system/",
+          "name": "Lighting system",
+          "url": "https://brakeza.com/docs/scripting-api/lighting-system/",
           "children": []
         },
         {
-          "name": "4.8) Collision system",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/collision-system/",
+          "name": "Collision system",
+          "url": "https://brakeza.com/docs/scripting-api/collision-system/",
           "children": []
         },
         {
-          "name": "4.9) Input system",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/input-system/",
+          "name": "Input system",
+          "url": "https://brakeza.com/docs/scripting-api/input-system/",
           "children": []
         },
         {
-          "name": "4.10) Sound system",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/sound-system/",
+          "name": "Sound system",
+          "url": "https://brakeza.com/docs/scripting-api/sound-system/",
           "children": []
         },
         {
-          "name": "4.11) Shaders system",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/shaders-system/",
+          "name": "Shaders system",
+          "url": "https://brakeza.com/docs/scripting-api/shaders-system/",
           "children": []
         },
         {
-          "name": "4.12) Grid and Octree",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/grid-and-octree/",
+          "name": "Grid and Octree",
+          "url": "https://brakeza.com/docs/scripting-api/grid-and-octree/",
           "children": []
         },
         {
-          "name": "4.13) Components",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/components/",
+          "name": "Components",
+          "url": "https://brakeza.com/docs/scripting-api/components/",
+          "children": []
+        },
+        {
+          "name": "Text System",
+          "url": "https://brakeza.com/docs/scripting-api/text-system/",
           "children": []
         }
       ]
@@ -159,13 +174,8 @@
       "url": "",
       "children": [
         {
-          "name": "5.1) Core shaders",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/advanced/core-shaders/",
-          "children": []
-        },
-        {
-          "name": "5.2) Building from sources",
-          "url": "https://rzeronte.github.io/brakeza3d/docs/advanced/building-from-sources/",
+          "name": "Core shaders",
+          "url": "https://brakeza.com/docs/advanced/core-shaders/",
           "children": []
         }
       ]

@@ -1,177 +1,189 @@
 {
-  "timestamp": "2026-01-15T02:35:49.570Z",
-  "total": 28,
-  "success": 26,
-  "failed": 2,
-  "redirected": 0,
+  "timestamp": "2026-02-03T13:19:12.355Z",
+  "total": 30,
+  "success": 0,
+  "failed": 0,
+  "redirected": 30,
   "results": [
     {
+      "url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/first-project/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
+    },
+    {
       "url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/intro/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/getting-started/download-and-install/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
-    },
-    {
-      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/overview/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
-    },
-    {
-      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/layout-modes/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
-    },
-    {
-      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/projects/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/editor/scenes/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
+    },
+    {
+      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/overview/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
+    },
+    {
+      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/layout-modes/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
+    },
+    {
+      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/projects/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/editor/scripts/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/editor/shaders/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
-      "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/script-controls/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "url": "https://rzeronte.github.io/brakeza3d/docs/editor/node-editor/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/global-illumination/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/collisions/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
+    },
+    {
+      "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/script-controls/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/assets-folder/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/engine-concepts/components/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/index/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/basic-object-types/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/camera-object/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/2d-objects/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/3d-objects/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/particle-emitter/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/lighting-system/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/collision-system/",
-      "status": 404,
+      "status": 301,
       "ok": false,
-      "redirected": false
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/input-system/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/sound-system/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/shaders-system/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/grid-and-octree/",
-      "status": 404,
+      "status": 301,
       "ok": false,
-      "redirected": false
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/components/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
+    },
+    {
+      "url": "https://rzeronte.github.io/brakeza3d/docs/scripting-api/text-system/",
+      "status": 301,
+      "ok": false,
+      "redirected": true
     },
     {
       "url": "https://rzeronte.github.io/brakeza3d/docs/advanced/core-shaders/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
-    },
-    {
-      "url": "https://rzeronte.github.io/brakeza3d/docs/advanced/building-from-sources/",
-      "status": 200,
-      "ok": true,
-      "redirected": false
+      "status": 301,
+      "ok": false,
+      "redirected": true
     }
   ]
 }
