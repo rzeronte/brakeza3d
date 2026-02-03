@@ -8,44 +8,6 @@
 #include "../../../include/Config.h"
 #include "../../../include/Components/Components.h"
 
-void GUIAddonToolbar::DrawBaseLine() {
-    // DEGRADADO LIME → CYAN → LIME
-    ImDrawList* drawList = ImGui::GetWindowDrawList();
-    ImVec2 win_pos = ImGui::GetWindowPos();
-    ImVec2 win_size = ImGui::GetWindowSize();
-
-    const float lineHeight = 2.0f;
-    const float yPosition = win_pos.y + win_size.y - lineHeight;
-
-    // Colores lime y cyan
-    const ImU32 colorLime = IM_COL32(132, 204, 22, 255);   // lime-500
-    const ImU32 colorCyan = IM_COL32(6, 182, 212, 255);    // cyan-500
-
-    const float width = win_size.x;
-    const float segment = width / 3.0f;
-
-    // Segmento izquierdo: lime → cyan
-    drawList->AddRectFilledMultiColor(
-        ImVec2(win_pos.x, yPosition),
-        ImVec2(win_pos.x + segment, yPosition + lineHeight),
-        colorLime, colorCyan, colorCyan, colorLime
-    );
-
-    // Segmento central: cyan puro
-    drawList->AddRectFilled(
-        ImVec2(win_pos.x + segment, yPosition),
-        ImVec2(win_pos.x + segment * 2.0f, yPosition + lineHeight),
-        colorCyan
-    );
-
-    // Segmento derecho: cyan → lime
-    drawList->AddRectFilledMultiColor(
-        ImVec2(win_pos.x + segment * 2.0f, yPosition),
-        ImVec2(win_pos.x + win_size.x, yPosition + lineHeight),
-        colorCyan, colorLime, colorLime, colorCyan
-    );
-}
-
 void GUIAddonToolbar::Draw()
 {
     if (!Config::get()->ENABLE_IMGUI_TOOLBAR) return;
@@ -185,11 +147,23 @@ void GUIAddonToolbar::LUAStatusIcons()
     auto callbackStop = [&]() { scripting->StopLUAScripts(); };
     auto callbackPlay = [&]() { scripting->PlayLUAScripts(); };
 
-    GUI::DrawButton(label, icon, GUIType::Sizes::ICONS_TOOLBAR, isStop, [&]() { isStop ? callbackPlay() : callbackStop(); });
+    GUI::DrawButton(label, icon, GUIType::Sizes::ICONS_TOOLBAR, isStop, [&]() {
+        isStop ? callbackPlay() : callbackStop();
+    });
     ImGui::SameLine();
-    GUI::DrawButton("Reload scripts", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() { scripting->ReloadLUAScripts(); });
+    GUI::DrawButton("Reload scripts", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+        scripting->ReloadLUAScripts();
+    });
+    VerticalSeparator();
     ImGui::SameLine();
-    GUI::DrawButton("Clear scene", IconGUI::LUA_REMOVE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() { SceneLoader::ClearScene(); });
+    GUI::DrawButton("Clear scene", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+        SceneLoader::ClearScene();
+    });
+    ImGui::SameLine();
+    GUI::DrawButton("Clean scene", IconGUI::CLEAN_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+        SceneLoader::CleanScene();
+    });
+
 }
 
 void GUIAddonToolbar::Helpers()
@@ -304,4 +278,42 @@ void GUIAddonToolbar::DrawSeparatorLine()
 
     ImGui::PopStyleColor();
     ImGui::PopStyleVar(3);
+}
+
+void GUIAddonToolbar::DrawBaseLine() {
+    // DEGRADADO LIME → CYAN → LIME
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+    ImVec2 win_pos = ImGui::GetWindowPos();
+    ImVec2 win_size = ImGui::GetWindowSize();
+
+    const float lineHeight = 2.0f;
+    const float yPosition = win_pos.y + win_size.y - lineHeight;
+
+    // Colores lime y cyan
+    const ImU32 colorLime = IM_COL32(132, 204, 22, 255);   // lime-500
+    const ImU32 colorCyan = IM_COL32(6, 182, 212, 255);    // cyan-500
+
+    const float width = win_size.x;
+    const float segment = width / 3.0f;
+
+    // Segmento izquierdo: lime → cyan
+    drawList->AddRectFilledMultiColor(
+        ImVec2(win_pos.x, yPosition),
+        ImVec2(win_pos.x + segment, yPosition + lineHeight),
+        colorLime, colorCyan, colorCyan, colorLime
+    );
+
+    // Segmento central: cyan puro
+    drawList->AddRectFilled(
+        ImVec2(win_pos.x + segment, yPosition),
+        ImVec2(win_pos.x + segment * 2.0f, yPosition + lineHeight),
+        colorCyan
+    );
+
+    // Segmento derecho: cyan → lime
+    drawList->AddRectFilledMultiColor(
+        ImVec2(win_pos.x + segment * 2.0f, yPosition),
+        ImVec2(win_pos.x + win_size.x, yPosition + lineHeight),
+        colorCyan, colorLime, colorLime, colorCyan
+    );
 }

@@ -24,6 +24,7 @@
 #include "../../include/Serializers/Image2DSerializer.h"
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
+#include "../../include/Threads/ThreadJobCleanScene.h"
 #include "../../include/Threads/ThreadJobClearScene.h"
 #include "../../include/Threads/ThreadJobReadFileScene.h"
 
@@ -153,6 +154,12 @@ void SceneLoader::ClearScene()
     LOG_MESSAGE("[SceneLoader] ClearScene");
 
     Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobClearScene>());
+}
+
+void SceneLoader::CleanScene()
+{
+    LOG_MESSAGE("[SceneLoader] CleanScene");
+    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobCleanScene>());
 }
 
 void SceneLoader::CreateScene(const FilePath::SceneFile &filename)

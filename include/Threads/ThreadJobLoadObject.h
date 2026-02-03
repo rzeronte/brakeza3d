@@ -3,16 +3,17 @@
 
 #include "ThreadJobBase.h"
 #include "../Render/JSONSerializerRegistry.h"
-#include "ThreadJobLoadMesh3D.h"
 
 class ThreadJobLoadObject : public ThreadJobBase
 {
     cJSON *json = nullptr;
     Object3D *object = nullptr;
+    bool isBelongingToScene = false;
 public:
-    explicit ThreadJobLoadObject(cJSON *json)
+    ThreadJobLoadObject(cJSON *json, bool is_belonging_to_scene = false)
     :
-        json(cJSON_Duplicate(json, 1))
+        json(cJSON_Duplicate(json, 1)),
+        isBelongingToScene(is_belonging_to_scene)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -21,6 +22,7 @@ public:
     void fnProcess()
     {
         object = JSONSerializerRegistry::instance().deserialize(json);
+        object->setBelongToScene(isBelongingToScene);
         LOG_MESSAGE("[ThreadJobLoadObject] Process END");
     }
 

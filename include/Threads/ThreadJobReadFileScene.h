@@ -54,7 +54,8 @@ public:
         int objectCount = 0;
         cJSON *currentObject;
         cJSON_ArrayForEach(currentObject, objects) {
-            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadObject>(currentObject));
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadObject>(currentObject, true));
+
             objectCount++;
         }
 
