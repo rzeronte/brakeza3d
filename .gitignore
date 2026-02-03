@@ -11,3 +11,4 @@ build/
 website/node_modules
 website/.docusaurus
 website/build
+website/.idea/
