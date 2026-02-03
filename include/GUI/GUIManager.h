@@ -114,6 +114,7 @@ public:
     [[nodiscard]] ProjectChecker &getProjectChecker()                                   { return projectChecker; }
     [[nodiscard]] std::vector<GUIType::ViewerObjectType> &getVisibleObjectTypes()       { return visibleTypeObjects; }
     [[nodiscard]] GUIAddonResourceHub * getResourcesHub() const                         { return resourceHub; }
+    [[nodiscard]] Image * getSplashImage() const                                        { return splashImage; }
     GUIType::WindowGUI *getWindowStatus(GUIType::Window window);
 
     virtual void DrawGUI();

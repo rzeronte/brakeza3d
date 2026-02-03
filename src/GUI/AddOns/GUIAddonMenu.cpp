@@ -583,12 +583,26 @@ void GUIAddonMenu::AboutMeModal()
         Config::get()->SHOW_ABOUT_ME_MODAL = false;
     }
 
-    if (ImGui::BeginPopupModal("About Brakeza3D", nullptr)) {
+    if (ImGui::BeginPopupModal("About Brakeza3D", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         auto setup = Config::get();
+        auto splashImage = Brakeza::get()->GUI()->getSplashImage();
+
+        // Show splash image
+        if (splashImage != nullptr) {
+            float maxWidth = 400.0f;
+            float scale = maxWidth / (float)splashImage->width();
+            ImVec2 imageSize((float)splashImage->width() * scale, (float)splashImage->height() * scale);
+            ImGui::Image(splashImage->getOGLImTexture(), imageSize);
+            ImGui::Spacing();
+        }
 
         ImGui::Text("Welcome to Brakeza3D!");
-        ImGui::Text(setup->ENGINE_VERSION.c_str());
-        ImGui::Text(setup->ABOUT_ME.c_str());
+        ImGui::Separator();
+        ImGui::Text("%s", setup->ENGINE_VERSION.c_str());
+        ImGui::Text("%s", setup->ABOUT_ME.c_str());
+        ImGui::Separator();
+        Drawable::WarningMessage("This project has been made possible thanks to the");
+        Drawable::WarningMessage("emotional support, coffee, and patient wife... DreA");
         ImGui::Separator();
         Drawable::ImGuiLink(setup->ENGINE_WEBSITE.c_str(), setup->ENGINE_WEBSITE.c_str());
         Drawable::ImGuiLink(setup->URL_ASSETS_HUB_URL.c_str(), setup->URL_ASSETS_HUB_URL.c_str());
