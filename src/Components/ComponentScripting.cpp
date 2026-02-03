@@ -66,6 +66,13 @@ void ComponentScripting::StopLUAScripts()
     Components::get()->Collisions()->setEnabled(false);
     Components::get()->Window()->setImGuiMouse();
 
+    for (auto &script : projectScripts) {
+        script->setGlobalLoaded(false);
+    }
+    for (auto &script : sceneScripts) {
+        script->setGlobalLoaded(false);
+    }
+
     stateScripts = Config::LuaStateScripts::LUA_STOP;
 }
 
@@ -208,7 +215,7 @@ void ComponentScripting::InitLUATypes()
 {
     LOG_MESSAGE("[Scripting] Init LUA Global types");
 
-    lua.open_libraries(sol::lib::base, sol::lib::math);
+    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
 
     LUAIntegration(lua);
 

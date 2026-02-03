@@ -337,22 +337,22 @@ bool ComponentRender::compareDistances(const Object3D* obj1, const Object3D* obj
     return obj1->getDistanceToCamera() > obj2->getDistanceToCamera();
 }
 
-void ComponentRender::setGlobalIlluminationDirection(const Vertex3D &v) const
+void ComponentRender::setGlobalIlluminationDirection(Vertex3D v) const
 {
     shaders.shaderOGLRender->setGlobalIlluminationDirection(v);
 }
 
-void ComponentRender::setGlobalIlluminationAmbient(const Vertex3D &v) const
+void ComponentRender::setGlobalIlluminationAmbient(Vertex3D v) const
 {
     shaders.shaderOGLRender->setGlobalIlluminationAmbient(v);
 }
 
-void ComponentRender::setGlobalIlluminationDiffuse(const Vertex3D &v) const
+void ComponentRender::setGlobalIlluminationDiffuse(Vertex3D v) const
 {
     shaders.shaderOGLRender->setGlobalIlluminationDiffuse(v);
 }
 
-void ComponentRender::setGlobalIlluminationSpecular(const Vertex3D &v) const
+void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v) const
 {
     shaders.shaderOGLRender->setGlobalIlluminationSpecular(v);
 }

@@ -1,0 +1,14 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/02_Rotation.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/02_Rotation.json",
+	"name": "RotationTutorial",
+	"types": [{
+			"name": "rotationSpeed",
+			"type": "float",
+			"value": 1.5
+		}, {
+			"name": "autoRotate",
+			"type": "int",
+			"value": 0
+		}]
+}

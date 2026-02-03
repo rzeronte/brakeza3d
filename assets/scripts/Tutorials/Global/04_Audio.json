@@ -1,0 +1,14 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Global/04_Audio.lua",
+	"typesFile": "../assets/scripts/Tutorials/Global/04_Audio.json",
+	"name": "AudioTutorial",
+	"types": [{
+			"name": "musicVolume",
+			"type": "int",
+			"value": 100
+		}, {
+			"name": "soundsVolume",
+			"type": "int",
+			"value": 100
+		}]
+}

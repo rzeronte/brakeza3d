@@ -277,23 +277,22 @@ void ShaderOGLRenderForward::ExtractLights(Object3D *o)
     }
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationDirection(const Vertex3D &d)
+void ShaderOGLRenderForward::setGlobalIlluminationDirection(Vertex3D d)
 {
     this->directionalLight.direction = d.toGLM();
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationAmbient(const Vertex3D &a)
+void ShaderOGLRenderForward::setGlobalIlluminationAmbient(Vertex3D a)
 {
     this->directionalLight.ambient = a.toGLM();
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationDiffuse(const Vertex3D &d)
+void ShaderOGLRenderForward::setGlobalIlluminationDiffuse(Vertex3D d)
 {
     this->directionalLight.diffuse = d.toGLM();
-
 }
 
-void ShaderOGLRenderForward::setGlobalIlluminationSpecular(const Vertex3D &s)
+void ShaderOGLRenderForward::setGlobalIlluminationSpecular(Vertex3D s)
 {
     this->directionalLight.specular = s.toGLM();
 }

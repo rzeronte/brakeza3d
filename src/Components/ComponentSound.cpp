@@ -1,4 +1,10 @@
 #include <SDL2/SDL_mixer.h>
+
+// Undefine Windows API macro that conflicts with our PlaySound method
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
 #include "../../include/Components/ComponentSound.h"
 
 #include "../../include/Components/Components.h"

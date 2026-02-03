@@ -1,0 +1,10 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Object/04_Collisions.lua",
+	"typesFile": "../assets/scripts/Tutorials/Object/04_Collisions.json",
+	"name": "CollisionsTutorial",
+	"types": [{
+			"name": "knockbackForce",
+			"type": "float",
+			"value": 5.0
+		}]
+}

@@ -1,0 +1,14 @@
+{
+	"codeFile": "../assets/scripts/Tutorials/Global/05_Lighting.lua",
+	"typesFile": "../assets/scripts/Tutorials/Global/05_Lighting.json",
+	"name": "LightingTutorial",
+	"types": [{
+			"name": "ambientIntensity",
+			"type": "float",
+			"value": 0.2
+		}, {
+			"name": "sunRotationSpeed",
+			"type": "float",
+			"value": 0.5
+		}]
+}

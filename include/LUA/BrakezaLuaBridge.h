@@ -21,6 +21,11 @@
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/ParticleEmitter.h"
 
+// Undefine Windows API macro that conflicts with ComponentSound::PlaySound
+#ifdef PlaySound
+#undef PlaySound
+#endif
+
 inline void LUAIntegration(sol::state &lua)
 {
     lua.new_usertype<Vertex3D>(
@@ -119,7 +124,18 @@ inline void LUAIntegration(sol::state &lua)
         "AttachScript", &Object3D::AttachScript,
         "LookAt", &Object3D::LookAt,
         "ReloadScriptsEnvironment", &Object3D::ReloadScriptsEnvironment,
-        "getLinearVelocity", &Object3D::getLinearVelocity
+        "getLinearVelocity", &Object3D::getLinearVelocity,
+        "setParent", &Object3D::setParent,
+        "getParent", &Object3D::getParent,
+        "AttachObject", &Object3D::AttachObject,
+        "getAttached", &Object3D::getAttached,
+        "getAlpha", &Object3D::getAlpha,
+        "setAlpha", &Object3D::setAlpha,
+        "isAlphaEnabled", &Object3D::isAlphaEnabled,
+        "setAlphaEnabled", &Object3D::setAlphaEnabled,
+        "isEnableLights", &Object3D::isEnableLights,
+        "setEnableLights", &Object3D::setEnableLights,
+        "isEnabled", &Object3D::isEnabled
     );
 
     lua.new_usertype<Component>("Component",
@@ -142,8 +158,11 @@ inline void LUAIntegration(sol::state &lua)
         "AddMusic", &ComponentSound::AddMusic,
         "setMusicVolume", &ComponentSound::setMusicVolume,
         "setSoundsVolume", &ComponentSound::setSoundsVolume,
-        "playSound", &ComponentSound::PlayMusic,
-        "StopMusic", &ComponentSound::StopMusic
+        "PlaySound", &ComponentSound::PlaySound,
+        "PlayMusic", &ComponentSound::PlayMusic,
+        "StopMusic", &ComponentSound::StopMusic,
+        "StopChannel", &ComponentSound::StopChannel,
+        "getSoundDuration", &ComponentSound::getSoundDuration
     );
 
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
@@ -180,7 +199,7 @@ inline void LUAIntegration(sol::state &lua)
         "getSelectedObject", &ComponentRender::getSelectedObject
     );
 
-    lua.new_usertype<ComponentScripting>("ComponentRender",
+    lua.new_usertype<ComponentScripting>("ComponentScripting",
     sol::base_classes, sol::bases<Component>(),
         "PlayLUAScripts", &ComponentScripting::PlayLUAScripts,
         "StopLUAScripts", &ComponentScripting::StopLUAScripts,
@@ -243,7 +262,9 @@ inline void LUAIntegration(sol::state &lua)
         "Render", &Components::Render,
         "Camera", &Components::Camera,
         "Collisions", &Components::Collisions,
-        "Input", &Components::Input
+        "Input", &Components::Input,
+        "Sound", &Components::Sound,
+        "Scripting", &Components::Scripting
     );
 
     lua.new_usertype<Brakeza>("Brakeza3D",

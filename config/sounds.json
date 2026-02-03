@@ -1,4 +1,34 @@
 {
   "sounds": [
+    {
+      "file": "tutorial/beep.wav",
+      "label": "beep",
+      "type": "sound"
+    },
+    {
+      "file": "tutorial/click.wav",
+      "label": "click",
+      "type": "sound"
+    },
+    {
+      "file": "tutorial/coin.wav",
+      "label": "coin",
+      "type": "sound"
+    },
+    {
+      "file": "tutorial/hit.wav",
+      "label": "hit",
+      "type": "sound"
+    },
+    {
+      "file": "tutorial/success.wav",
+      "label": "success",
+      "type": "sound"
+    },
+    {
+      "file": "tutorial/music_loop.wav",
+      "label": "bgmusic",
+      "type": "music"
+    }
   ]
 }
