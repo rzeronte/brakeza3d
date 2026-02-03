@@ -28,8 +28,8 @@ public:
     static void CreateScene(const FilePath::SceneFile& filename);
     static void RemoveScene(const FilePath::SceneFile& filename);
     static void ClearScene();
+    static void CleanScene();
     static void SceneLoaderCreateObject(cJSON *object);
-
     static void setLoading(bool cond){ isLoading = cond; }
 };
 

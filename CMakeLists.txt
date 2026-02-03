@@ -378,6 +378,7 @@ add_executable(Brakeza3D
         include/Loaders/Project.h
         include/GUI/AddOns/CustomTreeNode.h
         src/GUI/AddOns/CustomTreeNode.cpp
+        include/Threads/ThreadJobCleanScene.h
 )
 
 target_link_libraries(Brakeza3D

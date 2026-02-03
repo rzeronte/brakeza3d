@@ -391,6 +391,7 @@ namespace GUIType
     X(CLEAR_FILTERS, 0, 0) \
     X(DOCKING_ON, 0, 0) \
     X(DOCKING_OFF, 0, 0) \
+    X(CLEAN_SCENE, 0, 0) \
 
 // Icons Objects
 namespace IconObject {

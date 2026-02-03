@@ -268,7 +268,7 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             if (ImGui::CollapsingHeader("Misc")) {
                 ImGui::Text( " %s: (%f, %f, %f)", "Picking Color", o->pickingColor.r, o->pickingColor.g, o->pickingColor.b);
                 ImGui::Text( " %s: %d", "ID", o->id);
-                ImGui::Text( " %s: %d", "BelongToScene", o->belongToScene ? 1 : 0);
+                ImGui::Text( " %s: %s", "BelongToScene", o->belongToScene ? "Yes" : "No");
                 ImGui::Text( " %s: %f", "Distance to camera", o->distanceToCamera);
             }
         }
