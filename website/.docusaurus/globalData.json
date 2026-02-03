@@ -21,6 +21,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "editor/node-editor",
+              "path": "/docs/editor/node-editor",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "editor/overview",
               "path": "/docs/editor/overview",
               "sidebar": "tutorialSidebar"
@@ -73,6 +78,11 @@
             {
               "id": "getting-started/download-and-install",
               "path": "/docs/getting-started/download-and-install",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "getting-started/first-project",
+              "path": "/docs/getting-started/first-project",
               "sidebar": "tutorialSidebar"
             },
             {
@@ -144,6 +154,11 @@
               "id": "scripting-api/sound-system",
               "path": "/docs/scripting-api/sound-system",
               "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "scripting-api/text-system",
+              "path": "/docs/scripting-api/text-system",
+              "sidebar": "tutorialSidebar"
             }
           ],
           "draftIds": [],
@@ -158,15 +173,6 @@
         }
       ],
       "breadcrumbs": true
-    }
-  },
-  "docusaurus-plugin-google-gtag": {
-    "default": {
-      "trackingID": [
-        "G-WYRLFVTYQN"
-      ],
-      "anonymizeIP": true,
-      "id": "default"
     }
   }
 }
