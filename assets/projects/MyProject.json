@@ -1,5 +1,6 @@
 {
-	"name":	"Unnamed project",
+	"name":	"MyProject",
+	"description":	"This is the beginning of a great story...",
 	"gravity":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -7,9 +8,9 @@
 	},
 	"scripts":	[],
 	"scenes":	[{
-			"path":	"../assets/scenes/DemoScene.json"
-		}, {
 			"path":	"../assets/scenes/RainCubesScene.json"
+		}, {
+			"path":	"../assets/scenes/DemoScene.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,

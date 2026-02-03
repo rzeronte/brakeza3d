@@ -11,6 +11,8 @@
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/Render/Drawable.h"
 
+// Static member definitions
+bool GUIAddonProjectSetup::openPopupEditProject = false;
 
 void GUIAddonProjectSetup::DrawWinProjectSettings()
 {
@@ -55,6 +57,14 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
                 "Project info",
                 [&]() {
                     Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(project->getFilePath());
+                }
+            );
+            projectConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCRIPT_EDIT),
+                "Edit project",
+                [project]() {
+                    project->resetEditBuffers();
+                    openPopupEditProject = true;
                 }
             );
             projectConfig.actionItems.emplace_back(
@@ -179,6 +189,9 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     }
 
     ImGui::PopStyleVar();
+
+    // Draw edit popup if open
+    DrawProjectEditPopup();
 }
 
 // ============================================
@@ -661,5 +674,84 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         }
 
         ImGui::PopID();
+    }
+}
+
+void GUIAddonProjectSetup::DrawProjectEditPopup()
+{
+    if (openPopupEditProject) {
+        ImGui::OpenPopup("Edit Project");
+        openPopupEditProject = false;
+    }
+
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(450, 300), ImGuiCond_FirstUseEver);
+
+    if (ImGui::BeginPopupModal("Edit Project", nullptr, ImGuiWindowFlags_None)) {
+        auto scripting = Components::get()->Scripting();
+        auto project = scripting->getCurrentProject();
+
+        if (project == nullptr) {
+            ImGui::Text("No project loaded");
+            if (ImGui::Button("Close")) {
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+            return;
+        }
+
+        ImGui::Spacing();
+
+        // Project Name input
+        ImGui::Text("Project Name:");
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputText("##ProjectName", project->editName, sizeof(project->editName));
+
+        ImGui::Spacing();
+        ImGui::Spacing();
+
+        // Project Description input
+        ImGui::Text("Description:");
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputTextMultiline("##ProjectDescription", project->editDescription, sizeof(project->editDescription),
+            ImVec2(-1, 100), ImGuiInputTextFlags_AllowTabInput);
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        // Buttons
+        float buttonWidth = 100.0f;
+        float spacing = 10.0f;
+        float totalWidth = buttonWidth * 2 + spacing;
+        float startX = (ImGui::GetWindowWidth() - totalWidth) * 0.5f;
+
+        ImGui::SetCursorPosX(startX);
+
+        if (ImGui::Button("Save", ImVec2(buttonWidth, 0))) {
+            project->applyEditBuffers();
+
+            // Update window title
+            Config::get()->ENGINE_TITLE = project->getName();
+            Components::get()->Window()->setWindowTitle(project->getName().c_str());
+
+            // Save project to disk
+            ProjectLoader::SaveProject(project->getFilePath());
+
+            // Reload checker to reflect changes
+            project->reloadChecker();
+
+            LOG_MESSAGE("[Project] Project updated: %s", project->getName().c_str());
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine(0, spacing);
+
+        if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
     }
 }

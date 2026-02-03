@@ -67,6 +67,11 @@ void ProjectChecker::ExtractName(cJSON* json)
     status.name = GetStringFromJSON(json, "name", "Unnamed Project");
 }
 
+void ProjectChecker::ExtractDescription(cJSON* json)
+{
+    status.description = GetStringFromJSON(json, "description", "");
+}
+
 void ProjectChecker::ExtractGravity(cJSON* json)
 {
     status.gravity = GetVertex3DFromJSON(json, "gravity");
@@ -115,6 +120,7 @@ void ProjectChecker::ExtractResolution(cJSON* json)
 void ProjectChecker::ExtractProjectInfo(cJSON* json)
 {
     ExtractName(json);
+    ExtractDescription(json);
     ExtractGravity(json);
     ExtractScripts(json);
     ExtractScenes(json);
@@ -163,6 +169,19 @@ void ProjectChecker::DrawInformationTable() const
         ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Project Name:");
         ImGui::TableSetColumnIndex(1);
         ImGui::TextWrapped("%s", status.name.c_str());
+
+        // Description
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Description:");
+        ImGui::TableSetColumnIndex(1);
+        if (status.description.empty()) {
+            ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "(No description)");
+        } else {
+            ImGui::TextWrapped("%s", status.description.c_str());
+        }
 
         // File Path
         ImGui::TableNextRow();
@@ -255,10 +274,9 @@ void ProjectChecker::DrawScenesTable() const
         return;
     }
 
-    if (ImGui::BeginTable("ProjectScenesTable", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("ProjectScenesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Status", ImGuiTableColumnFlags_WidthFixed, 60.0f);
         ImGui::TableSetupColumn("Path", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Actions", ImGuiTableColumnFlags_WidthFixed, 80.0f);
         ImGui::TableHeadersRow();
 
         for (size_t i = 0; i < status.scenes.size(); i++) {
@@ -281,18 +299,6 @@ void ProjectChecker::DrawScenesTable() const
                 "%s",
                 scene.path.c_str()
             );
-
-            // Actions
-            ImGui::TableSetColumnIndex(2);
-            if (scene.exists) {
-                if (ImGui::SmallButton("Inspect")) {
-                    // Aquí podrías llamar a sceneChecker para inspeccionar la escena
-                    SceneChecker sceneChecker;
-                    sceneChecker.LoadSceneInfoDialog(scene.path);
-                }
-            } else {
-                ImGui::TextDisabled("Missing");
-            }
 
             ImGui::PopID();
         }
@@ -319,6 +325,7 @@ void ProjectChecker::DrawWinProjectInfo() const
 void ProjectChecker::ResetStatus()
 {
     status.name.clear();
+    status.description.clear();
     status.gravity = Vertex3D();
     status.scripts.clear();
     status.scenes.clear();

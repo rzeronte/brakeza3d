@@ -50,3 +50,12 @@ void Logging::Error(const char *error, ...)
     OutputVa(prefixed.c_str(), true, args);
     va_end(args);
 }
+
+void Logging::Warning(const char *warning, ...)
+{
+    std::string prefixed = std::string("[Warning] " + std::string(warning));
+    va_list args;
+    va_start(args, warning);
+    OutputVa(prefixed.c_str(), false, args);
+    va_end(args);
+}

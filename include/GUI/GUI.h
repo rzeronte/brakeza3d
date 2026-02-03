@@ -95,8 +95,8 @@ namespace GUIType
         static constexpr int DRAG_FAR_PLANE_MAX = 1024.0f;
         static constexpr int DRAG_UNIT_MIN = 0.f;
         static constexpr int DRAG_UNIT_MAX = 1.f;
-        static constexpr int DRAG_VOLUME_MIN = 0.f;
-        static constexpr int DRAG_VOLUME_MAX = 1.f;
+        static constexpr float DRAG_VOLUME_MIN = 0.f;
+        static constexpr float DRAG_VOLUME_MAX = 128.f;
     };
 
     struct Colors {
@@ -228,6 +228,7 @@ namespace GUIType
     X(LOGGING_CLEAR, 0, 0) \
     X(LOGGING_MSG_OK, 0, 0) \
     X(LOGGING_MSG_ERROR, 0, 0) \
+    X(LOGGING_MSG_WARNING, 0, 0) \
     X(LOGGING_OPTIONS, 0, 0) \
     X(VIDEO_VSYNC, 0, 0) \
     X(VIDEO_LIMIT_FRAMERATE, 0, 0) \

@@ -194,11 +194,15 @@
 		}, {
 			"name":	"LOGGING_MSG_OK",
 			"x":	14,
-			"y":	37
+			"y":	31
 		}, {
 			"name":	"LOGGING_MSG_ERROR",
 			"x":	15,
 			"y":	37
+		}, {
+			"name":	"LOGGING_MSG_WARNING",
+			"x":	2,
+			"y":	32
 		}, {
 			"name":	"LOGGING_OPTIONS",
 			"x":	6,
