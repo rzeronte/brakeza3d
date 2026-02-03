@@ -254,7 +254,7 @@ void ShadersGUI::DrawWinObjectShaders()
 
     auto mesh = dynamic_cast<Mesh3D*>(o);
     if (mesh == nullptr) {
-        ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "No Mesh3D object");
+        Drawable::WarningMessage("No Mesh3D object");
         return;
     }
 
