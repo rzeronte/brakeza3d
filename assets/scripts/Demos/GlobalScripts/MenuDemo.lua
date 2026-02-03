@@ -2,7 +2,7 @@ function onStart()
     textWriter = ObjectFactory.TextWriter("../assets/fonts/Courier.ttf", 2)
     current = 0
     menuOptions = {"> Option #1", "> Option #2", "> Option #3", "> Option #4"}
-    baseOffsetX = 300
+    baseOffsetX = 500
     baseOffsetY = 300
     enabled = true
 end
@@ -32,11 +32,11 @@ function onUpdate()
         textWriter:writeTextTTFAutoSize(baseOffsetX, offsetY, option, color, 1.5)
     end
 
-    if input:isCharPressed("UP") and input:isKeyEventDown() then
+    if input:isCharFirstEventDown("UP") and input:isKeyEventDown() then
         current = current - 1
     end
 
-    if input:isCharPressed("DOWN") and input:isKeyEventDown() then
+    if input:isCharFirstEventDown("DOWN") and input:isKeyEventDown() then
         current = current + 1
     end
 
