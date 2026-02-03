@@ -1,15 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_119095.png",
-	"description":	{
-		"x":	0,
-		"y":	-9.8000001907348633,
-		"z":	0
-	},
-	"gravity":	{
-		"x":	0,
-		"y":	-9.8000001907348633,
-		"z":	0
-	},
+	"screenshot":	"../assets/screenshots/scene_989152.png",
 	"ads":	{
 		"direction":	{
 			"x":	-1,
@@ -33,12 +23,13 @@
 		}
 	},
 	"objects":	[{
-			"name":	"p1",
+			"name":	"p3",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	-8.7564201354980469,
-				"y":	-0.035857319831848145,
+				"x":	7.4340124130249023,
+				"y":	11.316764831542969,
 				"z":	1.83713698387146
 			},
 			"rotation":	{
@@ -46,45 +37,14 @@
 				"y":	89.999992370605469,
 				"z":	-179.99998474121094
 			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[{
-					"codeFile":	"",
-					"typesFile":	"",
-					"name":	"Rotate from object",
-					"types":	[]
-				}],
-			"ambient":	{
-				"x":	0.16803276538848877,
-				"y":	0.16803276538848877,
-				"z":	0.16803276538848877
-			},
-			"diffuse":	{
-				"x":	0.89754098653793335,
-				"y":	0.19863609969615936,
-				"z":	0
-			},
-			"specular":	{
-				"x":	1,
-				"y":	1,
-				"z":	1
-			},
-			"constant":	0.19999900460243225,
-			"linear":	0.090000003576278687,
-			"quadratic":	0.0099999997764825821,
-			"type":	4
-		}, {
-			"name":	"p2",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-9.05780029296875,
-				"y":	10.334745407104492,
-				"z":	1.83713698387146
-			},
-			"rotation":	{
-				"x":	-179.99998474121094,
-				"y":	89.999992370605469,
-				"z":	-179.99998474121094
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
@@ -99,22 +59,23 @@
 				"z":	0.05000000074505806
 			},
 			"diffuse":	{
-				"x":	0,
-				"y":	0.43442630767822266,
-				"z":	1
+				"x":	0.35245907306671143,
+				"y":	1,
+				"z":	0
 			},
 			"specular":	{
 				"x":	1,
 				"y":	1,
 				"z":	1
 			},
-			"constant":	0.23999999463558197,
+			"constant":	0.25999999046325684,
 			"linear":	0.090000003576278687,
 			"quadratic":	0.032000001519918442,
 			"type":	4
 		}, {
 			"name":	"axis",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
 				"x":	0,
@@ -126,10 +87,19 @@
 				"y":	-0,
 				"z":	0
 			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
 			"isCollisionsEnabled":	true,
 			"collider":	{
 				"mode":	1,
-				"shape":	1,
+				"shape":	2,
 				"friction":	1,
 				"mass":	0,
 				"margin":	0.0040000001899898052,
@@ -165,18 +135,58 @@
 			"shaders":	[],
 			"type":	2
 		}, {
-			"name":	"p3",
+			"name":	"pawn",
 			"scale":	1,
+			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	7.4340124130249023,
-				"y":	11.316764831542969,
+				"x":	-4.0576009750366211,
+				"y":	1.6743474006652832,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"p2",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-9.05780029296875,
+				"y":	10.334745407104492,
 				"z":	1.83713698387146
 			},
 			"rotation":	{
 				"x":	-179.99998474121094,
 				"y":	89.999992370605469,
 				"z":	-179.99998474121094
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
@@ -191,8 +201,58 @@
 				"z":	0.05000000074505806
 			},
 			"diffuse":	{
-				"x":	0.35245907306671143,
+				"x":	0,
+				"y":	0.43442630767822266,
+				"z":	1
+			},
+			"specular":	{
+				"x":	1,
 				"y":	1,
+				"z":	1
+			},
+			"constant":	0.23999999463558197,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	4
+		}, {
+			"name":	"p1",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-8.7564201354980469,
+				"y":	-0.035857319831848145,
+				"z":	1.83713698387146
+			},
+			"rotation":	{
+				"x":	-179.99998474121094,
+				"y":	89.999992370605469,
+				"z":	-179.99998474121094
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[{
+					"codeFile":	"",
+					"typesFile":	"",
+					"name":	"Rotate from object",
+					"types":	[]
+				}],
+			"ambient":	{
+				"x":	0.16803276538848877,
+				"y":	0.16803276538848877,
+				"z":	0.16803276538848877
+			},
+			"diffuse":	{
+				"x":	0.89754098653793335,
+				"y":	0.19863609969615936,
 				"z":	0
 			},
 			"specular":	{
@@ -200,30 +260,10 @@
 				"y":	1,
 				"z":	1
 			},
-			"constant":	0.25999999046325684,
+			"constant":	0.19999900460243225,
 			"linear":	0.090000003576278687,
-			"quadratic":	0.032000001519918442,
+			"quadratic":	0.0099999997764825821,
 			"type":	4
-		}, {
-			"name":	"pawn",
-			"scale":	1,
-			"enabled":	true,
-			"position":	{
-				"x":	-4.0576009750366211,
-				"y":	1.6743474006652832,
-				"z":	1.83713698387146
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	-0,
-				"z":	0
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models//ChessPawn.fbx",
-			"enableLights":	true,
-			"shaders":	[],
-			"type":	2
 		}],
 	"shaders":	[],
 	"scripts":	[],
