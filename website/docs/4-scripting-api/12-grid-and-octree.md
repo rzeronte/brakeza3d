@@ -26,7 +26,7 @@ To create an octree use `BuildOctree(int maxDepth)`:
 
 ```lua
 eye = ObjectFactory.Mesh3D("../assets/models/Capsule.fbx", Vertex3D.new(x, y, z))
-eye:BuildOctree(1) -- crea una árbol de octanos de un solo nivel de profundidad, solo 8 hijos
+eye:BuildOctree(1) -- creates an octree with a single depth level, only 8 children
 ```
 
 To readjust the dimensions of both grids and octree structures, simply rerun `buildGrid3D()` or `buildOctree()`.
@@ -58,8 +58,7 @@ eye:getGrid3D():setTravel(0, 0, 0, 5, 5, 5)     -- set travel from (0,0,0) to (5
 path = eye:getGrid3D():MakeTravelCubesGrid()    -- returns an array of CubeGrid3D
 ```
 
-Mediante el método setTravel(x1, y1, z1, x2, y2, z2), podremos ajustar el viaje para el próximo camino
-solicitado mediante makeTravelCubesGrid.
+Using the method `setTravel(x1, y1, z1, x2, y2, z2)`, you can define the start and end points for the next path request made through `MakeTravelCubesGrid()`.
 
 The method MakeTravelCubesGrid returns the requested path as an array of CubeGrid3D structures:
 
@@ -86,11 +85,47 @@ end
 ...
 ```
 
-## Click object detection
+## Click Object Detection
 ---
 
-Brakeza3D ofrece de forma nativa la funcionalidad de click sobre un Object3D. Para ello po
+**Brakeza3D** provides native functionality for detecting clicks on `Object3D` instances using raycasting.
 
-# Complete LUA Code Examples
+To detect if an object was clicked, you can use the `isRayCollisionWith()` method from the Collisions component. This method casts a ray from one point to another and checks if it intersects with a specific object.
 
-https://github.com/rzeronte/brakeza3d/blob/master/doc/examples-lua-code.md_
+### Basic Click Detection Example
+
+```lua
+function onUpdate()
+    local input = Components:Input()
+
+    if input:isClickLeft() then
+        -- Get mouse position relative to renderer
+        local mouseX = input:getRelativeRendererMouseX()
+        local mouseY = input:getRelativeRendererMouseY()
+
+        -- Get camera for ray origin
+        local camera = Components:Camera():getCamera()
+        local rayOrigin = camera:getPosition()
+
+        -- Calculate ray direction from camera through mouse position
+        -- (simplified - actual implementation depends on your projection)
+        local rayEnd = Vertex3D.new(mouseX, mouseY, 100)
+
+        -- Check collision with a specific object
+        local targetObject = Brakeza:getSceneObjectByLabel("MyObject")
+        if Components:Collisions():isRayCollisionWith(rayOrigin, rayEnd, targetObject) then
+            print("Object clicked!")
+        end
+    end
+end
+```
+
+### Method Reference
+
+| Method | Parameters | Return | Description |
+|--------|------------|--------|-------------|
+| `isRayCollisionWith()` | `from: Vertex3D, to: Vertex3D, object: Object3D` | `bool` | Returns true if the ray from `from` to `to` intersects with the specified object |
+
+:::note
+For click detection to work properly, the target object must have collisions enabled with an appropriate collider shape configured.
+:::

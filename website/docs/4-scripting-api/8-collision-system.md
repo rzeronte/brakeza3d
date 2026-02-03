@@ -1,177 +1,325 @@
 ---
 sidebar_position: 9
 title: Collision system
-description: Collision system API in Brakeza3D with collision modes, shapes, forces, and bone mapping for animations.
+description: Collision system API in Brakeza3D with setup methods, forces, kinematic control, and bone mapping.
 ---
 
 # Collision system
 ---
 
-This section describes the collision system in **Brakeza3D** and how objects can interact physically within
-the scene. 
+This section covers the LUA API for collisions in **Brakeza3D**.
 
+:::tip
+For conceptual understanding of collision modes and shapes, see [Collision Concepts](../engine-concepts/collisions).
+:::
 
-## Collision between objects
+## Collision Callback
 ---
 
-Collidable objects allow developers to implement logic based on collision events.
-In Brakeza3D, all Object3D instances can work with physics and collisions.
-
-Any collidable object will trigger a call to the onCollision method in your LUA scripts for each collision that
-occurs.
-
-```lua
-function onCollision(with)
-    print("Collision with " .. with:getName())
-end
-```
-
-## Collision Modes
----
-
-In **Brakeza3D**, every physical object has a **collision shape**, which defines the geometric boundaries used for detecting collisions with other objects.  
-
-The collision shape determines how the object interacts with the physics system and can be configured to match the object's visual geometry or simplified for performance.  
-
-Once a collision shape is assigned, you can select the **collision mode** for the object, controlling whether it behaves as a ghost, a rigid body, or a kinematic object. These modes define how the object responds to physics and collisions, and can be set either from the GUI or programmatically using LUA scripts.
-
-### Ghost mode
-
-A **Ghost** is a collidable object that does **not react to physics**.
-
-Ghosts are often used for triggers, sensors, or objects that should detect collisions without being physically affected.  
-You can configure an object as a Ghost from the GUI or programmatically using the `setupGhostCollider()` method.
-
-
-### RigidBody mode
-
-A **RigidBody** is a fully physical object that **reacts to forces, collisions, and gravity**.
-
-RigidBodies are used for objects that should behave realistically in the physics simulation.  
-You can configure an object as a RigidBody from the GUI or using the `setupRigidBodyCollider()` method.
-
-In RigidBody collision mode, you can specify whether the geometry is static. Static objects do not
-move (their mass is automatically set to 0). This is the only collision mode allowed for non-convex geometries.
-
-### Kinematic mode
-
-The kinematic collision mode provides character-like movement behavior and supports the following methods:
-
-| Function                        | Description                                                                                       |
-|---------------------------------|---------------------------------------------------------------------------------------------------|
-| `setWalkingDirection(Vertex3D)` | Sets the desired movement direction for a kinematic object, typically used for character motion   |
-| `onGround()`                    | Returns `true` if the kinematic object is currently in contact with the ground, otherwise `false` |
-| `Jump()`                        | Makes the kinematic object perform a jump according to its current physics settings               |
-
-
-## Collider Shape
----
-
-Brakeza3D provides several **collider shapes** that define the physical boundaries of objects for collision detection:
-
-- `CollisionShape.SIMPLE_SHAPE`
-- `CollisionShape.CAPSULE_SHAPE`
-- `CollisionShape.TRIANGLE3D_MESH_SHAPE`
-
-### Simple Shape
-A basic collider shape suitable for most objects. Offers **excellent performance** and is supported by any `Object3D`.
-
-```json
-eye = ObjectFactory.Mesh3D(
-  "../assets/models/Eye.fbx",
-  Vertex3D.new(0, 0, 10)
-)
-eye:setCollisionsEnabled(true)                              -- enable collider
-eye:setupGhostCollider(CollisionShape.SIMPLE_SHAPE);        -- Ghost / SIMPLE_SHAPE
-```
-
-### Capsule Shape
-A capsule-shaped collider, often used for characters or elongated objects. Like the simple shape, it provides **good performance** and works with any `Object3D`.
-
-```json
-eye = ObjectFactory.Mesh3D(
-  "../assets/models/Eye.fbx",
-  Vertex3D.new(10, 10, 10)
-)
-eye:setCollisionsEnabled(true)                              -- enable collider
-eye:setupRigidBodyCollider(CollisionShape.CAPSULE_SHAPE);   -- RigidBody / CAPSULE_SHAPE
-```
-
-### Triangle Mesh Shape
-A precise collider that **matches the exact geometry of a `Mesh3D` object**. This shape provides high accuracy for collisions but has a **higher computational cost** compared to simple or capsule shapes. It is ideal for static meshes or situations where precise collision detection is required.
-You can configure collider shapes either from the GUI or from LUA scripts.
-
-```json
-eye = ObjectFactory.Mesh3D(
-    "../assets/models/Eye.fbx",
-    Vertex3D.new(10, 10, 10)
-)
-eye:setCollisionsEnabled(true)                                -- enable collider
-eye:setupGhostCollider(CollisionShape.TRIANGLE3D_MESH_SHAPE); -- Ghost / TRIANGLE3D_MESH_SHAPE
-```
-
-
-## Disabling Collisions
----
-
-You can disable collisions for an object using the `setCollisionsEnabled(bool)` method.
-This will remove any collision shape previously configured for the object.
-
-
-
-## Movement of Collidable Objects
----
-
-Both GHOST and RIGIDBODY objects can be moved within the scene.
-
-    - `setLinearVelocity(Vertex3D)`: Set linear velocity for current collider
-
-### Applying Forces to Rigid Objects
-
-For RigidBody objects, forces can be applied using the following methods:
-
-| Function                               | Description                                                                                               |
-|----------------------------------------|-----------------------------------------------------------------------------------------------------------|
-| `ApplyCentralImpulse(Vertex3D f)`      | Applies an instantaneous central impulse to the object, affecting its linear velocity                     |
-| `ApplyCentralForce(Vertex3D f)`        | Applies a continuous central force to the object, influencing its movement over time                      |
-| `ApplyImpulse(Vertex3D f, Vertex3D r)` | Applies an impulse at a specific point relative to the object, affecting both linear and angular velocity |
-
-## Collider Properties
----
-
-You can use the following methods to configure the physical behavior of an object:
-
-| Function                       | Description                                                                          |
-|--------------------------------|--------------------------------------------------------------------------------------|
-| `setMass(float)`               | Sets the mass of the object, affecting how it responds to forces                     |
-| `setFriction(float)`           | Sets the surface friction of the object, controlling resistance to sliding           |
-| `setRestitution(float)`        | Sets the bounciness of the object during collisions (0 = no bounce, 1 = full bounce) |
-| `setAngularDamping(float)`     | Sets rotational damping, reducing angular velocity over time                         |
-| `setLinearDamping(float)`      | Sets linear damping, reducing translational velocity over time                       |
-| `setAngularFactor(Vertex3D)`   | Restricts or scales rotation along each axis                                         |
-| `setLinearFactor(Vertex3D)`    | Restricts or scales movement along each axis                                         |
-| `setGravityCollider(Vertex3D)` | Defines the gravity vector applied to the object                                     |
-
-
-## Collider and Bone Mapping
-
-
-Objects of type Mesh3DAnimation can define colliders for the bones used to animate the model geometry.
-
-From LUA scripts, you can determine whether a collision comes from the object's main collider or from a
-bone collider, as well as the bone mapping index to which it belongs.
-
-A common use case is defining colliders for bones such as weapons in animations, allowing you to differentiate
-collisions coming from a specific bone.
+Any collidable object triggers the `onCollision` method in your LUA scripts:
 
 ```lua
 function onCollision(with)
     if with ~= nil then
-        print("Script: Collision With: " .. with:getObject():getName())
-        print("Script: Collision Source: " .. with:getSource())
-        print("Script: Collision BoneIndexMapping: " .. with:getBoneIndexMapping())
-    else
-        print("Script: Collision with unknow object")
+        print("Collision with: " .. with:getObject():getName())
     end
 end
 ```
+
+## Setting Up Colliders
+---
+
+### Enable Collisions
+
+```lua
+object:setCollisionsEnabled(true)   -- enable
+object:setCollisionsEnabled(false)  -- disable and remove collider
+```
+
+### Ghost Collider
+
+Creates a collider that detects but doesn't react to physics:
+
+```lua
+object:setupGhostCollider(CollisionShape.SIMPLE_SHAPE)
+```
+
+### RigidBody Collider
+
+Creates a fully physical collider:
+
+```lua
+-- Dynamic rigid body
+object:SetupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE, mass, isStatic)
+
+-- Examples
+object:SetupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE, 10, false)  -- 10kg dynamic
+object:SetupRigidBodyCollider(CollisionShape.SIMPLE_SHAPE, 0, true)    -- static obstacle
+```
+
+### Collision Shapes
+
+| Shape | Constant | Use Case |
+|-------|----------|----------|
+| Simple | `CollisionShape.SIMPLE_SHAPE` | General objects |
+| Capsule | `CollisionShape.CAPSULE_SHAPE` | Characters |
+| Triangle Mesh | `CollisionShape.TRIANGLE_MESH_SHAPE` | Precise static geometry |
+
+```lua
+-- Capsule for character
+player:setCollisionsEnabled(true)
+player:setupGhostCollider(CollisionShape.CAPSULE_SHAPE)
+
+-- Triangle mesh for terrain
+terrain:setCollisionsEnabled(true)
+terrain:SetupRigidBodyCollider(CollisionShape.TRIANGLE_MESH_SHAPE, 0, true)
+```
+
+### Capsule Size
+
+```lua
+object:setCapsuleColliderSize(radius, height)
+```
+
+## Kinematic Mode
+---
+
+For character-like movement controlled by code:
+
+| Method | Description |
+|--------|-------------|
+| `setWalkingDirection(Vertex3D)` | Set movement direction |
+| `onGround()` | Returns `true` if touching ground |
+| `Jump(Vertex3D)` | Perform a jump with given force |
+
+```lua
+function onUpdate()
+    local input = Components:Input()
+    local forward = this:AxisForward()
+    local right = this:AxisRight()
+    local velocity = Vertex3D.new(0, 0, 0)
+
+    if input:isCharPressed("W") then
+        velocity = velocity + forward:getScaled(-speed)
+    end
+    if input:isCharPressed("S") then
+        velocity = velocity + forward:getScaled(speed)
+    end
+    if input:isCharPressed("A") then
+        velocity = velocity + right:getScaled(-speed)
+    end
+    if input:isCharPressed("D") then
+        velocity = velocity + right:getScaled(speed)
+    end
+
+    this:setWalkingDirection(velocity)
+
+    -- Jump when on ground
+    if input:isCharPressed("SPACE") and this:onGround() then
+        this:Jump(Vertex3D.new(0, jumpForce, 0))
+    end
+end
+```
+
+## RigidBody Movement
+---
+
+### Velocity
+
+```lua
+object:setLinearVelocity(Vertex3D.new(vx, vy, vz))
+object:setAngularVelocity(Vertex3D.new(rx, ry, rz))
+
+local vel = object:getLinearVelocity()
+```
+
+### Applying Forces
+
+| Method | Description |
+|--------|-------------|
+| `ApplyCentralForce(Vertex3D)` | Continuous force (use in onUpdate) |
+| `ApplyCentralImpulse(Vertex3D)` | Instant impulse (one-time) |
+| `ApplyImpulse(Vertex3D f, Vertex3D r)` | Impulse at offset point |
+
+```lua
+-- Push object forward continuously
+object:ApplyCentralForce(Vertex3D.new(0, 0, -100))
+
+-- Instant kick
+object:ApplyCentralImpulse(Vertex3D.new(0, 50, 0))
+
+-- Hit at specific point (causes rotation)
+object:ApplyImpulse(
+    Vertex3D.new(10, 0, 0),   -- force
+    Vertex3D.new(0, 1, 0)     -- offset from center
+)
+```
+
+## Collider Properties
+---
+
+| Method | Description |
+|--------|-------------|
+| `setMass(float)` | Object mass (affects force response) |
+| `setFriction(float)` | Surface friction (0-1) |
+| `setRestitution(float)` | Bounciness (0 = none, 1 = full) |
+| `setLinearDamping(float)` | Velocity reduction over time |
+| `setAngularDamping(float)` | Rotation reduction over time |
+| `setLinearFactor(Vertex3D)` | Restrict movement axes |
+| `setAngularFactor(Vertex3D)` | Restrict rotation axes |
+| `setGravityCollider(Vertex3D)` | Custom gravity for this object |
+
+```lua
+-- Bouncy ball
+ball:setRestitution(0.9)
+ball:setFriction(0.1)
+
+-- Heavy box
+box:setMass(100)
+box:setFriction(0.8)
+
+-- Lock Y rotation (no tipping over)
+object:setAngularFactor(Vertex3D.new(0, 1, 0))
+
+-- Zero gravity object
+object:setGravityCollider(Vertex3D.new(0, 0, 0))
+```
+
+## Collider State Control
+---
+
+| Method | Description |
+|--------|-------------|
+| `SleepCollider()` | Put collider to sleep (optimization) |
+| `DisableSimulationCollider()` | Pause physics simulation |
+| `EnableSimulationCollider()` | Resume physics simulation |
+| `DisableDeactivationCollider()` | Prevent auto-sleep |
+| `RemoveCollisionObject()` | Remove collider completely |
+
+```lua
+-- Temporarily disable physics
+object:DisableSimulationCollider()
+
+-- Re-enable later
+object:EnableSimulationCollider()
+```
+
+## Collider Transform
+---
+
+| Method | Description |
+|--------|-------------|
+| `moveCollider(Vertex3D)` | Move collider position |
+| `setScalingCollider(Vertex3D)` | Scale collider size |
+| `UpdateShapeCollider()` | Refresh collider after changes |
+| `setDrawOffset(Vertex3D)` | Visual offset from collider |
+| `setColliderStatic(bool)` | Toggle static state |
+
+## Bone Mapping (Animations)
+---
+
+For `Mesh3DAnimation` objects, you can detect which bone caused a collision:
+
+```lua
+function onCollision(with)
+    if with ~= nil then
+        local obj = with:getObject()
+        local source = with:getSource()           -- "main" or "bone"
+        local boneIndex = with:getBoneIndexMapping()
+
+        if source == "bone" then
+            print("Hit by bone #" .. boneIndex .. " of " .. obj:getName())
+        else
+            print("Hit by main collider of " .. obj:getName())
+        end
+    end
+end
+```
+
+This is useful for:
+- Weapon hit detection (sword, fist)
+- Damage zones on enemies
+- Precise hit feedback
+
+## Raycasting
+---
+
+Check if a ray hits a collider:
+
+```lua
+local collisions = Components:Collisions()
+local hit = collisions:isRayCollisionWith(origin, direction, maxDistance, object)
+
+if hit then
+    print("Ray hit the object!")
+end
+```
+
+## Debug Mode
+---
+
+Enable visual debugging:
+
+```lua
+Components:Collisions():setEnableDebugMode(true)
+```
+
+## Practical Example
+---
+
+### Collectible Item
+
+```lua
+function onStart()
+    -- Ghost collider (no physics, just detection)
+    this:setCollisionsEnabled(true)
+    this:setupGhostCollider(CollisionShape.SIMPLE_SHAPE)
+end
+
+function onUpdate()
+    -- Rotate for visual effect
+    local rot = this:getRotation()
+    local spin = M3:getMatrixRotationForEulerAngles(0, Brakeza:getDeltaTime(), 0)
+    this:setRotation(rot * spin)
+end
+
+function onCollision(with)
+    if with ~= nil then
+        local other = with:getObject()
+        if other:getName() == "Player" then
+            print("Item collected!")
+            -- Add to inventory, play sound, etc.
+            this:setRemoved(true)
+        end
+    end
+end
+```
+
+## Method Summary
+---
+
+### Setup
+| Method | Description |
+|--------|-------------|
+| `setCollisionsEnabled(bool)` | Enable/disable collisions |
+| `setupGhostCollider(shape)` | Create ghost collider |
+| `SetupRigidBodyCollider(shape, mass, static)` | Create rigid body |
+| `setCapsuleColliderSize(r, h)` | Set capsule dimensions |
+
+### Movement
+| Method | Description |
+|--------|-------------|
+| `setWalkingDirection(Vertex3D)` | Kinematic movement |
+| `Jump(Vertex3D)` | Kinematic jump |
+| `onGround()` | Check ground contact |
+| `setLinearVelocity(Vertex3D)` | Set velocity |
+| `ApplyCentralForce(Vertex3D)` | Apply continuous force |
+| `ApplyCentralImpulse(Vertex3D)` | Apply instant impulse |
+
+### Properties
+| Method | Description |
+|--------|-------------|
+| `setMass(float)` | Set mass |
+| `setFriction(float)` | Set friction |
+| `setRestitution(float)` | Set bounciness |
+| `setGravityCollider(Vertex3D)` | Set custom gravity |
