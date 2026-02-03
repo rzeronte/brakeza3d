@@ -206,14 +206,24 @@ void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
 
 void ComponentSound::setMusicVolume(int v)
 {
-    if (!Components::get()->Sound()->isEnabled()) return;
+    if (!Components::get()->Sound()->isEnabled()) {
+        LOG_WARNING("[Sound] setMusicVolume called but Sound component is disabled");
+        return;
+    }
 
-    Mix_VolumeMusic(static_cast<int>(Config::get()->SOUND_VOLUME_MUSIC));
+    LOG_MESSAGE("[Sound] setMusicVolume: %d", v);
+    Config::get()->SOUND_VOLUME_MUSIC = static_cast<float>(v);
+    Mix_VolumeMusic(v);
 }
 
 void ComponentSound::setSoundsVolume(int v)
 {
-    if (!Components::get()->Sound()->isEnabled()) return;
+    if (!Components::get()->Sound()->isEnabled()) {
+        LOG_WARNING("[Sound] setSoundsVolume called but Sound component is disabled");
+        return;
+    }
 
-    Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(Config::get()->SOUND_VOLUME_FX));
+    LOG_MESSAGE("[Sound] setSoundsVolume: %d", v);
+    Config::get()->SOUND_VOLUME_FX = static_cast<float>(v);
+    Mix_Volume(Config::SoundChannels::SND_GLOBAL, v);
 }

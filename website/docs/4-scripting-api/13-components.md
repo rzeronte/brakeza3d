@@ -144,3 +144,41 @@ Through your LUA scripts, you can access the following methods:
 | `ReloadLUAScripts()`    | Reloads all LUA scripts and restarts their execution   |
 | `AddSceneLUAScript()`   | Adds a LUA script that is executed at the scene level  |
 | `AddProjectLUAScript()` | Adds a global LUA script executed at the project level |
+
+
+## SceneLoader
+---
+
+The SceneLoader is responsible for loading, saving, and managing scenes. You can access it through the Render component using `getSceneLoader()`.
+
+Through your LUA scripts, you can access the following methods:
+
+| Function                  | Description                                                                                      |
+|---------------------------|--------------------------------------------------------------------------------------------------|
+| `clearScene()`            | Removes all objects from the scene, including objects defined in the scene file                  |
+| `cleanScene()`            | Removes only runtime-created objects, keeping objects that were loaded from the scene file       |
+| `LoadScene(string path)`  | Loads a scene from the specified JSON file path                                                  |
+| `SaveScene(string path)`  | Saves the current scene state to the specified JSON file path                                    |
+
+### Usage Example
+
+```lua
+local sceneLoader = brakeza:Render():getSceneLoader()
+
+-- Load a scene
+sceneLoader:LoadScene("../assets/scenes/MyScene.json")
+
+-- Clear all objects (full reset)
+sceneLoader:clearScene()
+
+-- Clean only runtime objects (keep scene objects)
+sceneLoader:cleanScene()
+
+-- Save current scene
+sceneLoader:SaveScene("../assets/scenes/MyScene.json")
+```
+
+:::note
+- `clearScene()` removes **all** objects and is typically used when switching between scenes
+- `cleanScene()` preserves scene-defined objects and only removes objects created at runtime via scripts
+:::

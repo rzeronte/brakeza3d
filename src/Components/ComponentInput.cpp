@@ -51,7 +51,11 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
     UpdateKeyboardStates(e);
     HandleWindowEvents(e, finish);
 
-    if (!Components::get()->Scripting()->isExecuting()) {
+    bool isExecuting = Components::get()->Scripting()->isExecuting();
+    bool editorModifier = keyboard[SDL_SCANCODE_RCTRL];  // Right Ctrl enables editor shortcuts during execution
+
+    // Shortcuts work when: not executing OR RCtrl is held during execution
+    if (!isExecuting || editorModifier) {
         HandleGUIShortCuts(e);
     }
 
@@ -59,10 +63,6 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
 
     if (mouseEnabled) {
         HandleMouseLook(e);
-    }
-
-    if (!Components::get()->Scripting()->isExecuting()) {
-        HandleDeleteSelectedObject(e);
     }
 }
 
@@ -239,9 +239,9 @@ bool ComponentInput::isAnyControllerButtonPressed() const
 void ComponentInput::InitJoystick()
 {
     if ( SDL_NumJoysticks() < 1 ) {
-        LOG_MESSAGE("[Input] WARNING: No gamepad controller connected." );
+        LOG_WARNING("[Input] No gamepad controller connected!");
     } else {
-        gameController = SDL_GameControllerOpen( 0 );
+        gameController = SDL_GameControllerOpen(0);
 
         if (gameController == nullptr) {
             LOG_ERROR("[Input] Unable to open game pad controller: %s", SDL_GetError());
@@ -258,9 +258,9 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
 
         if (keyboard[SDL_SCANCODE_F1]) {
             if (scripting->isExecuting()) {
-                scripting->PlayLUAScripts();
-            } else {
                 scripting->StopLUAScripts();
+            } else {
+                scripting->PlayLUAScripts();
             }
         }
         if (keyboard[SDL_SCANCODE_F2]) {

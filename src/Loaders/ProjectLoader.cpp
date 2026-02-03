@@ -83,7 +83,12 @@ void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
 {
     cJSON *root = cJSON_CreateObject();
 
-    cJSON_AddStringToObject(root, "name", Config::get()->ENGINE_TITLE.c_str());
+    auto project = Components::get()->Scripting()->getCurrentProject();
+    std::string projectName = project != nullptr ? project->getName() : Config::get()->ENGINE_TITLE;
+    std::string projectDesc = project != nullptr ? project->getDescription() : "";
+
+    cJSON_AddStringToObject(root, "name", projectName.c_str());
+    cJSON_AddStringToObject(root, "description", projectDesc.c_str());
     cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 
     // scripts

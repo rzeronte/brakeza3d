@@ -156,12 +156,12 @@ inline void LUAIntegration(sol::state &lua)
     sol::base_classes, sol::bases<Component>(),
         "AddSound", &ComponentSound::AddSound,
         "AddMusic", &ComponentSound::AddMusic,
-        "setMusicVolume", &ComponentSound::setMusicVolume,
-        "setSoundsVolume", &ComponentSound::setSoundsVolume,
+        "setMusicVolume", [](ComponentSound*, int v) { ComponentSound::setMusicVolume(v); },
+        "setSoundsVolume", [](ComponentSound*, int v) { ComponentSound::setSoundsVolume(v); },
         "PlaySound", &ComponentSound::PlaySound,
         "PlayMusic", &ComponentSound::PlayMusic,
-        "StopMusic", &ComponentSound::StopMusic,
-        "StopChannel", &ComponentSound::StopChannel,
+        "StopMusic", [](ComponentSound*) { ComponentSound::StopMusic(); },
+        "StopChannel", [](ComponentSound*, int channel) { ComponentSound::StopChannel(channel); },
         "getSoundDuration", &ComponentSound::getSoundDuration
     );
 
@@ -375,6 +375,7 @@ inline void LUAIntegration(sol::state &lua)
 
     lua.new_usertype<SceneLoader>("SceneLoader",
         "clearScene", &SceneLoader::ClearScene,
+        "cleanScene", &SceneLoader::CleanScene,
         "SaveScene", [](SceneLoader*, std::string path) {
             SceneLoader::SaveScene(FilePath::SceneFile(path));
         },

@@ -38,6 +38,7 @@ struct ProjectCheckerResolution
 struct ProjectCheckerStatus
 {
     std::string name;
+    std::string description;
     Vertex3D gravity;
     std::vector<ProjectCheckerScript> scripts;
     std::vector<ProjectCheckerScene> scenes;
@@ -59,6 +60,7 @@ class ProjectChecker
 
     // Extraction functions
     void ExtractName(cJSON* json);
+    void ExtractDescription(cJSON* json);
     void ExtractGravity(cJSON* json);
     void ExtractScripts(cJSON* json);
     void ExtractScenes(cJSON* json);

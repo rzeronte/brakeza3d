@@ -77,8 +77,8 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Code/Nodes editor",   GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true,  false,  DrawWinEditableOpenResources(),                                            ImVec2(650, 400), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("GUI Icons",           GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, false, false,  IconsGUI::DrawWinDebugIcons(this),                                     ImVec2(650, 500), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  false, false,  GUIAddonDocumentation::DrawWinDocumentation(documentationTree),            ImVec2(400, 400), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Scene Detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Project Detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Scene detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Project detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           false, false, false, false,  ThreadGUI::MenuWorkers(),                                                  ImVec2(550, 650), ImVec2(FLT_MAX, FLT_MAX));
 
     RegisterDefaultLayoutWindows();

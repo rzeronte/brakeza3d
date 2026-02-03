@@ -64,7 +64,7 @@ void GUIAddonMenu::MenuScriptControls()
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LUA_STOP), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
-    if (ImGui::MenuItem("Stop scripts", "F1", false, state != Config::LuaStateScripts::LUA_STOP)) {
+    if (ImGui::MenuItem("Stop scripts", "CTRL + F1", false, state != Config::LuaStateScripts::LUA_STOP)) {
         scripting->StopLUAScripts();
     }
     ImGui::Separator();
@@ -76,7 +76,12 @@ void GUIAddonMenu::MenuScriptControls()
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAR_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
-    if (ImGui::MenuItem("Clear scene objects", "F3")) {
+    if (ImGui::MenuItem("Clear (all objects)", "F3")) {
+        SceneLoader::ClearScene();
+    }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAN_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::MenuItem("Clean (not scene objects)")) {
         SceneLoader::ClearScene();
     }
 }
@@ -469,18 +474,16 @@ void GUIAddonMenu::MenuSound()
 
     const float range_sensibility_volume = 1;
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_ENABLE_SYSTEM), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Global Sound System", nullptr, &setup->ENABLE_SOUND);
-    ImGui::Separator();
-    if (ImGui::IsItemDeactivatedAfterEdit()) {
+    if (ImGui::MenuItem("Global Sound System", nullptr, &setup->ENABLE_SOUND)) {
         if (!setup->ENABLE_SOUND) {
             Mix_Volume(Config::SoundChannels::SND_GLOBAL, 0);
-            Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
             Mix_VolumeMusic(0);
         } else {
             Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_VOLUME_FX));
             Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
         }
     }
+    ImGui::Separator();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_MUSIC_VOLUME), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
