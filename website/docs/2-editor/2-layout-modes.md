@@ -47,10 +47,7 @@ In the main menu, you will find the `Windows` section, which provides access to 
 | Global Variables  | Global variables in the application                                    |
 | Images            | Access to the assets/images folder                                     |
 | Keyboard/Mouse    | Viewer for keyboard and mouse events                                   |
-| Projects Browser  | File browser for projects                                              |
-| Scenes Browser    | File browser for scenes                                                |
-| Scripts Browser   | File browser for scripts                                               |
-| Shaders Browser   | File browser for shaders                                               |
+| File Browser      | Unified browser for projects, scenes, scripts, and shaders             |
 | Console Log       | Log console                                                            |
 | Light Depth Maps  | Debugging dynamic light depth maps                                     |
 | Profiler          | Engine performance                                                     |

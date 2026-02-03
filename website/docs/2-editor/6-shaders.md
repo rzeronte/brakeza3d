@@ -47,11 +47,18 @@ Provide the same functionality as GLSL postprocessing shaders but through a visu
 Work similarly to Object GLSL shaders but use nodes instead of code. They are ideal for visually modifying geometry, applying procedural effects, and customizing vertex attributes per object.
 
 
-## Shaders browser widget
+## Managing Shaders
 ---
-The `Shaders browser` widget allows you to navigate through the shaders folder. From this section, you can load, edit or delete existing shaders.
 
-![Shaders browser](/img/editor/23.png)
+Shaders are managed through the **File Browser** window (**Window** → **File Browser**). Navigate to the **Shaders** section to browse, create, edit, or delete shaders.
+
+![Shaders in File Browser](/img/editor/23.png)
+
+From the File Browser you can:
+- **Create** new shader files (GLSL or Node-based)
+- **Open** shaders in the Code Editor or Node Editor
+- **Delete** existing shaders
+- **Drag and drop** shaders to objects or project setup
 
 **Brakeza3D** includes a wide variety of built-in post-processing shaders, which you can use freely in your projects.
 

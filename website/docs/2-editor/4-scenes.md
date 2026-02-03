@@ -30,8 +30,7 @@ There are multiple ways to add objects to your scene:
 
 | Method | Description |
 |--------|-------------|
-| **Menu** | Use `Add Object` menu to add primitives, lights, or empty objects |
-| **Drag & Drop** | Drag models from the Models Browser directly into the scene |
+| **Menu** | Use `Add Object` menu to add primitives, lights, models, or empty objects |
 | **Scripts** | Create objects programmatically using `ObjectFactory` |
 
 ### Scene Objects Widget
@@ -42,21 +41,19 @@ The **Scene Objects** window (Window → Scene Objects) displays all objects cur
 - Double-click to focus the camera on it
 - Right-click for context menu options
 
-## Scenes Browser Widget
+## Managing Scenes
 ---
 
-The `Scenes browser` widget allows you to navigate through the scenes folder. From this section, you can load or delete existing scenes.
+Scenes are managed through the **File Browser** window (**Window** → **File Browser**). Navigate to the **Scenes** section to browse, load, save, or delete scenes.
 
-![Scenes browser](/img/editor/16.png)
+![Scenes in File Browser](/img/editor/16.png)
 
-For each `Scene`, you can perform the following actions using the available buttons:
-
-| Button | Action |
-|--------|--------|
-| Info | View scene details (objects, scripts, settings) |
-| Load | Load the scene into the editor |
-| Save | Save current scene to this file |
-| Delete | Remove the scene file from disk |
+| Action | Description |
+|--------|-------------|
+| **Info** | View scene details (objects, scripts, settings) |
+| **Load** | Load the scene into the editor |
+| **Save** | Save current scene to this file |
+| **Delete** | Remove the scene file from disk |
 
 ## Scene Detail Widget
 ---
@@ -76,9 +73,10 @@ The detail view shows:
 
 To save your current work:
 
-1. Open **Window** → **Scenes Browser**
-2. Click the **Save** button on an existing scene to overwrite it
-3. Or type a new name and click **Save As** to create a new scene file
+1. Open **Window** → **File Browser**
+2. Navigate to the **Scenes** section
+3. Click the **Save** button on an existing scene to overwrite it
+4. Or type a new name and click **Save As** to create a new scene file
 
 Scenes are saved as JSON files in `assets/scenes/`.
 
@@ -98,9 +96,9 @@ Scenes are saved as JSON files in `assets/scenes/`.
 
 To load an existing scene:
 
-1. Open **Window** → **Scenes Browser**
-2. Navigate to the desired scene
-3. Click the **Load** button
+1. Open **Window** → **File Browser**
+2. Navigate to the **Scenes** section
+3. Select the desired scene and click **Load**
 
 :::warning
 Loading a scene will replace all current objects. Save your work first!
@@ -161,7 +159,7 @@ end
 
 1. Open **Window** → **Project Setup**
 2. Expand **Scene scripts**
-3. Drag a script from the Scripts Browser
+3. Drag a script from the **File Browser** (Scripts section)
 
 Scene scripts run independently of any specific object and are ideal for:
 - Game state management

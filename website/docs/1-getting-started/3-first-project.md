@@ -33,10 +33,6 @@ Let's add a cube to the scene:
 2. Navigate to `assets/models/` and select a model (e.g., `Cube.fbx`)
 3. The cube will appear at position (0, 0, 0)
 
-Alternatively, you can use the **Models Browser** widget:
-1. Open **Window** → **Models Browser**
-2. Drag and drop a model into the scene
-
 ## Step 3: Create Your First Script
 ---
 
@@ -44,9 +40,10 @@ Now let's make the cube interactive with a Lua script.
 
 ### Create the Script File
 
-1. Open **Window** → **Scripts Browser**
-2. Right-click in the scripts area and select **New Script**
-3. Name it `RotatingCube.lua`
+1. Open **Window** → **File Browser**
+2. Navigate to the **Scripts** section
+3. Right-click and select **New Script**
+4. Name it `RotatingCube.lua`
 
 ### Write the Script Code
 
@@ -109,7 +106,7 @@ Press `Ctrl+S` or click the save button in the Code Editor.
 
 1. **Select the cube** by clicking on it in the scene or in the **Scene Objects** window
 2. Open the **Object Scripts** window (Window → Object Scripts)
-3. **Drag and drop** `RotatingCube.lua` from the Scripts Browser into the Object Scripts window
+3. **Drag and drop** `RotatingCube.lua` from the File Browser into the Object Scripts window
 
 ## Step 5: Run Your Script
 ---
@@ -123,16 +120,18 @@ To stop the scripts, click **Stop** in the toolbar.
 ## Step 6: Save Your Scene
 ---
 
-1. Go to **Window** → **Scenes Browser**
-2. Click the **Save** button
-3. Name your scene (e.g., `MyFirstScene.json`)
+1. Open **Window** → **File Browser**
+2. Navigate to the **Scenes** section
+3. Click the **Save** button
+4. Name your scene (e.g., `MyFirstScene.json`)
 
 ## Step 7: Save Your Project
 ---
 
-1. Go to **Window** → **Projects Browser**
-2. Click **Save Project**
-3. Name your project (e.g., `MyFirstProject.json`)
+1. Open **Window** → **File Browser**
+2. Navigate to the **Projects** section
+3. Click **Save Project**
+4. Name your project (e.g., `MyFirstProject.json`)
 
 ## Understanding the Code
 ---
