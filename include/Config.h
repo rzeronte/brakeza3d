@@ -101,7 +101,6 @@ public:
     bool ENABLE_TRIANGLE_MODE_DEPTHMAP = false;
     bool ENABLE_GAMEPAD_CONTROLLER = true;
     bool ENABLE_FOG = false;
-    bool ENABLE_BULLET_STEP_SIMULATION = false;
     bool ENABLE_SOUND = true;
     bool ENABLE_LOGGING_CONSOLE = true;
     bool ENABLE_LOGGING_STD = true;

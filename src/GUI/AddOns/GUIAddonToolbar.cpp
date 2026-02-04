@@ -103,8 +103,9 @@ void GUIAddonToolbar::TransformationsToolsIcons()
 
 void GUIAddonToolbar::StepSimulationOptionsIcons()
 {
-    GUI::DrawButton("Enable/Disable physic world", IconGUI::TOOLBAR_ENABLE_STEP_SIMULATION, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->ENABLE_BULLET_STEP_SIMULATION, [&]() {
-        GUI::Toggle(Config::get()->ENABLE_BULLET_STEP_SIMULATION);
+    bool isPhysicWorld = Components::get()->Collisions()->isEnabled();
+    GUI::DrawButton("Enable/Disable physic world", IconGUI::TOOLBAR_ENABLE_STEP_SIMULATION, GUIType::Sizes::ICONS_TOOLBAR, isPhysicWorld, [&]() {
+        Components::get()->Collisions()->setEnabled(!isPhysicWorld);
     } );
     ImGui::SameLine();
     GUI::DrawButton( "Draw collider AABB", IconGUI::TOOLBAR_DRAW_COLLIDERS, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->BULLET_DEBUG_MODE, [&]() {
