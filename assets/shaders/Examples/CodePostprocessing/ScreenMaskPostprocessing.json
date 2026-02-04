@@ -1,8 +1,8 @@
 {
 	"name":	"ScreenMaskPostprocessing",
-	"typesFile":	"../assets/shaders/Examples/Postprocessing/ScreenMaskPostprocessing.json",
-	"vsFile":	"../assets/shaders/Examples/Postprocessing/ScreenMaskPostprocessing.vs",
-	"fsFile":	"../assets/shaders/Examples/Postprocessing/ScreenMaskPostprocessing.fs",
+	"typesFile":	"../assets/shaders/Examples/CodePostprocessing/ScreenMaskPostprocessing.json",
+	"vsFile":	"../assets/shaders/Examples/CodePostprocessing/ScreenMaskPostprocessing.vs",
+	"fsFile":	"../assets/shaders/Examples/CodePostprocessing/ScreenMaskPostprocessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"et",

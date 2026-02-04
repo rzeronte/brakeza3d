@@ -1,8 +1,8 @@
 {
 	"name":	"NoisePostprocessing",
-	"typesFile":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.json",
-	"vsFile":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.vs",
-	"fsFile":	"../assets/shaders/Examples/Postprocessing/NoisePostprocessing.fs",
+	"typesFile":	"../assets/shaders/Examples/CodePostprocessing/NoisePostprocessing.json",
+	"vsFile":	"../assets/shaders/Examples/CodePostprocessing/NoisePostprocessing.vs",
+	"fsFile":	"../assets/shaders/Examples/CodePostprocessing/NoisePostprocessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"sceneTexture",

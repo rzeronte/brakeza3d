@@ -1,9 +1,9 @@
 {
 	"name":	"BlackAndWhitePostProcessing",
 	"type":	"Postprocessing",
-	"vsFile":	"../assets/shaders/Examples/Postprocessing/BlackAndWhitePostProcessing.vs",
-	"fsFile":	"../assets/shaders/Examples/Postprocessing/BlackAndWhitePostProcessing.fs",
-	"typesFile":	"../assets/shaders/Examples/Postprocessing/BlackAndWhitePostProcessing.json",
+	"vsFile":	"../assets/shaders/Examples/CodePostprocessing/BlackAndWhitePostProcessing.vs",
+	"fsFile":	"../assets/shaders/Examples/CodePostprocessing/BlackAndWhitePostProcessing.fs",
+	"typesFile":	"../assets/shaders/Examples/CodePostprocessing/BlackAndWhitePostProcessing.json",
 	"types":	[{
 			"name":	"intensity",
 			"type":	"float",

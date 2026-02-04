@@ -1,8 +1,8 @@
 {
 	"name":	"ScanLinePostProcessing",
-	"typesFile":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.json",
-	"vsFile":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.vs",
-	"fsFile":	"../assets/shaders/Examples/Postprocessing/ScanLinePostProcessing.fs",
+	"typesFile":	"../assets/shaders/Examples/CodePostprocessing/ScanLinePostProcessing.json",
+	"vsFile":	"../assets/shaders/Examples/CodePostprocessing/ScanLinePostProcessing.vs",
+	"fsFile":	"../assets/shaders/Examples/CodePostprocessing/ScanLinePostProcessing.fs",
 	"type":	"Postprocessing",
 	"types":	[{
 			"name":	"intensity",
