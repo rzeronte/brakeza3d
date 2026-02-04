@@ -1,6 +1,10 @@
 {
 	"codeFile":	"../assets/scripts/Demos/Commons/SideScrollCamera.lua",
-	"typesFile": "../assets/scripts/Demos/Commons/SideScrollCamera.json",
+	"typesFile":	"../assets/scripts/Demos/Commons/SideScrollCamera.json",
 	"name":	"Side scroll demo",
-	"types":	[]
+	"types":	[{
+			"name":	"nameObjectToFollow",
+			"type":	"string",
+			"value":	"player"
+		}]
 }

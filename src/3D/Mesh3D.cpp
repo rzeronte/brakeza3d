@@ -17,6 +17,7 @@
 #include "../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Threads/ThreadJobMakeRigidBody.h"
+#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 
 Mesh3D::Mesh3D()
 {
@@ -347,12 +348,19 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
     btVector3 inertia(0, 0, 0);
 
+    auto shape = getTriangleMeshFromMesh3D(inertia);
+    btTriangleInfoMap* triangleInfoMap = new btTriangleInfoMap();
+    btGenerateInternalEdgeInfo((btBvhTriangleMeshShape*)shape, triangleInfoMap);
+
+    ((btBvhTriangleMeshShape*)shape)->setTriangleInfoMap(triangleInfoMap);
+
     btRigidBody::btRigidBodyConstructionInfo info(
         mass,
         new btDefaultMotionState(transformation),
-        getTriangleMeshFromMesh3D(inertia),
+        shape,
         inertia
     );
+
 
     body = new btRigidBody(info);
     body->activate(true);
@@ -360,6 +368,7 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
     body->setUserPointer(this);
     body->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
     body->setAngularFactor(angularFactor.toBullet());
+    body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
 
     if (mass <= 0) {
         body->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);

@@ -180,11 +180,10 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             }
 
             if (o->collisionsEnabled) {
-                if (ImGui::Button(std::string("Update Collider").c_str())) {
+                GUI::ImageButtonNormal(IconGUI::SCRIPT_RELOAD, "Update Collider", [&] {
                     o->UpdateShapeCollider();
-                }
+                });
                 ImGui::Separator();
-
                 o->drawImGuiCollisionModeSelector();
                 if (o->getCollisionMode() != KINEMATIC) {
                     o->DrawImGuiCollisionShapeSelector();

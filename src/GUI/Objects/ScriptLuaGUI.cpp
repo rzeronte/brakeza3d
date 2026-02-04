@@ -359,19 +359,24 @@ void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
     static char localVarName[256] = "";
     ImGui::InputText("Variable name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
 
-    std::vector<std::string> items;
+    std::vector<std::string> typeKeys;
+    std::vector<std::string> typeLabels;
+
     for (auto &t : LUADataTypesMapping) {
-        items.push_back(t.second.label);
+        typeKeys.push_back(t.first);        // ← NUEVO: Guarda la clave
+        typeLabels.push_back(t.second.label);
     }
 
-    std::vector<const char*> itemsCStr;
-    for (auto& item : items) itemsCStr.push_back(item.c_str());
+    std::vector<const char*> labelsCStr;
+    for (auto& label : typeLabels) labelsCStr.push_back(label.c_str());
 
     static int selectedItem = 0;
-    ImGui::Combo("Type", &selectedItem, itemsCStr.data(), itemsCStr.size());
+    ImGui::Combo("Type", &selectedItem, labelsCStr.data(), labelsCStr.size());
+
     GUI::ImageButtonNormal(IconGUI::SCRIPT_CREATE_VARIABLE, "Create variable", [&] {
         if (localVarName[0] != '\0') {
-            file.getScript()->AddDataTypeEmpty(localVarName, itemsCStr[selectedItem]);
+            // Usar la CLAVE en lugar del LABEL
+            file.getScript()->AddDataTypeEmpty(localVarName, typeKeys[selectedItem].c_str());
         }
     });
 }

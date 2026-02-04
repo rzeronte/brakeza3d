@@ -4,7 +4,25 @@
 #include "../../include/3D/Projectile.h"
 #include "../../include/Render/CollisionInfo.h"
 #include "../../include/Misc/Logging.h"
+#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 
+// ✅ Declarar el extern AQUÍ ARRIBA
+extern ContactAddedCallback gContactAddedCallback;
+
+// ✅ Definir la función callback UNA SOLA VEZ
+static bool CustomContactAddedCallback(
+    btManifoldPoint& cp,
+    const btCollisionObjectWrapper* colObj0Wrap,
+    int partId0,
+    int index0,
+    const btCollisionObjectWrapper* colObj1Wrap,
+    int partId1,
+    int index1)
+{
+    printf("🔥 CALLBACK EJECUTADO!\n");
+    btAdjustInternalEdgeContacts(cp, colObj1Wrap, colObj0Wrap, partId1, index1);
+    return true;
+}
 void ComponentCollisions::onStart()
 {
     Component::onStart();
@@ -87,6 +105,11 @@ void ComponentCollisions::InitBulletSystem()
 
     ghostPairCallback = new btGhostPairCallback();
     overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
+
+
+    gContactAddedCallback = CustomContactAddedCallback;
+
+    LOG_MESSAGE("[Collisions] Internal edge callback configured");
 }
 
 void ComponentCollisions::CheckCollisionsForAll() const

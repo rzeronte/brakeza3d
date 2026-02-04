@@ -1,5 +1,4 @@
 function onStart()
-    nameObjectToFollow = "character"
     object = Brakeza:getObjectByName(nameObjectToFollow)
     cameraOffset = Vertex3D.new(0.01, 0.01, 15)
     direction = Vertex3D.new(0, 0, 1)
@@ -26,3 +25,4 @@ function onUpdate()
     camera:setPosition(Vertex3D.new(newX, newY, newZ))
     --camera:LookAt(object)
 end
+
