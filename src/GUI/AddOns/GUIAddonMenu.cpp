@@ -297,9 +297,12 @@ void GUIAddonMenu::MenuColliders()
     int minFixedTime = 1;
     int maxFixedTime = 60;
 
+    bool enabled = Components::get()->Collisions()->isEnabled();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_COLLISION_SYSTEM), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable Collisions System", nullptr, &setup->ENABLE_BULLET_STEP_SIMULATION);
-    if (!setup->ENABLE_BULLET_STEP_SIMULATION) return;
+    if (ImGui::MenuItem("Enable Collisions System", nullptr, enabled)) {
+        Components::get()->Collisions()->setEnabled(!enabled);
+    }
+    if (!Components::get()->Collisions()->isEnabled()) return;
     ImGui::Separator();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_HANDLE_OBJECTS_COLLISIONS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();

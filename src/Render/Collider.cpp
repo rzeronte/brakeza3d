@@ -400,14 +400,26 @@ void Collider::setRestitution(float restitution) {
 
 void Collider::setShapeMargin(float shapeMargin) {
     Collider::shapeMargin = shapeMargin;
+    if (body != nullptr && body->getCollisionShape() != nullptr) {
+        body->getCollisionShape()->setMargin(shapeMargin);
+    }
+    if (ghostObject != nullptr && ghostObject->getCollisionShape() != nullptr) {
+        ghostObject->getCollisionShape()->setMargin(shapeMargin);
+    }
 }
 
 void Collider::setCcdMotionThreshold(float ccdMotionThreshold) {
     Collider::ccdMotionThreshold = ccdMotionThreshold;
+    if (body != nullptr) {
+        body->setCcdMotionThreshold(ccdMotionThreshold);
+    }
 }
 
 void Collider::setCcdSweptSphereRadius(float ccdSweptSphereRadius) {
     Collider::ccdSweptSphereRadius = ccdSweptSphereRadius;
+    if (body != nullptr) {
+        body->setCcdSweptSphereRadius(ccdSweptSphereRadius);
+    }
 }
 
 void Collider::drawWorldPhysicVariables()

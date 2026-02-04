@@ -135,7 +135,10 @@ inline void LUAIntegration(sol::state &lua)
         "setAlphaEnabled", &Object3D::setAlphaEnabled,
         "isEnableLights", &Object3D::isEnableLights,
         "setEnableLights", &Object3D::setEnableLights,
-        "isEnabled", &Object3D::isEnabled
+        "isEnabled", &Object3D::isEnabled,
+        "setCcdMotionThreshold", &Object3D::setCcdMotionThreshold,
+        "setCcdSweptSphereRadius", &Object3D::setCcdSweptSphereRadius,
+        "setShapeMargin", &Object3D::setShapeMargin
     );
 
     lua.new_usertype<Component>("Component",

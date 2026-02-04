@@ -215,7 +215,7 @@ void ComponentScripting::InitLUATypes()
 {
     LOG_MESSAGE("[Scripting] Init LUA Global types");
 
-    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table);
+    lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table, sol::lib::string);
 
     LUAIntegration(lua);
 

@@ -131,7 +131,9 @@ void ScriptLuaGUI::DrawWinObjectScripts()
         CustomImGui::TreeActionItem editItem(
             FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
             "Reload script object",
-            [currentScript]() { }
+            [currentScript]() {
+                currentScript->Reload();
+            }
         );
         editItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(editItem);

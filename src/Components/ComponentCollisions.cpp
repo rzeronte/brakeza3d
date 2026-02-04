@@ -33,17 +33,17 @@ void ComponentCollisions::onUpdate()
     }
 }
 
-void ComponentCollisions::StepSimulation(float deltaTime)
+void ComponentCollisions::StepSimulation(float deltaTime) const
 {
-    if (SETUP->ENABLE_BULLET_STEP_SIMULATION) {
-        getDynamicsWorld()->stepSimulation(
-            deltaTime,
-            SETUP->BULLET_MAX_SUBSTEPS,
-            btScalar(1.) / btScalar(SETUP->BULLET_FIXED_TIME_STEPS)
-        );
-        UpdatePhysicObjects();
-    }
+    if (!isEnabled()) return;
 
+    getDynamicsWorld()->stepSimulation(
+        deltaTime,
+        SETUP->BULLET_MAX_SUBSTEPS,
+        btScalar(1.) / btScalar(SETUP->BULLET_FIXED_TIME_STEPS)
+    );
+
+    UpdatePhysicObjects();
     CheckCollisionsForAll();
 }
 
@@ -179,12 +179,6 @@ void ComponentCollisions::DrawDebugCache() const
         Color::fuchsia()
     );
     Components::get()->Collisions()->ClearDebugCache();
-}
-
-void ComponentCollisions::setEnabled(bool enabled)
-{
-    Component::setEnabled(enabled);
-    Config::get()->ENABLE_BULLET_STEP_SIMULATION = enabled;
 }
 
 void ComponentCollisions::setEnableDebugMode(bool value) const

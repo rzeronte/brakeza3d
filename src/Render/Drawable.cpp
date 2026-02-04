@@ -213,6 +213,8 @@ void Drawable::drawObject3DGizmo(
     glm::mat4 viewMatrix,
     glm::mat4 projectionMatrix
 ) {
+    static bool wasUsingGizmo = false;
+
     ImGuiIO& io = ImGui::GetIO();
     auto currentOperation  = Components::get()->Window()->getGuiZmoOperation();
 
@@ -243,7 +245,9 @@ void Drawable::drawObject3DGizmo(
         nullptr
     );
 
-    if (ImGuizmo::IsUsing()) {
+    bool isUsingGizmo = ImGuizmo::IsUsing();
+
+    if (isUsingGizmo) {
         if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {
             auto position = glm::vec3(objectMatrixManipulated[3]);
             o->setPosition(Vertex3D(position[0], position[1], position[2]));
@@ -259,6 +263,13 @@ void Drawable::drawObject3DGizmo(
             o->setScale(glm::length(glm::vec3(objectMatrixManipulated[0])));
         }
     }
+
+    // Detectar cuando TERMINA la manipulacion del gizmo
+    if (wasUsingGizmo && !isUsingGizmo) {
+        if (o->isCollisionsEnabled()) o->UpdateShapeCollider();
+    }
+
+    wasUsingGizmo = isUsingGizmo;
 }
 
 void Drawable::ImGuiLink(const char* label, const char* url)

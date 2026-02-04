@@ -30,12 +30,11 @@ public:
     void InitBulletSystem();
     void CheckCollisionsForAll() const;
     void UpdatePhysicObjects() const;
-    void StepSimulation(float deltaTime);
+    void StepSimulation(float deltaTime) const;
     void setGravity(const Vertex3D &vertex3D) const;
     void ClearDebugCache();
     void AddVector3DIntoCache(const Vector3D &v);
     void DrawDebugCache() const;
-    void setEnabled(bool enabled) override;
     void setEnableDebugMode(bool value) const;
     [[nodiscard]] btDiscreteDynamicsWorld *getDynamicsWorld() const;
 };
