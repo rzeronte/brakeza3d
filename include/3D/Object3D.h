@@ -140,6 +140,7 @@ public:
 
     friend class Object3DSerializer;
     friend class Object3DGUI;
+
 };
 
 #endif //SDL2_3D_ENGINE_OBJECT3D_H

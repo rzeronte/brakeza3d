@@ -180,86 +180,43 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             }
 
             if (o->collisionsEnabled) {
-                GUI::ImageButtonNormal(IconGUI::SCRIPT_RELOAD, "Update Collider", [&] {
-                    o->UpdateShapeCollider();
-                });
-                ImGui::Separator();
+
                 o->drawImGuiCollisionModeSelector();
                 if (o->getCollisionMode() != KINEMATIC) {
                     o->DrawImGuiCollisionShapeSelector();
                 }
+                ImGui::Separator();
+                GUI::ImageButtonNormal(IconGUI::SCRIPT_RELOAD, "Update Collider", [&] {
+                    o->UpdateShapeCollider();
+                });
+                ImGui::SameLine();
 
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 4));
-                ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
+                static bool showWorldStatus = false;
+                static bool showWorldProperties = false;
 
-                if (ImGui::TreeNodeEx("Collider settings", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
-                    if (o->getCollisionMode() == BODY) {
-                        ImGui::Separator();
-                        ImGui::Checkbox("Collider static", &o->colliderStatic);
-                        ImGui::Separator();
-                        ImGui::DragFloat("CCD Motion Treshold", &o->ccdMotionThreshold, 0.001f, 0.0f, 5.0f);
-                        ImGui::Separator();
-                        ImGui::DragFloat("CCD Swept Sphere Radius", &o->ccdSweptSphereRadius, 0.001f, 0.0f, 5.0f);
+                GUI::ImageButtonNormal(IconGUI::COLLIDER_INFO, "Debug", [&] {
+                    showWorldStatus = true;
+                });
+                ImGui::SameLine();
+                GUI::ImageButtonNormal(IconGUI::COLLIDER_EDIT, "Properties ", [&] {
+                    showWorldProperties = true;
+                });
+
+                if (showWorldStatus) {
+                    ImGui::SetNextWindowSize(ImVec2(450, 500), ImGuiCond_FirstUseEver);
+                    if (ImGui::Begin("Collider Debug Info", &showWorldStatus, ImGuiWindowFlags_NoDocking)) {
+                        ColliderGUI::DrawColliderWorldVariables(o);
                     }
-
-                    if (o->getCollisionShape() == SIMPLE_SHAPE) {
-                        ImGui::Separator();
-                        float vec3f[3];
-                        o->simpleShapeSize.toFloat(vec3f);
-                        if (ImGui::DragFloat3("Shape Size", vec3f, 0.01f, -1000.0f, 1000.0f)) {
-                            o->simpleShapeSize.x = vec3f[0];
-                            o->simpleShapeSize.y = vec3f[1];
-                            o->simpleShapeSize.z = vec3f[2];
-                        }
-                    }
-
-                    if (o->getCollisionMode() == KINEMATIC || o->getCollisionShape() == CAPSULE_SHAPE) {
-                        ImGui::Separator();
-                        const float range_min = 0;
-                        const float range_max = 1000;
-
-                        ImGui::DragScalar("Capsule radius", ImGuiDataType_Float, &o->kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        ImGui::DragScalar("Capsule height", ImGuiDataType_Float, &o->kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                    }
-                    ImGui::Separator();
-
-                    if (o->getCollisionMode() == BODY) {
-                        if (!o->colliderStatic) {
-                            ImGui::DragFloat("Mass", &o->mass, 0.1f, 0.0f, 5000.0f);
-                            ImGui::Separator();
-                        }
-
-                        if (o->getCollisionMode() == GHOST || o->getCollisionMode() == BODY) {
-                            float vec3f[3];
-                            o->angularFactor.toFloat(vec3f);
-                            if (ImGui::DragFloat3("Angular factor", vec3f, 0.01f, 0.0f, 1.0f)) {
-                                o->angularFactor.x = vec3f[0];
-                                o->angularFactor.y = vec3f[1];
-                                o->angularFactor.z = vec3f[2];
-                            }
-                            ImGui::Separator();
-                            o->linearFactor.toFloat(vec3f);
-                            if (ImGui::DragFloat3("Linear Factor", vec3f, 0.01f, 0.0f, 1.0f)) {
-                                o->linearFactor.x = vec3f[0];
-                                o->linearFactor.y = vec3f[1];
-                                o->linearFactor.z = vec3f[2];
-                            }
-                            ImGui::Separator();
-                            ImGui::DragFloat("Margin", &o->shapeMargin, 0.01f, 0.0f, 1.0f);
-                            ImGui::Separator();
-                            ImGui::DragFloat("Friction", &o->friction, 0.01f, 0.0f, 1.0f);
-                            ImGui::Separator();
-                            ImGui::DragFloat("Linear Damping", &o->linearDamping, 0.01f, 0.0f, 1.0f);
-                            ImGui::DragFloat("Angular Damping", &o->angularDamping, 0.01f, 0.0f, 1.0f);
-                            ImGui::Separator();
-                            ImGui::DragFloat("Restitution", &o->restitution, 0.01f, 0.0f, 1.0f);
-                        }
-                    }
-                    ImGui::TreePop();
+                    ImGui::End();
                 }
 
-                o->drawWorldPhysicVariables();
-                ImGui::PopStyleVar(2);
+                if (showWorldProperties) {
+                    ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_FirstUseEver);
+                    if (ImGui::Begin("Collider Properties", &showWorldProperties, ImGuiWindowFlags_NoDocking)) {
+                        ColliderGUI::DrawPopUpColliderSetting(o);
+                    }
+                    ImGui::End();
+                }
             }
         }
         // alpha
