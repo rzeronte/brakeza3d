@@ -1,10 +1,5 @@
 {
-	"name":	"Brakeza3D - Demo Menú Person <eduardo@brakeza.com>",
-	"gravity":	{
-		"x":	0,
-		"y":	-18.799999237060547,
-		"z":	0
-	},
+	"screenshot":	"../assets/screenshots/scene_359606.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.15999999642372131,
@@ -27,23 +22,243 @@
 			"z":	0.17577598989009857
 		}
 	},
-	"objects":	[],
+	"objects":	[{
+			"name":	"Image3D_345681",
+			"scale":	32.610000610351563,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-0.81999999284744263,
+				"y":	0.10000000149011612,
+				"z":	-0.52999997138977051
+			},
+			"rotation":	{
+				"x":	90.9135971069336,
+				"y":	56.456947326660156,
+				"z":	90.8946533203125
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"width":	1,
+			"height":	1,
+			"image":	"../assets/images//stains.png",
+			"type":	10
+		}, {
+			"name":	"Mesh3D_205703",
+			"scale":	3.2400000095367432,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-7.5571212768554688,
+				"y":	0.86295592784881592,
+				"z":	0.30719059705734253
+			},
+			"rotation":	{
+				"x":	87.757087707519531,
+				"y":	56.844535827636719,
+				"z":	87.321296691894531
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//Mask.fbx",
+			"enableLights":	true,
+			"shaders":	[{
+					"typesFile":	"../assets/shaders/Examples/NodeMesh3D/RotatingTexture.json",
+					"name":	"RotatingTexture",
+					"type":	"NodeMesh3D",
+					"types":	{
+						"version":	"1.0",
+						"editorType":	"base",
+						"type":	"NodeMesh3D",
+						"nodes":	[{
+								"id":	1,
+								"name":	"UV Coords",
+								"type":	"UV Coords",
+								"position":	{
+									"x":	50,
+									"y":	100
+								},
+								"color":	{
+									"r":	0.30000001192092896,
+									"g":	0.60000002384185791,
+									"b":	0.30000001192092896,
+									"a":	1
+								},
+								"inputs":	[],
+								"outputs":	[{
+										"id":	2,
+										"name":	"UV",
+										"type":	5
+									}],
+								"userData":	{
+								}
+							}, {
+								"id":	3,
+								"name":	"Time",
+								"type":	"Time",
+								"position":	{
+									"x":	50,
+									"y":	250
+								},
+								"color":	{
+									"r":	0.30000001192092896,
+									"g":	0.5,
+									"b":	0.60000002384185791,
+									"a":	1
+								},
+								"inputs":	[],
+								"outputs":	[{
+										"id":	4,
+										"name":	"Time",
+										"type":	1
+									}],
+								"userData":	{
+								}
+							}, {
+								"id":	5,
+								"name":	"UV Rotate",
+								"type":	"UV Rotate",
+								"position":	{
+									"x":	250,
+									"y":	150
+								},
+								"color":	{
+									"r":	0.60000002384185791,
+									"g":	0.699999988079071,
+									"b":	0.5,
+									"a":	1
+								},
+								"inputs":	[{
+										"id":	6,
+										"name":	"UV",
+										"type":	5
+									}, {
+										"id":	7,
+										"name":	"Angle",
+										"type":	1
+									}],
+								"outputs":	[{
+										"id":	8,
+										"name":	"UV",
+										"type":	5
+									}],
+								"userData":	{
+								}
+							}, {
+								"id":	9,
+								"name":	"Mesh Texture",
+								"type":	"Mesh Texture",
+								"position":	{
+									"x":	450,
+									"y":	150
+								},
+								"color":	{
+									"r":	0.89999997615814209,
+									"g":	0.5,
+									"b":	0.30000001192092896,
+									"a":	1
+								},
+								"inputs":	[{
+										"id":	10,
+										"name":	"UV",
+										"type":	5
+									}],
+								"outputs":	[{
+										"id":	11,
+										"name":	"Color",
+										"type":	5
+									}, {
+										"id":	12,
+										"name":	"Alpha",
+										"type":	1
+									}],
+								"userData":	{
+									"imagePath":	"[System Texture]"
+								}
+							}, {
+								"id":	13,
+								"name":	"Output",
+								"type":	"Output",
+								"position":	{
+									"x":	650,
+									"y":	150
+								},
+								"color":	{
+									"r":	0.800000011920929,
+									"g":	0.20000000298023224,
+									"b":	0.20000000298023224,
+									"a":	1
+								},
+								"inputs":	[{
+										"id":	14,
+										"name":	"Color",
+										"type":	5
+									}],
+								"outputs":	[],
+								"userData":	{
+								}
+							}],
+						"links":	[{
+								"id":	20,
+								"startPinId":	2,
+								"endPinId":	6
+							}, {
+								"id":	21,
+								"startPinId":	4,
+								"endPinId":	7
+							}, {
+								"id":	22,
+								"startPinId":	8,
+								"endPinId":	10
+							}, {
+								"id":	23,
+								"startPinId":	11,
+								"endPinId":	14
+							}],
+						"lastShaderCode":	"#version 330 core\nin vec3 v_FragPos;\nin vec3 v_Normal;\nin vec2 v_TexCoord;\nlayout (location = 0) out vec3 gPosition;\nlayout (location = 1) out vec3 gNormal;\nlayout (location = 2) out vec4 gAlbedoSpec;\nuniform float u_Time;\nuniform sampler2D u_Texture9;\n\nvoid main() {\n    vec2 var1 = v_TexCoord;\n    float var3 = u_Time;\n    vec2 center = vec2(0.5, 0.5);\n    vec2 uv_centered = var1.xy - center;\n    float s = sin(var3);\n    float c = cos(var3);\n    vec2 var5 = vec2(\n        uv_centered.x * c - uv_centered.y * s,\n        uv_centered.x * s + uv_centered.y * c\n    ) + center;\n    vec3 var9 = texture(u_Texture9, var5).rgb;\n    gPosition = v_FragPos;\n    gNormal = normalize(v_Normal);\n    gAlbedoSpec = vec4(var9, 1.0);\n}\n"
+					}
+				}],
+			"type":	2
+		}],
 	"shaders":	[],
 	"scripts":	[{
 			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.lua",
 			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.json",
 			"name":	"MenuDemo",
-			"types": []
+			"types":	[]
+		}, {
+			"codeFile":	"../assets/scripts/Demos/Commons/MouseIconChangeDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/Commons/MouseIconChangeDemo.json",
+			"name":	"MouseIconChangeDemo",
+			"types":	[]
 		}],
 	"camera":	{
 		"position":	{
-			"x":	-47.59503173828125,
-			"y":	-13.776888847351074,
-			"z":	-34.641162872314453
+			"x":	-39.933067321777344,
+			"y":	19.519515991210938,
+			"z":	0.48094886541366577
 		},
 		"rotation":	{
-			"x":	6.5999999046325684,
-			"y":	69.800003051757813,
+			"x":	30.975008010864258,
+			"y":	89.3750228881836,
 			"z":	0
 		}
 	}

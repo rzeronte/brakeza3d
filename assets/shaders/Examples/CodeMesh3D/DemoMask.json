@@ -1,7 +1,7 @@
 {
-	"typesFile": "../assets/shaders/Examples/Mesh3D/DemoMask.json",
-	"vsFile": "../assets/shaders/Examples/Mesh3D/DemoMask.vs",
-	"fsFile": "../assets/shaders/Examples/Mesh3D/DemoMask.fs",
+	"typesFile": "../assets/shaders/Examples/CodeMesh3D/DemoMask.json",
+	"vsFile": "../assets/shaders/Examples/CodeMesh3D/DemoMask.vs",
+	"fsFile": "../assets/shaders/Examples/CodeMesh3D/DemoMask.fs",
 	"name":	"DemoMask",
 	"type":	"Mesh3D",
 	"types":	[{
