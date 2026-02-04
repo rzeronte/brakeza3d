@@ -249,7 +249,7 @@ void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     }
 
     if (collisionShape == nullptr) {
-        printf("Collider Shape not valid!!. Exiting...");
+        LOG_ERROR("Collider Shape not valid!!. Exiting...");
         exit(-1);
     }
 

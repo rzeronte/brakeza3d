@@ -26,10 +26,10 @@ struct LUATypeInfo {
 };
 
 static std::map<std::string, LUATypeInfo> LUADataTypesMapping = {
-    {"int", {LUADataType::INT, "Integer" }},
-    {"float", {LUADataType::FLOAT, "Float" }},
-    {"string", {LUADataType::STRING, "String" }},
-    {"Vertex3D", {LUADataType::VERTEX3D, "Vertex3D" }},
+    {"int", {LUADataType::INT, "int" }},
+    {"float", {LUADataType::FLOAT, "float" }},
+    {"string", {LUADataType::STRING, "string" }},
+    {"Vertex3D", {LUADataType::VERTEX3D, "vec3" }},
 };
 
 struct ScriptLUATypeData {

@@ -163,35 +163,35 @@ end
 
 function UpdateAnimationFromState()
     if (currentState == State.JUMPING) then
-        this:setAnimationByName("Armature|POSE_JUMPING")
-        this:setDrawOffset(Vertex3D.new(0, 0, 0))
+        --this:setAnimationByName("Armature|POSE_JUMPING")
+        --this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.RUNNING) then
-        this:setAnimationByName("Armature|RUNNING")
-        this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
+        --this:setAnimationByName("Armature|RUNNING")
+        --this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
     elseif (currentState == State.FALLING) then
-        this:setAnimationByName("Armature|FALLING_IDLE")
-        this:setDrawOffset(Vertex3D.new(0, 0, 0))
+        --this:setAnimationByName("Armature|FALLING_IDLE")
+        --this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.IDLE) then
-        this:setAnimationByName("Armature|IDLE")
-        this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
+        --this:setAnimationByName("Armature|IDLE")
+        -this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
     elseif (currentState == State.HANGLING) then
-        this:setAnimationByName("Armature|HANGLING_IDLE")
-        this:setDrawOffset(Vertex3D.new(0, 0, 0))
+        --this:setAnimationByName("Armature|HANGLING_IDLE")
+        --this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.WALKING) then
-        this:setAnimationByName("Armature|WALKING")
-        this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
+        --this:setAnimationByName("Armature|WALKING")
+        --this:setDrawOffset(Vertex3D.new(0, 0.3, 0))
     elseif (currentState == State.CROUCHING) then
-        this:setAnimationByName("Armature|CROUCH_WALKING")
-        this:setDrawOffset(Vertex3D.new(0, 0.7, 0))
+        --this:setAnimationByName("Armature|CROUCH_WALKING")
+        --this:setDrawOffset(Vertex3D.new(0, 0.7, 0))
     elseif (currentState == State.CROUCHED) then
-        this:setAnimationByName("Armature|CROUCH_POSE")
-        this:setDrawOffset(Vertex3D.new(0, 0.7, 0))
+        --this:setAnimationByName("Armature|CROUCH_POSE")
+        --this:setDrawOffset(Vertex3D.new(0, 0.7, 0))
     elseif (currentState == State.HOOKED) then
-        this:setAnimationByName("Armature|WALL_FALLING")
-        this:setDrawOffset(Vertex3D.new(0, 0, 0))
+        --this:setAnimationByName("Armature|WALL_FALLING")
+        --this:setDrawOffset(Vertex3D.new(0, 0, 0))
     elseif (currentState == State.HANGLING_TO_UP) then
-        this:setAnimationByName("Armature|HANGLING_TO_UP")
-        this:setDrawOffset(Vertex3D.new(0, 0.08, 0))
+        --this:setAnimationByName("Armature|HANGLING_TO_UP")
+        --this:setDrawOffset(Vertex3D.new(0, 0.08, 0))
     end
 end
 
