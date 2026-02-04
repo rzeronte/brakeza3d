@@ -9,6 +9,8 @@
 #include <glm/vec2.hpp>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
+#include "../GUI/Objects/ColliderGUI.h"
+
 enum CollisionShape {
     SIMPLE_SHAPE = 0,
     CAPSULE_SHAPE = 1,
@@ -65,7 +67,6 @@ public:
     void RemoveCollisionObject();
     void makeSimpleGhostBody(Vertex3D position, glm::mat4 modelMatrix, Vertex3D dimensions, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void drawImGuiCollisionModeSelector();
-    void drawWorldPhysicVariables();
     void setMass(float mass);
     void ApplyImpulse(Vertex3D f, Vertex3D rel);
     void ApplyCentralForce(Vertex3D f);
@@ -112,6 +113,7 @@ public:
     [[nodiscard]] bool isCollisionsEnabled() const;
     [[nodiscard]] CollisionMode getCollisionMode() const;
     [[nodiscard]] CollisionShape getCollisionShape() const;
+    friend class ColliderGUI;
 };
 
 

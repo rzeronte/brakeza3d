@@ -205,7 +205,7 @@ public:
                         ImGui::TreePop();
                     }
 
-                    o->drawWorldPhysicVariables();
+                    ColliderGUI::DrawColliderWorldVariables(o);
                 }
             }
             // alpha

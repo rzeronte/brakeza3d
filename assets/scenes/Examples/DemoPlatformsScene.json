@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_365424.png",
+	"screenshot":	"../assets/screenshots/scene_50146.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.17000000178813934,
@@ -29,7 +29,7 @@
 			"enabled":	true,
 			"position":	{
 				"x":	-24.02301025390625,
-				"y":	16.745021820068359,
+				"y":	22.129554748535156,
 				"z":	1.067612886428833
 			},
 			"rotation":	{
@@ -79,7 +79,76 @@
 					"z":	0
 				}
 			},
-			"scripts":	[],
+			"scripts":	[{
+					"codeFile":	"../assets/scripts/Controllers/PlatformsGhostController.lua",
+					"typesFile":	"../assets/scripts/Controllers/PlatformsGhostController.json",
+					"name":	"PlatformsGhostController",
+					"types":	[{
+							"name":	"moveSpeed",
+							"type":	"float",
+							"value":	8
+						}, {
+							"name":	"jumpForce",
+							"type":	"float",
+							"value":	12
+						}, {
+							"name":	"jumpCutMultiplier",
+							"type":	"float",
+							"value":	0.5
+						}, {
+							"name":	"groundAcceleration",
+							"type":	"float",
+							"value":	80
+						}, {
+							"name":	"airAcceleration",
+							"type":	"float",
+							"value":	50
+						}, {
+							"name":	"groundFriction",
+							"type":	"float",
+							"value":	0.85000002384185791
+						}, {
+							"name":	"coyoteTimeFrames",
+							"type":	"int",
+							"value":	6
+						}, {
+							"name":	"jumpBufferFrames",
+							"type":	"int",
+							"value":	6
+						}, {
+							"name":	"wallSlideSpeed",
+							"type":	"float",
+							"value":	4
+						}, {
+							"name":	"wallJumpForceX",
+							"type":	"float",
+							"value":	8
+						}, {
+							"name":	"wallJumpForceY",
+							"type":	"float",
+							"value":	12
+						}, {
+							"name":	"colliderRadius",
+							"type":	"float",
+							"value":	0.30000001192092896
+						}, {
+							"name":	"colliderHeight",
+							"type":	"float",
+							"value":	1
+						}, {
+							"name":	"groundRayLength",
+							"type":	"float",
+							"value":	0.15000000596046448
+						}, {
+							"name":	"ceilingRayLength",
+							"type":	"float",
+							"value":	0.15000000596046448
+						}, {
+							"name":	"wallRayLength",
+							"type":	"float",
+							"value":	0.10000000149011612
+						}]
+				}],
 			"model":	"../assets/models//Capsule.fbx",
 			"enableLights":	true,
 			"shaders":	[],

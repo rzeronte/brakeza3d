@@ -859,6 +859,14 @@
 			"name":	"CLEAN_SCENE",
 			"x":	3,
 			"y":	3
+		}, {
+			"name":	"COLLIDER_INFO",
+			"x":	15,
+			"y":	27
+		}, {
+			"name":	"COLLIDER_EDIT",
+			"x":	14,
+			"y":	11
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

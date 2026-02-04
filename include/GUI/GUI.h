@@ -393,6 +393,9 @@ namespace GUIType
     X(DOCKING_ON, 0, 0) \
     X(DOCKING_OFF, 0, 0) \
     X(CLEAN_SCENE, 0, 0) \
+    X(COLLIDER_INFO, 0, 0) \
+    X(COLLIDER_EDIT, 0, 0) \
+
 
 // Icons Objects
 namespace IconObject {
