@@ -25,6 +25,8 @@ struct GuiAddonConsole
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
+    int                   maxLines = 100;
+    int                   maxLinesIndex = 2;
     std::mutex            mtx;
 
     sol::state           *lua;

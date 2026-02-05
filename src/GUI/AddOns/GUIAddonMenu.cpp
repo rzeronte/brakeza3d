@@ -411,6 +411,12 @@ void GUIAddonMenu::MenuCamera()
     const float range_far_plane_distance_sensibility = 1.0f;
     ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &GUIType::Levels::DRAG_FAR_PLANE_MIN, &GUIType::Levels::DRAG_FAR_PLANE_MIN, "%f", 1.0f);
     // position
+    ImGui::PushID("reset_camera_position");
+    GUI::DrawButton("Reset position", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
+        camera->setPosition(Vertex3D(0, 0, 0));
+    });
+    ImGui::PopID();
+    ImGui::SameLine();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_POSITION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     float vec3f[3];
     camera->getPosition().toFloat(vec3f);
@@ -430,6 +436,12 @@ void GUIAddonMenu::MenuCamera()
     vec3f[0] = pitch;
     vec3f[1] = yaw;
     vec3f[2] = roll;
+    ImGui::PushID("reset_camera_rotation");
+    GUI::DrawButton("Reset rotation", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
+        camera->setRotationFromEulerAngles(0, 0, 0);
+    });
+    ImGui::PopID();
+    ImGui::SameLine();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_ROTATION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
         const float factor = 0.0025f;
