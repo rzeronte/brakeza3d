@@ -89,15 +89,15 @@ export default [
   },
   {
     path: '/docs',
-    component: ComponentCreator('/docs', 'fea'),
+    component: ComponentCreator('/docs', 'b96'),
     routes: [
       {
         path: '/docs',
-        component: ComponentCreator('/docs', 'e52'),
+        component: ComponentCreator('/docs', '08b'),
         routes: [
           {
             path: '/docs',
-            component: ComponentCreator('/docs', '634'),
+            component: ComponentCreator('/docs', 'ca2'),
             routes: [
               {
                 path: '/docs/advanced/core-shaders',
@@ -144,6 +144,12 @@ export default [
               {
                 path: '/docs/editor/shaders',
                 component: ComponentCreator('/docs/editor/shaders', 'f1a'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/editor/shortcuts',
+                component: ComponentCreator('/docs/editor/shortcuts', '780'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

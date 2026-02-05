@@ -51,6 +51,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "editor/shortcuts",
+              "path": "/docs/editor/shortcuts",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "engine-concepts/assets-folder",
               "path": "/docs/engine-concepts/assets-folder",
               "sidebar": "tutorialSidebar"
