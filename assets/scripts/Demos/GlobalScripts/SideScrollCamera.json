@@ -2,6 +2,7 @@
 	"codeFile":	"../assets/scripts/Demos/GlobalScripts/SideScrollCamera.lua",
 	"typesFile":	"../assets/scripts/Demos/GlobalScripts/SideScrollCamera.json",
 	"name":	"SideScrollDemo",
+	"type":	"Global",
 	"types":	[{
 			"name":	"nameObjectToFollow",
 			"type":	"string",

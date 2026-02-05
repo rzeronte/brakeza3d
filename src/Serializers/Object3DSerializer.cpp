@@ -210,7 +210,16 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
             auto codeFile = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
             auto typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
             auto typesJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
-            o->AttachScript(new ScriptLUA(name, codeFile, typesFile, typesJSON));
+
+            auto script = new ScriptLUA(name, codeFile, typesFile, typesJSON);
+
+            // Read script type from JSON
+            cJSON *typeJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "type");
+            if (typeJSON && typeJSON->valuestring) {
+                script->setType((strcmp(typeJSON->valuestring, "Global") == 0) ? SCRIPT_GLOBAL : SCRIPT_OBJECT);
+            }
+
+            o->AttachScript(script);
         }
     }
 }

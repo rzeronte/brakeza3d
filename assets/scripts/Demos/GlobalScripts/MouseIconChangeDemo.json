@@ -2,5 +2,6 @@
 	"codeFile":	"../assets/scripts/Demos/GlobalScripts/MouseIconChangeDemo.lua",
 	"typesFile": "../assets/scripts/Demos/GlobalScripts/MouseIconChangeDemo.json",
 	"name":	"MouseIconChangeDemo",
+	"type":	"Global",
 	"types":	[]
 }

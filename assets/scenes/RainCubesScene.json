@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_35759.png",
+	"screenshot":	"../assets/screenshots/scene_73463.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.17000000178813934,
@@ -51,6 +51,7 @@
 					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
 					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
+					"type":	"Object",
 					"types":	[{
 							"name":	"frequency",
 							"type":	"float",
@@ -90,6 +91,7 @@
 					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
 					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
+					"type":	"Object",
 					"types":	[{
 							"name":	"frequency",
 							"type":	"float",
@@ -191,6 +193,7 @@
 					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
 					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
+					"type":	"Object",
 					"types":	[{
 							"name":	"frequency",
 							"type":	"float",

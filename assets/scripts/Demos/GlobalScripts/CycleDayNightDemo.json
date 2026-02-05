@@ -2,5 +2,6 @@
   "codeFile":	"../assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.lua",
   "typesFile": "../assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.json",
   "name":	"CycleDayNightDemo",
+  "type":	"Global",
   "types":	[]
 }

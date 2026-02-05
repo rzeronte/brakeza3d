@@ -2,6 +2,7 @@
 	"codeFile": "../assets/scripts/Controllers/TwinStickShooterController.lua",
 	"typesFile": "../assets/scripts/Controllers/TwinStickShooterController.json",
 	"name": "TwinStickShooterController",
+	"type":	"Object",
 	"types": [{
 			"name": "moveSpeed",
 			"type": "float",

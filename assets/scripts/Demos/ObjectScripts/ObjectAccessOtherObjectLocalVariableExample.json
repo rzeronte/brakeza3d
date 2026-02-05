@@ -2,6 +2,7 @@
   "codeFile":	"../assets/scripts/Demos/ObjectScripts/ObjectAccessOtherObjectLocalVariableExample.lua",
   "typesFile": "../assets/scripts/Demos/ObjectScripts/ObjectAccessOtherObjectLocalVariableExample.json",
   "name":	"Object access other object local var",
-    "types":	[
-    ]
+  "type":	"Object",
+  "types":	[
+  ]
 }
