@@ -235,7 +235,7 @@ sol::object ComponentScripting::getGlobalScriptVar(const std::string& scriptName
     return sol::nil;
 }
 
-void ComponentScripting::CreateScriptLUAFile(const FilePath::ScriptFile& path)
+void ComponentScripting::CreateScriptLUAFile(const FilePath::ScriptFile& path, ScriptType scriptType)
 {
     LOG_MESSAGE("[Scripting] Creating new Script in '%s'...", path.c_str());
 
@@ -246,19 +246,20 @@ void ComponentScripting::CreateScriptLUAFile(const FilePath::ScriptFile& path)
     auto content = Tools::ReadFile(Config::get()->TEMPLATE_SCRIPT);
     Tools::WriteToFile(codeFile, content);
 
-    auto typesFileJson = CreateEmptyTypesFileJSON(name, codeFile, typesFile);
+    auto typesFileJson = CreateEmptyTypesFileJSON(name, codeFile, typesFile, scriptType);
     Tools::WriteToFile(typesFile, cJSON_Print(typesFileJson));
 
     delete[] content;
 }
 
-cJSON* ComponentScripting::CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile)
+cJSON* ComponentScripting::CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile, ScriptType scriptType)
 {
     cJSON* root = cJSON_CreateObject();
 
     cJSON_AddStringToObject(root, "codeFile", codeFile.c_str());
     cJSON_AddStringToObject(root, "typesFile", typesFile.c_str());
     cJSON_AddStringToObject(root, "name", name.c_str());
+    cJSON_AddStringToObject(root, "type", scriptType == SCRIPT_GLOBAL ? "Global" : "Object");
 
     cJSON_AddArrayToObject(root, "types");
 

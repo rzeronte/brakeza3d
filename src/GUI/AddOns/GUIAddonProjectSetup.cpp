@@ -244,7 +244,13 @@ void GUIAddonProjectSetup::DrawProjectScriptsNode()
         [&](void* data) {
             LOG_MESSAGE("Dropping script (%s) in project space", (char*)data);
             auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
-            scripting->AddProjectLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+            auto script = new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
+            if (script->getType() != SCRIPT_GLOBAL) {
+                LOG_ERROR("[Project] Error: Cannot attach Object script to Project. Only Global scripts are allowed.");
+                delete script;
+                return;
+            }
+            scripting->AddProjectLUAScript(script);
             shouldOpen = true;
         }
     );
@@ -334,7 +340,13 @@ void GUIAddonProjectSetup::DrawSceneScriptsNode()
         [&](void* data) {
             LOG_MESSAGE("Dropping script (%s) in scene space", (char*)data);
             auto meta = ScriptLuaGUI::ExtractScriptMetainfo(std::string((char*)data));
-            scripting->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+            auto script = new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
+            if (script->getType() != SCRIPT_GLOBAL) {
+                LOG_ERROR("[Scene] Error: Cannot attach Object script to Scene. Only Global scripts are allowed.");
+                delete script;
+                return;
+            }
+            scripting->AddSceneLUAScript(script);
             shouldOpen = true;
         }
     );

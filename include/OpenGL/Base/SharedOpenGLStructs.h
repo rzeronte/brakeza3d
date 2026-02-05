@@ -80,7 +80,12 @@ struct OpenGLGlobalFramebuffers
     GLuint uiTexture = 0;
 };
 
-// SHADER OGL CUSTOM CODE
+enum ScriptType {
+    SCRIPT_OBJECT = 1,
+    SCRIPT_GLOBAL = 2
+};
+
+
 enum ShaderCustomType {
     SHADER_NONE = -1,
     SHADER_POSTPROCESSING = 0,

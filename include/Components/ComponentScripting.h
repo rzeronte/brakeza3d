@@ -58,8 +58,8 @@ public:
     [[nodiscard]] Scene *getCurrentScene() const                            { return currentScene;}
     [[nodiscard]] Project *getCurrentProject() const                        { return currentProject; }
 
-    static void CreateScriptLUAFile(const FilePath::ScriptFile& path);
-    static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile);
+    static void CreateScriptLUAFile(const FilePath::ScriptFile& path, ScriptType scriptType = SCRIPT_GLOBAL);
+    static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile, ScriptType scriptType = SCRIPT_GLOBAL);
     static void RemoveScriptLUAFile(const FilePath::ScriptFile& path);
 
     void setCurrentScene(Scene *current_scene);
