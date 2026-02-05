@@ -117,7 +117,7 @@ namespace GUIType
         OBJECT_VARS,
         GLOBAL_VARS,
         KEYBOARD_MOUSE,
-        IMAGES,
+        MEDIA_BROWSER,
         PROJECT_SETTINGS,
         DEBUG_ICONS,
         CODE_EDITOR,

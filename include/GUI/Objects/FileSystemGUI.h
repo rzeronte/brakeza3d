@@ -53,7 +53,7 @@ public:
 
     static ImTextureID Icon(GUIType::Sheet coords);
 
-    static void DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package);
+    static void DrawWinMediaBrowser(GUIType::BrowserCache &browser, TexturePackage &package);
 };
 
 

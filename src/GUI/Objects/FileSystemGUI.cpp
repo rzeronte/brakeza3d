@@ -449,25 +449,37 @@ ImTextureID FileSystemGUI::Icon(GUIType::Sheet coords)
     return Brakeza::get()->GUI()->getTextureAtlas()->getTextureByXY(coords.x, coords.y)->getOGLImTexture();
 }
 
-void FileSystemGUI::DrawWinImages(GUIType::BrowserCache &browser, TexturePackage &package)
+void FileSystemGUI::DrawWinMediaBrowser(GUIType::BrowserCache &browser, TexturePackage &package)
 {
-    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::IMAGES);
+    auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::MEDIA_BROWSER);
     if (!windowStatus->isOpen) return;
 
-    DrawBrowserFolders(Config::get()->IMAGES_FOLDER, browser);
-    if (browser.folderFolders.empty()) {
-        ImGui::Spacing();
-        Drawable::WarningMessage("There are not subfolders");
-    }
-    ImGui::Separator();
+    // Selector Images/Textures
+    static int selectedFolderIndex = 0;
+    const char* folderOptions[] = { "Images", "Textures" };
+    std::string rootFolders[] = { Config::get()->IMAGES_FOLDER, Config::get()->TEXTURES_FOLDER };
 
-    // Slider
+    ImGui::SetNextItemWidth(120);
+    if (ImGui::Combo("Source##images_folder", &selectedFolderIndex, folderOptions, IM_ARRAYSIZE(folderOptions))) {
+        browser.currentFolder = rootFolders[selectedFolderIndex];
+        browser.onChangeFolderCallback();
+    }
     static float imageSize = 96.0f;
+    // Slider
+    ImGui::SameLine();
     ImGui::PushItemWidth(200);
     ImGui::SliderFloat("Size", &imageSize, 64.0f, 256.0f, "%.0f px");
     ImGui::PopItemWidth();
     ImGui::SameLine();
     if (ImGui::Button("Reset")) imageSize = 96.0f;
+
+    ImGui::Separator();
+
+    DrawBrowserFolders(rootFolders[selectedFolderIndex], browser);
+    if (browser.folderFolders.empty()) {
+        ImGui::Spacing();
+        Drawable::WarningMessage("There are not subfolders");
+    }
 
     ImGui::Separator();
 
@@ -630,9 +642,10 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
         // Load
         CustomImGui::TreeActionItem loadItem(
             Icon(IconGUI::SHADER_LOAD),
-            "Attach to current Scene",
+            "Attach shader to current scene",
             [fullPath]() {
                 Components::get()->Render()->LoadShaderIntoScene(fullPath);
+                FileSystemGUI::autoExpandScene = true;
             }
         );
         loadItem.size = GUIType::Sizes::ICONS_BROWSERS;
@@ -653,7 +666,7 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
         CustomImGui::TreeActionItem removeItem(
             Icon(IconGUI::SHADER_REMOVE),
             "Delete shader",
-            [&browser, file, fullPath]() {
+            [&browser, file]() {
                 ShaderBaseCustomOGLCode::RemoveCustomShaderFiles(
                     browser.currentFolder,
                     Tools::getFilenameWithoutExtension(file)
@@ -762,10 +775,11 @@ void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
         // Load
         CustomImGui::TreeActionItem loadItem(
             Icon(IconGUI::SCRIPT_LOAD),
-            "Attach to current Scene",
+            "Attach script to current scene",
             [fullPath]() {
                 auto meta = ScriptLuaGUI::ExtractScriptMetainfo(fullPath);
                 Components::get()->Scripting()->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+                FileSystemGUI::autoExpandScene = true;
             }
         );
         loadItem.size = GUIType::Sizes::ICONS_BROWSERS;

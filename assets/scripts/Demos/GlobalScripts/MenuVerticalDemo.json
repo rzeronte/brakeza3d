@@ -1,7 +1,7 @@
 {
-	"name":	"Menu horizontal example",
-	"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.lua",
-	"typesFile": "../assets/scripts/Demos/GlobalScripts/MenuDemo.json",
+	"name":	"MenuVerticalDemo",
+	"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.lua",
+	"typesFile": "../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.json",
 	"types":	[
         {
           "name":	"enabled",

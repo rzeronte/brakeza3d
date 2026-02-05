@@ -2,7 +2,6 @@
 
 class GUIAddonProjectSetup {
 public:
-    // Función principal
     static void DrawWinProjectSettings();
 
     static void DrawProjectSettingsNode();

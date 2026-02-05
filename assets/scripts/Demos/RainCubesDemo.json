@@ -1,0 +1,10 @@
+{
+	"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
+	"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
+	"name":	"RainCubesDemo",
+	"types":	[{
+			"name":	"frequency",
+			"type":	"float",
+			"value":	0.5
+		}]
+}

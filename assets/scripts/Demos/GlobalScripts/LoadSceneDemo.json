@@ -1,5 +1,5 @@
 {
-	"name":	"Load scene example",
+	"name":	"LoadSceneExample",
 	"codeFile":	"../assets/scripts/Demos/GlobalScripts/LoadSceneDemo.lua",
 	"typesFile": "../assets/scripts/Demos/GlobalScripts/LoadSceneDemo.json",
 	"types":	[
