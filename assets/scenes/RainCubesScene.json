@@ -1,4 +1,5 @@
 {
+	"screenshot":	"../assets/screenshots/scene_35759.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.17000000178813934,
@@ -47,8 +48,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
 					"types":	[{
 							"name":	"frequency",
@@ -86,8 +87,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
 					"types":	[{
 							"name":	"frequency",
@@ -187,8 +188,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/Colliders/RainCubesDemo.json",
+					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
 					"types":	[{
 							"name":	"frequency",
@@ -210,8 +211,8 @@
 			"z":	14.191510200500488
 		},
 		"rotation":	{
-			"x":	3.2251830101013184,
-			"y":	52.299911499023438,
+			"x":	-4.5748167037963867,
+			"y":	51.174907684326172,
 			"z":	0
 		}
 	}

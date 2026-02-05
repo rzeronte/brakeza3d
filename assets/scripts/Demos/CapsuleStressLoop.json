@@ -1,7 +1,7 @@
 {
-    "codeFile":	"../assets/scripts/Demos/GlobalScripts/AddObjectDemo.lua",
-    "typesFile": "../assets/scripts/Demos/GlobalScripts/AddObjectDemo.json",
-    "name":	"AddObjectDemo",
+    "codeFile":	"../assets/scripts/Demos/CapsuleStressLoop.lua",
+    "typesFile": "../assets/scripts/Demos/CapsuleStressLoop.json",
+    "name":	"CapsuleStressLoop",
     "types":	[
         {
             "name":	"finished",

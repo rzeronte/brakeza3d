@@ -29,8 +29,8 @@
 	"objects":	[],
 	"shaders":	[],
 	"scripts":	[{
-		"codeFile":	"../assets/scripts/Demos/GlobalScripts/AddObjectDemo.lua",
-		"typesFile":	"../assets/scripts/Demos/GlobalScripts/AddObjectDemo.json",
+		"codeFile":	"../assets/scripts/Demos/CapsuleStressLoop.lua",
+		"typesFile":	"../assets/scripts/Demos/CapsuleStressLoop.json",
 		"name":	"Performance Test",
 		"types":	[{
 			"name":	"finished",

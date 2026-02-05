@@ -70,7 +70,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Object Variables",    GUIType::OBJECT_VARS,         IconGUI::WIN_OBJECT_VARS,       false, false, true,  true,   ScriptLuaGUI::DrawWinObjectVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Global Variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       false, false, true,  false,  ScriptLuaGUI::DrawWinGlobalVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true,  false,  DrawWinKeyboardMouse(),                                                    ImVec2(350, 400), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Images",              GUIType::IMAGES,              IconGUI::WIN_IMAGES,            false, false, true,  false,  FileSystemGUI::DrawWinImages(browserImages, browserImagesTextures),  ImVec2(600, 550), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Media Browser",       GUIType::MEDIA_BROWSER,       IconGUI::WIN_IMAGES,            false, false, true,  false,  FileSystemGUI::DrawWinMediaBrowser(browserImages, browserImagesTextures),  ImVec2(600, 550), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Logs/Console",        GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true,  false,  widgetConsole->DrawWinLogging(),                                           ImVec2(400, 300), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true,  false,  DrawWinDepthLightsMap(),                                                   ImVec2(400, 500), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, false,  false, Profiler::get()->DrawWinProfiler(),                                        ImVec2(800, 600), ImVec2(FLT_MAX, FLT_MAX));
@@ -95,7 +95,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::OBJECT_VARS, false },
         { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
-        { GUIType::IMAGES, false },
+        { GUIType::MEDIA_BROWSER, false },
         { GUIType::LOGGING, true },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
@@ -115,7 +115,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::OBJECT_VARS, true },
         { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
-        { GUIType::IMAGES, false },
+        { GUIType::MEDIA_BROWSER, false },
         { GUIType::LOGGING, true },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },
@@ -135,7 +135,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::OBJECT_VARS, false },
         { GUIType::GLOBAL_VARS, false },
         { GUIType::KEYBOARD_MOUSE,  false },
-        { GUIType::IMAGES, false },
+        { GUIType::MEDIA_BROWSER, false },
         { GUIType::LOGGING, false },
         { GUIType::DEPTH_LIGHTS_MAPS, false },
         { GUIType::PROFILER, false },

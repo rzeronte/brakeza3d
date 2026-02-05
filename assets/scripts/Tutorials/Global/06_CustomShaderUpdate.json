@@ -1,0 +1,6 @@
+{
+	"codeFile":	"../assets/scripts/Demos/Commons/06_CustomShaderUpdate.lua",
+	"typesFile": "../assets/scripts/Demos/Commons/06_CustomShaderUpdate.json",
+	"name":	"CustomShaderUpdateTutorial",
+	"types":	[]
+}

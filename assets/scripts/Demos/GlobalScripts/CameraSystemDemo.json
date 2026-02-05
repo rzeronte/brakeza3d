@@ -1,0 +1,6 @@
+{
+	"codeFile":	"../assets/scripts/Demos/GlobalScripts/CameraSystemDemo.lua",
+	"typesFile":	"../assets/scripts/Demos/GlobalScripts/CameraSystemDemo.json",
+	"name":	"CameraSystemDemo",
+	"types":	[]
+}

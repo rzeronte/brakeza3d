@@ -1,7 +1,7 @@
 {
-	"codeFile":	"../assets/scripts/Demos/Commons/StartPositionObject.lua",
-	"typesFile": "../assets/scripts/Demos/Commons/StartPositionObject.json",
-	"name":	"Start position object",
+	"codeFile":	"../assets/scripts/Demos/ObjectScripts/StartPositionObject.lua",
+	"typesFile": "../assets/scripts/Demos/ObjectScripts/StartPositionObject.json",
+	"name":	"StartPositionObject",
 	"types":	[{
 			"name":	"objectToMove",
 			"type":	"string",

@@ -240,13 +240,13 @@
 		}],
 	"shaders":	[],
 	"scripts":	[{
-			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.lua",
-			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MenuDemo.json",
-			"name":	"MenuDemo",
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.json",
+			"name":	"MenuVerticalDemo",
 			"types":	[]
 		}, {
-			"codeFile":	"../assets/scripts/Demos/Commons/MouseIconChangeDemo.lua",
-			"typesFile":	"../assets/scripts/Demos/Commons/MouseIconChangeDemo.json",
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MouseIconChangeDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MouseIconChangeDemo.json",
 			"name":	"MouseIconChangeDemo",
 			"types":	[]
 		}],
