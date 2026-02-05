@@ -274,6 +274,38 @@ void ComponentScripting::RemoveScriptLUAFile(const FilePath::ScriptFile& path)
     Tools::RemoveFile(meta.typesFile);
 }
 
+void ComponentScripting::MoveSceneScriptUp(ScriptLUA* script)
+{
+    if (!script || sceneScripts.size() < 2) return;
+    auto it = std::find(sceneScripts.begin(), sceneScripts.end(), script);
+    if (it == sceneScripts.end() || it == sceneScripts.begin()) return;     // No encontrado o ya está arrib
+    std::iter_swap(it, it - 1);                                         // Intercambia con el anterior
+}
+
+void ComponentScripting::MoveSceneScriptDown(ScriptLUA* script)
+{
+    if (!script || sceneScripts.size() < 2) return;
+    auto it = std::find(sceneScripts.begin(), sceneScripts.end(), script);
+    if (it == sceneScripts.end() || it == sceneScripts.end() - 1) return;   // No encontrado o ya está abajo
+    std::iter_swap(it, it + 1);                                         // Intercambia con el siguiente
+}
+
+void ComponentScripting::MoveProjectScriptUp(ScriptLUA* script)
+{
+    if (!script || projectScripts.size() < 2) return;
+    auto it = std::find(projectScripts.begin(), projectScripts.end(), script);
+    if (it == projectScripts.end() || it == projectScripts.begin()) return;     // No encontrado o ya está arrib
+    std::iter_swap(it, it - 1);                                         // Intercambia con el anterior
+}
+
+void ComponentScripting::MoveProjectScriptDown(ScriptLUA* script)
+{
+    if (!script || projectScripts.size() < 2) return;
+    auto it = std::find(projectScripts.begin(), projectScripts.end(), script);
+    if (it == projectScripts.end() || it == projectScripts.end() - 1) return;   // No encontrado o ya está abajo
+    std::iter_swap(it, it + 1);                                         // Intercambia con el siguiente
+}
+
 bool ComponentScripting::hasProjectScene(const std::string& filePath)
 {
     return std::find(projectScenes.begin(), projectScenes.end(), filePath) != projectScenes.end();

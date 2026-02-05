@@ -98,7 +98,6 @@ public:
     void UpdateSelectedObject3D();
     void LoadShaderIntoScene(const std::string &name);
     void AddShaderToScene(ShaderBaseCustom *shader);
-
     void RemoveSceneShaderByIndex(int index);
     void RemoveSceneShader(const ShaderBaseCustom *);
     void setGlobalIlluminationDirection(Vertex3D d) const;
@@ -138,6 +137,9 @@ public:
     static void onUpdateSceneObjects();
     static void MakeScreenShot(std::string filename = "");
     static ShaderBaseCustom* CreateCustomShaderFromDisk(const ShaderBaseCustomMetaInfo &info, Mesh3D* o);
+
+    void MoveSceneShaderUp(ShaderBaseCustom* shader);
+    void MoveSceneShaderDown(ShaderBaseCustom* shader);
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

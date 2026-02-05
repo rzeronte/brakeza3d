@@ -1,6 +1,7 @@
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
+#include "../../imgui/ImGuizmo.h"
 
 void ComponentInput::onStart()
 {
@@ -270,24 +271,46 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             SceneLoader::ClearScene();
         }
         if (keyboard[SDL_SCANCODE_F4]) {
+            SceneLoader::CleanScene();
+        }
+
+        if (keyboard[SDL_SCANCODE_F5]) {
             Config::get()->ENABLE_IMGUI = !Config::get()->ENABLE_IMGUI;
         }
 
         auto *window = Components::get()->Window();
 
-        if (keyboard[SDL_SCANCODE_F5]) {
+        if (keyboard[SDL_SCANCODE_F6]) {
             window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
         }
-        if (keyboard[SDL_SCANCODE_F6]) {
+        if (keyboard[SDL_SCANCODE_F7]) {
             window->setImGuiConfig(Config::ImGUIConfigs::CODING);
         }
-        if (keyboard[SDL_SCANCODE_F7]) {
+        if (keyboard[SDL_SCANCODE_F8]) {
             window->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
         }
 
         if (keyboard[SDL_SCANCODE_F11]) {
             Config::get()->FULLSCREEN = !Config::get()->FULLSCREEN;
             Components::get()->Window()->ToggleFullScreen();
+        }
+
+        // Transformation shortcuts (T, R, S) and delete (X) - only when an object is selected
+        auto selectedObject = Components::get()->Render()->getSelectedObject();
+        if (selectedObject != nullptr) {
+            if (keyboard[SDL_SCANCODE_T]) {
+                window->setGuiZmoOperation(ImGuizmo::OPERATION::TRANSLATE);
+            }
+            if (keyboard[SDL_SCANCODE_R]) {
+                window->setGuiZmoOperation(ImGuizmo::OPERATION::ROTATE);
+            }
+            if (keyboard[SDL_SCANCODE_S]) {
+                window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE_X);
+            }
+            if (keyboard[SDL_SCANCODE_X]) {
+                selectedObject->setRemoved(true);
+                Components::get()->Render()->setSelectedObject(nullptr);
+            }
         }
     }
 }
@@ -350,7 +373,7 @@ void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e) const
     if (ImGui::GetIO().WantCaptureKeyboard) return;
 
     if (e->type == SDL_KEYDOWN) {
-        if (keyboard[SDL_SCANCODE_DELETE]) {
+        if (keyboard[SDL_SCANCODE_X]) {
             auto o = Components::get()->Render()->getSelectedObject();
             if (o != nullptr) {
                 o->setRemoved(true);

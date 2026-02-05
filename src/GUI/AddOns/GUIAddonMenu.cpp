@@ -81,7 +81,7 @@ void GUIAddonMenu::MenuScriptControls()
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAN_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
-    if (ImGui::MenuItem("Clean (not scene objects)")) {
+    if (ImGui::MenuItem("Clean (not scene objects)", "F4")) {
         SceneLoader::ClearScene();
     }
 }
@@ -529,7 +529,7 @@ void GUIAddonMenu::MenuLayout()
     auto setup = Config::get();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_GUI), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable/Disable GUI (F4)", nullptr, &setup->ENABLE_IMGUI);
+    ImGui::MenuItem("Enable/Disable GUI (F5)", nullptr, &setup->ENABLE_IMGUI);
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_TOOLBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Show toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
@@ -538,15 +538,15 @@ void GUIAddonMenu::MenuLayout()
 
     ImGui::SeparatorText("Layout modes");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEFAULT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    if (ImGui::MenuItem("Default", "F5")) {
+    if (ImGui::MenuItem("Default", "F6")) {
         Brakeza::get()->GUI()->setLayoutToDefault(Config::ImGUIConfigs::DEFAULT);
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEVS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    if (ImGui::MenuItem("Coding", "F6")) {
+    if (ImGui::MenuItem("Coding", "F7")) {
         Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::CODING);
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DESIGNERS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    if (ImGui::MenuItem("Design", "F7")) {
+    if (ImGui::MenuItem("Design", "F8")) {
         Components::get()->Window()->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
     }
     ImGui::Separator();
