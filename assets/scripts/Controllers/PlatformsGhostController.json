@@ -2,6 +2,7 @@
 	"codeFile": "../assets/scripts/Controllers/PlatformsGhostController.lua",
 	"typesFile": "../assets/scripts/Controllers/PlatformsGhostController.json",
 	"name": "PlatformsGhostController",
+	"type":	"Object",
 	"types": [{
 		"name": "moveSpeed",
 		"type": "float",

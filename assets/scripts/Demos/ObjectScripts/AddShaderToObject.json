@@ -2,6 +2,7 @@
   "codeFile":	"../assets/scripts/Demos/ObjectScripts/AddShaderToObject.lua",
   "typesFile": "../assets/scripts/Demos/ObjectScripts/AddShaderToObject.json",
   "name":	"Object add shader demo",
-    "types":	[
-    ]
+  "type":	"Object",
+  "types":	[
+  ]
 }

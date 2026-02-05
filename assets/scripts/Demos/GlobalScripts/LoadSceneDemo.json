@@ -2,6 +2,7 @@
 	"name":	"LoadSceneExample",
 	"codeFile":	"../assets/scripts/Demos/GlobalScripts/LoadSceneDemo.lua",
 	"typesFile": "../assets/scripts/Demos/GlobalScripts/LoadSceneDemo.json",
+	"type":	"Global",
 	"types":	[
         {
           "name":	"enabled",

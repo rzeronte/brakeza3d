@@ -2,6 +2,7 @@
     "codeFile":	"../assets/scripts/Demos/CapsuleStressLoop.lua",
     "typesFile": "../assets/scripts/Demos/CapsuleStressLoop.json",
     "name":	"CapsuleStressLoop",
+    "type":	"Global",
     "types":	[
         {
             "name":	"finished",

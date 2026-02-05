@@ -2,6 +2,7 @@
 	"name":	"MenuVerticalDemo",
 	"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.lua",
 	"typesFile": "../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.json",
+	"type":	"Global",
 	"types":	[
         {
           "name":	"enabled",

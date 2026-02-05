@@ -2,6 +2,7 @@
 	"codeFile":	"../assets/scripts/Controllers/KinematicFPSController.lua",
 	"typesFile":	"../assets/scripts/Controllers/KinematicFPSController.json",
 	"name":	"KinematicFPSController",
+	"type":	"Object",
 	"types":	[{
 			"name":	"force",
 			"type":	"float",
