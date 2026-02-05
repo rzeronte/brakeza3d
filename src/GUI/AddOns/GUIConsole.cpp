@@ -54,6 +54,12 @@ void GuiAddonConsole::AddLog(const char* fmt, ...)
     buf[IM_ARRAYSIZE(buf)-1] = 0;
     va_end(args);
     Items.push_back(Strdup(buf));
+
+    // Remove old lines if exceeding maxLines
+    while (Items.Size > maxLines) {
+        free(Items[0]);
+        Items.erase(Items.begin());
+    }
 }
 
 void GuiAddonConsole::DrawWinLogging()
@@ -91,6 +97,13 @@ void GuiAddonConsole::DrawWinLogging()
     GUI::DrawButton("Clear", IconGUI::LOGGING_CLEAR, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ClearLog(); });
     ImGui::SameLine();
     Filter.Draw("Filter", 180);
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(80);
+    const char* maxLinesOptions[] = { "25", "50", "100", "500" };
+    const int maxLinesValues[] = { 25, 50, 100, 500 };
+    if (ImGui::Combo("Max##lines", &maxLinesIndex, maxLinesOptions, IM_ARRAYSIZE(maxLinesOptions))) {
+        maxLines = maxLinesValues[maxLinesIndex];
+    }
     ImGui::Separator();
 
     // Reserve enough left-over height for 1 separator + 1 input text
