@@ -867,6 +867,14 @@
 			"name":	"COLLIDER_EDIT",
 			"x":	14,
 			"y":	11
+		}, {
+			"name":	"ARROW_UP",
+			"x":	10,
+			"y":	3
+		}, {
+			"name":	"ARROW_DOWN",
+			"x":	4,
+			"y":	3
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
