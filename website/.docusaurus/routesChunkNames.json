@@ -179,17 +179,17 @@
     },
     "content": "393be207"
   },
-  "/docs-fea": {
+  "/docs-b96": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/docs-e52": {
+  "/docs-08b": {
     "__comp": "a7bd4aaa",
     "__props": "0058b4c6"
   },
-  "/docs-634": {
+  "/docs-ca2": {
     "__comp": "a94703ab"
   },
   "/docs/advanced/core-shaders-1a7": {
@@ -223,6 +223,10 @@
   "/docs/editor/shaders-f1a": {
     "__comp": "17896441",
     "content": "9e6cb0f0"
+  },
+  "/docs/editor/shortcuts-780": {
+    "__comp": "17896441",
+    "content": "e2a418ef"
   },
   "/docs/engine-concepts/assets-folder-75c": {
     "__comp": "17896441",
