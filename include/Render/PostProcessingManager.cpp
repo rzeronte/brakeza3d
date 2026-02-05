@@ -112,7 +112,20 @@ ShaderBaseCustom* PostProcessingManager::getShader(int index) const
 void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
 {
     if (postProcessingShaders.empty()) {
-        // Sin shaders: copiar directamente (necesitarías un shader de copia)
+        return;
+    }
+
+    // Encontrar el índice del último shader HABILITADO
+    int lastEnabledIndex = -1;
+    for (int i = (int)postProcessingShaders.size() - 1; i >= 0; i--) {
+        if (postProcessingShaders[i]->isEnabled()) {
+            lastEnabledIndex = i;
+            break;
+        }
+    }
+
+    // Si no hay ningún shader habilitado, no hacer nada
+    if (lastEnabledIndex < 0) {
         return;
     }
 
@@ -127,18 +140,22 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
         }
 
         // Si es un shader de nodos, actualizar texturas internas
+        // Para la cadena: el color de entrada es la salida del shader anterior (currentInputTexture)
+        // mientras que depth siempre es la textura de profundidad original de la escena
         if (auto* nodesShader = dynamic_cast<ShaderNodesPostProcessing*>(currentShader)) {
-            nodesShader->UpdateInternalTextures(sceneColorTexture, sceneDepthTexture);
+            nodesShader->UpdateInternalTextures(currentInputTexture, sceneDepthTexture);
         }
 
         // Determinar FBO y textura de salida
         GLuint currentOutputFBO;
         GLuint currentOutputTexture;
 
-        if (i == postProcessingShaders.size() - 1) {
-            // Último shader: escribir al FBO de salida final
+        bool isLastEnabled = (i == lastEnabledIndex);
+
+        if (isLastEnabled) {
+            // Último shader habilitado: escribir al FBO de salida final
             currentOutputFBO = outputFBO;
-            currentOutputTexture = 0; // No necesitamos la textura del output final
+            currentOutputTexture = 0;
         } else {
             // Shaders intermedios: alternar ping-pong
             if (writeToPing) {
@@ -152,13 +169,12 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
 
         // Renderizar el shader
         currentShader->Render(currentOutputFBO, currentInputTexture);
-        // La salida de este shader es la entrada del siguiente
-        if (i < postProcessingShaders.size() - 1) {
-            currentInputTexture = currentOutputTexture;
-        }
 
-        // Alternar ping-pong
-        writeToPing = !writeToPing;
+        // La salida de este shader es la entrada del siguiente (si no es el último)
+        if (!isLastEnabled) {
+            currentInputTexture = currentOutputTexture;
+            writeToPing = !writeToPing;
+        }
     }
 }
 
