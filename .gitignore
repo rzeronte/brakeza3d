@@ -7,6 +7,9 @@ build/
 /cmake-build-debug-coverage/
 /cmake-build-release/
 
+# Screenshots
+assets/screenshots/*
+
 # Docusaurus
 website/node_modules
 website/.docusaurus
