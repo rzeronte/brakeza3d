@@ -507,9 +507,6 @@ void ComponentRender::FlipBuffersToGlobal() const
 
     ComponentWindow::ResetOpenGLSettings();
 
-    //Brakeza::get()->GUI()->getNodeEditor()->Update();
-    //Brakeza::get()->GUI()->getNodeEditor()->RenderEffect();
-
     shaders.shaderOGLImage->renderTexture(globalBuffer.backgroundTexture, 0, 0, w, h, w, h, 1, true, globalBuffer.globalFBO);
     shaders.shaderOGLImage->renderTexture(globalBuffer.sceneTexture, 0, 0, w, h, w, h ,1, true, globalBuffer.globalFBO);
 

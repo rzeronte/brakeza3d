@@ -33,6 +33,7 @@
 
 #include <cmath>
 
+#include "../../include/Brakeza.h"
 #include "../../include/GUI/ImGuiLayoutHelpers.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "NodeTypes/InternalTextureNode.h"
@@ -495,7 +496,7 @@ void ShaderNodeEditorManager::RenderEffect(GLuint fb)
     Components::get()->Render()->ChangeOpenGLFramebuffer(fb);
     Components::get()->Render()->ChangeOpenGLProgram(m_ShaderProgram);
 
-    float time = (float)ImGui::GetTime();
+    float time = Brakeza::get()->getExecutionTime();
     GLint timeLoc = glGetUniformLocation(m_ShaderProgram, "u_Time");
     if (timeLoc != -1) glUniform1f(timeLoc, time);
 
@@ -1050,7 +1051,7 @@ void ShaderNodeEditorManager::RenderMesh(
     if (viewLoc != -1) glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
     if (modelLoc != -1) glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
 
-    float time = (float)ImGui::GetTime();
+    float time = Brakeza::get()->getExecutionTime();
     GLint timeLoc = glGetUniformLocation(m_ShaderProgram, "u_Time");
     if (timeLoc != -1) glUniform1f(timeLoc, time);
 
