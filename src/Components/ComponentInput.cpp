@@ -295,7 +295,7 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             Components::get()->Window()->ToggleFullScreen();
         }
 
-        // Transformation shortcuts (T, R, S) and delete (X) - only when an object is selected
+        // Transformation shortcuts (T, R, S), delete (X) and deselect (ESC) - only when an object is selected
         auto selectedObject = Components::get()->Render()->getSelectedObject();
         if (selectedObject != nullptr) {
             if (keyboard[SDL_SCANCODE_T]) {
@@ -309,6 +309,9 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             }
             if (keyboard[SDL_SCANCODE_X]) {
                 selectedObject->setRemoved(true);
+                Components::get()->Render()->setSelectedObject(nullptr);
+            }
+            if (keyboard[SDL_SCANCODE_ESCAPE]) {
                 Components::get()->Render()->setSelectedObject(nullptr);
             }
         }
