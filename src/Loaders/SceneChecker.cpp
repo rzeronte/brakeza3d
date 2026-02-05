@@ -85,7 +85,7 @@ void SceneChecker::ExtractScreenshot(cJSON* json)
     if (!screenshotPath.empty() && Tools::FileExists(screenshotPath.c_str())) {
         screenshot = new Image(screenshotPath);
     } else {
-        LOG_ERROR("[Scene] Screenshot '%s' not found...");
+        LOG_WARNING("[Scene] Screenshot '%s' not found...", screenshotPath.c_str());
     }
 }
 

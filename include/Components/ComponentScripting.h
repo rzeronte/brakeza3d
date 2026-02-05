@@ -62,6 +62,12 @@ public:
     static cJSON *CreateEmptyTypesFileJSON(const std::string &name, const FilePath::ScriptFile &codeFile, const FilePath::TypesFile &typesFile, ScriptType scriptType = SCRIPT_GLOBAL);
     static void RemoveScriptLUAFile(const FilePath::ScriptFile& path);
 
+    void MoveSceneScriptUp(ScriptLUA* script);
+    void MoveSceneScriptDown(ScriptLUA* script);
+
+    void MoveProjectScriptUp(ScriptLUA* script);
+    void MoveProjectScriptDown(ScriptLUA* script);
+
     void setCurrentScene(Scene *current_scene);
     void setCurrentProject(Project *current_project);
 };

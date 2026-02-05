@@ -86,7 +86,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
                 FileSystemGUI::Icon(IconGUI::CREATE_FILE),
                 "New project",
                 []() {
-                    LOG_MESSAGE("NEW PROJECT");
+                    FileSystemGUI::type = GUIType::BROWSE_PROJECTS;
                     FileSystemGUI::openPopUpCreateProject = true;
                 }
             );
@@ -561,6 +561,18 @@ void GUIAddonProjectSetup::DrawProjectScripts()
             [scripting, currentScript]() { scripting->RemoveProjectScript(currentScript); }
         );
 
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::ARROW_UP),
+            "Move up",
+            [scripting, currentScript]() { scripting->MoveProjectScriptUp(currentScript); }
+        );
+
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::ARROW_DOWN),
+            "Move down",
+            [scripting, currentScript]() { scripting->MoveProjectScriptDown(currentScript); }
+        );
+
         bool isOpenCurrentScript = CustomImGui::CustomTreeNode(scriptConfig, nullptr);
 
         if (isOpenCurrentScript) {
@@ -616,6 +628,18 @@ void GUIAddonProjectSetup::DrawSceneScripts()
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
             "Remove scene script",
             [scripting, currentScript]() { scripting->RemoveSceneScript(currentScript); }
+        );
+
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::ARROW_UP),
+            "Move up",
+            [scripting, currentScript]() { scripting->MoveSceneScriptUp(currentScript); }
+        );
+
+        scriptConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::ARROW_DOWN),
+            "Move down",
+            [scripting, currentScript]() { scripting->MoveSceneScriptDown(currentScript); }
         );
 
         bool isOpenCurrentScript = CustomImGui::CustomTreeNode(scriptConfig, nullptr);
@@ -676,6 +700,18 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
             "Remove shader from scene",
             [render, index]() { render->RemoveSceneShaderByIndex(index); }
+        );
+
+        shaderConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::ARROW_UP),
+            "Move up",
+            [render, currentShader]() { render->MoveSceneShaderUp(currentShader); }
+        );
+
+        shaderConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::ARROW_DOWN),
+            "Move down",
+            [render, currentShader]() { render->MoveSceneShaderDown(currentShader); }
         );
 
         bool isOpenCurrentShader = CustomImGui::CustomTreeNode(shaderConfig, nullptr);

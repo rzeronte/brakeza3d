@@ -395,6 +395,8 @@ namespace GUIType
     X(CLEAN_SCENE, 0, 0) \
     X(COLLIDER_INFO, 0, 0) \
     X(COLLIDER_EDIT, 0, 0) \
+    X(ARROW_UP, 0, 0) \
+    X(ARROW_DOWN, 0, 0) \
 
 
 // Icons Objects

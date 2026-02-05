@@ -536,6 +536,34 @@ void ComponentRender::FlipBuffersToGlobal() const
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 }
 
+void ComponentRender::MoveSceneShaderUp(ShaderBaseCustom* shader)
+{
+    if (!shader || sceneShaders.size() < 2)
+        return;
+
+    auto it = std::find(sceneShaders.begin(), sceneShaders.end(), shader);
+
+    // No encontrado o ya está arriba
+    if (it == sceneShaders.end() || it == sceneShaders.begin())
+        return;
+
+    std::iter_swap(it, it - 1);
+}
+
+void ComponentRender::MoveSceneShaderDown(ShaderBaseCustom* shader)
+{
+    if (!shader || sceneShaders.size() < 2)
+        return;
+
+    auto it = std::find(sceneShaders.begin(), sceneShaders.end(), shader);
+
+    // No encontrado o ya está abajo
+    if (it == sceneShaders.end() || it == sceneShaders.end() - 1)
+        return;
+
+    std::iter_swap(it, it + 1);
+}
+
 ComponentRender::~ComponentRender()
 {
     for (auto &s: sceneShaders) {

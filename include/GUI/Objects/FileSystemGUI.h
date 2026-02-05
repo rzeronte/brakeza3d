@@ -12,11 +12,11 @@
 class GUIManager;
 class EditableOpenFile;
 
-static GUIType::BrowserFileType type;
-
 class FileSystemGUI
 {
 public:
+    static inline GUIType::BrowserFileType type;
+
     static void DrawMainBrowser();
 
     static bool openPopUpCreateProject;
