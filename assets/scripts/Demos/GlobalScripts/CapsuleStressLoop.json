@@ -1,6 +1,6 @@
 {
-    "codeFile":	"../assets/scripts/Demos/CapsuleStressLoop.lua",
-    "typesFile": "../assets/scripts/Demos/CapsuleStressLoop.json",
+    "codeFile":	"../assets/scripts/Demos/GlobalScripts/CapsuleStressLoop.lua",
+    "typesFile": "../assets/scripts/Demos/GlobalScripts/CapsuleStressLoop.json",
     "name":	"CapsuleStressLoop",
     "type":	"Global",
     "types":	[
