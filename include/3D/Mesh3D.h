@@ -68,9 +68,7 @@ public:
     void ProcessNodes(const aiScene *scene, const aiNode *node);
     void LoadMesh(int meshId, const aiMesh *mesh);
     void onUpdate() override;
-
     void RunObjectShaders() const;
-
     void postUpdate() override;
     void BuildOctree(int depth);
     void DrawPropertiesGUI() override;

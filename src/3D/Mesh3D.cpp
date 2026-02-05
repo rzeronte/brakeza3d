@@ -296,7 +296,7 @@ void Mesh3D::RunObjectShaders() const
                 nodeManager->Update();
 
                 if (nodeManager->GetShaderProgram() == 0) {
-                    //LOG_ERROR("[Mesh3D] Shader program is 0 after Update()!");
+                    LOG_ERROR("[Mesh3D] Shader program is 0 after Update()!");
                     continue;
                 }
 

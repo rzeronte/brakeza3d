@@ -394,8 +394,6 @@ void ComponentWindow::ImGuiOnUpdate()
         Brakeza::get()->GUI()->setLayoutToDefault(getImGuiConfig());
     }
 
-    //UpdateMouseCursor();
-
     glBindFramebuffer(GL_FRAMEBUFFER, getUIFramebuffer());
 
     ImGui_ImplOpenGL3_NewFrame();
