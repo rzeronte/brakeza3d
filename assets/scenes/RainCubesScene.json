@@ -48,8 +48,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
+					"codeFile":	"../assets/scripts/Demos/ObjectScripts/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/ObjectScripts/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
 					"type":	"Object",
 					"types":	[{
@@ -88,8 +88,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
+					"codeFile":	"../assets/scripts/Demos/ObjectScripts/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/ObjectScripts/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
 					"type":	"Object",
 					"types":	[{
@@ -190,8 +190,8 @@
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[{
-					"codeFile":	"../assets/scripts/Demos/RainCubesDemo.lua",
-					"typesFile":	"../assets/scripts/Demos/RainCubesDemo.json",
+					"codeFile":	"../assets/scripts/Demos/ObjectScripts/RainCubesDemo.lua",
+					"typesFile":	"../assets/scripts/Demos/ObjectScripts/RainCubesDemo.json",
 					"name":	"RainCubesDemo",
 					"type":	"Object",
 					"types":	[{
