@@ -10,6 +10,7 @@
 #include "cJSON.h"
 #include "../../sol/sol.hpp"
 #include "../3D/Vertex3D.h"
+#include "../OpenGL/Base/SharedOpenGLStructs.h"
 
 typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
 
@@ -80,6 +81,7 @@ public:
     std::string scriptFilename;
     std::string fileTypes;
     std::string name;
+    ScriptType type = SCRIPT_GLOBAL;
 
     explicit ScriptLUA(const std::string& name, const std::string& codeFile, const std::string &typesFile);
     ScriptLUA(const std::string& name, const std::string &codeFile, const std::string &typesFile, const cJSON *types);
@@ -100,6 +102,8 @@ public:
     void ReloadGlobals() const;
     void DrawImGuiProperties();
     void AddDataTypeEmpty(const char *name, const char *type);
+
+    [[nodiscard]] ScriptType getType() const                                        { return type; }
     [[nodiscard]] bool isPaused() const                                             { return paused; }
     [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const        { return dataTypes; }
     [[nodiscard]] const std::string &getScriptFilename() const                      { return scriptFilename; }
@@ -114,6 +118,8 @@ public:
     void setPaused(bool value);
     void setGlobalLoaded(bool value);
     void setDataTypesFromJSON(const cJSON *typesJSON);
+
+    void setType(ScriptType value);
 
     friend class ScriptLuaGUI;
 };

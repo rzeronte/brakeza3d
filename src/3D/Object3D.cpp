@@ -127,6 +127,12 @@ void Object3D::LookAt(Object3D *o)
 
 void Object3D::AttachScript(ScriptLUA *script)
 {
+    if (script->getType() != SCRIPT_OBJECT) {
+        LOG_ERROR("[Object3D] Error: Cannot attach Global script to Object3D. Only Object scripts are allowed.");
+        delete script;
+        return;
+    }
+
     scripts.push_back(script);
     ReloadScriptsEnvironment();
 }

@@ -778,7 +778,13 @@ void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
             "Attach script to current scene",
             [fullPath]() {
                 auto meta = ScriptLuaGUI::ExtractScriptMetainfo(fullPath);
-                Components::get()->Scripting()->AddSceneLUAScript(new ScriptLUA(meta.name, meta.codeFile, meta.typesFile));
+                auto script = new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
+                if (script->getType() != SCRIPT_GLOBAL) {
+                    LOG_ERROR("[Scene] Error: Cannot attach Object script to Scene. Only Global scripts are allowed.");
+                    delete script;
+                    return;
+                }
+                Components::get()->Scripting()->AddSceneLUAScript(script);
                 FileSystemGUI::autoExpandScene = true;
             }
         );
@@ -824,8 +830,14 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
     if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
 
         static char localVarName[256] = "";
+        static int scriptTypeIndex = 0;
+        const char* scriptTypeItems[] = { "Global", "Object" };
+
         ImGui::SetNextItemWidth(150);
         ImGui::InputText("Script name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+
+        ImGui::SetNextItemWidth(150);
+        ImGui::Combo("Type##script_type", &scriptTypeIndex, scriptTypeItems, IM_ARRAYSIZE(scriptTypeItems));
 
         ImGui::Separator();
 
@@ -834,12 +846,13 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
             ImGui::CloseCurrentPopup();
         });
         float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
-        float spacing = 150.0f - buttonWidth * 2; // Ajusta este valor según necesites
+        float spacing = 150.0f - buttonWidth * 2;
 
         ImGui::SameLine(0, spacing);
         GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
             if (localVarName[0] != '\0') {
-                ComponentScripting::CreateScriptLUAFile(browser.currentFolder + localVarName);
+                ScriptType selectedType = (scriptTypeIndex == 0) ? SCRIPT_GLOBAL : SCRIPT_OBJECT;
+                ComponentScripting::CreateScriptLUAFile(browser.currentFolder + localVarName, selectedType);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
                 ImGui::CloseCurrentPopup();
             }

@@ -293,8 +293,14 @@ void ScriptLUA::ProcessFileTypes()
     auto contentFile = Tools::ReadFile(fileTypes);
     LOG_MESSAGE("[ScriptLUA] Parsing attributes from: '%s'", fileTypes.c_str());
 
-    setName(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "name")->valuestring);
-    setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));
+    cJSON *root = cJSON_Parse(contentFile);
+    setName(cJSON_GetObjectItemCaseSensitive(root, "name")->valuestring);
+    setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(root, "types"));
+
+    cJSON *typeJSON = cJSON_GetObjectItemCaseSensitive(root, "type");
+    if (typeJSON && typeJSON->valuestring) {
+        type = (strcmp(typeJSON->valuestring, "Global") == 0) ? SCRIPT_GLOBAL : SCRIPT_OBJECT;
+    }
 }
 
 void ScriptLUA::setDataTypesFromJSON(const cJSON *typesJSON)
@@ -411,6 +417,7 @@ cJSON *ScriptLUA::getTypesJSON() const
     cJSON_AddStringToObject(scriptJSON, "codeFile", scriptFilename.c_str());
     cJSON_AddStringToObject(scriptJSON, "typesFile", fileTypes.c_str());
     cJSON_AddStringToObject(scriptJSON, "name", getName().c_str());
+    cJSON_AddStringToObject(scriptJSON, "type", type == SCRIPT_GLOBAL ? "Global" : "Object");
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : getDataTypes()) {
@@ -450,4 +457,9 @@ cJSON *ScriptLUA::getTypesJSON() const
     cJSON_AddItemToObject(scriptJSON, "types", typesArray);
 
     return scriptJSON;
+}
+
+void ScriptLUA::setType(ScriptType value)
+{
+    this->type = value;
 }
