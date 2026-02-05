@@ -82,6 +82,7 @@
 			"scripts":	[{
 					"codeFile":	"../assets/scripts/Controllers/PlatformsGhostController.lua",
 					"typesFile":	"../assets/scripts/Controllers/PlatformsGhostController.json",
+					"type": "Object",
 					"name":	"PlatformsGhostController",
 					"types":	[{
 							"name":	"moveSpeed",

@@ -83,6 +83,7 @@
 					"codeFile":	"../assets/scripts/Controllers/KinematicThirdPersonController.lua",
 					"typesFile":	"../assets/scripts/Controllers/KinematicThirdPersonController.json",
 					"name":	"KinematicThirdPersonController",
+					"type": "Object",
 					"types":	[{
 							"name":	"speed",
 							"type":	"float",
