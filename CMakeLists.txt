@@ -114,6 +114,7 @@ add_executable(Brakeza3D
         src/Render/Collider.cpp include/Render/Collider.h
         src/Render/ColliderMesh3DAnimation.cpp include/Render/AssimpAnimationService.h
         src/Render/CollisionInfo.cpp include/Render/CollisionInfo.h
+        src/Render/Mesh3DShaderChain.cpp include/Render/Mesh3DShaderChain.h
 
         # Components
         src/Components/Component.cpp                        include/Components/Component.h

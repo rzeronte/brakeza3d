@@ -33,7 +33,6 @@ public:
         editor->AddOutputPin(node, "Color", PinType::Vector);
         editor->AddOutputPin(node, "Alpha", PinType::Float);
 
-        // Inicializar la textura (se actualizará cada frame)
         editor->SetExternalTextureForNode(node->id, 0);
     }
 
@@ -117,12 +116,20 @@ public:
 
         if (textures.find(node->id) != textures.end() && textures[node->id].image) {
             std::string uvCoords = "v_TexCoord";
+            bool customUVConnected = false;
 
             if (node->inputs.size() > 0) {
                 std::string customUV = editor->TraverseNode(node->inputs[0]->id, code);
                 if (!customUV.empty()) {
                     uvCoords = customUV;
+                    customUVConnected = true;
                 }
+            }
+
+            // For mesh object shaders, chain texture is screen-space rendered,
+            // so use screen-space coords when no custom UV is connected
+            if (!customUVConnected && editor->getType() == SHADER_NODE_OBJECT) {
+                uvCoords = "gl_FragCoord.xy / u_ScreenSize";
             }
 
             if (sourcePin->name == "Alpha") {
@@ -133,7 +140,11 @@ public:
                      << ", " << uvCoords << ").rgb;\n";
             }
         } else {
-            code << "    vec3 " << varName << " = vec3(1.0, 0.0, 1.0);\n";
+            if (sourcePin->name == "Alpha") {
+                code << "    float " << varName << " = 1.0;\n";
+            } else {
+                code << "    vec3 " << varName << " = vec3(1.0);\n";
+            }
         }
 
         return varName;

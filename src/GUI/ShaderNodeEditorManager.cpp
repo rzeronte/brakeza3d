@@ -407,6 +407,7 @@ void ShaderNodeEditorManager::OnCreateNodeMenu()
     if (ImGui::MenuItem("Image Texture (vec3)")) CreateNodeOfType("Image");
     if (getType() == SHADER_NODE_OBJECT) {
         if (ImGui::MenuItem("Mesh Texture (vec3)")) CreateNodeOfType("Mesh Texture");
+        if (ImGui::MenuItem("Chain Texture (vec3)")) CreateNodeOfType("Internal Texture");
     } else if (getType() == SHADER_NODE_POSTPROCESSING) {
         if (ImGui::MenuItem("Internal Texture (vec3)")) CreateNodeOfType("Internal Texture");
     }
@@ -601,6 +602,10 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
         code << "layout (location = 2) out vec4 gAlbedoSpec;\n";
     }
     code << "uniform float u_Time;\n";
+
+    if (getType() == SHADER_NODE_OBJECT) {
+        code << "uniform vec2 u_ScreenSize;\n";
+    }
 
     // Declarar uniforms de texturas
     for (auto& node : GetNodes()) {
@@ -961,10 +966,14 @@ void ShaderNodeEditorManager::UpdateExternalTextureForNode(int nodeId, GLuint te
 
 void ShaderNodeEditorManager::UpdateChainOutputTexture(GLuint textureId)
 {
-    // Buscar todos los nodos ChainOutput y actualizar su textura
     for (auto& node : GetNodes()) {
         if (node->name == "Internal Texture") {
-            UpdateExternalTextureForNode(node->id, textureId);
+            auto it = m_NodeTextures.find(node->id);
+            if (it != m_NodeTextures.end() && it->second.image) {
+                it->second.image->setOGLTextureID(textureId);
+            } else {
+                SetExternalTextureForNode(node->id, textureId);
+            }
         }
     }
 }
@@ -1054,6 +1063,12 @@ void ShaderNodeEditorManager::RenderMesh(
     float time = Brakeza::get()->getExecutionTime();
     GLint timeLoc = glGetUniformLocation(m_ShaderProgram, "u_Time");
     if (timeLoc != -1) glUniform1f(timeLoc, time);
+
+    GLint screenSizeLoc = glGetUniformLocation(m_ShaderProgram, "u_ScreenSize");
+    if (screenSizeLoc != -1) {
+        auto window = Components::get()->Window();
+        glUniform2f(screenSizeLoc, (float)window->getWidthRender(), (float)window->getHeightRender());
+    }
 
     int textureUnit = 0;
     for (auto& node : GetNodes()) {
