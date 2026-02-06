@@ -370,10 +370,14 @@ void ShaderNodeEditorManager::HandleDeletion()
 
         ed::NodeId deletedNodeId;
         while (ed::QueryDeletedNode(&deletedNodeId)) {
+            auto node = FindNode(deletedNodeId.Get());
+            if (node && (node->name == "Output" || node->name == "Mesh Texture" || node->name == "Internal Texture")) {
+                ed::RejectDeletedItem();
+                continue;
+            }
+
             if (ed::AcceptDeletedItem()) {
-                auto node = FindNode(deletedNodeId.Get());
                 if (node) {
-                    // Llamar onDelete del tipo de nodo
                     auto it = m_NodeTypes.find(node->name);
                     if (it != m_NodeTypes.end()) {
                         it->second->OnDelete(node, this);

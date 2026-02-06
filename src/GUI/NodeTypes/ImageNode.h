@@ -64,7 +64,7 @@ public:
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
                         auto selection = static_cast<char*>(payload->Data);
-                        auto fullPath = Config::get()->IMAGES_FOLDER + selection;
+                        std::string fullPath = selection;
                         *filepath = fullPath;
                         editor->LoadImageForNode(node->id, fullPath);
                     }
@@ -125,7 +125,7 @@ public:
             if (ImGui::BeginDragDropTarget()) {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
                     auto selection = static_cast<char*>(payload->Data);
-                    auto fullPath = Config::get()->IMAGES_FOLDER + selection;
+                    std::string fullPath = selection;
                     *filepath = fullPath;
                     editor->LoadImageForNode(node->id, fullPath);
                 }

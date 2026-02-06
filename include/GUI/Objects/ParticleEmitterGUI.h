@@ -24,10 +24,8 @@ public:
 
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
-                        LOG_MESSAGE("Dropping image (%s) in emitter %s", payload->Data, o->getName().c_str());
-                        IM_ASSERT(payload->DataSize == sizeof(int));
                         auto selection = (char*) payload->Data;
-                        auto fullPath = Config::get()->IMAGES_FOLDER + selection;
+                        std::string fullPath = selection;
                         if (o->texture == nullptr) {
                             o->texture = new Image(fullPath);
                         } else {

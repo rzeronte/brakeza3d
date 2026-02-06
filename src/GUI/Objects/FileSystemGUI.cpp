@@ -541,7 +541,7 @@ void FileSystemGUI::DrawWinMediaBrowser(GUIType::BrowserCache &browser, TextureP
 
             // Drag & Drop
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
-                ImGui::SetDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM, image->label.c_str(), image->label.size() + 1);
+                ImGui::SetDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM, image->srcPath.c_str(), image->srcPath.size() + 1);
                 ImGui::Image(reinterpret_cast<ImTextureID>(image->texture->getOGLTextureID()), ImVec2(48, 48));
                 ImGui::SameLine();
                 ImGui::Text("%s", image->label.c_str());
