@@ -15,6 +15,7 @@
 #include "../Render/Grid3D.h"
 #include "../Render/Collider.h"
 #include "../OpenGL/Code/ShaderBaseCustomOGLCode.h"
+#include "../Render/Mesh3DShaderChain.h"
 #include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
@@ -49,6 +50,8 @@ protected:
     std::vector<Image *> modelSpecularTextures;
     std::vector<ShaderBaseCustom*> customShaders;
     std::vector<Mesh3DData> meshes;
+    Mesh3DShaderChain* shaderChain = nullptr;
+    mutable GLuint chainTempTexture = 0;
 
     AABB3D aabb;
     Octree *octree = nullptr;
@@ -83,6 +86,8 @@ public:
     void AddCustomShader(ShaderBaseCustom *);
     void LoadShader(const FilePath::ShaderConfigFile &jsonFilename);
     void RemoveShader(int i);
+    void MoveShaderUp(ShaderBaseCustom* shader);
+    void MoveShaderDown(ShaderBaseCustom* shader);
     void FillOGLBuffers();
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();
@@ -92,11 +97,19 @@ public:
     void setSourceFile(const FilePath::ModelFile &sourceFile);
 
     void setRenderPipelineDefault(bool value);
+    
+    void InitializeShaderChain(int screenWidth, int screenHeight);
+    void ProcessShaderChain(GLuint finalFBO);
+    void CleanupShaderChain();
+    
+    void SetChainTempTexture(GLuint texture) const { chainTempTexture = texture; }
+    GLuint GetChainTempTexture() const { return chainTempTexture; }
 
     [[nodiscard]] bool isLoaded() const                                           { return loaded; }
     [[nodiscard]] ObjectType getTypeObject() const override                       { return ObjectType::Mesh3D; }
     GUIType::Sheet getIcon() override                                             { return IconObject::MESH_3D; }
     std::vector<Mesh3DData> &getMeshData()                                        { return meshes; }
+    const std::vector<Mesh3DData> &getMeshData() const                             { return meshes; }
     AABB3D &getAABB()                                                             { return aabb; }
     [[nodiscard]] const std::vector<ShaderBaseCustom *> &getCustomShaders() const { return customShaders; }
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const    { return modelSpecularTextures; }
@@ -104,6 +117,7 @@ public:
     [[nodiscard]] Octree *getOctree() const                                       { return octree; }
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)               { return meshes[i].modelTriangles; }
     [[nodiscard]] std::vector<Image *> &getModelTextures()                        { return modelTextures; }
+    [[nodiscard]] const std::vector<Image *> &getModelTextures() const             { return modelTextures; }
     [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i)                { return meshes[i].modelVertices; }
     [[nodiscard]] bool isRenderPipelineDefault() const                            { return renderDefaultPipeline; }
 

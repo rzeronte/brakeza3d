@@ -7,6 +7,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
+#include "../../include/Render/Mesh3DShaderChain.h"
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
@@ -22,6 +23,7 @@
 Mesh3D::Mesh3D()
 {
     luaEnvironment["this"] = this;
+    shaderChain = new Mesh3DShaderChain();
 }
 
 Mesh3D::Mesh3D(const FilePath::ModelFile& modelFile)
@@ -29,6 +31,7 @@ Mesh3D::Mesh3D(const FilePath::ModelFile& modelFile)
     sourceFile(modelFile)
 {
     luaEnvironment["this"] = this;
+    shaderChain = new Mesh3DShaderChain();
 }
 
 Mesh3D::~Mesh3D()
@@ -52,6 +55,11 @@ Mesh3D::~Mesh3D()
     if (!sharedTextures) {
         for (auto texture : modelTextures) delete texture;
         for (auto texture : modelSpecularTextures) delete texture;
+    }
+    
+    if (shaderChain) {
+        delete shaderChain;
+        shaderChain = nullptr;
     }
 }
 
@@ -192,6 +200,11 @@ void Mesh3D::onUpdate()
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();
 
+    // Inicializar shader chain si no está inicializado
+    if (shaderChain && !shaderChain->isInitialized()) {
+        shaderChain->Initialize(window->getWidthRender(), window->getHeightRender());
+    }
+
     auto sceneFramebuffer = window->getSceneFramebuffer();
 
     if (isGUISelected()) {
@@ -267,56 +280,12 @@ void Mesh3D::postUpdate()
 
 void Mesh3D::RunObjectShaders() const
 {
-    if (customShaders.empty()) return;
+    if (customShaders.empty() || !shaderChain) return;
 
     auto window = Components::get()->Window();
-    auto camera = Components::get()->Camera();
-
-    for (const auto& s: customShaders) {
-        if (!s->isEnabled()) continue;
-
-        // Si es un shader de nodos para mesh
-        if (auto* nodesShader = dynamic_cast<ShaderNodesMesh3D*>(s)) {
-            auto nodeManager = nodesShader->GetNodeManager();
-            if (!nodeManager) {
-                LOG_ERROR("[Mesh3D] nodeManager is null for shader %s", s->getLabel().c_str());
-                continue;
-            }
-
-            // Renderizar cada parte del mesh
-            for (size_t i = 0; i < meshes.size(); i++) {
-                const auto& m = meshes[i];
-
-                // Actualizar texturas del material
-                nodeManager->UpdateMeshTextures(
-                    modelTextures[m.materialIndex]->getOGLTextureID(),
-                    modelTextures[m.materialIndex]->getOGLTextureID()
-                );
-
-                nodeManager->Update();
-
-                if (nodeManager->GetShaderProgram() == 0) {
-                    LOG_ERROR("[Mesh3D] Shader program is 0 after Update()!");
-                    continue;
-                }
-
-                // Renderizar este submesh
-                nodeManager->RenderMesh(
-                    window->getGBuffer().FBO,
-                    m.vertexBuffer,
-                    m.uvBuffer,
-                    m.normalBuffer,
-                    m.vertices.size(),
-                    getModelMatrix(),
-                    camera->getGLMMat4ViewMatrix(),
-                    camera->getGLMMat4ProjectionMatrix()
-                );
-            }
-        } else {
-            // Shaders normales (no de nodos)
-            s->Render(window->getGBuffer().FBO, window->getGBuffer().albedo);
-        }
-    }
+    
+    // Procesar shaders a través del chain
+    shaderChain->ProcessChain(this, customShaders, window->getGBuffer().FBO);
 }
 
 void Mesh3D::BuildOctree(int depth)
@@ -591,6 +560,26 @@ void Mesh3D::RemoveShader(int index)
     }
 }
 
+void Mesh3D::MoveShaderUp(ShaderBaseCustom* shader)
+{
+    if (!shader || customShaders.size() < 2) return;
+
+    auto it = std::find(customShaders.begin(), customShaders.end(), shader);
+    if (it == customShaders.end() || it == customShaders.begin()) return;
+
+    std::iter_swap(it, it - 1);
+}
+
+void Mesh3D::MoveShaderDown(ShaderBaseCustom* shader)
+{
+    if (!shader || customShaders.size() < 2) return;
+
+    auto it = std::find(customShaders.begin(), customShaders.end(), shader);
+    if (it == customShaders.end() || it == customShaders.end() - 1) return;
+
+    std::iter_swap(it, it + 1);
+}
+
 void Mesh3D::ShadowMappingPass()
 {
     auto render = Components::get()->Render();
@@ -696,4 +685,26 @@ void Mesh3D::setSourceFile(const FilePath::ModelFile &sourceFile)
 void Mesh3D::setRenderPipelineDefault(bool value)
 {
     renderDefaultPipeline = value;
+}
+
+void Mesh3D::InitializeShaderChain(int screenWidth, int screenHeight)
+{
+    if (shaderChain) {
+        shaderChain->Initialize(screenWidth, screenHeight);
+    }
+}
+
+void Mesh3D::ProcessShaderChain(GLuint finalFBO)
+{
+    if (shaderChain && !customShaders.empty()) {
+        shaderChain->ProcessChain(this, customShaders, finalFBO);
+    }
+}
+
+void Mesh3D::CleanupShaderChain()
+{
+    if (shaderChain) {
+        delete shaderChain;
+        shaderChain = nullptr;
+    }
 }

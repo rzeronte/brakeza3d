@@ -322,6 +322,24 @@ void ShadersGUI::DrawWinObjectShaders()
         removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(removeItem);
 
+        // Move Up
+        CustomImGui::TreeActionItem moveUpItem(
+            FileSystemGUI::Icon(IconGUI::ARROW_UP),
+            "Move up",
+            [mesh, s]() { mesh->MoveShaderUp(s); }
+        );
+        moveUpItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(moveUpItem);
+
+        // Move Down
+        CustomImGui::TreeActionItem moveDownItem(
+            FileSystemGUI::Icon(IconGUI::ARROW_DOWN),
+            "Move down",
+            [mesh, s]() { mesh->MoveShaderDown(s); }
+        );
+        moveDownItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(moveDownItem);
+
         // Dibujar el nodo
         bool isOpen = CustomImGui::CustomTreeNode(config);
 
