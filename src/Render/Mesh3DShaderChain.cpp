@@ -29,19 +29,25 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
         auto shader = shaders[i];
         if (!shader || !shader->isEnabled()) continue;
 
-        GLuint outFBO = 0;
-        GLuint outTex = 0;
-
         bool isLast = (i == static_cast<size_t>(lastEnabled));
+
+        GLuint outFBO = 0;
+        GLuint outAlbedoTex = 0;  // La textura de albedo del FBO intermedio
+
         if (isLast) {
             outFBO = finalFBO;
-            outTex = 0;
+            outAlbedoTex = 0;
         } else {
-            if (writeToPing) { outFBO = pingFBO; outTex = pingTexture; }
-            else             { outFBO = pongFBO; outTex = pongTexture; }
+            if (writeToPing) {
+                outFBO = pingFBO;
+                outAlbedoTex = pingAlbedoTex;
+            } else {
+                outFBO = pongFBO;
+                outAlbedoTex = pongAlbedoTex;
+            }
         }
 
-        if (outFBO != finalFBO && (outFBO == 0 || outTex == 0)) {
+        if (outFBO != finalFBO && (outFBO == 0 || outAlbedoTex == 0)) {
             std::cerr << "ERROR: Invalid framebuffer configuration in shader chain!" << std::endl;
             return;
         }
@@ -64,7 +70,7 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
 
             // InternalTexture (Chain Texture):
             // - Primer shader: textura original del mesh como fallback
-            // - Shaders subsiguientes: resultado del shader anterior
+            // - Shaders subsiguientes: albedo del shader anterior
             GLuint chainInputTex = inputTex;
             if (chainInputTex == 0 && !mesh->getModelTextures().empty() && mesh->getModelTextures()[0]) {
                 chainInputTex = mesh->getModelTextures()[0]->getOGLTextureID();
@@ -121,7 +127,8 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
         }
 
         if (!isLast) {
-            inputTex = outTex;
+            // Usar la textura de ALBEDO (attachment 2) como input para el siguiente shader
+            inputTex = outAlbedoTex;
             writeToPing = !writeToPing;
         } else {
             if (mesh) mesh->SetChainTempTexture(inputTex);
