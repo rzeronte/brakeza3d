@@ -5,11 +5,12 @@
 #include "../Render/Image.h"
 
 struct TexturePackageItem {
-    TexturePackageItem(Image *texture, std::string label);
+    TexturePackageItem(Image *texture, std::string label, std::string srcPath);
     ~TexturePackageItem();
 
     Image *texture;
     std::string label;
+    std::string srcPath;
 };
 
 class TexturePackage {
