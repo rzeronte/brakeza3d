@@ -12,36 +12,60 @@ class ShaderNodeEditorManager;
 
 class Mesh3DShaderChain {
 private:
+    // Ping FBO - mirrors GBuffer layout (3 color attachments)
     GLuint pingFBO = 0;
-    GLuint pingTexture = 0;
+    GLuint pingPositionTex = 0;  // attachment 0 - gPosition (discarded)
+    GLuint pingNormalTex = 0;    // attachment 1 - gNormal (discarded)
+    GLuint pingAlbedoTex = 0;    // attachment 2 - gAlbedoSpec (chain output)
     GLuint pingDepthRB = 0;
 
+    // Pong FBO - mirrors GBuffer layout (3 color attachments)
     GLuint pongFBO = 0;
-    GLuint pongTexture = 0;
+    GLuint pongPositionTex = 0;
+    GLuint pongNormalTex = 0;
+    GLuint pongAlbedoTex = 0;
     GLuint pongDepthRB = 0;
 
     int width = 0;
     int height = 0;
     GLuint lastOutputTexture = 0;
 
-    void createFramebuffer(GLuint& fbo, GLuint& tex, GLuint& depth, int w, int h) {
+    void createFramebuffer(GLuint& fbo,
+                           GLuint& posTex, GLuint& normTex, GLuint& albedoTex,
+                           GLuint& depth, int w, int h)
+    {
         glGenFramebuffers(1, &fbo);
         glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
-        // Color texture - captures gAlbedoSpec (shader output location 2)
-        glGenTextures(1, &tex);
-        glBindTexture(GL_TEXTURE_2D, tex);
+        // Attachment 0 - positions (same as GBuffer layout)
+        glGenTextures(1, &posTex);
+        glBindTexture(GL_TEXTURE_2D, posTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, posTex, 0);
+
+        // Attachment 1 - normals (same as GBuffer layout)
+        glGenTextures(1, &normTex);
+        glBindTexture(GL_TEXTURE_2D, normTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, w, h, 0, GL_RGB, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, normTex, 0);
+
+        // Attachment 2 - albedo (this is the chain output we care about)
+        glGenTextures(1, &albedoTex);
+        glBindTexture(GL_TEXTURE_2D, albedoTex);
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, albedoTex, 0);
 
-        // Map GBuffer layout: discard locations 0,1 (gPosition, gNormal),
-        // route location 2 (gAlbedoSpec) to our single color attachment
-        GLenum drawBuffers[3] = { GL_NONE, GL_NONE, GL_COLOR_ATTACHMENT0 };
-        glDrawBuffers(3, drawBuffers);
+        // Standard draw buffers matching GBuffer layout
+        GLuint attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+        glDrawBuffers(3, attachments);
 
         // Depth renderbuffer
         glGenRenderbuffers(1, &depth);
@@ -56,29 +80,29 @@ private:
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
-    void deleteFramebuffer(GLuint& fbo, GLuint& tex, GLuint& depth) {
+    void deleteFramebuffer(GLuint& fbo,
+                           GLuint& posTex, GLuint& normTex, GLuint& albedoTex,
+                           GLuint& depth)
+    {
         if (depth) { glDeleteRenderbuffers(1, &depth); depth = 0; }
-        if (tex) { glDeleteTextures(1, &tex); tex = 0; }
+        if (albedoTex) { glDeleteTextures(1, &albedoTex); albedoTex = 0; }
+        if (normTex) { glDeleteTextures(1, &normTex); normTex = 0; }
+        if (posTex) { glDeleteTextures(1, &posTex); posTex = 0; }
         if (fbo) { glDeleteFramebuffers(1, &fbo); fbo = 0; }
     }
 
 public:
     ~Mesh3DShaderChain() {
-        deleteFramebuffer(pingFBO, pingTexture, pingDepthRB);
-        deleteFramebuffer(pongFBO, pongTexture, pongDepthRB);
+        deleteFramebuffer(pingFBO, pingPositionTex, pingNormalTex, pingAlbedoTex, pingDepthRB);
+        deleteFramebuffer(pongFBO, pongPositionTex, pongNormalTex, pongAlbedoTex, pongDepthRB);
     }
 
     void Initialize(int screenWidth, int screenHeight) {
         width = screenWidth;
         height = screenHeight;
 
-        createFramebuffer(pingFBO, pingTexture, pingDepthRB, width, height);
-        createFramebuffer(pongFBO, pongTexture, pongDepthRB, width, height);
-    }
-
-    GLuint GetLastTempTexture() const {
-        // Return the last used ping or pong texture
-        return (pingTexture != 0) ? pingTexture : pongTexture;
+        createFramebuffer(pingFBO, pingPositionTex, pingNormalTex, pingAlbedoTex, pingDepthRB, width, height);
+        createFramebuffer(pongFBO, pongPositionTex, pongNormalTex, pongAlbedoTex, pongDepthRB, width, height);
     }
 
     GLuint GetLastOutputTexture() const {
@@ -88,6 +112,12 @@ public:
     bool isInitialized() const {
         return (pingFBO != 0 && pongFBO != 0);
     }
+
+    // Getters for FBOs and albedo textures (chain output)
+    GLuint getPingFBO() const { return pingFBO; }
+    GLuint getPongFBO() const { return pongFBO; }
+    GLuint getPingAlbedoTexture() const { return pingAlbedoTex; }
+    GLuint getPongAlbedoTexture() const { return pongAlbedoTex; }
 
     void ProcessChain(const Mesh3D* mesh, const std::vector<ShaderBaseCustom*>& shaders, GLuint finalFBO);
 };
