@@ -5,17 +5,17 @@ const downloads = [
     {
         icon: '/img/logo_windows.png',
         title: 'Windows 10/11',
-        arch: 'x86_64',
-        size: '66.7 MB',
-        url: 'https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/Brakeza3D-x86-64-Windows-installer.exe',
+        arch: 'amd64',
+        size: '68.9 MB',
+        url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Windows-installer.exe',
         label: 'Download .exe'
     },
     {
         icon: '/img/logo_linux.png',
         title: 'Ubuntu/Debian',
-        arch: 'x86_64',
-        size: '89 MB',
-        url: 'https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/Brakeza3D-x86-64-Linux-installer.deb',
+        arch: 'amd74',
+        size: '33.3 MB',
+        url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Linux-installer.deb',
         label: 'Download .deb'
     },
     {
