@@ -264,8 +264,17 @@ void GUIManager::CloseRemovedEditableOpenFiles()
     }
 }
 
-void GUIManager::DrawWinEditableOpenResources() const
+void GUIManager::DrawWinEditableOpenResources()
 {
+    if (!openFiles.empty()) {
+        ImGui::Separator();
+        GUI::ImageButtonNormal(IconGUI::REMOVE, "Close All Tabs", [this] {
+            for (auto &f : openFiles) {
+                f->setRemoved(true);
+            }
+        });
+    }
+
     if (ImGui::BeginTabBar("FileTabs")) {
         int i = 0;
         for (auto &f : openFiles) {

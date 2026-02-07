@@ -94,7 +94,7 @@ public:
     void OpenBoneInfoDialog();
     void LoadBrowserFolders();
     void CloseRemovedEditableOpenFiles();
-    void DrawWinEditableOpenResources() const;
+    void DrawWinEditableOpenResources();
     void OpenEditableFile(EditableOpenBaseResource *openFile);
     void CloseEditableFile(EditableOpenBaseResource *openFile) const;
     void setObjectsViewerMode(GUIType::ViewerObjectsMode value);
