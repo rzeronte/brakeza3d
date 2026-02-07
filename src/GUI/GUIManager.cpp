@@ -266,13 +266,25 @@ void GUIManager::CloseRemovedEditableOpenFiles()
 
 void GUIManager::DrawWinEditableOpenResources()
 {
-    if (!openFiles.empty()) {
+    if (!openFiles.empty())
+    {
+        if (ImGui::BeginTable("TabsHeader", 2, ImGuiTableFlags_None)) {
+            ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+
+            ImGui::TableSetColumnIndex(1);
+            ImGui::AlignTextToFramePadding();
+
+            GUI::ImageButtonNormal(IconGUI::REMOVE, "Close All Tabs", [this] {
+                for (auto& f : openFiles)
+                    f->setRemoved(true);
+            });
+            ImGui::EndTable();
+        }
         ImGui::Separator();
-        GUI::ImageButtonNormal(IconGUI::REMOVE, "Close All Tabs", [this] {
-            for (auto &f : openFiles) {
-                f->setRemoved(true);
-            }
-        });
     }
 
     if (ImGui::BeginTabBar("FileTabs")) {
