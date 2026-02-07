@@ -2,16 +2,22 @@
   "title": "Recent posts",
   "items": [
     {
+      "title": "Brakeza3D 0.26.2 Released!",
+      "permalink": "/blog/brakeza3d-0-26-2",
+      "unlisted": false,
+      "date": "2026-02-07T00:00:00.000Z"
+    },
+    {
       "title": "Assets Hub Alpha released!",
       "permalink": "/blog/assets-hub",
       "unlisted": false,
-      "date": "2025-02-01T00:00:00.000Z"
+      "date": "2026-02-01T00:00:00.000Z"
     },
     {
       "title": "Welcome to Brakeza3D!",
       "permalink": "/blog/welcome",
       "unlisted": false,
-      "date": "2025-01-07T00:00:00.000Z"
+      "date": "2026-01-07T00:00:00.000Z"
     }
   ]
 }

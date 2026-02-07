@@ -9,7 +9,7 @@ export default [
   },
   {
     path: '/blog',
-    component: ComponentCreator('/blog', '371'),
+    component: ComponentCreator('/blog', '9a7'),
     exact: true
   },
   {
@@ -19,12 +19,17 @@ export default [
   },
   {
     path: '/blog/assets-hub',
-    component: ComponentCreator('/blog/assets-hub', 'a90'),
+    component: ComponentCreator('/blog/assets-hub', '3ee'),
     exact: true
   },
   {
     path: '/blog/authors',
     component: ComponentCreator('/blog/authors', '0b7'),
+    exact: true
+  },
+  {
+    path: '/blog/brakeza3d-0-26-2',
+    component: ComponentCreator('/blog/brakeza3d-0-26-2', 'e52'),
     exact: true
   },
   {
@@ -34,37 +39,42 @@ export default [
   },
   {
     path: '/blog/tags/assets',
-    component: ComponentCreator('/blog/tags/assets', 'a17'),
+    component: ComponentCreator('/blog/tags/assets', 'ec3'),
     exact: true
   },
   {
     path: '/blog/tags/brakeza-3-d',
-    component: ComponentCreator('/blog/tags/brakeza-3-d', '36d'),
+    component: ComponentCreator('/blog/tags/brakeza-3-d', 'b7e'),
     exact: true
   },
   {
     path: '/blog/tags/community',
-    component: ComponentCreator('/blog/tags/community', '315'),
+    component: ComponentCreator('/blog/tags/community', '9a0'),
     exact: true
   },
   {
     path: '/blog/tags/hub',
-    component: ComponentCreator('/blog/tags/hub', '9b8'),
+    component: ComponentCreator('/blog/tags/hub', 'f62'),
     exact: true
   },
   {
     path: '/blog/tags/news',
-    component: ComponentCreator('/blog/tags/news', '7df'),
+    component: ComponentCreator('/blog/tags/news', 'f2f'),
+    exact: true
+  },
+  {
+    path: '/blog/tags/release',
+    component: ComponentCreator('/blog/tags/release', '52f'),
     exact: true
   },
   {
     path: '/blog/tags/welcome',
-    component: ComponentCreator('/blog/tags/welcome', '583'),
+    component: ComponentCreator('/blog/tags/welcome', 'cca'),
     exact: true
   },
   {
     path: '/blog/welcome',
-    component: ComponentCreator('/blog/welcome', 'c28'),
+    component: ComponentCreator('/blog/welcome', '978'),
     exact: true
   },
   {
