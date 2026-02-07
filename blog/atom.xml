@@ -2,16 +2,77 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://brakeza.com/blog</id>
     <title>Brakeza3D Game Engine Blog</title>
-    <updated>2025-02-01T00:00:00.000Z</updated>
+    <updated>2026-02-07T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://brakeza.com/blog"/>
     <subtitle>Brakeza3D Game Engine Blog</subtitle>
     <icon>https://brakeza.com/img/favicon.ico</icon>
     <entry>
+        <title type="html"><![CDATA[Brakeza3D 0.26.2 Released!]]></title>
+        <id>https://brakeza.com/blog/brakeza3d-0-26-2</id>
+        <link href="https://brakeza.com/blog/brakeza3d-0-26-2"/>
+        <updated>2026-02-07T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[Brakeza3D 0.26.2 is now available! 🚀]]></summary>
+        <content type="html"><![CDATA[<p>Brakeza3D <strong>0.26.2</strong> is now available! 🚀<br>
+<!-- -->This release focuses on editor usability, shader workflow improvements, scripting enhancements, and major internal cleanup.</p>
+<p>Download for <strong>Linux</strong> and <strong>Windows</strong>:</p>
+<ul>
+<li class=""><a href="https://github.com/rzeronte/brakeza3d/releases/tag/0.26.2" target="_blank" rel="noopener noreferrer" class="">https://github.com/rzeronte/brakeza3d/releases/tag/0.26.2</a></li>
+<li class=""><a href="https://brakeza.com/downloads" target="_blank" rel="noopener noreferrer" class="">https://brakeza.com/downloads</a></li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="-whats-new">✨ What’s New<a href="https://brakeza.com/blog/brakeza3d-0-26-2#-whats-new" class="hash-link" aria-label="Direct link to ✨ What’s New" title="Direct link to ✨ What’s New" translate="no">​</a></h2>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="rendering--shaders">Rendering &amp; Shaders<a href="https://brakeza.com/blog/brakeza3d-0-26-2#rendering--shaders" class="hash-link" aria-label="Direct link to Rendering &amp; Shaders" title="Direct link to Rendering &amp; Shaders" translate="no">​</a></h3>
+<ul>
+<li class="">Multiple <code>Mesh3DShaderChain</code> fixes</li>
+<li class="">Improved Shader Node Editor processing</li>
+<li class="">New internal texture nodes</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="editor--ux">Editor &amp; UX<a href="https://brakeza.com/blog/brakeza3d-0-26-2#editor--ux" class="hash-link" aria-label="Direct link to Editor &amp; UX" title="Direct link to Editor &amp; UX" translate="no">​</a></h3>
+<ul>
+<li class="">Native toolbar with updated icons and colors</li>
+<li class="">Script/shader editor improvements</li>
+<li class="">Documented shortcuts + “Close all tabs” button</li>
+<li class="">Custom project tree widgets</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="assets--projects">Assets &amp; Projects<a href="https://brakeza.com/blog/brakeza3d-0-26-2#assets--projects" class="hash-link" aria-label="Direct link to Assets &amp; Projects" title="Direct link to Assets &amp; Projects" translate="no">​</a></h3>
+<ul>
+<li class="">Massive cleanup of scenes and demos</li>
+<li class="">Sound asset integration</li>
+<li class="">Unified file browser (scenes, scripts, projects)</li>
+<li class="">Improved project setup and editable metadata</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="scripting--lua">Scripting &amp; Lua<a href="https://brakeza.com/blog/brakeza3d-0-26-2#scripting--lua" class="hash-link" aria-label="Direct link to Scripting &amp; Lua" title="Direct link to Scripting &amp; Lua" translate="no">​</a></h3>
+<ul>
+<li class="">Bullet functions exposed to Lua</li>
+<li class="">Better ComponentScripting workflow</li>
+<li class="">New tutorials and expanded example scripts</li>
+<li class="">Script-controlled sound volume</li>
+<li class="">New <code>Clean()</code> function for selective cleanup</li>
+</ul>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="docs--maintenance">Docs &amp; Maintenance<a href="https://brakeza.com/blog/brakeza3d-0-26-2#docs--maintenance" class="hash-link" aria-label="Direct link to Docs &amp; Maintenance" title="Direct link to Docs &amp; Maintenance" translate="no">​</a></h3>
+<ul>
+<li class="">Continuous documentation updates</li>
+<li class="">Linux CMake fixes</li>
+<li class="">Memory management improvements</li>
+<li class="">ImGui style balancing</li>
+<li class="">Extensive <code>.gitignore</code> cleanup</li>
+</ul>
+<hr>
+<p>This release brings a cleaner foundation and a smoother workflow across the engine and editor.</p>
+<p>Thanks to everyone testing Brakeza3D and providing feedback ❤️</p>]]></content>
+        <author>
+            <name>Eduardo</name>
+            <uri>https://github.com/rzeronte</uri>
+        </author>
+        <category label="brakeza3d" term="brakeza3d"/>
+        <category label="release" term="release"/>
+        <category label="community" term="community"/>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Assets Hub Alpha released!]]></title>
         <id>https://brakeza.com/blog/assets-hub</id>
         <link href="https://brakeza.com/blog/assets-hub"/>
-        <updated>2025-02-01T00:00:00.000Z</updated>
+        <updated>2026-02-01T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Assets Hub Alpha Released 🚀]]></summary>
         <content type="html"><![CDATA[<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="assets-hub-alpha-released-">Assets Hub Alpha Released 🚀<a href="https://brakeza.com/blog/assets-hub#assets-hub-alpha-released-" class="hash-link" aria-label="Direct link to Assets Hub Alpha Released 🚀" title="Direct link to Assets Hub Alpha Released 🚀" translate="no">​</a></h2>
 <p>We’re excited to announce the <strong>alpha release of Assets Hub</strong>, a new platform designed to expand and strengthen the Brakeza3D ecosystem.</p>
@@ -50,7 +111,7 @@
         <title type="html"><![CDATA[Welcome to Brakeza3D!]]></title>
         <id>https://brakeza.com/blog/welcome</id>
         <link href="https://brakeza.com/blog/welcome"/>
-        <updated>2025-01-07T00:00:00.000Z</updated>
+        <updated>2026-01-07T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[The Brakeza3D website has been completely relaunched as a site dedicated to providing solid and up-to-date documentation.]]></summary>
         <content type="html"><![CDATA[<p>The <strong>Brakeza3D</strong> website has been completely relaunched as a site dedicated to providing <strong>solid and up-to-date documentation</strong>.</p>
 <p>We’ve redesigned the website from the ground up to make it easier for developers to find tutorials, API references, download links, and more.</p>
