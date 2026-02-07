@@ -12,7 +12,7 @@ function HomepageHeader() {
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                 <h1 className="hero__title" style={{fontSize: '3.5rem', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.3)'}}>
-                    Brakeza3D v0.26.1 <br/>Released!
+                    Brakeza3D v0.26.2 <br/>Released!
                 </h1>
                 <p className="hero__subtitle" style={{fontSize: '1.5rem', color: 'rgba(255, 255, 255, 0.95)', textShadow: '0 1px 5px rgba(0,0,0,0.2)'}}>
                     A powerful 2D/3D game engine for indie developers
