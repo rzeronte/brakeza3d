@@ -38,8 +38,8 @@ Whether you're learning graphics programming, prototyping game ideas, or buildin
 
 Download ready-to-use binaries for your platform:
 
-- **Windows 10/11** (x86_64): [Download .exe](https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/Brakeza3D-x86-64-Windows-installer.exe) (66.7 MB)
-- **Ubuntu/Debian** (x86_64): [Download .deb](https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/Brakeza3D-x86-64-Linux-installer.deb) (89 MB)
+- **Windows 10/11** (amd74): [Download .exe](https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Windows-installer.exe) (68.9 MB)
+- **Ubuntu/Debian** (amd64): [Download .deb](https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Linux-installer.deb) (33.3 MB)
 
 ### Build from Source
 ```bash
