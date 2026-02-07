@@ -59,6 +59,11 @@
           "name": "Shader Node Editor",
           "url": "https://brakeza.com/docs/editor/node-editor/",
           "children": []
+        },
+        {
+          "name": "Shortcuts",
+          "url": "https://brakeza.com/docs/editor/shortcuts/",
+          "children": []
         }
       ]
     },
