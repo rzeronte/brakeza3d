@@ -14,7 +14,7 @@ class LightSpot : public LightPoint
 {
     float cutOff = 0.f;
     float outerCutOff = 0.f;
-    bool showDebugCone = true;
+    bool showDebugCone = false;
 
     GLuint vertexBuffer = 0;
     GLuint normalBuffer = 0;
