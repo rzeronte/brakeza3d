@@ -1,5 +1,6 @@
 {
-	"name":	"Unnamed project",
+	"name":	"ProjectDemo",
+	"description":	"A project demo with some scenes",
 	"gravity":	{
 		"x":	0,
 		"y":	-9.8000001907348633,
@@ -10,6 +11,10 @@
 			"path":	"../assets/scenes/DemoScene.json"
 		}, {
 			"path":	"../assets/scenes/PerformanceTestScene.json"
+		}, {
+			"path":	"../assets/scenes/DemoScene02.json"
+		}, {
+			"path":	"../assets/scenes/DemoScene03.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,
