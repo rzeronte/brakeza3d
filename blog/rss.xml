@@ -22,6 +22,7 @@
 <li class=""><a href="https://brakeza.com/downloads" target="_blank" rel="noopener noreferrer" class="">https://brakeza.com/downloads</a></li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="-whats-new">✨ What’s New<a href="https://brakeza.com/blog/brakeza3d-0-26-2#-whats-new" class="hash-link" aria-label="Direct link to ✨ What’s New" title="Direct link to ✨ What’s New" translate="no">​</a></h2>
+<hr>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="rendering--shaders">Rendering &amp; Shaders<a href="https://brakeza.com/blog/brakeza3d-0-26-2#rendering--shaders" class="hash-link" aria-label="Direct link to Rendering &amp; Shaders" title="Direct link to Rendering &amp; Shaders" translate="no">​</a></h3>
 <ul>
 <li class="">Multiple <code>Mesh3DShaderChain</code> fixes</li>
