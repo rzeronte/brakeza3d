@@ -133,6 +133,7 @@ namespace GUIType
         std::string label;
         Window window;
         Sheet icon;
+        std::string shortCut;
         bool isOpen = false;
         bool isInternal = false;
         bool isDockable = true;

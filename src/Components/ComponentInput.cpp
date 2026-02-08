@@ -2,6 +2,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../imgui/ImGuizmo.h"
+#include "../../include/Brakeza.h"
 
 void ComponentInput::onStart()
 {
@@ -289,8 +290,24 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
         if (keyboard[SDL_SCANCODE_F8]) {
             window->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
         }
-
+        if (keyboard[SDL_SCANCODE_F9]) {
+            Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::SCENE_OBJECTS)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::SCENE_OBJECTS)->isOpen;
+        }
+        if (keyboard[SDL_SCANCODE_F10]) {
+            Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::OBJECT_PROPS)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::OBJECT_PROPS)->isOpen;
+        }
         if (keyboard[SDL_SCANCODE_F11]) {
+            Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROJECT_SETTINGS)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROJECT_SETTINGS)->isOpen;
+        }
+        if (keyboard[SDL_SCANCODE_F12]) {
+            Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::BROWSER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::BROWSER)->isOpen;
+        }
+
+        if (event->type == SDL_KEYDOWN &&
+            event->key.repeat == 0 &&
+            event->key.keysym.scancode == SDL_SCANCODE_RETURN &&
+            (event->key.keysym.mod & KMOD_ALT))
+        {
             Config::get()->FULLSCREEN = !Config::get()->FULLSCREEN;
             Components::get()->Window()->ToggleFullScreen();
         }

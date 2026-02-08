@@ -32,7 +32,14 @@ void GUIAddonToolbar::Draw()
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(4, 4));
 
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f));
+    auto scripting = Components::get()->Scripting();
+    bool isScriptsRunning = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_PLAY;
+    
+    if (isScriptsRunning) {
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.8f, 0.8f, 1.0f)); // Turquesa Alerta
+    } else {
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f)); // Color normal
+    }
 
     if (ImGui::Begin("MainToolBar", nullptr, flags)) {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(6, 6));
@@ -66,19 +73,19 @@ void GUIAddonToolbar::LayoutIcons()
 {
     auto *window = Components::get()->Window();
 
-    GUI::DrawButton("Enable/Disable UI", IconGUI::TOOLBAR_ENABLE_GUI, GUIType::Sizes::ICONS_TOOLBAR, false,[]() {
+    GUI::DrawButton("Enable/Disable UI (F5)", IconGUI::TOOLBAR_ENABLE_GUI, GUIType::Sizes::ICONS_TOOLBAR, false,[]() {
         GUI::Toggle(Config::get()->ENABLE_IMGUI);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Default Layout", IconGUI::TOOLBAR_LAYOUT_DEFAULT, GUIType::Sizes::ICONS_TOOLBAR, window->getImGuiConfig() == Config::ImGUIConfigs::DEFAULT, [&]() {
+    GUI::DrawButton("Default Layout (F6)", IconGUI::TOOLBAR_LAYOUT_DEFAULT, GUIType::Sizes::ICONS_TOOLBAR, window->getImGuiConfig() == Config::ImGUIConfigs::DEFAULT, [&]() {
         window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Developer Layout", IconGUI::TOOLBAR_LAYOUT_CODING, GUIType::Sizes::ICONS_TOOLBAR, window->getImGuiConfig() == Config::ImGUIConfigs::CODING, [&]() {
+    GUI::DrawButton("Developer Layout (F7)", IconGUI::TOOLBAR_LAYOUT_CODING, GUIType::Sizes::ICONS_TOOLBAR, window->getImGuiConfig() == Config::ImGUIConfigs::CODING, [&]() {
         window->setImGuiConfig(Config::ImGUIConfigs::CODING);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Design Layout", IconGUI::TOOLBAR_LAYOUT_DESIGN, GUIType::Sizes::ICONS_TOOLBAR, window->getImGuiConfig() == Config::ImGUIConfigs::DESIGN,[&]() {
+    GUI::DrawButton("Design Layout (F8)", IconGUI::TOOLBAR_LAYOUT_DESIGN, GUIType::Sizes::ICONS_TOOLBAR, window->getImGuiConfig() == Config::ImGUIConfigs::DESIGN,[&]() {
         window->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
     });
 }
@@ -88,15 +95,15 @@ void GUIAddonToolbar::TransformationsToolsIcons()
     auto window = Components::get()->Window();
     auto operation = window->getGuiZmoOperation();
 
-    GUI::DrawButton("Translate", IconGUI::TOOLBAR_TRANSLATE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::TRANSLATE, [&]() {
+    GUI::DrawButton("Translate (T)", IconGUI::TOOLBAR_TRANSLATE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::TRANSLATE, [&]() {
         window->setGuiZmoOperation(ImGuizmo::OPERATION::TRANSLATE);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Rotate", IconGUI::TOOLBAR_ROTATE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::ROTATE, [&]() {
+    GUI::DrawButton("Rotate (R)", IconGUI::TOOLBAR_ROTATE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::ROTATE, [&]() {
         window->setGuiZmoOperation(ImGuizmo::OPERATION::ROTATE);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Scale", IconGUI::TOOLBAR_SCALE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::SCALE_X, [&]() {
+    GUI::DrawButton("Scale (S)", IconGUI::TOOLBAR_SCALE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::SCALE_X, [&]() {
         window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE_X);
     } );
 }
@@ -144,7 +151,7 @@ void GUIAddonToolbar::LUAStatusIcons()
     auto scripting = Components::get()->Scripting();
     bool isStop = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
     auto icon = isStop ? IconGUI::LUA_PLAY : IconGUI::LUA_STOP;
-    auto label = isStop ? "Play" : "Stop";
+    auto label = isStop ? "Play (F1)" : "Stop (CTRL+F1)";
     auto callbackStop = [&]() { scripting->StopLUAScripts(); };
     auto callbackPlay = [&]() { scripting->PlayLUAScripts(); };
 
@@ -152,16 +159,16 @@ void GUIAddonToolbar::LUAStatusIcons()
         isStop ? callbackPlay() : callbackStop();
     });
     ImGui::SameLine();
-    GUI::DrawButton("Reload scripts", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+    GUI::DrawButton("Reload scripts (F2)", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
         scripting->ReloadLUAScripts();
     });
     VerticalSeparator();
     ImGui::SameLine();
-    GUI::DrawButton("Clear scene", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+    GUI::DrawButton("Clear scene (F3)", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
         SceneLoader::ClearScene();
     });
     ImGui::SameLine();
-    GUI::DrawButton("Clean scene", IconGUI::CLEAN_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+    GUI::DrawButton("Clean scene (F4)", IconGUI::CLEAN_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
         SceneLoader::CleanScene();
     });
 
