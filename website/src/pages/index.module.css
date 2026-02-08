@@ -68,6 +68,34 @@ h1 {
   color: var(--ifm-font-color-secondary);
 }
 
+.videoSection {
+  padding: 4rem 0;
+  background-color: var(--ifm-background-surface-color);
+  text-align: center;
+}
+
+.videoTitle {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--ifm-font-color-base);
+}
+
+.videoWrapper {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.videoWrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .featuresSection,
 .showcaseSection {
   padding: 4rem 0;

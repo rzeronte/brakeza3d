@@ -13,7 +13,7 @@ const downloads = [
     {
         icon: '/img/logo_linux.png',
         title: 'Ubuntu/Debian',
-        arch: 'amd74',
+        arch: 'amd64',
         size: '33.3 MB',
         url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Linux-installer.deb',
         label: 'Download .deb'
