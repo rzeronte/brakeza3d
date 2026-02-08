@@ -164,7 +164,6 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
                 FileSystemGUI::Icon(IconGUI::SCENE_ATTACH_PROJECT),
                 "Attach scene to Project",
                 [currentScene]() {
-                    LOG_ERROR("HOLA");
                     Components::get()->Scripting()->AddProjectScene(currentScene->getFilePath());
                 }
             );
