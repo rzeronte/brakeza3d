@@ -1,0 +1,140 @@
+{
+	"screenshot":	"../assets/screenshots/scene_544573.png",
+	"ads":	{
+		"direction":	{
+			"x":	0.75999999046325684,
+			"y":	-0.76999998092651367,
+			"z":	-0.37134084105491638
+		},
+		"diffuse":	{
+			"x":	0.40573769807815552,
+			"y":	0.36084049940109253,
+			"z":	0.36084049940109253
+		},
+		"specular":	{
+			"x":	0.53164476156234741,
+			"y":	0.79098361730575562,
+			"z":	0
+		},
+		"ambient":	{
+			"x":	0.381147563457489,
+			"y":	0.381147563457489,
+			"z":	0.381147563457489
+		}
+	},
+	"objects":	[{
+			"name":	"eye",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	8.7248344421386719,
+				"y":	8.0066709518432617,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	-179.99998474121094,
+				"y":	-11.84339427947998,
+				"z":	-179.99998474121094
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//eye.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"grid":	{
+				"x":	7,
+				"y":	7,
+				"z":	7
+			},
+			"type":	2
+		}, {
+			"name":	"Mesh3D_393556",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-5.1786613464355469,
+				"y":	9.3398494720458984,
+				"z":	1.4721266031265259
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//ChessPawn.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"grid":	{
+				"x":	7,
+				"y":	7,
+				"z":	7
+			},
+			"type":	2
+		}, {
+			"name":	"space_shuttle",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-13.068856239318848,
+				"y":	8.4987878799438477,
+				"z":	0.13435380160808563
+			},
+			"rotation":	{
+				"x":	89.094314575195313,
+				"y":	0.12339146435260773,
+				"z":	-0.9320334792137146
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//spaceShuttle.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-15.551906585693359,
+			"y":	16.603586196899414,
+			"z":	25.223827362060547
+		},
+		"rotation":	{
+			"x":	20.625158309936523,
+			"y":	-335.22506713867188,
+			"z":	0
+		}
+	}
+}
