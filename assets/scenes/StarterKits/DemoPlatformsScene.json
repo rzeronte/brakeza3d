@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_50146.png",
+	"screenshot":	"../assets/screenshots/scene_604437.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.17000000178813934,
@@ -82,8 +82,8 @@
 			"scripts":	[{
 					"codeFile":	"../assets/scripts/Controllers/PlatformsGhostController.lua",
 					"typesFile":	"../assets/scripts/Controllers/PlatformsGhostController.json",
-					"type": "Object",
 					"name":	"PlatformsGhostController",
+					"type":	"Object",
 					"types":	[{
 							"name":	"moveSpeed",
 							"type":	"float",

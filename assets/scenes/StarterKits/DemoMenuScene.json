@@ -1,5 +1,5 @@
 {
-	"screenshot":	"../assets/screenshots/scene_359606.png",
+	"screenshot":	"../assets/screenshots/scene_620002.png",
 	"ads":	{
 		"direction":	{
 			"x":	-0.15999999642372131,
@@ -35,7 +35,7 @@
 			"rotation":	{
 				"x":	90.9135971069336,
 				"y":	56.456947326660156,
-				"z":	90.8946533203125
+				"z":	90.894790649414063
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -65,7 +65,7 @@
 			"rotation":	{
 				"x":	87.757087707519531,
 				"y":	56.844535827636719,
-				"z":	87.321296691894531
+				"z":	87.320884704589844
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -233,7 +233,7 @@
 								"startPinId":	11,
 								"endPinId":	14
 							}],
-						"lastShaderCode":	"#version 330 core\nin vec3 v_FragPos;\nin vec3 v_Normal;\nin vec2 v_TexCoord;\nlayout (location = 0) out vec3 gPosition;\nlayout (location = 1) out vec3 gNormal;\nlayout (location = 2) out vec4 gAlbedoSpec;\nuniform float u_Time;\nuniform sampler2D u_Texture9;\n\nvoid main() {\n    vec2 var1 = v_TexCoord;\n    float var3 = u_Time;\n    vec2 center = vec2(0.5, 0.5);\n    vec2 uv_centered = var1.xy - center;\n    float s = sin(var3);\n    float c = cos(var3);\n    vec2 var5 = vec2(\n        uv_centered.x * c - uv_centered.y * s,\n        uv_centered.x * s + uv_centered.y * c\n    ) + center;\n    vec3 var9 = texture(u_Texture9, var5).rgb;\n    gPosition = v_FragPos;\n    gNormal = normalize(v_Normal);\n    gAlbedoSpec = vec4(var9, 1.0);\n}\n"
+						"lastShaderCode":	"#version 330 core\nin vec3 v_FragPos;\nin vec3 v_Normal;\nin vec2 v_TexCoord;\nlayout (location = 0) out vec3 gPosition;\nlayout (location = 1) out vec3 gNormal;\nlayout (location = 2) out vec4 gAlbedoSpec;\nuniform float u_Time;\nuniform vec2 u_ScreenSize;\nuniform sampler2D u_Texture9;\n\nvoid main() {\n    vec2 var1 = v_TexCoord;\n    float var3 = u_Time;\n    vec2 center = vec2(0.5, 0.5);\n    vec2 uv_centered = var1.xy - center;\n    float s = sin(var3);\n    float c = cos(var3);\n    vec2 var5 = vec2(\n        uv_centered.x * c - uv_centered.y * s,\n        uv_centered.x * s + uv_centered.y * c\n    ) + center;\n    vec3 var9 = texture(u_Texture9, var5).rgb;\n    gPosition = v_FragPos;\n    gNormal = normalize(v_Normal);\n    gAlbedoSpec = vec4(var9, 1.0);\n}\n"
 					}
 				}],
 			"type":	2
@@ -243,11 +243,13 @@
 			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.lua",
 			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MenuVerticalDemo.json",
 			"name":	"MenuVerticalDemo",
+			"type":	"Global",
 			"types":	[]
 		}, {
 			"codeFile":	"../assets/scripts/Demos/GlobalScripts/MouseIconChangeDemo.lua",
 			"typesFile":	"../assets/scripts/Demos/GlobalScripts/MouseIconChangeDemo.json",
 			"name":	"MouseIconChangeDemo",
+			"type":	"Global",
 			"types":	[]
 		}],
 	"camera":	{
