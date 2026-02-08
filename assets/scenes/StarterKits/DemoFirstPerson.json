@@ -1,15 +1,15 @@
 {
-	"screenshot":	"../assets/screenshots/scene_302549.png",
+	"screenshot":	"../assets/screenshots/scene_469835.png",
 	"ads":	{
 		"direction":	{
-			"x":	1,
+			"x":	0.47999998927116394,
 			"y":	-0.56000000238418579,
 			"z":	-0.46000000834465027
 		},
 		"diffuse":	{
-			"x":	0.85655736923217773,
-			"y":	0.60029226541519165,
-			"z":	0.60029226541519165
+			"x":	0.11885243654251099,
+			"y":	0.0077936002053320408,
+			"z":	0.0077936002053320408
 		},
 		"specular":	{
 			"x":	0.73770493268966675,
@@ -17,9 +17,9 @@
 			"z":	0.14209890365600586
 		},
 		"ambient":	{
-			"x":	0.6598360538482666,
-			"y":	0.17577598989009857,
-			"z":	0.17577598989009857
+			"x":	0.1147540807723999,
+			"y":	0.08324374258518219,
+			"z":	0.08324374258518219
 		}
 	},
 	"objects":	[{
@@ -85,14 +85,59 @@
 			"shaders":	[],
 			"type":	2
 		}, {
+			"name":	"lightpoint",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-5.0221662521362305,
+				"y":	8.5986137390136719,
+				"z":	-14.985128402709961
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.46585184335708618,
+				"y":	0.24499459564685822,
+				"z":	0.58606553077697754
+			},
+			"diffuse":	{
+				"x":	0.67622947692871094,
+				"y":	0.644244372844696,
+				"z":	0.18845741450786591
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	1.059999942779541,
+			"linear":	0.15000000596046448,
+			"quadratic":	0.02199999988079071,
+			"type":	4
+		}, {
 			"name":	"capsule",
 			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
 			"position":	{
-				"x":	-16.9927978515625,
-				"y":	8.4709224700927734,
-				"z":	-14.429327011108398
+				"x":	-23.021278381347656,
+				"y":	2.0902142524719238,
+				"z":	-8.036677360534668
 			},
 			"rotation":	{
 				"x":	0,
@@ -145,7 +190,7 @@
 					"codeFile":	"../assets/scripts/Controllers/KinematicFPSController.lua",
 					"typesFile":	"../assets/scripts/Controllers/KinematicFPSController.json",
 					"name":	"KinematicFPSController",
-					"type": "Object",
+					"type":	"Object",
 					"types":	[{
 							"name":	"force",
 							"type":	"float",
@@ -192,18 +237,65 @@
 			"enableLights":	true,
 			"shaders":	[],
 			"type":	2
+		}, {
+			"name":	"spotlight_01",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-33.158374786376953,
+				"y":	5.7868747711181641,
+				"z":	-3.5808346271514893
+			},
+			"rotation":	{
+				"x":	-122.03968811035156,
+				"y":	-56.630973815917969,
+				"z":	126.85300445556641
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.83353143930435181,
+				"y":	0.8401639461517334,
+				"z":	0.030989667400717735
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.41999998688697815,
+			"linear":	-0.14000000059604645,
+			"quadratic":	0.032000001519918442,
+			"cutOff":	0.97729998826980591,
+			"outerCutOff":	0.92089998722076416,
+			"type":	5
 		}],
 	"shaders":	[],
 	"scripts":	[],
 	"camera":	{
 		"position":	{
-			"x":	-26.397590637207031,
-			"y":	12.078845977783203,
-			"z":	18.043094635009766
+			"x":	-27.428068161010742,
+			"y":	13.362958908081055,
+			"z":	21.648733139038086
 		},
 		"rotation":	{
-			"x":	19.8749942779541,
-			"y":	-347.20010375976563,
+			"x":	18.599994659423828,
+			"y":	-344.42523193359375,
 			"z":	0
 		}
 	}

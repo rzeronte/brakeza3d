@@ -10,11 +10,13 @@
 	"scenes":	[{
 			"path":	"../assets/scenes/DemoScene.json"
 		}, {
-			"path":	"../assets/scenes/PerformanceTestScene.json"
-		}, {
 			"path":	"../assets/scenes/DemoScene02.json"
 		}, {
 			"path":	"../assets/scenes/DemoScene03.json"
+		}, {
+			"path":	"../assets/scenes/DemoScene04.json"
+		}, {
+			"path":	"../assets/scenes/RainCubesScene.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,

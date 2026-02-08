@@ -2,6 +2,7 @@
 // Created by Eduardo on 06/12/2025.
 //
 
+#include <algorithm>
 #include "../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
@@ -417,6 +418,7 @@ void GUIAddonProjectSetup::DrawProjectScenes()
 {
     auto scripting = Components::get()->Scripting();
     auto scenes = scripting->getProjectScenes();
+    std::sort(scenes.begin(), scenes.end());
 
     for (unsigned int i = 0; i < scenes.size(); i++) {
         auto currentScene = scenes[i];
