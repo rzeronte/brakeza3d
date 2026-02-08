@@ -1,0 +1,412 @@
+{
+	"screenshot":	"../assets/screenshots/scene_1099022.png",
+	"ads":	{
+		"direction":	{
+			"x":	-0.17000000178813934,
+			"y":	-0.67000001668930054,
+			"z":	-1
+		},
+		"diffuse":	{
+			"x":	0.24590164422988892,
+			"y":	0.13504435122013092,
+			"z":	0.13504435122013092
+		},
+		"specular":	{
+			"x":	0.67213118076324463,
+			"y":	0.23414406180381775,
+			"z":	0.23414406180381775
+		},
+		"ambient":	{
+			"x":	0.86885249614715576,
+			"y":	0.86885249614715576,
+			"z":	0.86885249614715576
+		}
+	},
+	"objects":	[{
+			"name":	"Axis",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	11.937715530395508,
+					"y":	4.3490095138549805,
+					"z":	8.6857004165649414
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"cube",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	5.2122001647949219,
+				"y":	7.4397048950195313,
+				"z":	-0.16080959141254425
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	0.76999998092651367,
+				"mass":	10,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.48510313034057617,
+					"y":	0.48502874374389648,
+					"z":	0.48510336875915527
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//basic/cube.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"cone",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	1.8166987895965576,
+				"y":	9.0544319152832031,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	0.43999999761581421,
+				"mass":	10,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.44090306758880615,
+					"y":	0.4409029483795166,
+					"z":	0.4409029483795166
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//basic/cone.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"cilinder",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-7.9597253799438477,
+				"y":	7.6115846633911133,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	0.5,
+				"mass":	10,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.50879669189453125,
+					"y":	0.50871849060058594,
+					"z":	0.50879663228988647
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//basic/cilinder.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"torus",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-1.3295453786849976,
+				"y":	7.1693787574768066,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	0.40000000596046448,
+				"mass":	4.6999998092651367,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0.0060000000521540642,
+				"ccdSweptSphereRadius":	0.086999997496604919,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.69339275360107422,
+					"y":	0.69339275360107422,
+					"z":	0.13867861032485962
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//basic/torus.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"icosphere",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-4.5664162635803223,
+				"y":	9.1643447875976563,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	0.5899999737739563,
+				"mass":	10,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.510256290435791,
+					"y":	0.5365142822265625,
+					"z":	0.536514401435852
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//basic/icosphere.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	-3.5844669342041016,
+			"y":	9.7043132781982422,
+			"z":	28.370632171630859
+		},
+		"rotation":	{
+			"x":	22.875177383422852,
+			"y":	7.0749416351318359,
+			"z":	0
+		}
+	}
+}

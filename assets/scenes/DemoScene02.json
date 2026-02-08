@@ -1,0 +1,215 @@
+{
+	"screenshot":	"../assets/screenshots/scene_243392.png",
+	"ads":	{
+		"direction":	{
+			"x":	0.3529999852180481,
+			"y":	-0.76999998092651367,
+			"z":	-0.37134084105491638
+		},
+		"diffuse":	{
+			"x":	0.0450819730758667,
+			"y":	0.0450819730758667,
+			"z":	0.0450819730758667
+		},
+		"specular":	{
+			"x":	0.21551662683486938,
+			"y":	0.57786881923675537,
+			"z":	0.46203494071960449
+		},
+		"ambient":	{
+			"x":	0.040983617305755615,
+			"y":	0.040983617305755615,
+			"z":	0.040983617305755615
+		}
+	},
+	"objects":	[{
+			"name":	"spotlight01",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-6.26857328414917,
+				"y":	4.0869979858398438,
+				"z":	-4.34797477722168
+			},
+			"rotation":	{
+				"x":	-37.427021026611328,
+				"y":	-39.6566047668457,
+				"z":	26.015680313110352
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.35245907306671143,
+				"y":	1,
+				"z":	0
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	1.2699999809265137,
+			"linear":	-0.30000001192092896,
+			"quadratic":	0.032000001519918442,
+			"cutOff":	0.989300012588501,
+			"outerCutOff":	0.8618999719619751,
+			"type":	5
+		}, {
+			"name":	"level",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//DevLevel.fbx",
+			"enableLights":	true,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"light01",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-21.024627685546875,
+				"y":	9.5837583541870117,
+				"z":	-3.8066995143890381
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	-0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.90163934230804443,
+				"y":	0.28083845973014832,
+				"z":	0.8609311580657959
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.49000000953674316,
+			"linear":	0.090000003576278687,
+			"quadratic":	0.032000001519918442,
+			"type":	4
+		}, {
+			"name":	"spotlight02",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"position":	{
+				"x":	-20.547201156616211,
+				"y":	-0.59985768795013428,
+				"z":	3.6418421268463135
+			},
+			"rotation":	{
+				"x":	-179.99998474121094,
+				"y":	-85.655364990234375,
+				"z":	-179.99998474121094
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.41999998688697815,
+			"linear":	0.059999998658895493,
+			"quadratic":	0.032000001519918442,
+			"cutOff":	0.85600000619888306,
+			"outerCutOff":	0.78189998865127563,
+			"type":	5
+		}],
+	"shaders":	[],
+	"scripts":	[{
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.json",
+			"name":	"CycleDayNightDemo",
+			"type":	"Global",
+			"types":	[]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	-16.028116226196289,
+			"y":	16.229948043823242,
+			"z":	37.152969360351563
+		},
+		"rotation":	{
+			"x":	30.675149917602539,
+			"y":	20.199911117553711,
+			"z":	0
+		}
+	}
+}
