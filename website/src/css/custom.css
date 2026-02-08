@@ -48,6 +48,8 @@
           #06b6d4 100%
   );
 
+  --theme-cta-gradient: linear-gradient(135deg, #06b6d4 0%, #14b8a6 50%, #84cc16 100%);
+
   --theme-on-accent: #ffffff;
 }
 
@@ -71,6 +73,8 @@
   --ifm-link-hover-color: #67e8f9;
 
   --ifm-border-color: #1e293b;
+
+  --theme-cta-gradient: linear-gradient(135deg, #0e7490 0%, #0f766e 50%, #4d7c0f 100%);
 }
 
 /* =========================
