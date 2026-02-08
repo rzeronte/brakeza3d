@@ -21,8 +21,8 @@
 #include "../../include/GUI/Objects/ThreadGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
 
-#define ADD_WIN(title, type, icon, visible, internal, dockable, isObjectWindow, func, minSize, maxSize) \
-windows.push_back({ title, type, icon, visible, internal, dockable, isObjectWindow, [&] { func; }, minSize, maxSize})
+#define ADD_WIN(title, type, icon, shortCut, visible, internal, dockable, isObjectWindow, func, minSize, maxSize) \
+windows.push_back({ title, type, icon, shortCut, visible, internal, dockable, isObjectWindow, [&] { func; }, minSize, maxSize})
 
 GUIManager::GUIManager()
 :
@@ -61,25 +61,25 @@ void GUIManager::OnStart()
 
 void GUIManager::RegisterWindows()
 {
-    ADD_WIN("Project Setup",       GUIType::PROJECT_SETTINGS,    IconGUI::WIN_PROJECT_SETTINGS,  true,  false, true,  false,  GUIAddonProjectSetup::DrawWinProjectSettings(),                            ImVec2(300, 300), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("File Browser",        GUIType::BROWSER,             IconGUI::WIN_BROWSER,           true,  false, true,  false,  FileSystemGUI::DrawMainBrowser(),                                          ImVec2(450, 300), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Scene Objects",       GUIType::SCENE_OBJECTS,       IconGUI::WIN_SCENE_OBJECTS,     true,  false, true,  false,  GUIAddonObjects3D::DrawWinSceneObjects(this),                          ImVec2(340, 500), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Object Properties",   GUIType::OBJECT_PROPS,        IconGUI::WIN_OBJECT_PROPS,      true,  false, true,  true,   GUIAddonObject3DProperties::DrawWinObjectProps(this),                  ImVec2(340, 400), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Object Shaders",      GUIType::OBJECT_SHADERS,      IconGUI::WIN_OBJECT_SHADERS,    true, false, true,  true,    ShadersGUI::DrawWinObjectShaders(),                                        ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Object Scripts",      GUIType::OBJECT_SCRIPTS,      IconGUI::WIN_OBJECT_SCRIPTS,    true, false, true,  true,    ScriptLuaGUI::DrawWinObjectScripts(),                                      ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Object Variables",    GUIType::OBJECT_VARS,         IconGUI::WIN_OBJECT_VARS,       false, false, true,  true,   ScriptLuaGUI::DrawWinObjectVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Global Variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       false, false, true,  false,  ScriptLuaGUI::DrawWinGlobalVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    false, false, true,  false,  DrawWinKeyboardMouse(),                                                    ImVec2(350, 400), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Media Browser",       GUIType::MEDIA_BROWSER,       IconGUI::WIN_IMAGES,            false, false, true,  false,  FileSystemGUI::DrawWinMediaBrowser(browserImages, browserImagesTextures),  ImVec2(600, 550), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Logs/Console",        GUIType::LOGGING,             IconGUI::WIN_LOGGING,           true,  false, true,  false,  widgetConsole->DrawWinLogging(),                                           ImVec2(400, 300), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, false, false, true,  false,  DrawWinDepthLightsMap(),                                                   ImVec2(400, 500), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          false, false, false,  false, Profiler::get()->DrawWinProfiler(),                                        ImVec2(800, 600), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Code/Nodes editor",   GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       false, false, true,  false,  DrawWinEditableOpenResources(),                                            ImVec2(650, 400), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("GUI Icons",           GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       false, false, false, false,  IconsGUI::DrawWinDebugIcons(this),                                     ImVec2(650, 500), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     false, true,  false, false,  GUIAddonDocumentation::DrawWinDocumentation(documentationTree),            ImVec2(400, 400), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Scene detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Project detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           false, false, false, false,  ThreadGUI::MenuWorkers(),                                                  ImVec2(550, 650), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Scene Objects",       GUIType::SCENE_OBJECTS,       IconGUI::WIN_SCENE_OBJECTS,     "F9", true,  false, true,  false,  GUIAddonObjects3D::DrawWinSceneObjects(this),                          ImVec2(340, 500), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Properties",   GUIType::OBJECT_PROPS,        IconGUI::WIN_OBJECT_PROPS,      "F10", true,  false, true,  true,   GUIAddonObject3DProperties::DrawWinObjectProps(this),                  ImVec2(340, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Project Setup",       GUIType::PROJECT_SETTINGS,    IconGUI::WIN_PROJECT_SETTINGS,  "F11", true,  false, true,  false,  GUIAddonProjectSetup::DrawWinProjectSettings(),                            ImVec2(300, 300), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("File Browser",        GUIType::BROWSER,             IconGUI::WIN_BROWSER,           "F12", true,  false, true,  false,  FileSystemGUI::DrawMainBrowser(),                                          ImVec2(450, 300), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Shaders",      GUIType::OBJECT_SHADERS,      IconGUI::WIN_OBJECT_SHADERS,    "", true, false, true,  true,    ShadersGUI::DrawWinObjectShaders(),                                        ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Scripts",      GUIType::OBJECT_SCRIPTS,      IconGUI::WIN_OBJECT_SCRIPTS,    "", true, false, true,  true,    ScriptLuaGUI::DrawWinObjectScripts(),                                      ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Object Variables",    GUIType::OBJECT_VARS,         IconGUI::WIN_OBJECT_VARS,       "", false, false, true,  true,   ScriptLuaGUI::DrawWinObjectVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Global Variables",    GUIType::GLOBAL_VARS,         IconGUI::WIN_GLOBAL_VARS,       "", false, false, true,  false,  ScriptLuaGUI::DrawWinGlobalVars(this),                                 ImVec2(350, 275), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Keyboard/Mouse",      GUIType::KEYBOARD_MOUSE,      IconGUI::WIN_KEYBOARD_MOUSE,    "", false, false, true,  false,  DrawWinKeyboardMouse(),                                                    ImVec2(350, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Media Browser",       GUIType::MEDIA_BROWSER,       IconGUI::WIN_IMAGES,            "", false, false, true,  false,  FileSystemGUI::DrawWinMediaBrowser(browserImages, browserImagesTextures),  ImVec2(600, 550), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Logs/Console",        GUIType::LOGGING,             IconGUI::WIN_LOGGING,           "", true,  false, true,  false,  widgetConsole->DrawWinLogging(),                                           ImVec2(400, 300), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Lights DepthMaps",    GUIType::DEPTH_LIGHTS_MAPS,   IconGUI::WIN_DEPTH_LIGHTS_MAPS, "", false, false, true,  false,  DrawWinDepthLightsMap(),                                                   ImVec2(400, 500), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Profiler",            GUIType::PROFILER,            IconGUI::WIN_PROFILER,          "", false, false, false,  false, Profiler::get()->DrawWinProfiler(),                                        ImVec2(800, 600), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Code/Nodes editor",   GUIType::CODE_EDITOR,         IconGUI::WIN_CODE_EDITOR,       "", false, false, true,  false,  DrawWinEditableOpenResources(),                                            ImVec2(650, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("GUI Icons",           GUIType::DEBUG_ICONS,         IconGUI::WIN_DEBUG_ICONS,       "", false, false, false, false,  IconsGUI::DrawWinDebugIcons(this),                                     ImVec2(650, 500), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Documentation",       GUIType::DOCUMENTATION,       IconGUI::WIN_DOCUMENTATION,     "", false, true,  false, false,  GUIAddonDocumentation::DrawWinDocumentation(documentationTree),            ImVec2(400, 400), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Scene detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            "", false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Project detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          "", false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           "", false, false, false, false,  ThreadGUI::MenuWorkers(),                                                  ImVec2(550, 650), ImVec2(FLT_MAX, FLT_MAX));
 
     RegisterDefaultLayoutWindows();
 }

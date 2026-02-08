@@ -3,6 +3,8 @@
 //
 
 #include "../../../include/GUI/AddOns/GUIAddonMenu.h"
+
+#include "crude_json.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
@@ -566,7 +568,7 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
     auto setup = Config::get();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::WINDOW_FULLSCREEN), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("FullScreen (F11)", nullptr, &setup->FULLSCREEN);
+    ImGui::MenuItem("FullScreen (ALT+ENTER)", nullptr, &setup->FULLSCREEN);
     if (ImGui::IsItemEdited()) {
         Components::get()->Window()->ToggleFullScreen();
     }
@@ -587,7 +589,7 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
     for (auto &w : gui->windows) {
         if (w.isInternal) continue;
         ImGui::Image(FileSystemGUI::Icon(w.icon), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem(w.label.c_str(), nullptr, &w.isOpen);
+        ImGui::MenuItem(w.label.c_str(), !w.shortCut.empty() ? w.shortCut.c_str() : nullptr, &w.isOpen);
     }
 }
 
