@@ -104,6 +104,10 @@ public:
     void setGlobalIlluminationAmbient(Vertex3D a) const;
     void setGlobalIlluminationDiffuse(Vertex3D d) const;
     void setGlobalIlluminationSpecular(Vertex3D s) const;
+    [[nodiscard]] Vertex3D getGlobalIlluminationDirection() const;
+    [[nodiscard]] Vertex3D getGlobalIlluminationAmbient() const;
+    [[nodiscard]] Vertex3D getGlobalIlluminationDiffuse() const;
+    [[nodiscard]] Vertex3D getGlobalIlluminationSpecular() const;
     void DrawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const;
     void setLastFrameBufferUsed(GLuint value);
     void setLastProgramUsed(GLuint value);

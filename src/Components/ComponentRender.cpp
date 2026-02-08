@@ -357,6 +357,26 @@ void ComponentRender::setGlobalIlluminationSpecular(Vertex3D v) const
     shaders.shaderOGLRender->setGlobalIlluminationSpecular(v);
 }
 
+Vertex3D ComponentRender::getGlobalIlluminationDirection() const
+{
+    return Vertex3D::fromGLM(shaders.shaderOGLRender->getDirectionalLight().direction);
+}
+
+Vertex3D ComponentRender::getGlobalIlluminationAmbient() const
+{
+    return Vertex3D::fromGLM(shaders.shaderOGLRender->getDirectionalLight().ambient);
+}
+
+Vertex3D ComponentRender::getGlobalIlluminationDiffuse() const
+{
+    return Vertex3D::fromGLM(shaders.shaderOGLRender->getDirectionalLight().diffuse);
+}
+
+Vertex3D ComponentRender::getGlobalIlluminationSpecular() const
+{
+    return Vertex3D::fromGLM(shaders.shaderOGLRender->getDirectionalLight().specular);
+}
+
 void ComponentRender::DrawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const
 {
     shaders.shaderOGLLine3D->render(
