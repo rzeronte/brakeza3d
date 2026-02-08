@@ -109,6 +109,24 @@ function Feature({title, description}) {
     );
 }
 
+function VideoSection() {
+    return (
+        <section className={styles.videoSection}>
+            <div className="container">
+                <div className={styles.videoWrapper}>
+                    <iframe
+                        src="https://www.youtube.com/embed/IgxlN4l0b98"
+                        title="Video explicativo"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    ></iframe>
+                </div>
+            </div>
+        </section>
+    );
+}
+
 function HomepageFeatures() {
     return (
         <section className={styles.featuresSection}>
@@ -213,6 +231,7 @@ export default function Home() {
             <main>
                 <Stats />
                 <ProjectShowcase />
+                <VideoSection />
                 <HomepageFeatures />
             </main>
             <FinalCTA />
