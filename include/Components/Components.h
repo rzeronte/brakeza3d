@@ -31,15 +31,14 @@ public:
 
     void RegisterComponent(Component *component, const std::string& label);
 
-    ComponentCamera     *Camera()           { return dynamic_cast<ComponentCamera *>     (components[COMPONENT_CAMERA]); }
-    ComponentCollisions *Collisions()       { return dynamic_cast<ComponentCollisions *> (components[COMPONENT_COLLISIONS]); }
-    ComponentWindow     *Window()           { return dynamic_cast<ComponentWindow *>     (components[COMPONENT_WINDOW]); }
-    ComponentRender     *Render()           { return dynamic_cast<ComponentRender *>     (components[COMPONENT_RENDER]); }
-    ComponentInput      *Input()            { return dynamic_cast<ComponentInput *>      (components[COMPONENT_INPUT]); }
-    ComponentSound      *Sound()            { return dynamic_cast<ComponentSound *>      (components[COMPONENT_SOUND]); }
-    ComponentScripting  *Scripting()        { return dynamic_cast<ComponentScripting *>  (components[COMPONENT_SCRIPTING]); }
-
-    std::vector<Component *> getComponents() const { return components; }
+    [[nodiscard]] ComponentCamera       *Camera() const             { return (ComponentCamera *)     components[COMPONENT_CAMERA]; }
+    [[nodiscard]] ComponentCollisions   *Collisions() const         { return (ComponentCollisions *) components[COMPONENT_COLLISIONS]; }
+    [[nodiscard]] ComponentWindow       *Window() const             { return (ComponentWindow *)     components[COMPONENT_WINDOW]; }
+    [[nodiscard]] ComponentRender       *Render() const             { return (ComponentRender *)     components[COMPONENT_RENDER]; }
+    [[nodiscard]] ComponentInput        *Input() const              { return (ComponentInput *)      components[COMPONENT_INPUT]; }
+    [[nodiscard]] ComponentSound        *Sound() const              { return (ComponentSound *)      components[COMPONENT_SOUND]; }
+    [[nodiscard]] ComponentScripting    *Scripting() const          { return (ComponentScripting *)  components[COMPONENT_SCRIPTING]; }
+    [[nodiscard]] std::vector<Component *> getComponents() const    { return components; }
 };
 
 #endif //BRAKEDA3D_COMPONENTSMANAGER_H
