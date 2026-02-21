@@ -2,6 +2,12 @@
   "title": "Recent posts",
   "items": [
     {
+      "title": "Thanks and Roadmap!",
+      "permalink": "/blog/2026-02-21-thanks-and-road-map",
+      "unlisted": false,
+      "date": "2026-02-21T00:00:00.000Z"
+    },
+    {
       "title": "Brakeza3D 0.26.2 released!",
       "permalink": "/blog/brakeza3d-0-26-2",
       "unlisted": false,

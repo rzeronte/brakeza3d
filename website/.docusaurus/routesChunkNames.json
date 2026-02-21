@@ -6,13 +6,16 @@
     },
     "config": "5e9f5e1a"
   },
-  "/blog-9a7": {
+  "/blog-66f": {
     "__comp": "a6aa9e1f",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "f73ef951"
+      },
       {
         "content": "34aa85ca"
       },
@@ -24,6 +27,17 @@
       }
     ],
     "__props": "c15d9823"
+  },
+  "/blog/2026-02-21-thanks-and-road-map-a47": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "6c53f314"
   },
   "/blog/archive-182": {
     "__comp": "9e4087bc",
@@ -86,13 +100,16 @@
     ],
     "__props": "dd29baf0"
   },
-  "/blog/tags/brakeza-3-d-b7e": {
+  "/blog/tags/brakeza-3-d-fec": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "f73ef951"
+      },
       {
         "content": "34aa85ca"
       },
@@ -105,13 +122,16 @@
     ],
     "__props": "96aba2d4"
   },
-  "/blog/tags/community-9a0": {
+  "/blog/tags/community-be0": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "f73ef951"
+      },
       {
         "content": "34aa85ca"
       },
@@ -159,6 +179,19 @@
       }
     ],
     "__props": "c9cac9d9"
+  },
+  "/blog/tags/roadmap-781": {
+    "__comp": "6875c492",
+    "__context": {
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "items": [
+      {
+        "content": "f73ef951"
+      }
+    ],
+    "__props": "92fb1dcd"
   },
   "/blog/tags/welcome-cca": {
     "__comp": "6875c492",
