@@ -9,7 +9,12 @@ export default [
   },
   {
     path: '/blog',
-    component: ComponentCreator('/blog', '9a7'),
+    component: ComponentCreator('/blog', '66f'),
+    exact: true
+  },
+  {
+    path: '/blog/2026-02-21-thanks-and-road-map',
+    component: ComponentCreator('/blog/2026-02-21-thanks-and-road-map', 'a47'),
     exact: true
   },
   {
@@ -44,12 +49,12 @@ export default [
   },
   {
     path: '/blog/tags/brakeza-3-d',
-    component: ComponentCreator('/blog/tags/brakeza-3-d', 'b7e'),
+    component: ComponentCreator('/blog/tags/brakeza-3-d', 'fec'),
     exact: true
   },
   {
     path: '/blog/tags/community',
-    component: ComponentCreator('/blog/tags/community', '9a0'),
+    component: ComponentCreator('/blog/tags/community', 'be0'),
     exact: true
   },
   {
@@ -65,6 +70,11 @@ export default [
   {
     path: '/blog/tags/release',
     component: ComponentCreator('/blog/tags/release', '52f'),
+    exact: true
+  },
+  {
+    path: '/blog/tags/roadmap',
+    component: ComponentCreator('/blog/tags/roadmap', '781'),
     exact: true
   },
   {
