@@ -13,12 +13,12 @@ private:
     std::vector<ShaderBaseCustom*> &postProcessingShaders;
 
     // Ping framebuffer
-    GLuint pingFBO;
-    GLuint pingTexture;
+    GLuint pingFBO = 0;
+    GLuint pingTexture = 0;
 
     // Pong framebuffer
-    GLuint pongFBO;
-    GLuint pongTexture;
+    GLuint pongFBO = 0;
+    GLuint pongTexture = 0;
 
     // Quad fullscreen
     int currentWidth;
@@ -31,10 +31,9 @@ private:
     void deleteFramebuffer(GLuint& fbo, GLuint& texture);
 
 public:
-    PostProcessingManager();
+    PostProcessingManager(int width, int height);
     ~PostProcessingManager();
 
-    void Initialize(int width, int height);
     void resize(int width, int height);
     void cleanup();
 
