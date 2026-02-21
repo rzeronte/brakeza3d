@@ -2,11 +2,79 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://brakeza.com/blog</id>
     <title>Brakeza3D Game Engine Blog</title>
-    <updated>2026-02-07T00:00:00.000Z</updated>
+    <updated>2026-02-21T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://brakeza.com/blog"/>
     <subtitle>Brakeza3D Game Engine Blog</subtitle>
     <icon>https://brakeza.com/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Thanks and Roadmap!]]></title>
+        <id>https://brakeza.com/blog/2026-02-21-thanks-and-road-map</id>
+        <link href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map"/>
+        <updated>2026-02-21T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[First of all, thank you.]]></summary>
+        <content type="html"><![CDATA[<p>First of all, <strong>thank you</strong>.</p>
+<p>I want to take a moment to thank everyone who has emailed me and shown so much interest after the latest video about the <strong>Brakeza3D 0.26.2</strong> release. The response from the community has been incredibly positive and motivating, and it truly means a lot to see so many people interested, testing the engine, and asking how they can use it or contribute.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="about-the-roadmap">About the roadmap<a href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map#about-the-roadmap" class="hash-link" aria-label="Direct link to About the roadmap" title="Direct link to About the roadmap" translate="no">​</a></h2>
+<p>One of the questions that keeps coming up in messages is:</p>
+<blockquote>
+<p><em>What is the project's roadmap?</em></p>
+</blockquote>
+<p>The answer is clear and honest:<br>
+<strong>The current priority is not to add lots of new features, but to stabilize and consolidate the project.</strong></p>
+<p>The main focus right now is:</p>
+<ul>
+<li class="">Stabilizing the engine</li>
+<li class="">Improving internal consistency</li>
+<li class="">Exposing <strong>100% of the engine’s functionality to LUA</strong></li>
+<li class="">Properly documenting that API</li>
+</ul>
+<p>At the moment, the LUA API is still limited, and before expanding the engine with new capabilities, I want to make sure everything that already exists is:</p>
+<ul>
+<li class="">accessible</li>
+<li class="">stable</li>
+<li class="">documented</li>
+<li class="">maintainable</li>
+</ul>
+<p>This step is essential to make the project truly usable in the long term.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="priorities-for-the-coming-months">Priorities for the coming months<a href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map#priorities-for-the-coming-months" class="hash-link" aria-label="Direct link to Priorities for the coming months" title="Direct link to Priorities for the coming months" translate="no">​</a></h2>
+<p>The priority order will be:</p>
+<ol>
+<li class=""><strong>Bug fixing</strong></li>
+<li class=""><strong>Documenting the LUA API and the C++ core</strong></li>
+<li class=""><strong>Desired features</strong></li>
+<li class=""><strong>Long-term features</strong></li>
+</ol>
+<p>This order is intentional. An engine with many features but poor stability or documentation ends up being frustrating for users. I prefer building a solid foundation before accelerating development.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="desired-features-mid-term">Desired features (mid-term)<a href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map#desired-features-mid-term" class="hash-link" aria-label="Direct link to Desired features (mid-term)" title="Direct link to Desired features (mid-term)" translate="no">​</a></h2>
+<p>These are some improvements planned that will be implemented progressively:</p>
+<ul>
+<li class="">Improve user experience in the interface</li>
+<li class="">Enable geometry streaming for Mesh3D objects</li>
+<li class="">Add a basic version of node-based geometry shaders</li>
+</ul>
+<p>Many of these ideas come directly from community feedback, which helps a lot when deciding what actually brings value.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="long-term-features-or-subject-to-reconsideration">Long-term features (or subject to reconsideration)<a href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map#long-term-features-or-subject-to-reconsideration" class="hash-link" aria-label="Direct link to Long-term features (or subject to reconsideration)" title="Direct link to Long-term features (or subject to reconsideration)" translate="no">​</a></h2>
+<p>There are also deeper evolution paths that require analysis and experimentation before any decision is made:</p>
+<ul>
+<li class="">Decouple OpenGL / Create a Vulkan backend</li>
+<li class="">Explore alternative scripting language options</li>
+<li class="">Change the project's license type</li>
+</ul>
+<p>These decisions affect the architecture, philosophy, and long-term direction of the engine, so they will be evaluated carefully and with community feedback.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="thanks-again">Thanks again<a href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map#thanks-again" class="hash-link" aria-label="Direct link to Thanks again" title="Direct link to Thanks again" translate="no">​</a></h2>
+<p>To close, I want to repeat the most important thing:<br>
+<strong>thank you for the interest, feedback, and support.</strong></p>
+<p>This project keeps moving forward thanks to you.</p>
+<p>Let’s keep going 🚀</p>]]></content>
+        <author>
+            <name>Eduardo</name>
+            <uri>https://github.com/rzeronte</uri>
+        </author>
+        <category label="brakeza3d" term="brakeza3d"/>
+        <category label="roadmap" term="roadmap"/>
+        <category label="community" term="community"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Brakeza3D 0.26.2 released!]]></title>
         <id>https://brakeza.com/blog/brakeza3d-0-26-2</id>
