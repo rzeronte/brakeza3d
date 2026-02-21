@@ -9,31 +9,19 @@
 #include "../Components/Components.h"
 #include "../OpenGL/Nodes/ShaderNodesPostProcessing.h"
 
-PostProcessingManager::PostProcessingManager()
-    :
-      postProcessingShaders(Components::get()->Render()->getSceneShaders())
-    , pingFBO(0)
-    , pingTexture(0)
-    , pongFBO(0)
-    , pongTexture(0)
-    , currentWidth(0)
-    , currentHeight(0)
+PostProcessingManager::PostProcessingManager(int width, int height)
+:
+    postProcessingShaders(Components::get()->Render()->getSceneShaders()),
+    currentWidth(width),
+    currentHeight(height)
 {
+    createFramebuffer(pingFBO, pingTexture, width, height);
+    createFramebuffer(pongFBO, pongTexture, width, height);
 }
 
 PostProcessingManager::~PostProcessingManager()
 {
     cleanup();
-}
-
-void PostProcessingManager::Initialize(int width, int height)
-{
-    currentWidth = width;
-    currentHeight = height;
-
-    // Crear los dos framebuffers para ping-pong
-    createFramebuffer(pingFBO, pingTexture, width, height);
-    createFramebuffer(pongFBO, pongTexture, width, height);
 }
 
 void PostProcessingManager::createFramebuffer(GLuint& fbo, GLuint& texture, int width, int height)

@@ -19,15 +19,79 @@ ComponentWindow::ComponentWindow()
 :
     applicationIcon(IMG_Load(std::string(Config::get()->ICONS_FOLDER + Config::get()->iconApplication).c_str()))
 {
-    InitWindow();
+    LOG_MESSAGE("[Window] Init window...");
+
+    std::string drivers;
+    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
+        SDL_RendererInfo rendererInfo = {};
+        SDL_GetRenderDriverInfo(i, &rendererInfo);
+        if (i > 0) drivers += ", ";
+        drivers += rendererInfo.name;
+    }
+    LOG_MESSAGE("[Window] Drivers for rendering: %s", drivers.c_str());
+
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+        LOG_ERROR("[Window] SDL could not initialize! SDL_Error: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
+
+    window = SDL_CreateWindow(
+        SETUP->ENGINE_TITLE.c_str(),
+        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        SETUP->screenWidth,
+        SETUP->screenHeight,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+    );
+
+    if (window == nullptr) {
+        LOG_ERROR("Window could not be created! SDL_Error: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    context = SDL_GL_CreateContext(window);
+    if (context == nullptr) {
+        LOG_ERROR("[Window] GL Context failed: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    SDL_GL_MakeCurrent(window, context);
+    LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
+
+    SDL_GL_GetDrawableSize(window, &widthRender, &heightRender);
+
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+
+    ResetOpenGLSettings();
+
+    glewExperimental = GL_TRUE;
+    GLenum glewError = glewInit();
+    if (glewError != GLEW_OK) {
+        LOG_ERROR("[Window] GLEW init failed: %s", glewGetErrorString(glewError));
+        exit(-1);
+    }
+
+    SDL_GL_SetSwapInterval(1);
+    SDL_SetWindowIcon(window, applicationIcon);
 }
 
 void ComponentWindow::onStart()
 {
     setEnabled(true);
     InitFontsTTF();
-    postProcessingManager = new PostProcessingManager();
-    postProcessingManager->Initialize(widthRender, heightRender);
+    postProcessingManager = new PostProcessingManager(widthRender, heightRender);
 
     ImGuiInitialize(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
 
@@ -39,9 +103,6 @@ void ComponentWindow::onStart()
 void ComponentWindow::preUpdate()
 {
     Component::preUpdate();
-
-    //UpdateWindowSize();
-    //glViewport(0,0, widthWindow, heightWindow);
 }
 
 void ComponentWindow::onUpdate()
@@ -65,64 +126,6 @@ void ComponentWindow::onEnd()
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
     Components::get()->Render()->UpdateSelectedObject3D();
-}
-
-void ComponentWindow::InitWindow()
-{
-    LOG_MESSAGE("[Window] Init window...");
-
-    std::string drivers;
-    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
-        SDL_RendererInfo rendererInfo = {};
-        SDL_GetRenderDriverInfo(i, &rendererInfo);
-        if (i > 0) drivers += ", ";
-        drivers += rendererInfo.name;
-    }
-    LOG_MESSAGE("[Window] Drivers for rendering: %s", drivers.c_str());
-
-    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-        LOG_ERROR("[Window] SDL could not initialize! SDL_Error: %s", SDL_GetError());
-        exit(-1);
-    }
-
-    window = SDL_CreateWindow(
-        SETUP->ENGINE_TITLE.c_str(),
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        SETUP->screenWidth,
-        SETUP->screenHeight,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
-    );
-
-    context = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, context);
-
-    LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-
-    if (window == nullptr) {
-        LOG_ERROR("Window could not be created! SDL_Error: %s", SDL_GetError());
-        exit(-1);
-    }
-
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
-    SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
-
-    ResetOpenGLSettings();
-    glewInit();
-    SDL_GL_SetSwapInterval(1);
-    SDL_SetWindowIcon(window, applicationIcon);
 }
 
 void ComponentWindow::InitFontsTTF()
