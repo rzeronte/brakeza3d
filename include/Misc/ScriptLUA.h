@@ -52,7 +52,7 @@ struct ScriptLUATypeData {
             } else if constexpr (std::is_same_v<T, float>) {
                 return std::to_string(arg);
             } else if constexpr (std::is_same_v<T, Vertex3D>) {
-                return std::string("(x: " + std::to_string(arg.x) + ", y: " + std::to_string(arg.x) + ", z: " + std::to_string(arg.z));
+                return std::string("(x: " + std::to_string(arg.x) + ", y: " + std::to_string(arg.y) + ", z: " + std::to_string(arg.z));
             } else if constexpr (std::is_same_v<T, const char*>) {
                 return "Es un string";
             } else {
