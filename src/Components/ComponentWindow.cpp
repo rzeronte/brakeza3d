@@ -85,44 +85,71 @@ void ComponentWindow::InitWindow()
         exit(-1);
     }
 
+    // X11/NVIDIA compatibility hints
+    SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0");
+    SDL_SetHint(SDL_HINT_VIDEO_X11_FORCE_EGL, "0");
+    SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
+
+    // OpenGL 3.1 (more compatible)
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
     window = SDL_CreateWindow(
         SETUP->ENGINE_TITLE.c_str(),
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED,
         SETUP->screenWidth,
         SETUP->screenHeight,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
+        SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN | SDL_WINDOW_RESIZABLE
     );
-
-    context = SDL_GL_CreateContext(window);
-    SDL_GL_MakeCurrent(window, context);
-
-    LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
     if (window == nullptr) {
         LOG_ERROR("Window could not be created! SDL_Error: %s", SDL_GetError());
         exit(-1);
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
-    SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
+    context = SDL_GL_CreateContext(window);
+    if (context == nullptr) {
+        LOG_ERROR("[Window] GL Context failed: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    // Make context current BEFORE any GL calls
+    if (SDL_GL_MakeCurrent(window, context) != 0) {
+        LOG_ERROR("[Window] SDL_GL_MakeCurrent failed: %s", SDL_GetError());
+        exit(-1);
+    }
+
+    glewExperimental = GL_TRUE;
+    GLenum glewError = glewInit();
+    if (glewError != GLEW_OK) {
+        LOG_ERROR("[Window] GLEW init failed: %s", glewGetErrorString(glewError));
+        exit(-1);
+    }
+
+    // Only show window after GL is ready
+    SDL_ShowWindow(window);
+
+    // Skip SDL_Renderer - pure OpenGL rendering doesn't need it
+    renderer = nullptr;
+    SDL_GetWindowSize(window, &widthRender, &heightRender);
 
     ResetOpenGLSettings();
-    glewInit();
+
+    // Set swap interval AFTER Glew init
     SDL_GL_SetSwapInterval(1);
     SDL_SetWindowIcon(window, applicationIcon);
+    
+    LOG_MESSAGE("[Window] OpenGL Renderer: %s", glGetString(GL_RENDERER));
+    LOG_MESSAGE("[Window] OpenGL Version: %s", glGetString(GL_VERSION));
 }
 
 void ComponentWindow::InitFontsTTF()
