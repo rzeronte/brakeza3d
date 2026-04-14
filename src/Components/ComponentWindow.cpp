@@ -97,6 +97,9 @@ void ComponentWindow::InitWindow()
     context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, context);
 
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+    SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
+
     LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
     SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
@@ -116,8 +119,6 @@ void ComponentWindow::InitWindow()
         exit(-1);
     }
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
-    SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
 
     ResetOpenGLSettings();
     glewInit();
