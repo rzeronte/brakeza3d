@@ -69,8 +69,8 @@ public:
     void postUpdate() override;
     void onEnd() override;
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-    void InitWindow();
     void InitFontsTTF();
+    void InitWindow();
     void ResetFramebuffer();
     void ClearOGLFrameBuffers() const;
     void CheckForResizeOpenGLWindow(const SDL_Event &e);
