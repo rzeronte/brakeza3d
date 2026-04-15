@@ -1,6 +1,8 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <complex>
+#include <set>
+#include <vector>
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <SDL_image.h>
@@ -64,7 +66,6 @@ void ComponentWindow::onEnd()
 
 void ComponentWindow::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
-    Components::get()->Render()->UpdateSelectedObject3D();
 }
 
 void ComponentWindow::InitWindow()
@@ -402,6 +403,7 @@ void ComponentWindow::ImGuiOnUpdate()
 
     ImGui::NewFrame();
     Brakeza::get()->GUI()->DrawGUI();
+    Components::get()->Render()->DrawSelectionRect();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -560,6 +562,94 @@ unsigned int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, 
     );
 
     return Color::colorToId(c);
+}
+
+std::set<unsigned int> ComponentWindow::getObjectIDsInPickingRect(int x1, int y1, int x2, int y2) const
+{
+    std::set<unsigned int> ids;
+
+    // Normalise rect so x1<=x2, y1<=y2
+    if (x1 > x2) std::swap(x1, x2);
+    if (y1 > y2) std::swap(y1, y2);
+
+    const int w = x2 - x1 + 1;
+    const int h = y2 - y1 + 1;
+    if (w <= 0 || h <= 0) return ids;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+
+    std::vector<unsigned char> pixels(w * h * 3);
+    // OpenGL Y is flipped
+    const int flippedY = getHeightRender() - y2 - 1;
+    glReadPixels(x1, flippedY, w, h, GL_RGB, GL_UNSIGNED_BYTE, pixels.data());
+
+    for (int i = 0; i < w * h; i++) {
+        const float r = pixels[i * 3 + 0] / 255.0f;
+        const float g = pixels[i * 3 + 1] / 255.0f;
+        const float b = pixels[i * 3 + 2] / 255.0f;
+        const unsigned int id = Color::colorToId(Color(r, g, b));
+        if (id != 0) ids.insert(id);
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return ids;
+}
+
+void ComponentWindow::beginAsyncPickingRect(int x1, int y1, int x2, int y2) const
+{
+    if (x1 > x2) std::swap(x1, x2);
+    if (y1 > y2) std::swap(y1, y2);
+
+    const int w = x2 - x1 + 1;
+    const int h = y2 - y1 + 1;
+    if (w <= 0 || h <= 0) return;
+
+    if (rectPickingPBO == 0) glGenBuffers(1, &rectPickingPBO);
+
+    const size_t size = (size_t)w * h * 3;
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, rectPickingPBO);
+    glBufferData(GL_PIXEL_PACK_BUFFER, (GLsizeiptr)size, nullptr, GL_STREAM_READ);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    const int flippedY = getHeightRender() - y2 - 1;
+    glReadPixels(x1, flippedY, w, h, GL_RGB, GL_UNSIGNED_BYTE, nullptr); // async — offset 0
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    pendingPBOX1 = x1; pendingPBOY1 = y1;
+    pendingPBOX2 = x2; pendingPBOY2 = y2;
+    pendingPBOValid = true;
+}
+
+std::set<unsigned int> ComponentWindow::readAsyncPickingRect() const
+{
+    std::set<unsigned int> ids;
+    if (!pendingPBOValid || rectPickingPBO == 0) return ids;
+
+    const int w = pendingPBOX2 - pendingPBOX1 + 1;
+    const int h = pendingPBOY2 - pendingPBOY1 + 1;
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, rectPickingPBO);
+    const auto* data = static_cast<const GLubyte*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
+
+    if (data) {
+        const int total = w * h;
+        for (int i = 0; i < total; i++) {
+            const float r = data[i * 3 + 0] / 255.0f;
+            const float g = data[i * 3 + 1] / 255.0f;
+            const float b = data[i * 3 + 2] / 255.0f;
+            const unsigned int id = Color::colorToId(Color(r, g, b));
+            if (id != 0) ids.insert(id);
+        }
+        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+    }
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    pendingPBOValid = false;
+    return ids;
 }
 
 void ComponentWindow::setImGuiConfig(Config::ImGUIConfigs c)

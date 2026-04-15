@@ -14,7 +14,15 @@ void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
     auto windowStatus = gui->getWindowStatus(GUIType::OBJECT_PROPS);
     if (!windowStatus->isOpen) return;
 
-    auto o = Components::get()->Render()->getSelectedObject();
+    auto render = Components::get()->Render();
+
+    if (render->hasMultipleSelected()) {
+        auto count = render->getSelectedObjects().size();
+        Drawable::WarningMessage(("Multiple objects selected (" + std::to_string(count) + ")").c_str());
+        return;
+    }
+
+    auto o = render->getSelectedObject();
 
     if (o == nullptr) {
         Drawable::WarningMessage("No object selected");

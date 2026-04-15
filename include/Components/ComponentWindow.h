@@ -5,6 +5,7 @@
 #ifndef BRAKEDA3D_COMPONENTWINDOW_H
 #define BRAKEDA3D_COMPONENTWINDOW_H
 
+#include <set>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_ttf.h>
@@ -58,6 +59,12 @@ class ComponentWindow : public Component
     SDL_GLContext context = nullptr;
     SDL_Surface *applicationIcon = nullptr;
 
+    // PBO para lectura async del picking rect (evita stall de glReadPixels)
+    mutable GLuint rectPickingPBO = 0;
+    mutable int pendingPBOX1 = 0, pendingPBOY1 = 0;
+    mutable int pendingPBOX2 = 0, pendingPBOY2 = 0;
+    mutable bool pendingPBOValid = false;
+
     bool customCursor = false;
     SDL_Cursor* cursor = nullptr;
 
@@ -109,6 +116,9 @@ public:
     [[nodiscard]] Config::ImGUIConfigs getImGuiConfig() const               { return ImGuiConfig; }
     [[nodiscard]] PostProcessingManager *getPostProcessingManager() const   { return postProcessingManager; }
     [[nodiscard]] unsigned int getObjectIDByPickingColorFramebuffer(int x, int y) const;
+    [[nodiscard]] std::set<unsigned int> getObjectIDsInPickingRect(int x1, int y1, int x2, int y2) const;
+    void beginAsyncPickingRect(int x1, int y1, int x2, int y2) const;
+    [[nodiscard]] std::set<unsigned int> readAsyncPickingRect() const;
 
     void setWindowTitle(const char *title) const;
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
