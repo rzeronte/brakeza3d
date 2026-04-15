@@ -43,16 +43,48 @@ Through your LUA scripts, you can access the following methods:
 
 | Function                           | Description                                                                  |
 |------------------------------------|------------------------------------------------------------------------------|
-| `getSceneLoader()`                 | Returns the scene loader component used to load and manage scenes            |
-| `setGlobalIlluminationDirection()` | Sets the direction of the global illumination light                          |
-| `setGlobalIlluminationAmbient()`   | Sets the ambient color or intensity of the global illumination               |
-| `setGlobalIlluminationDiffuse()`   | Sets the diffuse color or intensity of the global illumination               |
-| `setGlobalIlluminationSpecular()`  | Sets the specular color or intensity of the global illumination              |
-| `getSceneShaderByLabel()`          | Returns a scene shader by its assigned label                                 |
-| `getFps()`                         | Returns frames per second                                                    |
-| `getSelectedObject()`              | Returns a pointer to the selected object in the GUI                          |
-| `MakeScreenShot(string path)`      | Makes a PNG screenshot at the given path                                     |
-| `DrawLine()`                       | Draws a line in the scene, typically for debugging or visualization purposes |
+| `getSceneLoader()`                        | Returns the scene loader component used to load and manage scenes                                           |
+| `setGlobalIlluminationDirection()`        | Sets the direction of the global illumination light                                                         |
+| `setGlobalIlluminationAmbient()`          | Sets the ambient color or intensity of the global illumination                                              |
+| `setGlobalIlluminationDiffuse()`          | Sets the diffuse color or intensity of the global illumination                                              |
+| `setGlobalIlluminationSpecular()`         | Sets the specular color or intensity of the global illumination                                             |
+| `getSceneShaderByLabel()`                 | Returns a scene shader by its assigned label                                                                |
+| `getFps()`                                | Returns frames per second                                                                                   |
+| `MakeScreenShot(string path)`             | Makes a PNG screenshot at the given path                                                                    |
+| `DrawLine()`                              | Draws a line in the scene, typically for debugging or visualization purposes                                |
+| `getSelectedObject()`                     | Returns the selected object when exactly **one** object is selected, otherwise `nil`                       |
+| `getSelectedObjects()`                    | Returns a table with **all** currently selected objects (empty table when nothing is selected)              |
+| `setSelectedObject(Object3D)`             | Replaces the current selection with a single object                                                         |
+| `addToSelection(Object3D)`                | Adds an object to the selection group (toggles it out if already present)                                   |
+| `removeFromSelection(Object3D)`           | Removes a specific object from the selection group                                                          |
+| `clearSelection()`                        | Empties the selection group                                                                                  |
+| `hasMultipleSelected()`                   | Returns `true` when more than one object is selected                                                        |
+| `isObjectInSelection(Object3D)`           | Returns `true` if the given object is currently part of the selection group                                 |
+
+### Multi-selection example
+
+```lua
+function onUpdate()
+    local render   = Components:Render()
+    local selected = render:getSelectedObjects()
+
+    -- Nudge all selected objects upward
+    for i = 1, #selected do
+        selected[i]:addToPosition(Vertex3D.new(0, 0.01, 0))
+    end
+
+    -- Check a specific object
+    local obj = Brakeza:getObjectByName("Enemy_01")
+    if obj and render:isObjectInSelection(obj) then
+        print("Enemy_01 is in the group")
+    end
+
+    -- Build a selection programmatically
+    if render:hasMultipleSelected() then
+        render:clearSelection()
+    end
+end
+```
 
 
 ## Component Input

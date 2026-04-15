@@ -287,6 +287,9 @@ void ComponentWindow::FlipGlobalToWindow()
        ImGuiOnUpdate();
    }
 
+    // Selection rectangle drawn via line shader — always visible regardless of ImGui state
+    Components::get()->Render()->DrawSelectionRect();
+
     auto shaderOGLImage = Components::get()->Render()->getShaders()->shaderOGLImage;
     shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, openGLBuffers.globalFBO);
     shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
@@ -403,7 +406,6 @@ void ComponentWindow::ImGuiOnUpdate()
 
     ImGui::NewFrame();
     Brakeza::get()->GUI()->DrawGUI();
-    Components::get()->Render()->DrawSelectionRect();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

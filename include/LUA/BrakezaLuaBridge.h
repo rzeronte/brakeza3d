@@ -203,7 +203,22 @@ inline void LUAIntegration(sol::state &lua)
         "getSceneShaderByLabel", &ComponentRender::getSceneShaderByLabel,
         "getFps", &ComponentRender::getFps,
         "MakeScreenShot", &ComponentRender::MakeScreenShot,
-        "getSelectedObject", &ComponentRender::getSelectedObject
+        // Single-selection (returns nil when 0 or >1 selected)
+        "getSelectedObject", &ComponentRender::getSelectedObject,
+        // Multi-selection API
+        "getSelectedObjects", [](ComponentRender* cr) -> std::vector<Object3D*> {
+            return cr->getSelectedObjects();
+        },
+        "addToSelection", &ComponentRender::addToSelection,
+        "removeFromSelection", [](ComponentRender* cr, Object3D* o) {
+            cr->removeFromSelection(o);
+        },
+        "clearSelection", &ComponentRender::clearSelection,
+        "setSelectedObject", &ComponentRender::setSelectedObject,
+        "hasMultipleSelected", &ComponentRender::hasMultipleSelected,
+        "isObjectInSelection", [](ComponentRender* cr, Object3D* o) -> bool {
+            return cr->isObjectInSelection(o);
+        }
     );
 
     lua.new_usertype<ComponentScripting>("ComponentScripting",

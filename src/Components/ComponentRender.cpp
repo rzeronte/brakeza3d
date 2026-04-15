@@ -208,20 +208,43 @@ void ComponentRender::DrawSelectionRect() const
 {
     if (!isRectSelecting) return;
 
-    auto input = Components::get()->Input();
-    const ImVec2 start((float)rectSelectStartX, (float)rectSelectStartY);
-    const ImVec2 current((float)input->getMouseX(), (float)input->getMouseY());
+    auto *window = Components::get()->Window();
 
-    ImDrawList *dl = ImGui::GetForegroundDrawList();
-    dl->AddRectFilled(start, current, IM_COL32(100, 200, 255, 30));
-    dl->AddRect(start, current, IM_COL32(100, 200, 255, 200), 0.f, 0, 1.5f);
+    // Use rectSelectCurrentX/Y — tracked directly from SDL events in UpdateSelectedObject3D,
+    // so this is correct regardless of ImGui state or whether ENABLE_IMGUI is on/off.
+    auto toRender = [&](int wx, int wy) -> Point2D {
+        const int rx = (int)((float)wx / (float)window->getWidth()  * (float)Config::get()->screenWidth);
+        const int ry = (int)((float)wy / (float)window->getHeight() * (float)Config::get()->screenHeight);
+        return Point2D(rx, ry);
+    };
+
+    const Point2D a = toRender(rectSelectStartX,   rectSelectStartY);
+    const Point2D b = toRender(rectSelectCurrentX, rectSelectCurrentY);
+
+    // Four corners
+    const Point2D tl(a.x, a.y);
+    const Point2D tr(b.x, a.y);
+    const Point2D br(b.x, b.y);
+    const Point2D bl(a.x, b.y);
+
+    const Color   lineColor(0.39f, 0.78f, 1.0f, 1.0f);
+    const float   weight = 0.00025f;
+    const GLuint  fbo    = window->getUIFramebuffer();
+
+    shaders.shaderOGLLine->render(tl, tr, lineColor, weight, fbo);
+    shaders.shaderOGLLine->render(tr, br, lineColor, weight, fbo);
+    shaders.shaderOGLLine->render(br, bl, lineColor, weight, fbo);
+    shaders.shaderOGLLine->render(bl, tl, lineColor, weight, fbo);
 }
 
 void ComponentRender::UpdateSelectedObject3D(SDL_Event *event)
 {
     auto input = Components::get()->Input();
-    if (!input->isEnabled()) return;
-    if (ImGui::GetIO().WantCaptureMouse) return;
+    // Block picking only when ImGui is active AND it has captured the mouse
+    // (i.e. the cursor is over an editor panel).
+    // When ImGui is disabled entirely (ENABLE_IMGUI = false / play mode without UI)
+    // WantCaptureMouse is stale and must be ignored so viewport clicks reach the picker.
+    if (Config::get()->ENABLE_IMGUI && ImGui::GetIO().WantCaptureMouse) return;
 
     auto window = Components::get()->Window();
     const bool ctrlHeld = input->getKeyboard()[SDL_SCANCODE_LCTRL] || input->getKeyboard()[SDL_SCANCODE_RCTRL];
@@ -240,6 +263,11 @@ void ComponentRender::UpdateSelectedObject3D(SDL_Event *event)
 
     // ── Movimiento con botón izquierdo pulsado ────────────────────────────
     if (event->type == SDL_MOUSEMOTION && (event->motion.state & SDL_BUTTON_LMASK)) {
+        // Always track current position from the SDL event — never from ComponentInput,
+        // so DrawSelectionRect works correctly regardless of ImGui/WantCaptureMouse state.
+        rectSelectCurrentX = event->motion.x;
+        rectSelectCurrentY = event->motion.y;
+
         const int dx = event->motion.x - rectSelectStartX;
         const int dy = event->motion.y - rectSelectStartY;
 

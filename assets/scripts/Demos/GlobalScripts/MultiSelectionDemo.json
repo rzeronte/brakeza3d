@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Demos/GlobalScripts/MultiSelectionDemo.lua",
+	"typesFile": "../assets/scripts/Demos/GlobalScripts/MultiSelectionDemo.json",
+	"name":	"MouseIconChangeDemo",
+	"type":	"Global",
+	"types":	[]
+}
