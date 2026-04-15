@@ -6,6 +6,10 @@
 #include "../include/Components/Components.h"
 #include "../include/GUI/Objects/FileSystemGUI.h"
 #include "../include/Render/Profiler.h"
+#include "../include/Render/EngineObserver.h"
+#include "../include/Loaders/SceneLoader.h"
+#include "../include/SceneObjectTypes.h"
+#include "../include/Misc/cJSON.h"
 
 Brakeza *Brakeza::instance = nullptr;
 
@@ -61,11 +65,45 @@ void Brakeza::PreMainLoop()
 
     OnStartComponents();             // Starting componentes
     AutoLoadProjectOrContinue();     // Parse CLI options
+    EngineObserver::init(Config::get()->ROOT_FOLDER);
 
     // Profiler tags
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
+}
+
+static void DumpObserverState()
+{
+    auto *render  = Components::get()->Render();
+    auto &objects = Brakeza::get()->getSceneObjects();
+
+    int lights = 0;
+    for (auto *o : objects) {
+        if (o->getTypeObject() == ObjectType::LightPoint ||
+            o->getTypeObject() == ObjectType::LightSpot)
+            lights++;
+    }
+
+    cJSON *root = cJSON_CreateObject();
+    cJSON_AddNumberToObject(root, "frame",         EngineObserver::frameCount);
+    cJSON_AddStringToObject(root, "scene",         EngineObserver::currentScene.c_str());
+    cJSON_AddStringToObject(root, "pipeline_step", EngineObserver::pipelineStep.c_str());
+    cJSON_AddNumberToObject(root, "fps",           render->getFps());
+    cJSON_AddNumberToObject(root, "objects",       (int)objects.size());
+    cJSON_AddNumberToObject(root, "lights",        lights);
+    cJSON_AddBoolToObject(root,   "scene_loading", SceneLoader::isLoading);
+    cJSON_AddBoolToObject(root,   "physics_on",    !Config::get()->BULLET_DEBUG_MODE);
+
+    cJSON *errs = cJSON_AddArrayToObject(root, "recent_errors");
+    for (const auto &e : EngineObserver::recentErrors)
+        cJSON_AddItemToArray(errs, cJSON_CreateString(e.c_str()));
+
+    char *s = cJSON_Print(root);
+    std::ofstream f(EngineObserver::statePath);
+    if (f.is_open()) { f << s; }
+    free(s);
+    cJSON_Delete(root);
 }
 
 void Brakeza::MainLoop()
@@ -75,21 +113,42 @@ void Brakeza::MainLoop()
     GUI::ShowLoadTime("Time until main loop starts", timer);
 
     while (!Config::get()->EXIT) {
-        Profiler::get()->ResetTotalFrameTime();                             // Reset profiler measures
-        ControlFrameRate();                                                 // Control framerate based on SDL_Delay
-        UpdateTimer();                                                      // Refresh main timer
-        PoolImages().processMainThreadCallbacks();                          // Main Thread pool images
-        PoolCompute().processMainThreadCallbacks();                         // Main Thread pool compute
-        PreUpdateComponents();                                              // PreUpdate for componentes
-        CaptureInputEvents(event);                                       // Capture keyboard/mouse status
-        Components::get()->Window()->ClearOGLFrameBuffers();                // Clean video framebuffers
-        OnUpdateComponents();                                               // OnUpdate for componentes
-        Components::get()->Render()->LightPass();                           // Deferred opaque objects light pass
-        PostUpdateComponents();                                             // PostUpdate for componentes (transparent mainly)
-        Components::get()->Render()->FlipBuffersToGlobal();                 // Buffers compositing
-        ComponentRender::PostProcessingShadersChain();                      // Post-pass running for shaders
-        Profiler::get()->EndTotalFrameTime();                               // End frame time measures
-        Components::get()->Window()->FlipGlobalToWindow();                  // Flip to screen
+        EngineObserver::frameCount++;
+
+        Profiler::get()->ResetTotalFrameTime();                              // Reset profiler measures
+        ControlFrameRate();                                                  // Control framerate based on SDL_Delay
+        UpdateTimer();                                                       // Refresh main timer
+        PoolImages().processMainThreadCallbacks();                           // Main Thread pool images
+        PoolCompute().processMainThreadCallbacks();                          // Main Thread pool compute
+
+        EngineObserver::setPipelineStep("PreUpdate");
+        PreUpdateComponents();                                               // PreUpdate for componentes
+        CaptureInputEvents(event);                                           // Capture keyboard/mouse status
+        Components::get()->Window()->ClearOGLFrameBuffers();                 // Clean video framebuffers
+
+        EngineObserver::setPipelineStep("OnUpdate+ObjectShaders");
+        OnUpdateComponents();                                                // OnUpdate for componentes
+
+        EngineObserver::setPipelineStep("LightPass");
+        Components::get()->Render()->LightPass();                            // Deferred opaque objects light pass
+
+        EngineObserver::setPipelineStep("PostUpdate");
+        PostUpdateComponents();                                              // PostUpdate for componentes (transparent mainly)
+
+        EngineObserver::setPipelineStep("FlipBuffersToGlobal");
+        Components::get()->Render()->FlipBuffersToGlobal();                  // Buffers compositing
+
+        EngineObserver::setPipelineStep("PostProcessingChain");
+        ComponentRender::PostProcessingShadersChain();                       // Post-pass running for shaders
+
+        EngineObserver::setPipelineStep("FlipToWindow");
+        Profiler::get()->EndTotalFrameTime();                                // End frame time measures
+        Components::get()->Window()->FlipGlobalToWindow();                   // Flip to screen
+
+        EngineObserver::setPipelineStep("idle");
+
+        if (EngineObserver::frameCount % 60 == 0)
+            DumpObserverState();
     }
 
     onEndComponents();
@@ -97,7 +156,6 @@ void Brakeza::MainLoop()
 
 void Brakeza::CaptureInputEvents(SDL_Event &e) const
 {
-
     while (SDL_PollEvent(&e)) {
         Components::get()->Window()->CheckForResizeOpenGLWindow(e);
         onUpdateSDLPollEventComponents(&e);

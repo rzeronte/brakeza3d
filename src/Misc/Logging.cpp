@@ -1,6 +1,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Config.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Render/EngineObserver.h"
 
 void Logging::Message(const char *message, ...)
 {
@@ -38,6 +39,15 @@ void Logging::OutputVa(const char *message, bool forceSTD, va_list args)
     if (Config::get()->ENABLE_LOGGING_STD || forceSTD) {
         std::cout << buffer << std::endl;
     }
+
+    // Feed structured event to EngineObserver (for AI agent observability)
+    std::string msg(buffer);
+    if (msg.rfind("[Error]", 0) == 0)
+        EngineObserver::appendEvent("error", msg);
+    else if (msg.rfind("[Warning]", 0) == 0)
+        EngineObserver::appendEvent("warning", msg);
+    else
+        EngineObserver::appendEvent("info", msg);
 
     delete[] buffer;
 }

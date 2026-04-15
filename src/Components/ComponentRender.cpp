@@ -1,3 +1,6 @@
+#include "imgui.h"
+#include <SDL2/SDL.h>
+#include <algorithm>
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
@@ -131,6 +134,7 @@ void ComponentRender::onEnd()
 
 void ComponentRender::onSDLPollEvent(SDL_Event *event, bool &finish)
 {
+    UpdateSelectedObject3D(event);
 }
 
 void ComponentRender::onUpdateSceneObjects()
@@ -161,32 +165,129 @@ void ComponentRender::UpdateFPS()
 
 void ComponentRender::setSelectedObject(Object3D *o)
 {
-    selectedObject = o;
+    selectedObjects.clear();
+    if (o != nullptr) selectedObjects.push_back(o);
 }
 
-void ComponentRender::UpdateSelectedObject3D()
+void ComponentRender::addToSelection(Object3D *o)
+{
+    if (o == nullptr) return;
+    for (auto* existing : selectedObjects) {
+        if (existing == o) {
+            // Already selected — toggle off
+            removeFromSelection(o);
+            return;
+        }
+    }
+    selectedObjects.push_back(o);
+}
+
+void ComponentRender::removeFromSelection(const Object3D *o)
+{
+    selectedObjects.erase(
+        std::remove_if(selectedObjects.begin(), selectedObjects.end(),
+            [o](const Object3D* obj) { return obj == o; }),
+        selectedObjects.end()
+    );
+}
+
+void ComponentRender::clearSelection()
+{
+    selectedObjects.clear();
+}
+
+bool ComponentRender::isObjectInSelection(const Object3D *o) const
+{
+    for (const auto* obj : selectedObjects) {
+        if (obj == o) return true;
+    }
+    return false;
+}
+
+void ComponentRender::DrawSelectionRect() const
+{
+    if (!isRectSelecting) return;
+
+    auto input = Components::get()->Input();
+    const ImVec2 start((float)rectSelectStartX, (float)rectSelectStartY);
+    const ImVec2 current((float)input->getMouseX(), (float)input->getMouseY());
+
+    ImDrawList *dl = ImGui::GetForegroundDrawList();
+    dl->AddRectFilled(start, current, IM_COL32(100, 200, 255, 30));
+    dl->AddRect(start, current, IM_COL32(100, 200, 255, 200), 0.f, 0, 1.5f);
+}
+
+void ComponentRender::UpdateSelectedObject3D(SDL_Event *event)
 {
     auto input = Components::get()->Input();
-
     if (!input->isEnabled()) return;
+    if (ImGui::GetIO().WantCaptureMouse) return;
 
-    if (input->isClickLeft() && !input->isMouseMotion()) {
+    auto window = Components::get()->Window();
+    const bool ctrlHeld = input->getKeyboard()[SDL_SCANCODE_LCTRL] || input->getKeyboard()[SDL_SCANCODE_RCTRL];
 
-        auto window = Components::get()->Window();
-      // Coordenadas del mouse en la ventana
-        int mouseX = input->getMouseX();
-        int mouseY = input->getMouseY();
+    auto toNormalized = [&](int mx, int my, int &nx, int &ny) {
+        nx = (int)((float)mx / window->getWidth()  * window->getWidthRender());
+        ny = (int)((float)my / window->getHeight() * window->getHeightRender());
+    };
 
-        // Transformar a coordenadas del framebuffer de 800x600
-        int normalizedX = ((float)mouseX / window->getWidth()) * window->getWidthRender();
-        int normalizedY = (((float)mouseY / window->getHeight()) * window->getHeightRender());
+    // ── Botón izquierdo pulsado: guardar posición inicial ────────────────
+    if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_LEFT) {
+        rectSelectStartX = event->button.x;
+        rectSelectStartY = event->button.y;
+        isRectSelecting = false;
+    }
 
-        LOG_MESSAGE("[Render] Click: %d, %d", (int) normalizedX, (int) normalizedY);
+    // ── Movimiento con botón izquierdo pulsado ────────────────────────────
+    if (event->type == SDL_MOUSEMOTION && (event->motion.state & SDL_BUTTON_LMASK)) {
+        const int dx = event->motion.x - rectSelectStartX;
+        const int dy = event->motion.y - rectSelectStartY;
 
-        const auto id = Components::get()->Window()->getObjectIDByPickingColorFramebuffer((int) normalizedX, (int) normalizedY);
-        selectedObject = Brakeza::get()->getObjectById(id);
-        if (selectedObject != nullptr) {
-            LOG_MESSAGE("[Render] Selected object: %s", selectedObject->getName().c_str());
+        if (std::abs(dx) > 5 || std::abs(dy) > 5) {
+            isRectSelecting = true;
+        }
+
+        if (isRectSelecting) {
+            int nx1, ny1, nx2, ny2;
+            toNormalized(rectSelectStartX, rectSelectStartY, nx1, ny1);
+            toNormalized(event->motion.x, event->motion.y, nx2, ny2);
+            window->beginAsyncPickingRect(nx1, ny1, nx2, ny2);
+        }
+    }
+
+    // ── Botón izquierdo soltado ───────────────────────────────────────────
+    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT) {
+        if (isRectSelecting) {
+            isRectSelecting = false;
+
+            const auto ids = window->readAsyncPickingRect();
+            if (!ctrlHeld) selectedObjects.clear();
+            for (unsigned int id : ids) {
+                Object3D *o = Brakeza::get()->getObjectById(id);
+                if (o != nullptr && !isObjectInSelection(o)) selectedObjects.push_back(o);
+            }
+            LOG_MESSAGE("[Render] Rect selection: %zu objects", selectedObjects.size());
+
+        } else {
+            // Click simple: usar posición del MOUSEBUTTONDOWN
+            int nx, ny;
+            toNormalized(rectSelectStartX, rectSelectStartY, nx, ny);
+
+            const auto id = window->getObjectIDByPickingColorFramebuffer(nx, ny);
+            Object3D *clicked = Brakeza::get()->getObjectById(id);
+
+            if (ctrlHeld) {
+                if (clicked != nullptr) {
+                    addToSelection(clicked);
+                    LOG_MESSAGE("[Render] Toggle selection: %s (%zu selected)", clicked->getName().c_str(), selectedObjects.size());
+                }
+            } else {
+                selectedObjects.clear();
+                if (clicked != nullptr) {
+                    selectedObjects.push_back(clicked);
+                    LOG_MESSAGE("[Render] Selected: %s", clicked->getName().c_str());
+                }
+            }
         }
     }
 }

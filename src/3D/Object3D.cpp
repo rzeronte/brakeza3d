@@ -371,7 +371,7 @@ void Object3D::SetupGhostCollider(CollisionShape mode)
 
 bool Object3D::isGUISelected() const
 {
-    return Components::get()->Render()->getSelectedObject() == this;
+    return Components::get()->Render()->isObjectInSelection(this);
 }
 
 void Object3D::setMultiScene(bool value)

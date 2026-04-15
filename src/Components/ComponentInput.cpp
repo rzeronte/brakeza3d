@@ -312,7 +312,7 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             Components::get()->Window()->ToggleFullScreen();
         }
 
-        // Transformation shortcuts (T, R, S), delete (X) and deselect (ESC) - only when an object is selected
+        // Transformation shortcuts (T, R, S) — solo con un objeto seleccionado
         auto selectedObject = Components::get()->Render()->getSelectedObject();
         if (selectedObject != nullptr) {
             if (keyboard[SDL_SCANCODE_T]) {
@@ -324,12 +324,21 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             if (keyboard[SDL_SCANCODE_S]) {
                 window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE_X);
             }
+        }
+
+        // Delete (X / Supr) y deselect (ESC) — funcionan con cualquier número de seleccionados
+        auto render = Components::get()->Render();
+        if (!render->getSelectedObjects().empty()) {
             if (keyboard[SDL_SCANCODE_X]) {
-                selectedObject->setRemoved(true);
-                Components::get()->Render()->setSelectedObject(nullptr);
+                // Copia local para evitar problemas si clearSelection invalida la referencia
+                const auto toDelete = render->getSelectedObjects();
+                for (auto* o : toDelete) {
+                    o->setRemoved(true);
+                }
+                render->clearSelection();
             }
             if (keyboard[SDL_SCANCODE_ESCAPE]) {
-                Components::get()->Render()->setSelectedObject(nullptr);
+                render->clearSelection();
             }
         }
     }

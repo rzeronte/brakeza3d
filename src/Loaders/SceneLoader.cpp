@@ -27,6 +27,7 @@
 #include "../../include/Threads/ThreadJobCleanScene.h"
 #include "../../include/Threads/ThreadJobClearScene.h"
 #include "../../include/Threads/ThreadJobReadFileScene.h"
+#include "../../include/Render/EngineObserver.h"
 
 bool SceneLoader::isLoading = false;
 bool SceneLoader::isClearing = false;
@@ -84,6 +85,7 @@ void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
     }
 
     LOG_MESSAGE("[SceneLoader] Loading scene: '%s'", filename.c_str());
+    EngineObserver::setScene(filename.str());
 
     isLoading = true;
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadFileScene>(filename));
