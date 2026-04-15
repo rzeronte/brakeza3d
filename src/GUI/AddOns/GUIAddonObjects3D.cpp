@@ -92,8 +92,7 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
     };
 
     // ===== SELECCIÓN =====
-    auto selectedObject = Components::get()->Render()->getSelectedObject();
-    bool isSelected = (selectedObject != nullptr && selectedObject->getId() == o->getId());
+    bool isSelected = Components::get()->Render()->isObjectInSelection(o);
 
     bool wasSelected = isSelected;
 
