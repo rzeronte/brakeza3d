@@ -68,8 +68,10 @@ class ComponentRender : public Component
 
     // Rectangle-drag selection state
     bool isRectSelecting = false;
-    int rectSelectStartX = 0;
-    int rectSelectStartY = 0;
+    int rectSelectStartX   = 0;
+    int rectSelectStartY   = 0;
+    int rectSelectCurrentX = 0;  // updated from SDL events — no ImGui dependency
+    int rectSelectCurrentY = 0;
 
     TextWriter *textWriter = nullptr;
     SceneLoader sceneLoader;

@@ -21,6 +21,17 @@ This section covers all the keyboard and mouse shortcuts available in the Brakez
 
 ---
 
+## Selection
+
+| Action | Result |
+|--------|--------|
+| Left Click | Select single object |
+| Left Click (empty space) | Clear selection |
+| Ctrl + Left Click | Toggle object into / out of selection group |
+| Ctrl + Left Drag | Rectangle-select all objects inside the drawn area |
+
+---
+
 ## Transformations (with object selected)
 
 These shortcuts only work when an object is selected in the scene.

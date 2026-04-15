@@ -76,3 +76,26 @@ the arrows to move aligned with the main axes.
 
 Hold down the <kbd>Right Mouse Button</kbd> while moving the mouse to rotate the camera as if in a first-person game. You can click on objects 
 in the scene to select them using the <kbd>Left Mouse Button</kbd>.
+
+## Object selection
+---
+
+Brakeza3D supports both single and multi-object selection directly from the viewport.
+
+### Single selection
+
+Click any object in the viewport with the <kbd>Left Mouse Button</kbd> to select it. Clicking on empty space deselects the current object.
+
+### Multi-selection
+
+| Action | Result |
+|--------|--------|
+| <kbd>Ctrl</kbd> + <kbd>Left Click</kbd> | Toggle an object into / out of the selection group |
+| <kbd>Ctrl</kbd> + <kbd>Left Drag</kbd> | Draw a rectangle — all objects inside are added to the group |
+| Click on empty space (no Ctrl) | Replaces the selection with the clicked object (or clears it) |
+
+While dragging, a **blue rectangle** is drawn on screen using the line shader so that it is visible regardless of whether the editor GUI is visible or hidden (<kbd>F5</kbd>).
+
+:::note Play mode
+Selection picking is active in **both editor and play mode**. When scripts are running you can still click to select objects from the viewport, and Lua scripts can read and modify the selection group at any time via the `ComponentRender` API.
+:::
