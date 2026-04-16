@@ -24,14 +24,14 @@ ThreadPool::ThreadPool(size_t numThreads)
                     // 2. Haya tareas Y no excedamos el límite de tareas concurrentes
                     condition.wait(lock, [this] {
                         return stop ||
-                               (!tasks.empty() && activeTasks < maxConcurrentTasks);
+                               (!tasks.empty() && activeTasks < (int)maxConcurrentTasks);
                     });
 
                     if (stop && tasks.empty())
                         return;
 
                     // Si ya hay demasiadas tareas activas, seguir esperando
-                    if (activeTasks >= maxConcurrentTasks)
+                    if (activeTasks >= (int)maxConcurrentTasks)
                         continue;
 
                     job = std::move(tasks.front());

@@ -247,7 +247,7 @@ void Tools::WriteToFile(const std::string& fileName, const char *content)
 
     // Utiliza '\n' como salto de línea, independientemente del sistema operativo
     while (*content) {
-        if (*content == '\r\n') {
+        if (*content == '\n') {
             file.put('\r'); // Agrega un '\r' antes de cada '\n' para Windows
         }
         file.put(*content++);

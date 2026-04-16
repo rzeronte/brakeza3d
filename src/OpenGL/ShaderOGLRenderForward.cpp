@@ -314,7 +314,7 @@ int ShaderOGLRenderForward::getNumSpotLights() const
 
 bool ShaderOGLRenderForward::hasSpotLightsChanged() const
 {
-    if (getNumSpotLights() != lastSpotLightsSize) {
+    if (static_cast<size_t>(getNumSpotLights()) != lastSpotLightsSize) {
         return true;
     }
 

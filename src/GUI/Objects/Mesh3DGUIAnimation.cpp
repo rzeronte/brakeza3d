@@ -94,7 +94,7 @@ void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
                 ImGui::TableSetupColumn("Enabled");
                 ImGui::TableHeadersRow();
 
-                for (int i = 0; i < bc->at(a->BoneColliderIndexPointer()).boneColliderInfo.size(); i++) {
+                for (int i = 0; i < (int)bc->at(a->BoneColliderIndexPointer()).boneColliderInfo.size(); i++) {
                     auto& b = bc->at(a->BoneColliderIndexPointer()).boneColliderInfo[i];
 
                     ImGui::TableNextRow();

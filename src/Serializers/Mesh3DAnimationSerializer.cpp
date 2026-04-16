@@ -110,7 +110,7 @@ void Mesh3DAnimationSerializer::ApplyBonesColliders(Mesh3DAnimation* mesh, cJSON
             //auto position = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "position"));
             //auto size = ToolsJSON::parseVertex3DJSON(cJSON_GetObjectItemCaseSensitive(currentBoneInfoCollider, "size"));
 
-            mesh->SetMappingBoneColliderInfo(nameMapping, boneId, enabled, BoneCollisionShape::BONE_CAPSULE);
+            mesh->SetMappingBoneColliderInfo(nameMapping, boneId, enabled, static_cast<BoneCollisionShape>(shape));
         }
     }
     }

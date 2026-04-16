@@ -205,7 +205,7 @@ void TextureAtlas::AllocateMask(int xpos, int ypos, int width, int height) const
 
 TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string& name)
 {
-    for (int i = 0; i < this->texturesData.size(); i++) {
+    for (int i = 0; i < (int)this->texturesData.size(); i++) {
         if (texturesData[i].name == name) {
             return texturesData[i];
         }

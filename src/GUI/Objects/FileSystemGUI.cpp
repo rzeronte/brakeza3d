@@ -126,7 +126,7 @@ void FileSystemGUI::DrawProjectsTable(GUIType::BrowserCache &browser)
 
     std::sort(files.begin(), files.end());
 
-    for (int i = 0; i < files.size(); i++) {
+    for (int i = 0; i < (int)files.size(); i++) {
         const auto& file = files[i];
         if (strcmp(file.c_str(), ".") == 0 || strcmp(file.c_str(), "..") == 0) {
             continue;
@@ -257,7 +257,7 @@ void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
 
     std::sort(files.begin(), files.end());
 
-    for (int i = 0; i < files.size(); i++) {
+    for (int i = 0; i < (int)files.size(); i++) {
         const auto& file = files[i];
         if (strcmp(file.c_str(), ".") == 0 || strcmp(file.c_str(), "..") == 0) {
             continue;
@@ -624,7 +624,7 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
         return;
     }
 
-    for (int i = 0; i < files.size(); i++) {
+    for (int i = 0; i < (int)files.size(); i++) {
         auto file = files[i];
         auto fullPath = browser.currentFolder + file;
 
@@ -759,7 +759,7 @@ void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
         return;
     }
 
-    for (int i = 0; i < files.size(); i++) {
+    for (int i = 0; i < (int)files.size(); i++) {
         auto file = files[i];
         auto fullPath = browser.currentFolder + file;
 

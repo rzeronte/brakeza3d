@@ -85,7 +85,7 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
                 const auto& m = mesh->getMeshData()[meshIdx];
 
                 // MeshTexture: siempre la textura original del material
-                if (mesh->getModelTextures().size() > m.materialIndex && mesh->getModelTextures()[m.materialIndex]) {
+                if (mesh->getModelTextures().size() > static_cast<size_t>(m.materialIndex) && mesh->getModelTextures()[m.materialIndex]) {
                     nodeManager->UpdateMeshTextures(
                         mesh->getModelTextures()[m.materialIndex]->getOGLTextureID(),
                         mesh->getModelTextures()[m.materialIndex]->getOGLTextureID()

@@ -53,7 +53,7 @@ void Grid3D::MakeCells()
 
 void Grid3D::doTestForNonEmptyGeometry(std::vector<Triangle *> &triangles)
 {
-    for (int i = 0; i < this->boxes.size(); i++) {
+    for (int i = 0; i < (int)this->boxes.size(); i++) {
         if (!this->isEmpty(this->boxes[i], triangles)) {
             this->boxes[i].passed = true;
         } else {
@@ -67,7 +67,7 @@ bool Grid3D::isEmpty(CubeGrid3D &cube, std::vector<Triangle *> &triangles)
 {
     std::vector<Plane> planes = cube.box.getPlanes();
 
-    for (int i = 0; i < triangles.size(); i++) {
+    for (int i = 0; i < (int)triangles.size(); i++) {
         auto t = triangles[i];
         t->updateObjectSpace();
 
@@ -103,7 +103,7 @@ Vertex3D Grid3D::getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &in
 {
     float min_distance = 9999999999;
     int index = 0;
-    for (int i = 0; i < path.size(); i++) {
+    for (int i = 0; i < (int)path.size(); i++) {
         float d = ToolsMaths::distanceBetweenVertices(v, path[i]);
         if (d < min_distance) {
             min_distance = d;

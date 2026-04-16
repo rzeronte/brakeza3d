@@ -318,7 +318,7 @@ public:
         cJSON* guiIcons = cJSON_GetObjectItem(root, "gui_icons");
         if (guiIcons) {
             int arraySize = cJSON_GetArraySize(guiIcons);
-            for (int i = 0; i < arraySize && i < IconGUI::ICON_COUNT; i++) {
+            for (int i = 0; i < arraySize && i < (int)IconGUI::ICON_COUNT; i++) {
                 cJSON* iconObj = cJSON_GetArrayItem(guiIcons, i);
                 cJSON* x = cJSON_GetObjectItem(iconObj, "x");
                 cJSON* y = cJSON_GetObjectItem(iconObj, "y");
@@ -334,7 +334,7 @@ public:
         cJSON* objectIcons = cJSON_GetObjectItem(root, "object_icons");
         if (objectIcons) {
             int arraySize = cJSON_GetArraySize(objectIcons);
-            for (int i = 0; i < arraySize && i < IconObject::ICON_COUNT; i++) {
+            for (int i = 0; i < arraySize && i < (int)IconObject::ICON_COUNT; i++) {
                 cJSON* iconObj = cJSON_GetArrayItem(objectIcons, i);
                 cJSON* x = cJSON_GetObjectItem(iconObj, "x");
                 cJSON* y = cJSON_GetObjectItem(iconObj, "y");

@@ -397,7 +397,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
 
     // Calcular el ancho máximo de los labels
     float maxLabelWidth = 0.0f;
-    for (int i = 0; i < shader->dataTypes.size(); i++) {
+    for (int i = 0; i < (int)shader->dataTypes.size(); i++) {
         auto type = &shader->dataTypes[i];
         std::string label = std::to_string(i + 1) + ") " + type->name + " (" + LUADataTypesMapping[type->type].label + ")";
         float labelWidth = ImGui::CalcTextSize(label.c_str()).x;
@@ -407,7 +407,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
     // Ancho total de la parte izquierda: botón + spacing + texto + margen
     float leftSideWidth = buttonWidth + ImGui::GetStyle().ItemSpacing.x + maxLabelWidth + 30.0f;
 
-    for (int i = 0; i < shader->dataTypes.size(); i++) {
+    for (int i = 0; i < (int)shader->dataTypes.size(); i++) {
         auto type = &shader->dataTypes[i];
 
         ImGui::PushID(i);

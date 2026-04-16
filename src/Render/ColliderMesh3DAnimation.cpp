@@ -492,7 +492,7 @@ bool AssimpAnimationService::isAnimationEnds() const
 
 void AssimpAnimationService::FillAnimationBoneDataOGLBuffers(std::vector<Mesh3DData> &meshes)
 {
-    for (int i = 0; i < meshes.size(); i++) {
+    for (size_t i = 0; i < meshes.size(); i++) {
         if (meshes[i].vertices.empty()) continue;
 
         if (!glIsBuffer(meshes[i].vertexBoneDataBuffer)) {
