@@ -52,6 +52,9 @@ class Swarm : public Object3D {
     float turnFactor = 0.1f;
 
     Vertex3D size;
+
+    std::vector<std::string> pendingBoidNames;
+    std::vector<std::string> pendingPredatorNames;
 public:
     Swarm(Vertex3D position, Vertex3D size);
 
@@ -74,10 +77,13 @@ public:
     void addPredator(SwarmObject *o);
     void reset();
     void removeBoid(SwarmObject *o);
+    void removePredator(SwarmObject *o);
+    void resolvePendingMembers();
     void DrawPropertiesGUI() override;
     static void updatePosition(SwarmObject *o, float weight);
 
     friend class SwarmGUI;
+    friend class SwarmSerializer;
 };
 
 

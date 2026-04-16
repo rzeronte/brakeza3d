@@ -20,6 +20,7 @@
 #include "../../../include/Serializers/Image2DSerializer.h"
 #include "../../../include/Serializers/Image2DAnimationSerializer.h"
 #include "../../../include/Serializers/Image3DAnimationSerializer.h"
+#include "../../../include/Serializers/SwarmSerializer.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/Render/Drawable.h"
 
@@ -157,6 +158,14 @@ void GUIAddonMenu::MenuAddObject()
     ImGui::SameLine();
     if (ImGui::MenuItem("ParticleEmitter")) {
         ParticleEmmitterSerializer().MenuLoad("");
+        ImGui::EndMenu();
+    }
+
+    ImGui::SeparatorText("Swarm");
+    ImGui::Image(FileSystemGUI::Icon(IconObject::SWARM), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::MenuItem("Swarm")) {
+        SwarmSerializer().MenuLoad("");
         ImGui::EndMenu();
     }
 }

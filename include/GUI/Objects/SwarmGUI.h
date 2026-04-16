@@ -5,218 +5,215 @@
 #ifndef BRAKEZA3D_SWARMGUI_H
 #define BRAKEZA3D_SWARMGUI_H
 
-#include "../../Brakeza.h"
+#include <functional>
 #include "../../3D/Swarm.h"
-#include "../../Misc/ToolsMaths.h"
+#include "../../Brakeza.h"
 
 class SwarmGUI
 {
 public:
     static void DrawPropertiesGUI(Swarm *o)
     {
+        if (ImGui::CollapsingHeader("Swarm")) {
+            const float s = 0.01f;
+            const float fmin = 0.0f;
+            const float fmax = 100.0f;
 
-        static char name[256];
-        strncpy(name, o->name.c_str(), sizeof(name));
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(125.0f);
-        ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-        if (ImGui::IsItemEdited()) {
-            o->setName(name);
+            float vec3f[3];
+            o->size.toFloat(vec3f);
+            if (ImGui::DragFloat3("Size", vec3f, s, fmin, fmax)) {
+                o->size.x = vec3f[0];
+                o->size.y = vec3f[1];
+                o->size.z = vec3f[2];
+            }
+            ImGui::Checkbox("Debug AABB", &o->debug);
+            ImGui::Separator();
+
+            if (ImGui::TreeNode("Boids weights")) {
+                ImGui::DragFloat("Separation",  &o->separationWeight,    s, fmin, fmax);
+                ImGui::DragFloat("Alignment",   &o->alignmentWeight,     s, fmin, fmax);
+                ImGui::DragFloat("Cohesion",    &o->cohesionWeight,      s, fmin, fmax);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Movement")) {
+                ImGui::DragFloat("Neighbor dist",       &o->neighborDist,           s, fmin, fmax);
+                ImGui::DragFloat("Max speed",           &o->maxSpeed,               s, fmin, fmax);
+                ImGui::DragFloat("Velocity factor",     &o->velocityBoidsFactor,    s, fmin, fmax);
+                ImGui::DragFloat("Turn factor",         &o->turnFactor,             s, fmin, fmax);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Center attraction")) {
+                ImGui::DragFloat("Threshold",   &o->centerThreshold,        s, fmin, fmax);
+                ImGui::DragFloat("Weight",      &o->centerAttractionWeight, s, fmin, fmax);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Predators")) {
+                ImGui::DragFloat("Threshold",       &o->predatorThreshold,       s, fmin, fmax);
+                ImGui::DragFloat("Avoidance weight",&o->predatorAvoidanceWeight, s, fmin, fmax);
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Global bias")) {
+                ImGui::DragFloat("Separation",  &o->globalBiasSeparation,   s, fmin, fmax);
+                ImGui::DragFloat("Alignment",   &o->globalBiasAlignment,    s, fmin, fmax);
+                ImGui::DragFloat("Cohesion",    &o->globalBiasCohesion,     s, fmin, fmax);
+                ImGui::TreePop();
+            }
+        }
+
+        DrawMembersGUI(o);
+    }
+
+    static void DrawMembersGUI(Swarm *o)
+    {
+        if (!ImGui::CollapsingHeader("Swarm Members")) return;
+
+        auto& sceneObjects = Brakeza::get()->getSceneObjects();
+
+        auto isAlreadyMember = [&](Object3D* candidate) {
+            if (candidate == o) return true;
+            for (auto* sw : o->objects)
+                if (sw->object == candidate) return true;
+            for (auto* sw : o->predators)
+                if (sw->object == candidate) return true;
+            return false;
+        };
+
+        bool hasPending = !o->pendingBoidNames.empty() || !o->pendingPredatorNames.empty();
+        if (hasPending) {
+            ImGui::TextColored(ImVec4(1.f, 0.8f, 0.2f, 1.f), "Pending: %d boids, %d predators",
+                (int)o->pendingBoidNames.size(), (int)o->pendingPredatorNames.size());
+            ImGui::SameLine();
+        }
+        if (ImGui::Button("Load members")) {
+            o->resolvePendingMembers();
         }
         ImGui::Separator();
 
-        if (o->featuresGUI.position || o->featuresGUI.rotation || o->featuresGUI.scale) {
-            if (ImGui::CollapsingHeader("Transformations")) {
-                // position
-                if (o->featuresGUI.position) {
-                    float vec3f[3];
-                    o->getPosition().toFloat(vec3f);
-                    if (ImGui::DragFloat3("Position", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                        o->position.x = vec3f[0];
-                        o->position.y = vec3f[1];
-                        o->position.z = vec3f[2];
-                    }
-                    ImGui::Separator();
-                }
+        DrawMemberSection(o, sceneObjects, isAlreadyMember, false);
+        ImGui::Spacing();
+        DrawMemberSection(o, sceneObjects, isAlreadyMember, true);
+    }
 
-                // rotation
-                if (o->featuresGUI.rotation) {
-                    float oldPitch = o->getRotation().getPitchDegree();
-                    float oldYaw = o->getRotation().getYawDegree();
-                    float oldRoll = o->getRotation().getRollDegree();
-                    float pitch = oldPitch;
-                    float yaw = oldYaw;
-                    float roll = oldRoll;
+    static void DrawMemberSection(
+        Swarm* o,
+        const std::vector<Object3D*>& sceneObjects,
+        const std::function<bool(Object3D*)>& isAlreadyMember,
+        bool isPredator)
+    {
+        auto& list = isPredator ? o->predators : o->objects;
+        const char* sectionLabel = isPredator ? "Predators" : "Boids";
+        const char* newLabel     = isPredator ? "New predator" : "New boid";
+        const char* objPrefix    = isPredator ? "Predator"     : "Boid";
 
-                    float vec3f[3];
-                    vec3f[0] = pitch;
-                    vec3f[1] = yaw;
-                    vec3f[2] = roll;
-                    if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                        const float factor = 0.0025f;
-                        pitch = vec3f[0];
-                        yaw = vec3f[1];
-                        roll = vec3f[2];
-                        if (abs(pitch - oldPitch) > 0) {
-                            auto partialRotX = M3::arbitraryAxis(o->getRotation().X(), ToolsMaths::RadiansToDegrees(pitch - oldPitch) * factor);
-                            o->setRotation(o->getRotation() * partialRotX);
-                            M3::normalize(o->rotation);
-                        }
+        std::string header = std::string(sectionLabel) + " (" + std::to_string(list.size()) + ")";
+        if (!ImGui::TreeNode(header.c_str())) return;
 
-                        if (abs(yaw - oldYaw) > 0) {
-                            auto partialRotY = M3::arbitraryAxis(o->getRotation().Y(), ToolsMaths::RadiansToDegrees(yaw - oldYaw) * factor);
-                            o->setRotation(o->getRotation() * partialRotY);
-                            M3::normalize(o->rotation);
-                        }
-
-                        if (abs(roll - oldRoll) > 0) {
-                            auto partialRotZ = M3::arbitraryAxis(o->getRotation().Z(), ToolsMaths::RadiansToDegrees(roll - oldRoll) * factor);
-                            o->setRotation(o->getRotation() * partialRotZ);
-                            M3::normalize(o->rotation);
-                        }
-                    }
-                    ImGui::Separator();
-
-                    o->drawOffset.toFloat(vec3f);
-                    if (ImGui::DragFloat3("DrawOffset", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                        o->drawOffset.x = vec3f[0];
-                        o->drawOffset.y = vec3f[1];
-                        o->drawOffset.z = vec3f[2];
-                    }
-                    ImGui::Separator();
-                }
-                // scale
-                if (o->featuresGUI.scale) {
-                    const float range_scale_min = -360;
-                    const float range_scale_max = 360;
-                    ImGui::DragScalar("Scale", ImGuiDataType_Float, &o->scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
-                }
-            }
-        }
-        // alpha
-        if (o->featuresGUI.alpha) {
-            if (ImGui::CollapsingHeader("Alpha")) {
-                const float range_alpha_min = 0;
-                const float range_alpha_max = 1;
-
-                ImGui::DragScalar("Alpha##001", ImGuiDataType_Float, &o->getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
+        // New button
+        if (ImGui::SmallButton(newLabel)) {
+            auto* newObj = new Object3D();
+            newObj->setName(Brakeza::UniqueObjectLabel(objPrefix));
+            newObj->setPosition(o->randomVertexInsideAABB());
+            Brakeza::get()->AddObject3D(newObj, newObj->getName());
+            if (isPredator) {
+                auto* sw = new SwarmObject(newObj);
+                o->addPredator(sw);
+            } else {
+                o->createBoid(newObj);
             }
         }
 
-        if (o->featuresGUI.attached) {
-            if (ImGui::CollapsingHeader("Attached Objects")) {
-                if (o->attachedObjects.empty() <= 0) {
-                    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%s", "Not objects found");
-                }
+        ImGui::Spacing();
 
-                for (auto a: o->attachedObjects) {
-                    if (ImGui::TreeNode(a->getName().c_str())) {
-                        a->DrawPropertiesGUI();
-                        ImGui::TreePop();
-                    }
-                }
+        // Table
+        SwarmObject* toRemove = nullptr;
+        const ImGuiTableFlags tflags =
+            ImGuiTableFlags_Borders |
+            ImGuiTableFlags_RowBg   |
+            ImGuiTableFlags_SizingStretchProp;
+
+        if (!list.empty() && ImGui::BeginTable(isPredator ? "tbl_pred" : "tbl_boid", 2, tflags)) {
+            ImGui::TableSetupColumn("Name",   ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("Action", ImGuiTableColumnFlags_WidthFixed, 54.0f);
+            ImGui::TableHeadersRow();
+
+            for (auto* sw : list) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::TextUnformatted(sw->object->getName().c_str());
+                ImGui::TableSetColumnIndex(1);
+                std::string rid = "Remove##" + std::string(isPredator ? "p" : "b") + sw->object->getName();
+                if (ImGui::SmallButton(rid.c_str()))
+                    toRemove = sw;
             }
+            ImGui::EndTable();
+        } else if (list.empty()) {
+            ImGui::TextDisabled("(empty)");
         }
 
-        if (o->featuresGUI.attached) {
-            if (ImGui::CollapsingHeader("Collider")) {
-                if (ImGui::Checkbox("Enable collider", &o->collisionsEnabled)) {
-                    if (!o->collisionsEnabled) {
-                        o->RemoveCollisionObject();
-                    } else {
-                        o->SetupGhostCollider(SIMPLE_SHAPE);
-                    }
-                }
+        if (toRemove) {
+            if (isPredator) o->removePredator(toRemove);
+            else            o->removeBoid(toRemove);
+        }
 
-                if (o->collisionsEnabled) {
-                    if (ImGui::Button(std::string("Update Collider").c_str())) {
-                        o->UpdateShapeCollider();
-                    }
-                    ImGui::Separator();
+        // Assign from scene
+        ImGui::Spacing();
+        ImGui::TextDisabled("Assign from scene:");
+        DrawAddMemberCombo(o, sceneObjects, isAlreadyMember, isPredator);
 
-                    o->drawImGuiCollisionModeSelector();
-                    if (o->getCollisionMode() != KINEMATIC) {
-                        o->DrawImGuiCollisionShapeSelector();
-                    }
+        ImGui::TreePop();
+    }
 
-                    if (ImGui::TreeNode("Collider settings")) {
-                        if (o->getCollisionMode() == CollisionMode::BODY) {
-                            ImGui::Separator();
-                            ImGui::Checkbox("Collider static", &o->colliderStatic);
-                            ImGui::Separator();
-                            ImGui::DragFloat("CCD Motion Treshold", &o->ccdMotionThreshold, 0.001f, 0.0f, 5.0f);
-                            ImGui::Separator();
-                            ImGui::DragFloat("CCD Swept Sphere Radius", &o->ccdSweptSphereRadius, 0.001f, 0.0f, 5.0f);
-                        }
+    static void DrawAddMemberCombo(
+        Swarm* o,
+        const std::vector<Object3D*>& sceneObjects,
+        const std::function<bool(Object3D*)>& isAlreadyMember,
+        bool asPredator)
+    {
+        std::vector<Object3D*> candidates;
+        for (auto* obj : sceneObjects) {
+            if (!obj->isRemoved() && !isAlreadyMember(obj))
+                candidates.push_back(obj);
+        }
 
-                        if (o->getCollisionShape() == SIMPLE_SHAPE) {
-                            ImGui::Separator();
-                            float vec3f[3];
-                            o->simpleShapeSize.toFloat(vec3f);
-                            if (ImGui::DragFloat3("Shape Size", vec3f, 0.01f, -1000.0f, 1000.0f)) {
-                                o->simpleShapeSize.x = vec3f[0];
-                                o->simpleShapeSize.y = vec3f[1];
-                                o->simpleShapeSize.z = vec3f[2];
-                            }
-                        }
+        static int selectedBoid = 0;
+        static int selectedPred = 0;
+        int& selected = asPredator ? selectedPred : selectedBoid;
 
-                        if (o->getCollisionMode() == KINEMATIC || o->getCollisionShape() == CAPSULE_SHAPE) {
-                            ImGui::Separator();
-                            const float range_min = 0;
-                            const float range_max = 1000;
+        if (candidates.empty()) {
+            ImGui::TextDisabled("(no free scene objects)");
+            return;
+        }
 
-                            ImGui::DragScalar("Capsule radius", ImGuiDataType_Float, &o->kinematicCapsuleSize.x, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                            ImGui::DragScalar("Capsule height", ImGuiDataType_Float, &o->kinematicCapsuleSize.y, 0.1 ,&range_min, &range_max, "%f", 1.0f);
-                        }
-                        ImGui::Separator();
+        if (selected >= (int)candidates.size()) selected = 0;
 
-                        if (o->getCollisionMode() == BODY) {
-                            if (!o->colliderStatic) {
-                                ImGui::DragFloat("Mass", &o->mass, 0.1f, 0.0f, 5000.0f);
-                                ImGui::Separator();
-                            }
+        const char* comboId = asPredator ? "##predcombo" : "##boidcombo";
+        const char* btnId   = asPredator ? "Assign##pred" : "Assign##boid";
 
-                            if (o->getCollisionMode() == GHOST || o->getCollisionMode() == BODY) {
-                                float vec3f[3];
-                                o->angularFactor.toFloat(vec3f);
-                                if (ImGui::DragFloat3("Angular factor", vec3f, 0.01f, 0.0f, 1.0f)) {
-                                    o->angularFactor.x = vec3f[0];
-                                    o->angularFactor.y = vec3f[1];
-                                    o->angularFactor.z = vec3f[2];
-                                }
-                                ImGui::Separator();
-                                o->linearFactor.toFloat(vec3f);
-                                if (ImGui::DragFloat3("Linear Factor", vec3f, 0.01f, 0.0f, 1.0f)) {
-                                    o->linearFactor.x = vec3f[0];
-                                    o->linearFactor.y = vec3f[1];
-                                    o->linearFactor.z = vec3f[2];
-                                }
-                                ImGui::Separator();
-                                ImGui::DragFloat("Margin", &o->shapeMargin, 0.01f, 0.0f, 1.0f);
-                                ImGui::Separator();
-                                ImGui::DragFloat("Friction", &o->friction, 0.01f, 0.0f, 1.0f);
-                                ImGui::Separator();
-                                ImGui::DragFloat("Linear Damping", &o->linearDamping, 0.01f, 0.0f, 1.0f);
-                                ImGui::DragFloat("Angular Damping", &o->angularDamping, 0.01f, 0.0f, 1.0f);
-                                ImGui::Separator();
-                                ImGui::DragFloat("Restitution", &o->restitution, 0.01f, 0.0f, 1.0f);
-                            }
-                        }
-                        ImGui::TreePop();
-                    }
+        float availW   = ImGui::GetContentRegionAvail().x;
+        float btnW     = ImGui::CalcTextSize("Assign").x + ImGui::GetStyle().FramePadding.x * 2.0f + 8.0f;
+        float comboW   = availW - btnW - ImGui::GetStyle().ItemSpacing.x;
 
-                    ColliderGUI::DrawColliderWorldVariables(o);
-                }
+        ImGui::SetNextItemWidth(comboW);
+        if (ImGui::BeginCombo(comboId, candidates[selected]->getName().c_str())) {
+            for (int i = 0; i < (int)candidates.size(); i++) {
+                bool isSel = (selected == i);
+                if (ImGui::Selectable(candidates[i]->getName().c_str(), isSel))
+                    selected = i;
+                if (isSel) ImGui::SetItemDefaultFocus();
             }
-            // alpha
-            if (o->featuresGUI.misc) {
-                if (ImGui::CollapsingHeader("Misc")) {
-                    ImGui::Text( " %s: (%f, %f, %f)", "Picking Color", o->pickingColor.r, o->pickingColor.g, o->pickingColor.b);
-                    ImGui::Text( " %s: %d", "ID", o->id);
-                    ImGui::Text( " %s: %d", "BelongToScene", o->belongToScene ? 1 : 0);
-                    ImGui::Text( " %s: %f", "Distance to camera", o->distanceToCamera);
-                }
-            }
+            ImGui::EndCombo();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button(btnId)) {
+            auto* sw = new SwarmObject(candidates[selected]);
+            sw->velocity = Vertex3D::randomVertex().getNormalize();
+            if (asPredator) o->predators.emplace_back(sw);
+            else            o->objects.emplace_back(sw);
+            selected = 0;
         }
     }
 

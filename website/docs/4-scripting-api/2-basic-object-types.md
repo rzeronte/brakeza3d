@@ -102,6 +102,7 @@ Multiple scripts can be attached to a single object, and objects can also be con
 | `ParticleEmitter`  | Particle emitter                              |
 | `LightPoint`       | Point light                                   |
 | `LightSpot`        | Spotlight                                     |
+| `Swarm`            | Flocking simulation (boids + predators)       |
 
 Some of these objects will be detailed later in the documentation.
 

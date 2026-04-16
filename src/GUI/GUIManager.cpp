@@ -160,7 +160,8 @@ void GUIManager::RegisterAllowedItemsForViewer()
         { "Image 3D animation 360",  ObjectType::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, true },
         { "Light Point",             ObjectType::LightPoint,           IconObject::LIGHT_POINT, true },
         { "Light Spot",              ObjectType::LightSpot,            IconObject::LIGHT_SPOT, true },
-        { "Particle Emitter",        ObjectType::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true }
+        { "Particle Emitter",        ObjectType::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true },
+        { "Swarm",                   ObjectType::Swarm,                IconObject::SWARM, true }
     };
 }
 

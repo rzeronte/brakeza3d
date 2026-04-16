@@ -24,6 +24,7 @@
 #include "../../include/Serializers/Image2DSerializer.h"
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
+#include "../../include/Serializers/SwarmSerializer.h"
 #include "../../include/Threads/ThreadJobCleanScene.h"
 #include "../../include/Threads/ThreadJobClearScene.h"
 #include "../../include/Threads/ThreadJobReadFileScene.h"
@@ -199,6 +200,7 @@ void SceneLoader::InitSerializers()
     registry.registerSerializer(ObjectType::LightSpot, std::make_unique<LightSpotSerializer>());
     registry.registerSerializer(ObjectType::ParticleEmitter, std::make_unique<ParticleEmmitterSerializer>());
     registry.registerSerializer(ObjectType::Image2DAnimation, std::make_unique<Image2DAnimationSerializer>());
+    registry.registerSerializer(ObjectType::Swarm, std::make_unique<SwarmSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)
