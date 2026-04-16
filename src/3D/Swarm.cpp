@@ -3,6 +3,7 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/SwarmGUI.h"
+#include "../../include/Misc/Logging.h"
 
 SwarmObject::SwarmObject()
 :
@@ -40,6 +41,40 @@ void Swarm::onUpdate()
 
     updateBounds();
     updateBoids();
+}
+
+void Swarm::resolvePendingMembers()
+{
+    auto& sceneObjects = Brakeza::get()->getSceneObjects();
+
+    auto resolve = [&](std::vector<std::string>& pending, bool isPredator) {
+        std::vector<std::string> unresolved;
+        for (const auto& name : pending) {
+            bool found = false;
+            for (auto* obj : sceneObjects) {
+                if (obj->getName() == name) {
+                    if (isPredator) {
+                        auto* sw = new SwarmObject(obj);
+                        sw->velocity = Vertex3D::randomVertex().getNormalize();
+                        addPredator(sw);
+                    } else {
+                        createBoid(obj);
+                    }
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) unresolved.push_back(name);
+        }
+        pending = unresolved;
+        if (!unresolved.empty()) {
+            LOG_MESSAGE("[Swarm] resolvePendingMembers: %d %s not found yet",
+                (int)unresolved.size(), isPredator ? "predators" : "boids");
+        }
+    };
+
+    resolve(pendingBoidNames, false);
+    resolve(pendingPredatorNames, true);
 }
 
 void Swarm::separation(SwarmObject* swarmObject, std::vector<SwarmObject*> &objects, float weight) const
@@ -216,6 +251,11 @@ void Swarm::reset()
 void Swarm::removeBoid(SwarmObject *o)
 {
     objects.erase(std::remove(objects.begin(), objects.end(), o), objects.end());
+}
+
+void Swarm::removePredator(SwarmObject *o)
+{
+    predators.erase(std::remove(predators.begin(), predators.end(), o), predators.end());
 }
 
 ObjectType Swarm::getTypeObject() const

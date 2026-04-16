@@ -12,6 +12,7 @@
 #include "../Misc/Tools.h"
 #include "../Misc/FilePaths.h"
 #include "../Loaders/SceneLoader.h"
+#include "ThreadJobResolveSwarms.h"
 
 class ThreadJobReadFileScene : public ThreadJobBase
 {
@@ -62,6 +63,7 @@ public:
         Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobReadSceneScript>(json));
 
         Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json));
+        Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobResolveSwarms>());
         auto defaultPathScene = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE;
         Components::get()->Scripting()->setCurrentScene(filename == defaultPathScene ? nullptr : new Scene(filename));
 

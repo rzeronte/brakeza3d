@@ -224,6 +224,7 @@ add_executable(Brakeza3D
         src/Serializers/Mesh3DSerializer.cpp include/Serializers/Mesh3DSerializer.h
         src/Serializers/Object3DSerializer.cpp include/Serializers/Object3DSerializer.h
         src/Serializers/ParticleEmmitterSerializer.cpp include/Serializers/ParticleEmmitterSerializer.h
+        src/Serializers/SwarmSerializer.cpp include/Serializers/SwarmSerializer.h
         include/Render/JSONSerializer.h
 
         # Physics
@@ -273,6 +274,8 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobLoadLightPoint.h
         include/Threads/ThreadJobLoadLightSpot.h
         include/Threads/ThreadJobLoadParticleEmitter.h
+        include/Threads/ThreadJobLoadSwarm.h
+        include/Threads/ThreadJobResolveSwarms.h
         include/Threads/ThreadJobLoadImage2D.h
         include/Threads/ThreadJobLoadImage3DAnimation360.h
         include/Threads/ThreadJobLoadImage2DAnimation.h
