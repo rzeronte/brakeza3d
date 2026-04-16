@@ -1,0 +1,299 @@
+{
+	"screenshot": "",
+	"ads": {
+		"direction": {"x": 0.5, "y": -0.8, "z": -0.3},
+		"diffuse":   {"x": 0.5, "y": 0.5,  "z": 0.5},
+		"specular":  {"x": 0.6, "y": 0.6,  "z": 0.6},
+		"ambient":   {"x": 0.3, "y": 0.3,  "z": 0.3}
+	},
+	"objects": [
+		{
+			"name": "Boid_1", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  1.2, "y": 5.4, "z":  0.8},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_2", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -2.1, "y": 7.2, "z":  1.5},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_3", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  3.5, "y": 3.1, "z": -2.0},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_4", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -1.8, "y": 8.6, "z": -3.2},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_5", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  4.1, "y": 2.3, "z":  2.7},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_6", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -3.9, "y": 6.8, "z":  1.1},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_7", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  2.7, "y": 9.1, "z": -1.4},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_8", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.5, "y": 4.2, "z":  4.3},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_9", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  1.9, "y": 7.8, "z": -4.1},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_10", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -4.2, "y": 3.5, "z":  0.6},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_11", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  3.3, "y": 5.9, "z":  3.8},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_12", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -2.6, "y": 2.1, "z": -2.9},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_13", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.8, "y": 8.4, "z":  2.2},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_14", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -3.1, "y": 6.3, "z": -1.7},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_15", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  4.7, "y": 4.7, "z": -3.5},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_16", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.3, "y": 5.1, "z":  0.2},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_17", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.4, "y": 4.8, "z": -0.3},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_18", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.1, "y": 5.4, "z":  0.4},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_19", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.2, "y": 5.3, "z": -0.1},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_20", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.4, "y": 4.9, "z": -0.4},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_21", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.3, "y": 5.2, "z":  0.3},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_22", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.2, "y": 5.0, "z": -0.2},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_23", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.1, "y": 4.7, "z":  0.4},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_24", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.4, "y": 5.3, "z": -0.3},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_25", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.4, "y": 5.1, "z":  0.1},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_26", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.1, "y": 4.6, "z": -0.4},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_27", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.3, "y": 5.4, "z":  0.2},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_28", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.3, "y": 4.8, "z":  0.3},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_29", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x": -0.2, "y": 5.2, "z": -0.3},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Boid_30", "scale": 0.5, "alpha": 1, "enabled": true,
+			"position": {"x":  0.0, "y": 5.0, "z":  0.0},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "Predator_1", "scale": 0.8, "alpha": 1, "enabled": true,
+			"position": {"x": 6, "y": 5, "z": 0},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": true, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"model": "../assets/models/RoundedRedCube.fbx", "enableLights": true, "shaders": [], "type": 2
+		},
+		{
+			"name": "SwarmDemo",
+			"scale": 1, "alpha": 1, "enabled": true,
+			"position": {"x": 0, "y": 5, "z": 0},
+			"rotation": {"x": 0, "y": 0, "z": 0},
+			"renderSettings": {"blend": true, "culling": true, "depthTest": true, "writeDepth": true, "shadowMap": false, "blend_function_src": 771, "blend_function_dst": 771},
+			"isCollisionsEnabled": false, "scripts": [],
+			"size": {"x": 10, "y": 10, "z": 10},
+			"debug": false,
+			"separationWeight":       1.2,
+			"alignmentWeight":        0.9,
+			"cohesionWeight":         0.7,
+			"neighborDist":           2.0,
+			"maxSpeed":               0.8,
+			"velocityBoidsFactor":    5,
+			"turnFactor":             0.15,
+			"centerThreshold":        1,
+			"centerAttractionWeight": 0.5,
+			"predatorThreshold":      5,
+			"predatorAvoidanceWeight":50,
+			"globalBiasSeparation":   1,
+			"globalBiasAlignment":    1,
+			"globalBiasCohesion":     1,
+			"boids": [
+				"Boid_1","Boid_2","Boid_3","Boid_4","Boid_5",
+				"Boid_6","Boid_7","Boid_8","Boid_9","Boid_10",
+				"Boid_11","Boid_12","Boid_13","Boid_14","Boid_15",
+				"Boid_16","Boid_17","Boid_18","Boid_19","Boid_20",
+				"Boid_21","Boid_22","Boid_23","Boid_24","Boid_25",
+				"Boid_26","Boid_27","Boid_28","Boid_29","Boid_30"
+			],
+			"predators": ["Predator_1"],
+			"type": 12
+		}
+	],
+	"shaders": [],
+	"scripts": [],
+	"camera": {
+		"position": {"x": 0, "y": 8, "z": 28},
+		"rotation": {"x": 5, "y": 0, "z": 0}
+	}
+}
