@@ -555,7 +555,7 @@ void Mesh3D::LoadShader(const FilePath::ShaderConfigFile &jsonFilename)
 
 void Mesh3D::RemoveShader(int index)
 {
-    if (index >= 0 && index < customShaders.size()) {
+    if (index >= 0 && index < (int)customShaders.size()) {
         customShaders.erase(customShaders.begin() + index);
     }
 }

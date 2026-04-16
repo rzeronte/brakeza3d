@@ -118,7 +118,7 @@ void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
     auto comboId = std::string("Type##") + "_" + file.getShader()->getLabel();
     ImGui::Combo(comboId.c_str(), &selectedItem, labelsCStr.data(), (int) labelsCStr.size());
     GUI::ImageButtonNormal(IconGUI::SHADER_CREATE_VARIABLE, "Create uniform", [&] {
-        if (localVarName[0] != '\0' && selectedItem < glslTypes.size()) {
+        if (localVarName[0] != '\0' && selectedItem < (int)glslTypes.size()) {
             file.getShader()->AddDataTypeEmpty(localVarName, glslTypes[selectedItem].c_str());
             localVarName[0] = '\0';
         }
@@ -158,7 +158,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 
     // Calcular el ancho máximo de los labels (solo los que tienen controles)
     float maxLabelWidth = 0.0f;
-    for (int i = 0; i < file.getShader()->dataTypes.size(); i++) {
+    for (int i = 0; i < (int)file.getShader()->dataTypes.size(); i++) {
         auto type = &file.getShader()->dataTypes[i];
 
         // Verificar si el tipo es interno
@@ -182,7 +182,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
     // Ancho total de la parte izquierda: botón + spacing + texto + margen
     float leftSideWidth = buttonWidth + ImGui::GetStyle().ItemSpacing.x + maxLabelWidth + 30.0f;
 
-    for (int i = 0; i < file.getShader()->dataTypes.size(); i++) {
+    for (int i = 0; i < (int)file.getShader()->dataTypes.size(); i++) {
         auto type = &file.getShader()->dataTypes[i];
 
         ImGui::PushID(i);

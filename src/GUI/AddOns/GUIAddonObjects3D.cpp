@@ -97,7 +97,7 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
     bool wasSelected = isSelected;
 
     // Dibujar
-    bool isOpen = CustomImGui::CustomTreeNode(config, &isSelected);
+    CustomImGui::CustomTreeNode(config, &isSelected);
 
     // Detectar cambio
     if (isSelected && !wasSelected) {

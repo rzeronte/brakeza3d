@@ -58,8 +58,8 @@ struct CustomTreeNodeConfig {
 
 static std::unordered_map<ImGuiID, bool> g_TreeNodeStates;
 
-inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = nullptr) {
-    ImGuiContext& g = *GImGui;
+inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = nullptr)
+{
     ImGuiWindow* window = ImGui::GetCurrentWindow();
     if (window->SkipItems)
         return false;

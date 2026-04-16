@@ -602,7 +602,7 @@ Mesh3DAnimation::~Mesh3DAnimation()
 
 void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
 {
-    for (int i = 0; i < meshes.size(); i++) {
+    for (int i = 0; i < (int)meshes.size(); i++) {
         if (meshes[i].vertices.empty()) continue;
 
         if (!glIsBuffer(meshes[i].vertexBoneDataBuffer)) {
@@ -690,7 +690,7 @@ void Mesh3DAnimation::createBonesMappingColliders(const std::string &name)
     bmc.nameMapping = name;
     bmc.boneColliderInfo.resize(this->numBones);
 
-    for (int i = 0; i < boneInfo.size(); i++) {
+    for (int i = 0; i < (int)boneInfo.size(); i++) {
         auto ci = bmc.boneColliderInfo[i];
         bmc.boneColliderInfo[i].ghostObject = nullptr;
         bmc.boneColliderInfo[i].shape = BONE_SPHERE;
@@ -835,7 +835,7 @@ void Mesh3DAnimation::UpdateBoneColliders()
 
 BonesMappingColliders *Mesh3DAnimation::getBonesMappingByName(const std::string& name, int &index)
 {
-    for (int i = 0; i < boneMappingColliders.size(); i++) {
+    for (int i = 0; i < (int)boneMappingColliders.size(); i++) {
         if (boneMappingColliders[i].nameMapping == name) {
             index = i;
             return &boneMappingColliders[i];
@@ -876,7 +876,7 @@ void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)
 
     if (boneMappingColliders.empty()) {
         boneColliderIndex = -1;
-    } else if (boneColliderIndex >= boneMappingColliders.size()) {
+    } else if (boneColliderIndex >= (int)boneMappingColliders.size()) {
         boneColliderIndex = static_cast<int>(boneMappingColliders.size()) - 1; // Ajustar al último elemento válido
     }
 }

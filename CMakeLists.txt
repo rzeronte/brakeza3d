@@ -347,6 +347,16 @@ add_executable(Brakeza3D
         include/GUI/Objects/ColliderGUI.cpp
 )
 
+# Suppress warnings in third-party sources
+set_source_files_properties(
+    imgui/ImGuiColorTextEdit/TextEditor.cpp
+    include/GUI/imgui-node-editor-master/imgui_node_editor.cpp
+    include/GUI/imgui-node-editor-master/imgui_node_editor_api.cpp
+    include/GUI/imgui-node-editor-master/imgui_canvas.cpp
+    include/GUI/imgui-node-editor-master/crude_json.cpp
+    PROPERTIES COMPILE_OPTIONS "-w"
+)
+
 target_include_directories(Brakeza3D PRIVATE
         ${SDL2_INCLUDE_DIRS}
         ${BULLET_INCLUDE_DIRS}
@@ -359,7 +369,7 @@ target_include_directories(Brakeza3D PRIVATE
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(Brakeza3D PRIVATE -O0 -Wall -g)
+    target_compile_options(Brakeza3D PRIVATE -O0 -Wall -g -Wa,-mbig-obj)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_options(Brakeza3D PRIVATE -O3 -w)
 endif()

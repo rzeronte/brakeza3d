@@ -659,7 +659,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
     auto render = Components::get()->Render();
     auto shaders = render->getSceneShaders();
 
-    for (int i = 0; i < shaders.size(); i++) {
+    for (int i = 0; i < (int)shaders.size(); i++) {
         auto currentShader = shaders[i];
         ImGui::PushID(i);
 

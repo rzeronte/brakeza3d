@@ -103,7 +103,7 @@ void PostProcessingManager::cleanup()
 
 ShaderBaseCustom* PostProcessingManager::getShader(int index) const
 {
-    if (index >= 0 && index < postProcessingShaders.size()) {
+    if (index >= 0 && index < (int)postProcessingShaders.size()) {
         return postProcessingShaders[index];
     }
     return nullptr;
@@ -150,7 +150,7 @@ void PostProcessingManager::processChain(GLuint inputTexture, GLuint outputFBO)
         GLuint currentOutputFBO;
         GLuint currentOutputTexture;
 
-        bool isLastEnabled = (i == lastEnabledIndex);
+        bool isLastEnabled = (i == (size_t)lastEnabledIndex);
 
         if (isLastEnabled) {
             // Último shader habilitado: escribir al FBO de salida final

@@ -604,14 +604,14 @@ void Profiler::DrawFlameGraph()
 void Profiler::UpdateHistory(Measure &measure)
 {
     measure.frameTimeHistory.push_back(measure.diffTime * 1000.0f);  // En ms
-    if (measure.frameTimeHistory.size() > measure.MAX_HISTORY) {
+    if ((int)measure.frameTimeHistory.size() > measure.MAX_HISTORY) {
         measure.frameTimeHistory.erase(measure.frameTimeHistory.begin());
     }
 }
 
 void Profiler::DrawComponentsHierarchy()
 {
-    ImGui::Text("Measures amount: %d", componentMeasures.size());
+    ImGui::Text("Measures amount: %d", (int)componentMeasures.size());
     ImGui::Separator();
     ImGui::Text("Total: %.3f ms", measureFrameTime.diffTime * 1000.0f);
 

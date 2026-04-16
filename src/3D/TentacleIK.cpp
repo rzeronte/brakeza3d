@@ -143,27 +143,26 @@ void TentacleIK::setTarget(Object3D *o)
 
 void TentacleIK::draw()
 {
-    auto camera = Components::get()->Camera()->getCamera();
+    std::vector<Vector3D> lines;
 
-    int cont = 0;
     for (auto & joint : joints) {
         if (!joint->active) continue;
 
         Point2D startScreenPoint = Transforms::WorldToPoint(joint->startWorld);
         Point2D endScreenPoint = Transforms::WorldToPoint(joint->endWorld);
 
-        const float intensity = joint->intensity * Config::get()->TESTING_INT1;
+        //const float intensity = joint->intensity * Config::get()->TESTING_INT1;
+        auto v1 = Vertex3D(startScreenPoint.x, startScreenPoint.y, 1);
+        auto v2 =Vertex3D(endScreenPoint.x, endScreenPoint.y, 1);
 
-        /*shaderLasers->addLaser(
-            startScreenPoint.x, startScreenPoint.y,
-            endScreenPoint.x, endScreenPoint.y,
-            PaletteColors::getStamina(),
-            intensity,
-            false,
-            false
-        );*/
-        cont++;
+        lines.emplace_back(v1, v2);
     }
+
+    Components::get()->Render()->getShaders()->shaderOGLLine3D->renderLines(
+        lines,
+        Components::get()->Window()->getUIFramebuffer(),
+        Color::fuchsia()
+    );
 }
 
 void TentacleIK::hide()
@@ -213,7 +212,7 @@ void TentacleIK::applySinusoidalMovement(float amplitude, float frequency, float
 
     float waveLength = 2 * M_PI / (joints.size() - 1);
 
-    for (int i = 1; i < joints.size(); i++) {
+    for (int i = 1; i < (int)joints.size(); i++) {
         float phase = accumulatedPhase + i * waveLength + frequency;
 
         float displacementY = amplitude * std::cos(phase) * 0.005f;

@@ -345,7 +345,7 @@ void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
     );
     ImGui::EndChild();
 
-    bool isDocked = ImGui::IsWindowDocked();
+    //bool isDocked = ImGui::IsWindowDocked();
 
     ImGui::Separator();
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, ImGui::GetStyle().ItemSpacing.y));

@@ -416,7 +416,7 @@ void ComponentRender::PostProcessingShadersChain()
 
 void ComponentRender::RemoveSceneShaderByIndex(int index) {
 
-    if (index >= 0 && index < sceneShaders.size()) {
+    if (index >= 0 && static_cast<size_t>(index) < sceneShaders.size()) {
         sceneShaders.erase(sceneShaders.begin() + index);
     }
 }

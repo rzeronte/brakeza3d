@@ -87,11 +87,11 @@ void Image::DrawFlat(int x, int y, int w, int h, GLuint fbo) const
     int windowWidth = window->getWidth();
     int windowHeight = window->getHeight();
 
-    SDL_Rect srcRect;
+    /*SDL_Rect srcRect;
     srcRect.x = 0;
     srcRect.y = 0;
     srcRect.w = surface->w;
-    srcRect.h = surface->h;
+    srcRect.h = surface->h;*/
 
     SDL_Rect dstRect;
     dstRect.x = x * windowWidth / Config::get()->screenWidth;
@@ -119,11 +119,11 @@ void Image::DrawFlat(int pos_x, int pos_y, GLuint fbo) const
     int windowWidth = window->getWidth();
     int windowHeight = window->getHeight();
 
-    SDL_Rect srcRect;
+    /*SDL_Rect srcRect;
     srcRect.x = 0;
     srcRect.y = 0;
     srcRect.w = surface->w;
-    srcRect.h = surface->h;
+    srcRect.h = surface->h;*/
 
     SDL_Rect dstRect;
     dstRect.x = pos_x * windowWidth / Config::get()->screenWidth;

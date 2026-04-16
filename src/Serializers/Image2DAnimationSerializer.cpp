@@ -60,7 +60,7 @@ void Image2DAnimationSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 {
     LOG_MESSAGE("[Image2DAnimationSerializer] ApplyJsonToObject: %d", (int) o->getTypeObject());
 
-    auto image = dynamic_cast<Image2DAnimation*>(o);
+    //auto image = dynamic_cast<Image2DAnimation*>(o);
 
     Object3DSerializer().ApplyJsonToObject(json, o);
 }
