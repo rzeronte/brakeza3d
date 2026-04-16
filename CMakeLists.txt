@@ -102,6 +102,7 @@ add_executable(Brakeza3D
         src/Components/ComponentCollisions.cpp include/Components/ComponentCollisions.h
         src/Components/ComponentInput.cpp include/Components/ComponentInput.h
         src/Components/ComponentRender.cpp include/Components/ComponentRender.h
+        src/Render/SelectionManager.cpp include/Render/SelectionManager.h
         src/Components/ComponentScripting.cpp include/Components/ComponentScripting.h
         src/Components/Components.cpp include/Components/Components.h
         src/Components/ComponentSound.cpp include/Components/ComponentSound.h

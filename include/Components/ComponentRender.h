@@ -9,6 +9,7 @@
 #include "Component.h"
 #include "../Render/Triangle3D.h"
 #include "../Render/TextWriter.h"
+#include "../Render/SelectionManager.h"
 #include "../Loaders/ProjectLoader.h"
 #include "../Loaders/SceneLoader.h"
 #include "../OpenGL/ShaderOGLImage.h"
@@ -64,14 +65,7 @@ class ComponentRender : public Component
     GLuint lastFrameBufferUsed = 0;
     GLuint lastProgramUsed = 0;
 
-    std::vector<Object3D*> selectedObjects;
-
-    // Rectangle-drag selection state
-    bool isRectSelecting = false;
-    int rectSelectStartX   = 0;
-    int rectSelectStartY   = 0;
-    int rectSelectCurrentX = 0;  // updated from SDL events — no ImGui dependency
-    int rectSelectCurrentY = 0;
+    SelectionManager selection;
 
     TextWriter *textWriter = nullptr;
     SceneLoader sceneLoader;
@@ -100,13 +94,12 @@ public:
     void onEnd() override;
     void RegisterShaders();
     void onSDLPollEvent(SDL_Event *event, bool &finish) override;
-    void setSelectedObject(Object3D *o);
-    void addToSelection(Object3D *o);
-    void removeFromSelection(const Object3D *o);
-    void clearSelection();
-    void DrawSelectionRect() const;
+    void setSelectedObject(Object3D *o)                 { selection.setSelectedObject(o); }
+    void addToSelection(Object3D *o)                    { selection.addToSelection(o); }
+    void removeFromSelection(const Object3D *o)         { selection.removeFromSelection(o); }
+    void clearSelection()                               { selection.clearSelection(); }
+    void DrawSelectionRect() const                      { selection.DrawSelectionRect(shaders.shaderOGLLine); }
     void UpdateFPS();
-    void UpdateSelectedObject3D(SDL_Event *event);
     void LoadShaderIntoScene(const std::string &name);
     void AddShaderToScene(ShaderBaseCustom *shader);
     void RemoveSceneShaderByIndex(int index);
@@ -141,10 +134,11 @@ public:
     [[nodiscard]] ShaderOGLRenderDeferred *getShaderOGLRenderDeferred() const                     { return shaders.shaderOGLGBuffer; }
     [[nodiscard]] ShaderOGLLightPass *getShaderOGLLightPass() const                               { return shaders.shaderOGLLightPass; }
     [[nodiscard]] GLuint getLastFrameBufferUsed() const                                           { return lastFrameBufferUsed; }
-    [[nodiscard]] Object3D* getSelectedObject() const                                             { return selectedObjects.size() == 1 ? selectedObjects[0] : nullptr; }
-    [[nodiscard]] const std::vector<Object3D*>& getSelectedObjects() const                        { return selectedObjects; }
-    [[nodiscard]] bool isObjectInSelection(const Object3D *o) const;
-    [[nodiscard]] bool hasMultipleSelected() const                                                { return selectedObjects.size() > 1; }
+    [[nodiscard]] Object3D* getSelectedObject() const                                             { return selection.getSelectedObject(); }
+    [[nodiscard]] const std::vector<Object3D*>& getSelectedObjects() const                        { return selection.getSelectedObjects(); }
+    [[nodiscard]] bool isObjectInSelection(const Object3D *o) const                               { return selection.isObjectInSelection(o); }
+    [[nodiscard]] bool hasMultipleSelected() const                                                { return selection.hasMultipleSelected(); }
+    [[nodiscard]] SelectionManager& getSelectionManager()                                         { return selection; }
     [[nodiscard]] GLuint getLastProgramUsed() const                                               { return lastProgramUsed; }
     [[nodiscard]] const std::map<std::string, ShaderCustomType> &getShaderTypesMapping() const    { return ShaderTypesMapping; }
     [[nodiscard]] ShaderBaseCustom *getSceneShaderByLabel(const std::string& name) const;

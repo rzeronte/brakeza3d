@@ -94,11 +94,8 @@ void PostProcessingManager::resize(int width, int height)
 
 void PostProcessingManager::cleanup()
 {
-    // Limpiar framebuffers
     deleteFramebuffer(pingFBO, pingTexture);
     deleteFramebuffer(pongFBO, pongTexture);
-
-    postProcessingShaders.clear();
 }
 
 ShaderBaseCustom* PostProcessingManager::getShader(int index) const

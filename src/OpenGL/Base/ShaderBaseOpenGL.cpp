@@ -166,6 +166,23 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     glDeleteShader(FragmentShaderID);
 
     this->programID = ProgramID;
+    uniformLocationCache.clear();
+}
+
+GLint ShaderBaseOpenGL::getUniformLocation(const std::string &name) const
+{
+    auto it = uniformLocationCache.find(name);
+    if (it != uniformLocationCache.end()) {
+        return it->second;
+    }
+    GLint loc = glGetUniformLocation(programID, name.c_str());
+#ifdef DEBUG
+    if (loc == -1) {
+        LOG_ERROR("[ShaderBaseOpenGL] Uniform '%s' not found in shader program %d (%s)", name.c_str(), programID, vertexFilename.c_str());
+    }
+#endif
+    uniformLocationCache[name] = loc;
+    return loc;
 }
 
 GLuint ShaderBaseOpenGL::getProgramID() const
@@ -175,7 +192,7 @@ GLuint ShaderBaseOpenGL::getProgramID() const
 
 void ShaderBaseOpenGL::setBool(const std::string &name, bool value) const
 {
-    glUniform1i(glGetUniformLocation(programID, name.c_str()), static_cast<int>(value));
+    glUniform1i(getUniformLocation(name), static_cast<int>(value));
 }
 void ShaderBaseOpenGL::setBoolUniform(GLuint uniform, bool value)
 {
@@ -184,7 +201,7 @@ void ShaderBaseOpenGL::setBoolUniform(GLuint uniform, bool value)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setInt(const std::string &name, int value) const
 {
-    glUniform1i(glGetUniformLocation(programID, name.c_str()), value);
+    glUniform1i(getUniformLocation(name), value);
 }
 void ShaderBaseOpenGL::setIntUniform(GLuint uniform, int value)
 {
@@ -193,7 +210,7 @@ void ShaderBaseOpenGL::setIntUniform(GLuint uniform, int value)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setFloat(const std::string &name, float value) const
 {
-    glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
+    glUniform1f(getUniformLocation(name), value);
 }
 void ShaderBaseOpenGL::setFloatUniform(GLuint uniform, float value)
 {
@@ -202,7 +219,7 @@ void ShaderBaseOpenGL::setFloatUniform(GLuint uniform, float value)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setVec2(const std::string &name, const glm::vec2 &value) const
 {
-    glUniform2fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+    glUniform2fv(getUniformLocation(name), 1, &value[0]);
 }
 void ShaderBaseOpenGL::setVec2Uniform(GLuint uniform, const glm::vec2 &value)
 {
@@ -210,7 +227,7 @@ void ShaderBaseOpenGL::setVec2Uniform(GLuint uniform, const glm::vec2 &value)
 }
 void ShaderBaseOpenGL::setVec2(const std::string &name, float x, float y) const
 {
-    glUniform2f(glGetUniformLocation(programID, name.c_str()), x, y);
+    glUniform2f(getUniformLocation(name), x, y);
 }
 void ShaderBaseOpenGL::setVec2Uniform(GLuint uniform, float x, float y)
 {
@@ -220,7 +237,7 @@ void ShaderBaseOpenGL::setVec2Uniform(GLuint uniform, float x, float y)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setVec3(const std::string &name, const glm::vec3 &value) const
 {
-    glUniform3fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+    glUniform3fv(getUniformLocation(name), 1, &value[0]);
 }
 void ShaderBaseOpenGL::setVec3Uniform(GLuint uniform, const glm::vec3 &value)
 {
@@ -228,7 +245,7 @@ void ShaderBaseOpenGL::setVec3Uniform(GLuint uniform, const glm::vec3 &value)
 }
 void ShaderBaseOpenGL::setVec3(const std::string &name, float x, float y, float z) const
 {
-    glUniform3f(glGetUniformLocation(programID, name.c_str()), x, y, z);
+    glUniform3f(getUniformLocation(name), x, y, z);
 }
 void ShaderBaseOpenGL::setVec3Uniform(GLuint uniform, float x, float y, float z)
 {
@@ -238,7 +255,7 @@ void ShaderBaseOpenGL::setVec3Uniform(GLuint uniform, float x, float y, float z)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setVec4(const std::string &name, const glm::vec4 &value) const
 {
-    glUniform4fv(glGetUniformLocation(programID, name.c_str()), 1, &value[0]);
+    glUniform4fv(getUniformLocation(name), 1, &value[0]);
 }
 void ShaderBaseOpenGL::setVec4Uniform(GLuint uniform, const glm::vec4 &value)
 {
@@ -247,7 +264,7 @@ void ShaderBaseOpenGL::setVec4Uniform(GLuint uniform, const glm::vec4 &value)
 
 void ShaderBaseOpenGL::setVec4(const std::string &name, float x, float y, float z, float w) const
 {
-    glUniform4f(glGetUniformLocation(programID, name.c_str()), x, y, z, w);
+    glUniform4f(getUniformLocation(name), x, y, z, w);
 }
 
 void ShaderBaseOpenGL::setVec4Uniform(GLuint uniform, float x, float y, float z, float w)
@@ -257,7 +274,7 @@ void ShaderBaseOpenGL::setVec4Uniform(GLuint uniform, float x, float y, float z,
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setMat2(const std::string &name, const glm::mat2 &mat) const
 {
-    glUniformMatrix2fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    glUniformMatrix2fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 
 void ShaderBaseOpenGL::setMat2Uniform(GLuint uniform, const glm::mat2 &mat)
@@ -267,7 +284,7 @@ void ShaderBaseOpenGL::setMat2Uniform(GLuint uniform, const glm::mat2 &mat)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setMat3(const std::string &name, const glm::mat3 &mat) const
 {
-    glUniformMatrix3fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    glUniformMatrix3fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 void ShaderBaseOpenGL::setMat3Uniform(GLuint uniform, const glm::mat3 &mat)
 {
@@ -276,11 +293,11 @@ void ShaderBaseOpenGL::setMat3Uniform(GLuint uniform, const glm::mat3 &mat)
 // ------------------------------------------------------------------------
 void ShaderBaseOpenGL::setMat4(const std::string &name, const glm::mat4 &mat) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), 1, GL_FALSE, &mat[0][0]);
+    glUniformMatrix4fv(getUniformLocation(name), 1, GL_FALSE, &mat[0][0]);
 }
 void ShaderBaseOpenGL::setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const
 {
-    glUniformMatrix4fv(glGetUniformLocation(programID, name.c_str()), static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
+    glUniformMatrix4fv(getUniformLocation(name), static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
 void ShaderBaseOpenGL::setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4> &Transforms)
 {
@@ -373,7 +390,7 @@ void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int
         glActiveTexture(GL_TEXTURE5);
     }
     glBindTexture(GL_TEXTURE_2D, textureID);
-    glUniform1i(glGetUniformLocation(programID, name.c_str()), index);
+    glUniform1i(getUniformLocation(name), index);
 }
 
 void ShaderBaseOpenGL::ReadShaderFiles(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename)

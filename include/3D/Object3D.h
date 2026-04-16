@@ -16,7 +16,7 @@
 #include "../Render/M3.h"
 #include "../Misc/ScriptLUA.h"
 #include "../../sol/sol.hpp"
-#include "../GUI/GUI.h"
+#include "../GUI/GUITypes.h"
 #include "../Render/Collider.h"
 #include "../Render/Color.h"
 

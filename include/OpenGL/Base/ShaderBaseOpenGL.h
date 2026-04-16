@@ -4,6 +4,7 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <string>
+#include <unordered_map>
 #include <glm/vec2.hpp>
 #include <glm/ext/matrix_float3x3.hpp>
 #include <GL/glew.h>
@@ -13,6 +14,7 @@
 class ShaderBaseOpenGL {
 protected:
     GLuint programID = 0;
+    mutable std::unordered_map<std::string, GLint> uniformLocationCache;
     FilePath::VertexShaderFile vertexFilename;
     FilePath::FragmentShaderFile fragmentFilename;
     std::string commonCodeFile;
@@ -72,6 +74,9 @@ public:
 
     static void setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer);
     void ReadShaderFiles(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename);
+
+private:
+    [[nodiscard]] GLint getUniformLocation(const std::string &name) const;
 };
 
 

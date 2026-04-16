@@ -13,7 +13,7 @@
 --   render:getSelectedObjects()      -> table{Object3D}  (all selected, always safe)
 --   render:hasMultipleSelected()     -> bool
 --   render:isObjectInSelection(obj)  -> bool
---   render:addToSelection(obj)       -> void
+--   render:addToSelection(obj)       -> void11
 --   render:removeFromSelection(obj)  -> void
 --   render:clearSelection()          -> void
 --   render:setSelectedObject(obj)    -> void             (replace group with one object)
@@ -187,21 +187,24 @@ function drawHUD()
         y = y + 4
     end
 
-    -- Controls cheatsheet (bottom-left)
-    local winH  = Components:Window():getHeightRender()
-    local helpY = winH - 11 * LINE_H - 10
-    local cH    = Color.new(0.85, 0.85, 0.55, 1)  -- header
-    local cK    = Color.new(0.55, 0.55, 0.55, 1)  -- key desc
+    -- ── Controls legend (right side) ──────────────────────────────────────
+    local winW  = Components:Window():getWidthRender()
+    local lx    = (winW > 0 and winW or 1280) - 700
+    local ly    = PAD_Y
 
-    tw:writeTextTTFAutoSize(x, helpY, "── Controls ───────────────────────",  cH,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "Click              single select",      cK,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "CTRL + Click       toggle add/remove",  cK,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "CTRL + Drag        rectangle select",   cK,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "W / S / A / D      nudge X / Z",        cK,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "Q / Z              nudge up / down",     cK,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "X                  remove last from group", cK, 0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "R                  clear selection",     cK,  0.9); helpY = helpY + LINE_H
-    tw:writeTextTTFAutoSize(x, helpY, "P                  print report (console)", cK, 0.9)
+    local cTitle = Color.new(1.0,  0.85, 0.2,  1)
+    local cLine  = Color.new(0.75, 0.75, 0.75, 1)
+
+    tw:writeTextTTFAutoSize(lx, ly,                "[ CONTROLS ]",                   cTitle, 1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 1,   "Click          Select single",    cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 2,   "CTRL+Click     Toggle add/remove",cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 3,   "CTRL+Drag      Rectangle select", cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 4,   "W / S          Move +Z / -Z",     cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 5,   "A / D          Move -X / +X",     cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 6,   "Q / Z          Move +Y / -Y",     cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 7,   "X              Remove last",       cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 8,   "R              Clear selection",   cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 9,   "P              Print to console",  cLine,  1.0)
 end
 
 -- ──────────────────────────────────────────────────────────────────────────────

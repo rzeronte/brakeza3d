@@ -164,7 +164,7 @@ void GuiAddonConsole::DrawWinLogging()
         Strtrim(s);
         if (s[0])
             ExecCommand(s, *lua);
-        strcpy(s, "");
+        s[0] = '\0';
         reclaim_focus = true;
     }
 
