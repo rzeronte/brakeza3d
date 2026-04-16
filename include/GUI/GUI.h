@@ -9,12 +9,14 @@
 #include <string>
 #include <vector>
 #include "imgui.h"
-#include "../SceneObjectTypes.h"
+#include "GUITypes.h"
 #include "../Misc/Timer.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 
 namespace GUIType
 {
+    // Sheet and IconEntry are defined in GUITypes.h
+
     struct DragDropTarget {
         inline static const char* SCRIPT_ITEM = "SCRIPT_ITEM";
         inline static const char* SHADER_ITEM = "SHADER_ITEM";
@@ -27,11 +29,6 @@ namespace GUIType
         BROWSE_SCENES,
         BROWSE_SHADERS,
         BROWSE_SCRIPTS,
-    };
-
-    struct Sheet {
-        int x = -1;
-        int y = -1;
     };
 
     enum ViewerObjectsMode {
@@ -155,27 +152,7 @@ namespace GUIType
         std::function<void()> cb;
     };
 
-    struct IconEntry {
-        const char* name = nullptr;
-        Sheet* icon = nullptr;
-        Sheet original;
-    };
 }
-
-// ===== DEFINICIÓN ÚNICA DE ICONOS OBJECT =====
-#define ICON_OBJECT_LIST(X) \
-    X(OBJECT_3D, 0, 0) \
-    X(MESH_3D, 0, 0) \
-    X(MESH_3D_ANIMATION, 0, 0) \
-    X(LIGHT_POINT, 0, 0) \
-    X(LIGHT_SPOT, 0, 0) \
-    X(PARTICLE_EMITTER, 0, 0) \
-    X(IMAGE_3D_ANIMATION, 0, 0) \
-    X(IMAGE_3D_ANIMATION_360, 0, 0) \
-    X(IMAGE_2D_ANIMATION, 0, 0) \
-    X(IMAGE_3D, 0, 0) \
-    X(IMAGE_2D, 0, 0) \
-    X(SWARM, 0, 0)
 
 // ===== DEFINICIÓN ÚNICA DE ICONOS GUI =====
 #define ICON_GUI_LIST(X) \
@@ -400,24 +377,7 @@ namespace GUIType
     X(ARROW_DOWN, 0, 0) \
 
 
-// Icons Objects
-namespace IconObject {
-    // Declaraciones (editables en runtime)
-    #define DECLARE_ICON(name, x, y) extern GUIType::Sheet name;
-        ICON_OBJECT_LIST(DECLARE_ICON)
-    #undef DECLARE_ICON
-
-    // Contar iconos
-    #define COUNT_ICONS(...) + 1
-        inline constexpr size_t ICON_COUNT = 0 ICON_OBJECT_LIST(COUNT_ICONS);
-    #undef COUNT_ICONS
-
-    // Array de metadatos para el editor
-    extern GUIType::IconEntry ALL_ICONS_EDITOR[ICON_COUNT];
-
-    // Función para resetear
-    void ResetToDefault();
-}
+// IconObject is declared in GUITypes.h (no ImGui dependency)
 
 // Icons GUI
 namespace IconGUI {
@@ -435,16 +395,7 @@ namespace IconGUI {
 
     void ResetToDefault();
 
-    struct ObjectGUIFeatures {
-        bool position = true;
-        bool rotation = true;
-        bool scale = true;
-        bool alpha = true;
-        bool shaders = true;
-        bool attached = true;
-        bool collider = true;
-        bool misc = true;
-    };
+    // ObjectGUIFeatures is declared in GUITypes.h (no ImGui dependency)
 }
 
 
