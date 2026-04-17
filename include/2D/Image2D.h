@@ -8,6 +8,8 @@
 #include "../Render/Image.h"
 #include "../3D/Object3D.h"
 
+class VideoPlayer;
+
 class Image2D : public Object3D
 {
     int x = 0;
@@ -18,10 +20,14 @@ class Image2D : public Object3D
 
     Image *image = nullptr;
     std::string filepath;
+    std::string videoPath;
+
+    VideoPlayer *videoPlayer = nullptr;
 
 public:
     Image2D() = default;
     Image2D(const std::string &file, int width, int height);
+    ~Image2D() override;
 
     void DrawPropertiesGUI() override;
     void onUpdate() override;
@@ -29,6 +35,11 @@ public:
     void setScreenPosition(int x, int y);
     void setFilePath(const std::string &filepath);
     void setImage(Image *value);
+    void setVideoPlayer(VideoPlayer *vp);
+    void loadVideo(const std::string &path);
+
+    [[nodiscard]] VideoPlayer   *getVideoPlayer() const { return videoPlayer; }
+    [[nodiscard]] const std::string &getVideoPath() const { return videoPath; }
 
     [[nodiscard]] ObjectType getTypeObject() const override     { return ObjectType::Image2D; }
     GUIType::Sheet getIcon() override                           { return IconObject::IMAGE_2D; }

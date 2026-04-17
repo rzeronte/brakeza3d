@@ -454,24 +454,109 @@ void FileSystemGUI::DrawWinMediaBrowser(GUIType::BrowserCache &browser, TextureP
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::MEDIA_BROWSER);
     if (!windowStatus->isOpen) return;
 
-    // Selector Images/Textures
+    // Selector Images / Textures / Videos
     static int selectedFolderIndex = 0;
-    const char* folderOptions[] = { "Images", "Textures" };
-    std::string rootFolders[] = { Config::get()->IMAGES_FOLDER, Config::get()->TEXTURES_FOLDER };
+    const char* folderOptions[] = { "Images", "Textures", "Videos" };
+    std::string rootFolders[] = { Config::get()->IMAGES_FOLDER, Config::get()->TEXTURES_FOLDER, Config::get()->VIDEOS_FOLDER };
 
     ImGui::SetNextItemWidth(120);
     if (ImGui::Combo("Source##images_folder", &selectedFolderIndex, folderOptions, IM_ARRAYSIZE(folderOptions))) {
         browser.currentFolder = rootFolders[selectedFolderIndex];
-        browser.onChangeFolderCallback();
+        if (selectedFolderIndex < 2) browser.onChangeFolderCallback();
     }
+
+    const bool isVideoMode = selectedFolderIndex == 2;
     static float imageSize = 96.0f;
-    // Slider
+
+    // Slider (shared by all modes)
     ImGui::SameLine();
     ImGui::PushItemWidth(200);
     ImGui::SliderFloat("Size", &imageSize, 64.0f, 256.0f, "%.0f px");
     ImGui::PopItemWidth();
     ImGui::SameLine();
     if (ImGui::Button("Reset")) imageSize = 96.0f;
+
+    // ── VIDEO MODE ────────────────────────────────────────────────────────────
+    if (isVideoMode) {
+        ImGui::Separator();
+        ImGui::TextDisabled("Drag a video onto an Image2D");
+        ImGui::Separator();
+
+        auto videoFiles = Tools::getFolderFiles(Config::get()->VIDEOS_FOLDER, "mp4");
+        if (videoFiles.empty()) {
+            Drawable::WarningMessage("No .mp4 files found in videos/");
+            return;
+        }
+
+        float availableWidth = ImGui::GetContentRegionAvail().x;
+        float cellWidth      = imageSize + 20.0f;
+        int   columns        = std::max(1, (int)(availableWidth / cellWidth));
+
+        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.0f, 10.0f));
+        static ImGuiTableFlags tflags = ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_NoPadOuterX;
+
+        ImTextureID videoIcon = Icon(IconGUI::MNU_VIDEO);
+
+        if (ImGui::BeginTable("VideosTable", columns, tflags)) {
+            int count = 0;
+            for (const auto &file : videoFiles) {
+                std::string fullPath = Config::get()->VIDEOS_FOLDER + file;
+
+                if (count % columns == 0) ImGui::TableNextRow();
+                ImGui::TableNextColumn();
+
+                float columnWidth = ImGui::GetContentRegionAvail().x;
+                float offsetX     = (columnWidth - imageSize) * 0.5f;
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
+                ImGui::BeginGroup();
+                ImGui::PushID(file.c_str());
+
+                float iconMargin = imageSize * 0.20f;
+                ImGui::ImageButton(videoIcon, ImVec2(imageSize - iconMargin * 2, imageSize - iconMargin * 2),
+                    ImVec2(0,0), ImVec2(1,1), (int)iconMargin);
+
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID)) {
+                    ImGui::SetDragDropPayload(GUIType::DragDropTarget::VIDEO_ITEM,
+                        fullPath.c_str(), fullPath.size() + 1);
+                    ImGui::Image(videoIcon, ImVec2(48, 48));
+                    ImGui::SameLine();
+                    ImGui::Text("%s", file.c_str());
+                    ImGui::EndDragDropSource();
+                }
+
+                if (ImGui::IsItemHovered()) {
+                    ImGui::BeginTooltip();
+                    ImGui::Image(videoIcon, ImVec2(64, 64));
+                    ImGui::SameLine();
+                    ImGui::Text("%s", file.c_str());
+                    ImGui::EndTooltip();
+                }
+
+                // Label (truncate if needed)
+                std::string displayName = file;
+                float maxTextWidth = imageSize;
+                ImVec2 textSize = ImGui::CalcTextSize(displayName.c_str());
+                while (textSize.x > maxTextWidth - 20 && displayName.length() > 3) {
+                    displayName = displayName.substr(0, displayName.length() - 1);
+                    textSize = ImGui::CalcTextSize((displayName + "...").c_str());
+                }
+                if (displayName != file) displayName += "...";
+                textSize = ImGui::CalcTextSize(displayName.c_str());
+
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (imageSize - textSize.x) * 0.5f);
+                ImGui::TextWrapped("%s", displayName.c_str());
+
+                ImGui::PopID();
+                ImGui::EndGroup();
+                count++;
+            }
+            ImGui::EndTable();
+        }
+        ImGui::PopStyleVar();
+        return;
+    }
+
+    // ── IMAGE / TEXTURE MODE ──────────────────────────────────────────────────
 
     ImGui::Separator();
 

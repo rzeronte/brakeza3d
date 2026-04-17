@@ -23,6 +23,7 @@ cJSON * Image2DSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(root, "height", image->height);
 
     cJSON_AddStringToObject(root, "image", image->filepath.c_str());
+    cJSON_AddStringToObject(root, "video", image->videoPath.c_str());
 
     return root;
 }
@@ -45,6 +46,10 @@ void Image2DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     auto image = dynamic_cast<Image2D*>(o);
 
     image->setFilePath(cJSON_GetObjectItemCaseSensitive(json, "image")->valuestring);
+
+    auto *videoItem = cJSON_GetObjectItemCaseSensitive(json, "video");
+    if (videoItem && videoItem->valuestring && videoItem->valuestring[0] != '\0')
+        image->videoPath = videoItem->valuestring;
     image->setSize(
         cJSON_GetObjectItemCaseSensitive(json, "width")->valueint,
         cJSON_GetObjectItemCaseSensitive(json, "height")->valueint

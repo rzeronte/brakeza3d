@@ -38,7 +38,11 @@ public:
             return;
         }
 
-        Image2DSerializer::ApplyImageFromFile(image);
+        if (!image->getVideoPath().empty()) {
+            image->loadVideo(image->getVideoPath());
+        } else {
+            Image2DSerializer::ApplyImageFromFile(image);
+        }
 
         Brakeza::get()->AddObject3D(image, image->getName());
 
