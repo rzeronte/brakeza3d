@@ -20,8 +20,9 @@ namespace GUIType
     struct DragDropTarget {
         inline static const char* SCRIPT_ITEM = "SCRIPT_ITEM";
         inline static const char* SHADER_ITEM = "SHADER_ITEM";
-        inline static const char* IMAGE_ITEM = "IMAGE_ITEM";
-        inline static const char* SCENE_ITEM = "SCENE_ITEM";
+        inline static const char* IMAGE_ITEM  = "IMAGE_ITEM";
+        inline static const char* SCENE_ITEM  = "SCENE_ITEM";
+        inline static const char* VIDEO_ITEM  = "VIDEO_ITEM";
     };
 
     enum BrowserFileType {

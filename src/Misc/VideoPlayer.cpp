@@ -1,326 +1,358 @@
 //
 // Created by eduardo on 12/10/22.
+// Rewritten for FFmpeg 7.x / modern API
 //
 
 #include "../../include/Misc/VideoPlayer.h"
-#include <string>
-#include "../../include/Brakeza3D.h"
-#include <libavcodec/avcodec.h>
-#include <thread>
+#include "../../include/Misc/Logging.h"
+#include "../../include/Components/Components.h"
+#include "../../include/Config.h"
 
 extern "C" {
-#include <libavutil/dict.h>
-#include <libavformat/avformat.h>
-#include <libswscale/swscale.h>
-}
-
-
-int threadPlayVideo(void *raw)
-{
-    auto *data = (ThreadVideoData *) raw;
-    int frameFinished;
-    avcodec_decode_video2(data->videoContext, data->videoFrame, &frameFinished, data->packet);
-
-    if (frameFinished) {
-        data->player->renderToScreenFromYUV();
-    }
-
-    SDL_Delay(39);
-
-    return 0;
-}
-
-int threadPlayAudio(void *raw)
-{
-    auto data = (ThreadAudioData *) raw;
-
-    if (avcodec_send_packet(data->audioContext, data->packet) < 0) {
-        perror("send packet");
-        return -1;
-    }
-    if (avcodec_receive_frame(data->audioContext, data->audioFrame) < 0) {
-        perror("receive frame");
-        return -1;
-    }
-
-    int size;
-
-    av_samples_get_buffer_size(&size, data->audioContext->channels, data->audioFrame->nb_samples, (AVSampleFormat) data->audioFrame->format, 0);
-    bool isPlanar = av_sample_fmt_is_planar((AVSampleFormat) data->audioFrame->format) == 1;
-    for (int ch = 0; ch < data->audioContext->channels; ch++) {
-        if (!isPlanar) {
-            if (SDL_QueueAudio(data->audioDeviceId, data->audioFrame->data[ch], data->audioFrame->linesize[ch]) < 0) {
-                perror("playAudio");
-                printf(" %s\n", SDL_GetError());
-                return 0;
-            }
-        } else {
-            if (SDL_QueueAudio(data->audioDeviceId, data->audioFrame->data[0] + size*ch, size) < 0) {
-                perror("playAudio");
-                printf(" %s\n", SDL_GetError());
-                return 0;
-            }
-        }
-    }
-
-    return 0;
-}
-
-int decode_thread(void *raw)
-{
-    auto *data = (ThreadData *) raw;
-
-    LOG_MESSAGE("decode_thread START");
-
-    SDL_Event e;
-    bool &finished = Brakeza3D::get()->finish;
-    for (;;) {
-        while (SDL_PollEvent(&e)) {
-            ComponentsManager::get()->getComponentInput()->onSDLPollEvent(&e, finished);
-            ComponentsManager::get()->getComponentGameInput()->onSDLPollEvent(&e, finished);
-        }
-
-        if (finished || data->player->finished) {
-            data->player->finished = true;
-            return -1;
-        }
-
-        AVPacket packet;
-        if (av_read_frame(data->pFormatCtx, &packet) >= 0) {
-            data->packet = &packet;
-
-            if (data->packet->stream_index == data->videoStream) {
-                auto videoInfo = ThreadVideoData(data->videoContext, data->videoFrame, data->packet, 0, data->player);
-                threadPlayVideo(&videoInfo);
-            }
-
-            if (data->packet->stream_index == data->audioStream) {
-                auto audioInfo = ThreadAudioData(data->audioContext, &packet, data->audioFrame, data->audioDeviceId);
-                threadPlayAudio(&audioInfo );
-            }
-            av_packet_unref(data->packet);
-        } else {
-            data->player->finished = true;
-            break;
-        }
-    }
-
-    return 0;
+#include <libavutil/time.h>
 }
 
 VideoPlayer::VideoPlayer(const std::string &filename)
-:
-    finished(false)
 {
-    pFormatCtx = NULL;
-
-    if (avformat_open_input(&pFormatCtx, filename.c_str(), nullptr, nullptr) != 0) {
-        Logging::Log("VideoPlayer Couldn't open file");
+    if (avformat_open_input(&formatCtx, filename.c_str(), nullptr, nullptr) < 0) {
+        LOG_ERROR("VideoPlayer: cannot open '%s'", filename.c_str());
+        return;
+    }
+    if (avformat_find_stream_info(formatCtx, nullptr) < 0) {
+        LOG_ERROR("VideoPlayer: cannot find stream info");
         return;
     }
 
-    if (avformat_find_stream_info(pFormatCtx, NULL)<0) {
-        Logging::Log("VideoPlayer Couldn't find stream information");
+    for (unsigned i = 0; i < formatCtx->nb_streams; i++) {
+        auto type = formatCtx->streams[i]->codecpar->codec_type;
+        if (type == AVMEDIA_TYPE_VIDEO && videoStreamIdx < 0) videoStreamIdx = (int)i;
+        if (type == AVMEDIA_TYPE_AUDIO && audioStreamIdx < 0) audioStreamIdx = (int)i;
+    }
+
+    if (videoStreamIdx < 0) {
+        LOG_ERROR("VideoPlayer: no video stream found");
         return;
     }
 
-    findFirstStream();
+    // ── Video codec ──────────────────────────────────────────────────────────
+    AVStream *vst       = formatCtx->streams[videoStreamIdx];
+    const AVCodec *vc   = avcodec_find_decoder(vst->codecpar->codec_id);
+    if (!vc) { LOG_ERROR("VideoPlayer: unsupported video codec"); return; }
 
-    screenTexture = SDL_CreateTexture(
-            ComponentsManager::get()->getComponentWindow()->getRenderer(),
-            SDL_PIXELFORMAT_YV12,
-            SDL_TEXTUREACCESS_STREAMING,
-            videoContext->width,
-            videoContext->height
-    );
+    videoCtx = avcodec_alloc_context3(vc);
+    avcodec_parameters_to_context(videoCtx, vst->codecpar);
+    if (avcodec_open2(videoCtx, vc, nullptr) < 0) {
+        LOG_ERROR("VideoPlayer: cannot open video codec");
+        return;
+    }
 
-}
+    width    = videoCtx->width;
+    height   = videoCtx->height;
+    timeBase = av_q2d(vst->time_base);
 
-void VideoPlayer::findFirstStream()
-{
-    // Find the first video stream
-    videoStream = -1;
-    Logging::Log("VideoPlayer File Number Streams: (%d)", pFormatCtx->nb_streams);
+    // ── Audio codec ──────────────────────────────────────────────────────────
+    if (audioStreamIdx >= 0) {
+        AVStream *ast     = formatCtx->streams[audioStreamIdx];
+        const AVCodec *ac = avcodec_find_decoder(ast->codecpar->codec_id);
+        if (ac) {
+            audioCtx = avcodec_alloc_context3(ac);
+            avcodec_parameters_to_context(audioCtx, ast->codecpar);
+            avcodec_open2(audioCtx, ac, nullptr);
 
-    for (unsigned int i = 0; i < pFormatCtx->nb_streams; i++) {
-        LOG_MESSAGE("VideoPlayer AVI stream TypeCoded (%d)", pFormatCtx->streams[i]->codec->codec_type);
-        if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO) {
-            videoStream = (int) i;
-
-            AVRational rational = pFormatCtx->streams[i]->avg_frame_rate;
-            fpsRendering = 1.0 / ((double)rational.num / (double)(rational.den));
+            // SwrContext: resample to S16 stereo (SDL-compatible)
+            AVChannelLayout outLayout = AV_CHANNEL_LAYOUT_STEREO;
+            if (swr_alloc_set_opts2(
+                    &swrCtx,
+                    &outLayout,           AV_SAMPLE_FMT_S16, audioCtx->sample_rate,
+                    &audioCtx->ch_layout, audioCtx->sample_fmt, audioCtx->sample_rate,
+                    0, nullptr) < 0 || swr_init(swrCtx) < 0)
+            {
+                LOG_WARNING("VideoPlayer: SwrContext init failed — audio disabled");
+                avcodec_free_context(&audioCtx);
+                audioCtx = nullptr;
+            }
         }
 
-        if (pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
-            audioCodec = avcodec_find_decoder(pFormatCtx->streams[i]->codecpar->codec_id);
-            audioCodecParameters = pFormatCtx->streams[i]->codecpar;
-            audioStream = (int) i;
+        if (audioCtx) {
+            SDL_AudioSpec want{};
+            want.freq     = audioCtx->sample_rate;
+            want.format   = AUDIO_S16SYS;
+            want.channels = 2;
+            want.samples  = 1024;
+
+            SDL_AudioSpec have{};
+            audioDevId = SDL_OpenAudioDevice(nullptr, 0, &want, &have, 0);
+            if (!audioDevId) {
+                LOG_WARNING("VideoPlayer: SDL_OpenAudioDevice failed: %s", SDL_GetError());
+            } else {
+                SDL_PauseAudioDevice(audioDevId, 0);
+            }
         }
     }
 
-    if (videoStream == -1) {
-        LOG_MESSAGE("VideoPlayer didn't find a video stream");
-        exit(-1);
-    }
-
-    if (audioStream == -1) {
-        LOG_MESSAGE("VideoPlayer didn't find a audio stream");
-        exit(-1);
-    }
-
-    videoContext = pFormatCtx->streams[videoStream]->codec;
-    videoCodec = avcodec_find_decoder(videoContext->codec_id);
-    if (videoCodec == nullptr) {
-        Logging::Log("Unsupported video codec!");
-        exit(-1); // Codec not found
-    }
-
-    audioContext = avcodec_alloc_context3(audioCodec);
-    if (avcodec_parameters_to_context(audioContext, audioCodecParameters) < 0) {
-        perror("audCtx");
-        exit(-1);
-    }
-
-    // Open codec
-    if (avcodec_open2(videoContext, videoCodec, nullptr) < 0) {
-        Logging::Log("Could not open video codec!");
-        exit(-1); //
-    }
-
-    if (avcodec_open2(audioContext, audioCodec, NULL) < 0) {
-        Logging::Log("Could not open audio codec!");
-        exit(-1); //
-    }
-
-    videoFrame = NULL;
-    videoFrameRGB = NULL;
-
-    // Allocate video frame
-    videoFrame = av_frame_alloc();
-
-    videoFrameRGB = av_frame_alloc();
-    if (videoFrameRGB == NULL) {
-        exit(-1);
-    }
-
-    uint8_t *buffer = NULL;
-    int numBytes;
-    // Determine required buffer size and allocate buffer
-    numBytes = avpicture_get_size(AV_PIX_FMT_RGB32, videoContext->width, videoContext->height);
-    buffer = (uint8_t *)av_malloc(numBytes*sizeof(uint8_t));
-
-    // Assign appropriate parts of buffer to image planes in pFrameRGB
-    // Note that pFrameRGB is an AVFrame, but AVFrame is a superset
-    // of AVPicture
-    avpicture_fill((AVPicture *)videoFrameRGB, buffer, AV_PIX_FMT_RGB24, videoContext->width, videoContext->height);
-
-    // initialize SWS context for software scaling
-    swsContext = sws_getContext(
-            videoContext->width,
-            videoContext->height,
-            videoContext->pix_fmt,
-            videoContext->width,
-            videoContext->height,
-            AV_PIX_FMT_BGR32,
-            SWS_FAST_BILINEAR,
-            NULL,
-            NULL,
-            NULL
+    // SwsContext: any pixel format → YUV420P (used by decode thread for both modes)
+    swsYUVCtx = sws_getContext(
+        width, height, videoCtx->pix_fmt,
+        width, height, AV_PIX_FMT_YUV420P,
+        SWS_BILINEAR, nullptr, nullptr, nullptr
     );
 
-    //--
-    audioFrame = av_frame_alloc();
-
-    SDL_zero(want);
-    SDL_zero(have);
-    want.channels = audioContext->channels;
-    want.format = AUDIO_F32SYS; // Sample format
-    want.silence = 0;
-    want.userdata = audioContext;
-    want.freq = audioContext->sample_rate;
-
-
-    audioDeviceId = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0);
-    SDL_PauseAudioDevice(audioDeviceId, 0);
-    if (!audioDeviceId) {
-        LOG_MESSAGE("Error audio device videoPlayer: %s", SDL_GetError());
-        exit(-1);
-    }
+    ready = true;
+    LOG_MESSAGE("VideoPlayer: ready — %dx%d @ %.2f fps, audio=%s",
+        width, height, 1.0 / (timeBase > 0 ? timeBase : 1),
+        audioCtx ? "yes" : "no");
 }
 
-void VideoPlayer::play()
+VideoPlayer::~VideoPlayer()
 {
-    AVPacket packet, *pkt = &packet;
-    auto data = new ThreadData(
-        this,
-        this->pFormatCtx,
-        videoContext,
-        audioContext,
-        pkt,
-        videoFrame,
-        audioFrame,
-        audioDeviceId,
-        videoStream,
-        audioStream
+    finished = true;
+    decoding = false;
+    queueCv.notify_all();
+    if (decodeThread.joinable()) decodeThread.join();
+
+    // Drain remaining frames
+    std::lock_guard<std::mutex> lock(queueMutex);
+    while (!frameQueue.empty()) {
+        delete frameQueue.front();
+        frameQueue.pop();
+    }
+
+    if (yuvTexture)   SDL_DestroyTexture(yuvTexture);
+    if (oglTexture)   glDeleteTextures(1, &oglTexture);
+    if (overlayImage) { delete overlayImage; overlayImage = nullptr; }
+    if (rgbaBuffer)   { delete[] rgbaBuffer; rgbaBuffer = nullptr; }
+    if (audioDevId)   SDL_CloseAudioDevice(audioDevId);
+    if (swrCtx)       swr_free(&swrCtx);
+    if (swsYUVCtx)    sws_freeContext(swsYUVCtx);
+    if (swsRGBACtx)   sws_freeContext(swsRGBACtx);
+    if (videoCtx)     avcodec_free_context(&videoCtx);
+    if (audioCtx)     avcodec_free_context(&audioCtx);
+    if (formatCtx)    avformat_close_input(&formatCtx);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Decode thread: reads packets, fills frameQueue (video) and SDL audio queue
+// ─────────────────────────────────────────────────────────────────────────────
+void VideoPlayer::decodeLoop()
+{
+    AVPacket *packet = av_packet_alloc();
+    AVFrame  *frame  = av_frame_alloc();
+
+    auto flushVideo = [&]() {
+        avcodec_send_packet(videoCtx, nullptr);
+        while (avcodec_receive_frame(videoCtx, frame) == 0) {
+            auto *vf = new VideoFrame(width, height);
+            vf->pts  = frame->pts;
+            sws_scale(swsYUVCtx, frame->data, frame->linesize, 0, height, vf->data, vf->linesize);
+            std::unique_lock<std::mutex> lock(queueMutex);
+            queueCv.wait(lock, [this]{ return frameQueue.size() < MAX_QUEUE || !decoding; });
+            if (!decoding) { delete vf; break; }
+            frameQueue.push(vf);
+            queueCv.notify_one();
+        }
+    };
+
+    while (av_read_frame(formatCtx, packet) >= 0 && decoding) {
+        if (packet->stream_index == videoStreamIdx) {
+            avcodec_send_packet(videoCtx, packet);
+            while (avcodec_receive_frame(videoCtx, frame) == 0) {
+                auto *vf = new VideoFrame(width, height);
+                vf->pts  = frame->pts;
+                sws_scale(swsYUVCtx, frame->data, frame->linesize, 0, height, vf->data, vf->linesize);
+
+                std::unique_lock<std::mutex> lock(queueMutex);
+                queueCv.wait(lock, [this]{ return frameQueue.size() < MAX_QUEUE || !decoding; });
+                if (!decoding) { delete vf; break; }
+                frameQueue.push(vf);
+                queueCv.notify_one();
+            }
+        } else if (packet->stream_index == audioStreamIdx && audioCtx && swrCtx && audioDevId) {
+            avcodec_send_packet(audioCtx, packet);
+            while (avcodec_receive_frame(audioCtx, frame) == 0) {
+                int dstSamples = swr_get_out_samples(swrCtx, frame->nb_samples);
+                uint8_t *outBuf = nullptr;
+                int outLinesize = 0;
+                av_samples_alloc(&outBuf, &outLinesize, 2, dstSamples, AV_SAMPLE_FMT_S16, 0);
+                int converted = swr_convert(swrCtx, &outBuf, dstSamples,
+                                            (const uint8_t **)frame->data, frame->nb_samples);
+                if (converted > 0) {
+                    SDL_QueueAudio(audioDevId, outBuf,
+                                   (Uint32)(converted * 2 * sizeof(int16_t)));
+                }
+                av_freep(&outBuf);
+            }
+        }
+        av_packet_unref(packet);
+    }
+
+    if (decoding) flushVideo();
+
+    av_frame_free(&frame);
+    av_packet_free(&packet);
+    decoding = false;
+    finished = true;
+    queueCv.notify_all();
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Non-blocking overlay mode
+// ─────────────────────────────────────────────────────────────────────────────
+void VideoPlayer::start()
+{
+    if (!ready || decoding) return;
+
+    // SwsContext: decoded pixel format → RGBA (OpenGL)
+    swsRGBACtx = sws_getContext(
+        width, height, videoCtx->pix_fmt,
+        width, height, AV_PIX_FMT_RGBA,
+        SWS_BILINEAR, nullptr, nullptr, nullptr
     );
 
-    threadFunction = SDL_CreateThread(decode_thread, "MainVideoThread", data);
-    SDL_WaitThread( threadFunction, NULL );
-    LOG_MESSAGE("exit decoding...");
+    rgbaBuffer = new uint8_t[width * height * 4];
+
+    // GL texture (RGBA, streaming)
+    glGenTextures(1, &oglTexture);
+    glBindTexture(GL_TEXTURE_2D, oglTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    overlayImage = new Image(oglTexture, width, height);
+
+    playStartTicks = SDL_GetTicks64();
+    decoding = true;
+    finished = false;
+    decodeThread = std::thread(&VideoPlayer::decodeLoop, this);
 }
 
 void VideoPlayer::onUpdate()
 {
-}
+    if (!ready || !swsRGBACtx || !oglTexture) return;
 
-void VideoPlayer::renderToScreenTexture()
-{
-    SDL_UpdateTexture(
-        ComponentsManager::get()->getComponentWindow()->getScreenTexture(),
-        nullptr,
-        videoFrameRGB->data[0],
-        videoFrameRGB->linesize[0]
-    );
-}
-
-void VideoPlayer::renderToScreen()
-{
-    uint8_t *data = videoFrameRGB->data[0];
-
-    for(int y = 0; y < videoContext->height; y++) {
-        for(int x = 0; x < videoContext->width; x++) {
-
-            int offset = 4 * x + y * videoFrameRGB->linesize[0];
-
-            Uint8 r = data[offset];
-            Uint8 g = data[offset + 1];
-            Uint8 b = data[offset + 2];
-
-            EngineBuffers::get()->setVideoBuffer(x, y, Color(r, g, b).getColor());
+    VideoFrame *frame = nullptr;
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        if (frameQueue.empty()) {
+            if (!decoding) finished = true;
+            return;
         }
+
+        double elapsed  = (double)(SDL_GetTicks64() - playStartTicks) / 1000.0;
+        double framePts = (double)frameQueue.front()->pts * timeBase;
+        if (framePts > elapsed) return;
+
+        frame = frameQueue.front();
+        frameQueue.pop();
+        queueCv.notify_one();
+    }
+
+    // Convert YUV420P → RGBA on main thread
+    uint8_t *dst[4]   = { rgbaBuffer, nullptr, nullptr, nullptr };
+    int dstStride[4]  = { width * 4,  0,       0,       0       };
+    sws_scale(swsRGBACtx, frame->data, frame->linesize, 0, height, dst, dstStride);
+    delete frame;
+
+    glBindTexture(GL_TEXTURE_2D, oglTexture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgbaBuffer);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void VideoPlayer::stop()
+{
+    decoding = false;
+    finished = true;
+    queueCv.notify_all();
+    if (decodeThread.joinable()) decodeThread.join();
+
+    std::lock_guard<std::mutex> lock(queueMutex);
+    while (!frameQueue.empty()) {
+        delete frameQueue.front();
+        frameQueue.pop();
     }
 }
 
-bool VideoPlayer::isFinished() const
+// ─────────────────────────────────────────────────────────────────────────────
+// Blocking playback loop (main thread): handles events, timing, SDL render
+// ─────────────────────────────────────────────────────────────────────────────
+void VideoPlayer::play()
 {
-    return finished;
-}
+    if (!ready) return;
 
+    if (!yuvTexture) {
+        yuvTexture = SDL_CreateTexture(
+            Components::get()->Window()->getRenderer(),
+            SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,
+            width, height
+        );
+        if (!yuvTexture) {
+            LOG_ERROR("VideoPlayer: SDL_CreateTexture failed: %s", SDL_GetError());
+            return;
+        }
+    }
 
-void VideoPlayer::renderToScreenFromYUV()
-{
-    SDL_UpdateYUVTexture(
-        screenTexture,
-        NULL,
-        videoFrame->data[0],
-        videoFrame->linesize[0],
-        videoFrame->data[1],
-        videoFrame->linesize[1],
-        videoFrame->data[2],
-        videoFrame->linesize[2]
-    );
+    decoding = true;
+    finished = false;
+    decodeThread = std::thread(&VideoPlayer::decodeLoop, this);
 
-    auto renderer = ComponentsManager::get()->getComponentWindow()->getRenderer();
-    SDL_RenderCopy(renderer, screenTexture, NULL, NULL);
-    SDL_RenderPresent(renderer);
+    auto *renderer  = Components::get()->Window()->getRenderer();
+    auto startTicks = SDL_GetTicks64();
+
+    SDL_Event e;
+    while (true) {
+        // Events (only main thread can poll SDL events)
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT)
+                Config::get()->EXIT = true;
+            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+                finished = true;
+        }
+
+        if (Config::get()->EXIT || finished) break;
+
+        VideoFrame *frame = nullptr;
+        {
+            std::unique_lock<std::mutex> lock(queueMutex);
+            if (!frameQueue.empty()) {
+                double elapsed  = (double)(SDL_GetTicks64() - startTicks) / 1000.0;
+                double framePts = (double)frameQueue.front()->pts * timeBase;
+                if (framePts <= elapsed) {
+                    frame = frameQueue.front();
+                    frameQueue.pop();
+                    queueCv.notify_one();
+                }
+            } else if (!decoding) {
+                // Decode finished and queue drained
+                break;
+            }
+        }
+
+        if (frame) {
+            SDL_UpdateYUVTexture(yuvTexture, nullptr,
+                frame->data[0], frame->linesize[0],
+                frame->data[1], frame->linesize[1],
+                frame->data[2], frame->linesize[2]);
+            SDL_RenderClear(renderer);
+            SDL_RenderCopy(renderer, yuvTexture, nullptr, nullptr);
+            SDL_RenderPresent(renderer);
+            delete frame;
+        } else {
+            SDL_Delay(1);
+        }
+    }
+
+    // Stop decode thread
+    decoding = false;
+    finished = true;
+    queueCv.notify_all();
+    if (decodeThread.joinable()) decodeThread.join();
+
+    // Drain leftover frames
+    std::lock_guard<std::mutex> lock(queueMutex);
+    while (!frameQueue.empty()) {
+        delete frameQueue.front();
+        frameQueue.pop();
+    }
 }

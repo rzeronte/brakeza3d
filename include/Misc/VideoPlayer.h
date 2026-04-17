@@ -1,135 +1,98 @@
 //
 // Created by eduardo on 12/10/22.
+// Rewritten for FFmpeg 7.x / modern API
 //
 
 #ifndef BRAKEZA3D_VIDEOPLAYER_H
 #define BRAKEZA3D_VIDEOPLAYER_H
 
-
 #include <string>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <thread>
+#include <atomic>
 #include <SDL_render.h>
 #include <SDL_audio.h>
-#include <thread>
-#include "Counter.h"
+#include <GL/glew.h>
+#include "../Render/Image.h"
 
 extern "C" {
-#include <libavutil/dict.h>
 #include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#include <libswresample/swresample.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/channel_layout.h>
+#include <libavutil/opt.h>
 }
 
+struct VideoFrame {
+    uint8_t *data[4]{};
+    int      linesize[4]{};
+    int64_t  pts = 0;
+
+    VideoFrame(int w, int h) {
+        av_image_alloc(data, linesize, w, h, AV_PIX_FMT_YUV420P, 1);
+    }
+    ~VideoFrame() { av_freep(&data[0]); }
+};
+
 class VideoPlayer {
-
-    int videoStream = -1;
-    int audioStream = -1;
-
-    AVFormatContext *pFormatCtx = nullptr;
-    AVFrame *videoFrame = nullptr;
-    AVFrame *videoFrameRGB = nullptr;
-
-    AVCodecContext *videoContext = nullptr;
-    AVCodecContext *audioContext = nullptr;
-
-    struct SwsContext *swsContext = nullptr;
-    SDL_Texture* screenTexture = nullptr;
-
-    double fpsRendering;
-
-    AVCodec *videoCodec;
-
-    AVCodec *audioCodec;
-
-    SDL_AudioDeviceID audioDeviceId;
-    SDL_AudioSpec want, have;
-    AVCodecParameters *audioCodecParameters;
-
-    AVFrame *audioFrame;
-
-    SDL_Thread *threadFunction;
-
 public:
     explicit VideoPlayer(const std::string &filename);
+    ~VideoPlayer();
 
-    void findFirstStream();
-    void onUpdate();
-    void renderToScreen();
-    void renderToScreenTexture();
-    void renderToScreenFromYUV();
-
-    [[nodiscard]] bool isFinished() const;
+    // Blocking mode: runs its own event+render loop (cutscenes).
     void play();
 
-    bool finished;
-};
+    // Non-blocking overlay mode: call start() once, then onUpdate() each engine frame.
+    void start();
+    void onUpdate();
+    void stop();
 
-class ThreadData {
+    [[nodiscard]] bool isFinished()    const { return finished; }
+    [[nodiscard]] Image *getImage()    const { return overlayImage; }
+    [[nodiscard]] int getWidth()       const { return width; }
+    [[nodiscard]] int getHeight()      const { return height; }
 
-public:
-    ThreadData(
-        VideoPlayer *player,
-        AVFormatContext *pFormatCtx,
-        AVCodecContext *videoContext,
-        AVCodecContext *audioContext,
-        AVPacket *packet,
-        AVFrame *videoFrame,
-        AVFrame *audioFrame,
-        SDL_AudioDeviceID audioDeviceId,
-        int videoStream,
-        int audioStream
-    )
-    :
-        pFormatCtx(pFormatCtx),
-        packet(packet),
-        videoStream(videoStream),
-        audioStream(audioStream),
-        player(player),
-        videoContext(videoContext),
-        videoFrame(videoFrame),
-        audioContext(audioContext),
-        audioFrame(audioFrame),
-        audioDeviceId(audioDeviceId)
-    {
-    }
+private:
+    void decodeLoop();
 
-    AVFormatContext *pFormatCtx = nullptr;
-    AVPacket *packet = nullptr;
-    int videoStream = -1;
-    int audioStream = -1;
-    VideoPlayer *player = nullptr;
-    AVCodecContext *videoContext = nullptr;
-    AVFrame *videoFrame = nullptr;
-    AVCodecContext *audioContext = nullptr;
-    AVFrame *audioFrame = nullptr;
-    SDL_AudioDeviceID audioDeviceId = 0;
-};
+    AVFormatContext *formatCtx   = nullptr;
+    AVCodecContext  *videoCtx    = nullptr;
+    AVCodecContext  *audioCtx    = nullptr;
+    SwsContext      *swsYUVCtx   = nullptr;   // YUV420P — used by play()
+    SwsContext      *swsRGBACtx  = nullptr;   // RGBA    — used by start()/onUpdate()
+    SwrContext      *swrCtx      = nullptr;
 
-struct ThreadVideoData {
-    ThreadVideoData(
-            AVCodecContext *videoCodecContext,
-            AVFrame *videoFrame,
-            AVPacket *packet,
-            int frameFinished,
-            VideoPlayer *player
-    )
-    : videoContext(videoCodecContext), videoFrame(videoFrame), packet(packet), frameFinished(frameFinished), player(player)
-    {
-    }
-    AVCodecContext *videoContext = nullptr;
-    AVFrame *videoFrame = nullptr;
-    AVPacket *packet = nullptr;
-    int frameFinished = 0;
-    VideoPlayer *player = nullptr;
-};
+    int    videoStreamIdx = -1;
+    int    audioStreamIdx = -1;
+    double timeBase       = 0.0;
+    int    width          = 0;
+    int    height         = 0;
 
-struct ThreadAudioData {
-    ThreadAudioData(AVCodecContext *audioContext, AVPacket *packet, AVFrame *audioFrame, SDL_AudioDeviceID audioDeviceId)
-            : audioContext(audioContext), packet(packet), audioFrame(audioFrame), audioDeviceId(audioDeviceId)
-    {
-    }
+    // Blocking mode (play)
+    SDL_Texture       *yuvTexture = nullptr;
 
-    AVCodecContext *audioContext = nullptr;
-    AVPacket *packet = nullptr;
-    AVFrame *audioFrame = nullptr;
-    SDL_AudioDeviceID audioDeviceId = 0;
+    // Non-blocking overlay mode (start/onUpdate)
+    GLuint  oglTexture   = 0;
+    uint8_t *rgbaBuffer  = nullptr;
+    Image   *overlayImage = nullptr;
+
+    SDL_AudioDeviceID  audioDevId = 0;
+    Uint64             playStartTicks = 0;
+
+    std::thread             decodeThread;
+    std::mutex              queueMutex;
+    std::condition_variable queueCv;
+    std::queue<VideoFrame*> frameQueue;
+    std::atomic<bool>       finished{false};
+    std::atomic<bool>       decoding{false};
+
+    bool ready = false;
+
+    static constexpr int MAX_QUEUE = 8;
 };
 
 #endif //BRAKEZA3D_VIDEOPLAYER_H

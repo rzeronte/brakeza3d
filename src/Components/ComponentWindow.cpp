@@ -544,7 +544,8 @@ void ComponentWindow::ResizeGBuffer()
 void ComponentWindow::UpdateWindowSize()
 {
     SDL_GetWindowSize(window, &widthWindow, &heightWindow);
-    //SDL_GL_GetDrawableSize(window, &widthRender, &heightRender);
+    widthRender  = widthWindow;
+    heightRender = heightWindow;
 }
 
 unsigned int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int y) const

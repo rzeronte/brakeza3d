@@ -42,6 +42,13 @@ endif()
 # cURL (same name on all platforms)
 set(CURL_LIBRARY "curl")
 
+# FFmpeg
+set(AVCODEC_LIBRARY "avcodec")
+set(AVFORMAT_LIBRARY "avformat")
+set(AVUTIL_LIBRARY "avutil")
+set(SWSCALE_LIBRARY "swscale")
+set(SWRESAMPLE_LIBRARY "swresample")
+
 # Include directories
 if(WIN32)
     set(SDL2_INCLUDE_DIRS "${CMAKE_CXX_COMPILER}/../../include/SDL2")
@@ -151,6 +158,7 @@ add_executable(Brakeza3D
 
         # Misc
         src/Misc/cJSON.c include/Misc/cJSON.h
+        src/Misc/VideoPlayer.cpp include/Misc/VideoPlayer.h
         src/Render/Color.cpp include/Render/Color.h
         src/Misc/Counter.cpp include/Misc/Counter.h
         src/Render/Grid3D.cpp include/Render/Grid3D.h
@@ -395,4 +403,9 @@ target_link_libraries(Brakeza3D
         ${OPENGL_LIBRARY}
         ${GLEW_LIBRARY}
         ${CURL_LIBRARY}
+        ${AVCODEC_LIBRARY}
+        ${AVFORMAT_LIBRARY}
+        ${AVUTIL_LIBRARY}
+        ${SWSCALE_LIBRARY}
+        ${SWRESAMPLE_LIBRARY}
 )

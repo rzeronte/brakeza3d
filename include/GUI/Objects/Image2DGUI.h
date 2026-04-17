@@ -7,6 +7,7 @@
 
 #include "../../2D/Image2D.h"
 #include "../../Misc/Logging.h"
+#include "../../Misc/FilePaths.h"
 
 class Image2DGUI
 {
@@ -37,25 +38,40 @@ public:
                 ImGui::TreePop();
             }
             ImGui::Separator();
-            if (ImGui::TreeNode("Image")) {
-                if (o->image->isLoaded()) {
-                    float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, o->image->width());
-                    float height = fixedWidth * ((float) o->image->height() / (float) o->image->width());
-                    ImGui::Image(o->image->getOGLImTexture(), ImVec2(fixedWidth, height));
-                } else {
-                    ImGui::Text("No image selected. Drag a texture here!");
+            if (ImGui::TreeNode("Image / Video")) {
+                bool hasVideo = o->getVideoPlayer() != nullptr;
+
+                if (hasVideo) {
+                    ImGui::TextColored(ImVec4(0.4f, 0.9f, 0.4f, 1.f), "[VIDEO]");
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("Stop")) {
+                        o->setVideoPlayer(nullptr);
+                    }
                 }
 
+                if (o->image && o->image->isLoaded()) {
+                    float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, o->image->width());
+                    float h = fixedWidth * ((float) o->image->height() / (float) o->image->width());
+                    ImGui::Image(o->image->getOGLImTexture(), ImVec2(fixedWidth, h));
+                } else {
+                    ImGui::TextDisabled("Drag an image or video here");
+                }
+
+                // Drop zone: accepts both IMAGE and VIDEO
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
                         auto selection = static_cast<char *>(payload->Data);
-                        std::string fullPath = selection;
+                        o->setVideoPlayer(nullptr);
                         if (o->image == nullptr) {
-                            o->image = new Image(fullPath);
+                            o->image = new Image(FilePath::ImageFile(selection));
                         } else {
-                            o->image->setImage(fullPath);
+                            o->image->setImage(FilePath::ImageFile(selection));
+                            o->image->MakeAutoOGLImage();
                         }
-                        LOG_MESSAGE("File %s", selection);
+                    }
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::VIDEO_ITEM)) {
+                        auto selection = static_cast<char *>(payload->Data);
+                        o->loadVideo(std::string(selection));
                     }
                     ImGui::EndDragDropTarget();
                 }
