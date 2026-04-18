@@ -6,7 +6,7 @@ override_dh_auto_configure:
 	cmake -B debian/build -DCMAKE_BUILD_TYPE=Release .
 
 override_dh_auto_build:
-	cmake --build debian/build -j$(shell nproc --ignore=1)
+	cmake --build debian/build -j2
 
 override_dh_auto_install:
 	mkdir -p debian/brakeza3d/opt/brakeza3d/bin
