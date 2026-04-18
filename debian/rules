@@ -15,6 +15,6 @@ override_dh_auto_install:
 	cp -r GLSL  debian/brakeza3d/opt/brakeza3d/
 	cp -r config debian/brakeza3d/opt/brakeza3d/
 	mkdir -p debian/brakeza3d/usr/bin
-	printf '#!/bin/sh\ncd /opt/brakeza3d\nexec bin/Brakeza3D "$$@"\n' \
+	printf '#!/bin/sh\ncd /opt/brakeza3d/bin\nexec ./Brakeza3D "$$@"\n' \
 		> debian/brakeza3d/usr/bin/brakeza3d
 	chmod 755 debian/brakeza3d/usr/bin/brakeza3d
