@@ -245,17 +245,17 @@
     },
     "content": "393be207"
   },
-  "/docs-b96": {
+  "/docs-5d9": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/docs-08b": {
+  "/docs-d1f": {
     "__comp": "a7bd4aaa",
     "__props": "0058b4c6"
   },
-  "/docs-ca2": {
+  "/docs-a8d": {
     "__comp": "a94703ab"
   },
   "/docs/advanced/core-shaders-1a7": {
@@ -377,6 +377,10 @@
   "/docs/scripting-api/sound-system-e83": {
     "__comp": "17896441",
     "content": "1260a475"
+  },
+  "/docs/scripting-api/swarm-78b": {
+    "__comp": "17896441",
+    "content": "59d5b7ef"
   },
   "/docs/scripting-api/text-system-03a": {
     "__comp": "17896441",

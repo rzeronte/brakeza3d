@@ -109,15 +109,15 @@ export default [
   },
   {
     path: '/docs',
-    component: ComponentCreator('/docs', 'b96'),
+    component: ComponentCreator('/docs', '5d9'),
     routes: [
       {
         path: '/docs',
-        component: ComponentCreator('/docs', '08b'),
+        component: ComponentCreator('/docs', 'd1f'),
         routes: [
           {
             path: '/docs',
-            component: ComponentCreator('/docs', 'ca2'),
+            component: ComponentCreator('/docs', 'a8d'),
             routes: [
               {
                 path: '/docs/advanced/core-shaders',
@@ -296,6 +296,12 @@ export default [
               {
                 path: '/docs/scripting-api/sound-system',
                 component: ComponentCreator('/docs/scripting-api/sound-system', 'e83'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/scripting-api/swarm',
+                component: ComponentCreator('/docs/scripting-api/swarm', '78b'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },
