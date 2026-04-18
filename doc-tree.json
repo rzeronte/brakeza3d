@@ -171,6 +171,11 @@
           "name": "Text System",
           "url": "https://brakeza.com/docs/scripting-api/text-system/",
           "children": []
+        },
+        {
+          "name": "Swarm",
+          "url": "https://brakeza.com/docs/scripting-api/swarm/",
+          "children": []
         }
       ]
     },
