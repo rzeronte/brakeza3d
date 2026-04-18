@@ -20,6 +20,7 @@
 #include "../3D/Image3DAnimation.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/ParticleEmitter.h"
+#include "../Misc/VideoPlayer.h"
 
 // Undefine Windows API macro that conflicts with ComponentSound::PlaySound
 #ifdef PlaySound
@@ -409,8 +410,12 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<Image2D>("Image2D",
     sol::base_classes, sol::bases<Object3D>(),
         "setScreenPosition", &Image2D::setScreenPosition,
-        "setSize", &Image2D::setSize,
-        "setFilePath", &Image2D::setFilePath
+        "setSize",           &Image2D::setSize,
+        "setFilePath",       &Image2D::setFilePath,
+        "loadVideo",         &Image2D::loadVideo,
+        "stopVideo",         &Image2D::stopVideo,
+        "isVideoFinished",   &Image2D::isVideoFinished,
+        "hasVideo",          &Image2D::hasVideo
     );
 
     lua.new_usertype<Image2DAnimation>("Image2DAnimation",
@@ -563,19 +568,23 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<ObjectFactory>("ObjectFactory",
-        "Object3D", &ObjectFactory::CreateObject3D,
-        "Image2D", &ObjectFactory::CreateImage2D,
-        "Image2DAnimation", &ObjectFactory::CreateImage2DAnimation,
-        "Image3D", &ObjectFactory::CreateImage3D,
-        "Image3DAnimation", &ObjectFactory::CreateImage3DAnimation,
-        "Image3DAnimation360", &ObjectFactory::CreateImage3DAnimation360,
-        "Mesh3D", &ObjectFactory::CreateMesh3D,
-        "Mesh3DAnimation", &ObjectFactory::CreateMesh3DAnimation,
-        "LightPoint", &ObjectFactory::CreateLightPoint,
-        "LightSpot", &ObjectFactory::CreateLightSpot,
-        "ParticleEmitter", &ObjectFactory::CreateParticleEmitter,
-        "TextWriter", &ObjectFactory::CreateTextWriter,
-        "ScriptLUA", &ObjectFactory::CreateScriptLUA
+        "Object3D",           &ObjectFactory::CreateObject3D,
+        "Image2D",            &ObjectFactory::CreateImage2D,
+        "Image2DAnimation",   &ObjectFactory::CreateImage2DAnimation,
+        "Image3D",            &ObjectFactory::CreateImage3D,
+        "Image3DAnimation",   &ObjectFactory::CreateImage3DAnimation,
+        "Image3DAnimation360",&ObjectFactory::CreateImage3DAnimation360,
+        "Mesh3D",             &ObjectFactory::CreateMesh3D,
+        "Mesh3DAnimation",    &ObjectFactory::CreateMesh3DAnimation,
+        "LightPoint",         &ObjectFactory::CreateLightPoint,
+        "LightSpot",          &ObjectFactory::CreateLightSpot,
+        "ParticleEmitter",    &ObjectFactory::CreateParticleEmitter,
+        "TextWriter",         &ObjectFactory::CreateTextWriter,
+        "ScriptLUA",          &ObjectFactory::CreateScriptLUA,
+        "PlayVideoCutscene",  [](ObjectFactory*, const std::string &path) {
+            VideoPlayer vp(path);
+            vp.play();
+        }
     );
 }
 

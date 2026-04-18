@@ -76,6 +76,21 @@ void Image2D::setScreenPosition(int x, int y)
     this->y = y;
 }
 
+void Image2D::stopVideo()
+{
+    setVideoPlayer(nullptr);
+}
+
+bool Image2D::isVideoFinished() const
+{
+    return !videoPlayer || videoPlayer->isFinished();
+}
+
+bool Image2D::hasVideo() const
+{
+    return videoPlayer != nullptr;
+}
+
 void Image2D::setFilePath(const std::string &filepath)
 {
     this->filepath = filepath;

@@ -21,8 +21,8 @@ img = ObjectFactory.Image2D(
     "../assets/images/logo_small.png",              -- file
     10,                                             -- screen xpos
     10,                                             -- screen ypos
-    400,                                            -- width
-    350                                             -- height
+    1.0,                                            -- width scale  (0.0–1.0, 1.0 = full screen width)
+    1.0                                             -- height scale (0.0–1.0, 1.0 = full screen height)
 );
 ```
 
@@ -30,8 +30,68 @@ You can resize and/or reposition an Image2D object at any time:
 
 ```lua
 img:setScreenPosition(300, 300)                     -- change screen position
-img:setSize(100, 100)                               -- change size
+img:setSize(0.5, 0.5)                               -- half screen size
 ```
+
+### Video playback on Image2D
+
+An Image2D can play a video file (MP4, AVI, etc.) as an overlay using the non-blocking mode.
+The video updates every engine frame and the Image2D renders it automatically.
+
+```lua
+-- Load and start a video
+img:loadVideo("../assets/videos/intro.mp4")
+
+-- Check whether playback has ended
+if img:isVideoFinished() then
+    img:stopVideo()
+end
+
+-- Check whether a video is currently active
+if img:hasVideo() then
+    print("video is playing")
+end
+```
+
+#### Full overlay example
+
+```lua
+local overlay = nil
+local done    = false
+
+function onStart()
+    overlay = ObjectFactory.Image2D("", 0, 0, 1.0, 1.0)
+    overlay:setScreenPosition(0, 0)
+    overlay:loadVideo("../assets/videos/intro.mp4")
+end
+
+function onUpdate()
+    if done then return end
+    if overlay ~= nil and overlay:isVideoFinished() then
+        overlay:stopVideo()
+        Brakeza:removeObject(overlay)
+        overlay = nil
+        done = true
+    end
+end
+```
+
+### Blocking cutscene
+
+Use `PlayVideoCutscene` when you need a full-screen video that **blocks** execution until it finishes
+(e.g. intro or between-level cinematics):
+
+```lua
+function onStart()
+    ObjectFactory:PlayVideoCutscene("../assets/videos/cutscene.mp4")
+    -- execution resumes here only after the video ends
+end
+```
+
+:::note
+Video files must be placed inside `assets/videos/`. Supported formats depend on the FFmpeg build
+included with the engine (MP4/H.264 recommended).
+:::
 
 
 ## Image2DAnimation
