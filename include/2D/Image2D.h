@@ -37,6 +37,9 @@ public:
     void setImage(Image *value);
     void setVideoPlayer(VideoPlayer *vp);
     void loadVideo(const std::string &path);
+    void stopVideo();
+    [[nodiscard]] bool isVideoFinished() const;
+    [[nodiscard]] bool hasVideo() const;
 
     [[nodiscard]] VideoPlayer   *getVideoPlayer() const { return videoPlayer; }
     [[nodiscard]] const std::string &getVideoPath() const { return videoPath; }

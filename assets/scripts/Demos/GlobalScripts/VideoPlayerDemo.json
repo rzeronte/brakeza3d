@@ -1,0 +1,22 @@
+{
+  "codeFile":  "../assets/scripts/Demos/GlobalScripts/VideoPlayerDemo.lua",
+  "typesFile": "../assets/scripts/Demos/GlobalScripts/VideoPlayerDemo.json",
+  "name":      "VideoPlayerDemo",
+  "type":      "Global",
+  "types": [
+    {
+      "name":  "objectToMove",
+      "type":  "string",
+      "value": ""
+    },
+    {
+      "name":  "positionOffset",
+      "type":  "Vertex3D",
+      "value": {
+        "x": 0,
+        "y": 0,
+        "z": 5
+      }
+    }
+  ]
+}
