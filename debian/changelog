@@ -1,0 +1,5 @@
+brakeza3d (0.26.1-1) unstable; urgency=low
+
+  * Initial Debian packaging.
+
+ -- Eduardo <eduardo.rzeronte@gmail.com>  Fri, 18 Apr 2026 00:00:00 +0000
