@@ -16,23 +16,23 @@ public:
     {
         if (ImGui::CollapsingHeader("Image2D")) {
 
-            const int range_min_int = 1;
-            const int range_max_int = Config::get()->screenWidth;
+            const float scaleMin = 0.0f;
+            const float scaleMax = 1.0f;
             if (ImGui::TreeNode("Screen Size")) {
-                if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &o->width,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
-                    o->setScreenPosition(o->x, o->y);
+                if (ImGui::DragScalar("Width", ImGuiDataType_Float, &o->widthScale, 0.005f, &scaleMin, &scaleMax, "%.3f", 1.0f)) {
+                    o->setSize(o->widthScale, o->heightScale);
                 }
-                if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &o->height,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
-                    o->setScreenPosition(o->x, o->y);
+                if (ImGui::DragScalar("Height", ImGuiDataType_Float, &o->heightScale, 0.005f, &scaleMin, &scaleMax, "%.3f", 1.0f)) {
+                    o->setSize(o->widthScale, o->heightScale);
                 }
                 ImGui::TreePop();
             }
             ImGui::Separator();
             if (ImGui::TreeNode("Screen Position")) {
-                if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &o->x,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
+                if (ImGui::DragScalar("Offset X", ImGuiDataType_S32, &o->x, 1.f, nullptr, nullptr, "%d", 1.0f)) {
                     o->setScreenPosition(o->x, o->y);
                 }
-                if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &o->y,1.f, &range_min_int, &range_max_int, "%d", 1.0f)) {
+                if (ImGui::DragScalar("Offset Y", ImGuiDataType_S32, &o->y, 1.f, nullptr, nullptr, "%d", 1.0f)) {
                     o->setScreenPosition(o->x, o->y);
                 }
                 ImGui::TreePop();

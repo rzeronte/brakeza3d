@@ -7,10 +7,10 @@
 #include "../../include/GUI/Objects/Image2DGUI.h"
 #include "../../include/Misc/VideoPlayer.h"
 
-Image2D::Image2D(const std::string &file, int width, int height)
+Image2D::Image2D(const std::string &file, float widthScale, float heightScale)
 :
-    width(width),
-    height(height),
+    widthScale(widthScale),
+    heightScale(heightScale),
     filepath(file)
 {
     featuresGUI.position = false;
@@ -36,7 +36,9 @@ void Image2D::onUpdate()
 
     if (!image || !image->isLoaded()) return;
 
-    image->DrawFlatAlpha(x, y, width, height, alpha, Components::get()->Window()->getBackgroundFramebuffer());
+    const int drawW = (int)(widthScale  * (float)Config::get()->screenWidth);
+    const int drawH = (int)(heightScale * (float)Config::get()->screenHeight);
+    image->DrawFlatAlpha(x, y, drawW, drawH, alpha, Components::get()->Window()->getBackgroundFramebuffer());
 }
 
 void Image2D::setVideoPlayer(VideoPlayer *vp)
@@ -62,10 +64,10 @@ void Image2D::loadVideo(const std::string &path)
     setVideoPlayer(vp);
 }
 
-void Image2D::setSize(int w, int h)
+void Image2D::setSize(float w, float h)
 {
-    this->width = w;
-    this->height = h;
+    widthScale  = w;
+    heightScale = h;
 }
 
 void Image2D::setScreenPosition(int x, int y)

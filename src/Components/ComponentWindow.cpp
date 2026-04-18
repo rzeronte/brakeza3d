@@ -544,8 +544,10 @@ void ComponentWindow::ResizeGBuffer()
 void ComponentWindow::UpdateWindowSize()
 {
     SDL_GetWindowSize(window, &widthWindow, &heightWindow);
-    widthRender  = widthWindow;
-    heightRender = heightWindow;
+    if (!customRenderResolution) {
+        widthRender  = widthWindow;
+        heightRender = heightWindow;
+    }
 }
 
 unsigned int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int y) const
@@ -731,5 +733,6 @@ void ComponentWindow::setRendererSize(int w, int h)
 {
     widthRender = w;
     heightRender = h;
+    customRenderResolution = true;
     ResetFramebuffer();
 }

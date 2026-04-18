@@ -39,6 +39,7 @@ class ComponentWindow : public Component
     int heightWindow = Config::get()->screenHeight;
     int widthRender = Config::get()->renderWidth;
     int heightRender = Config::get()->renderHeight;
+    bool customRenderResolution = false;
 
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;

@@ -39,7 +39,7 @@ Object3D* ObjectFactory::CreateObject3D(const Vertex3D &position)
     return o;
 }
 
-Image2D* ObjectFactory::CreateImage2D(const std::string &file, int x, int y, int w, int h)
+Image2D* ObjectFactory::CreateImage2D(const std::string &file, int x, int y, float w, float h)
 {
     auto *o = new Image2D(file, w, h);
     o->setScreenPosition(x, y);

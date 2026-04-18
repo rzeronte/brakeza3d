@@ -15,8 +15,8 @@ class Image2D : public Object3D
     int x = 0;
     int y = 0;
 
-    int width = 0;
-    int height = 0;
+    float widthScale = 1.0f;
+    float heightScale = 1.0f;
 
     Image *image = nullptr;
     std::string filepath;
@@ -26,12 +26,12 @@ class Image2D : public Object3D
 
 public:
     Image2D() = default;
-    Image2D(const std::string &file, int width, int height);
+    explicit Image2D(const std::string &file, float widthScale = 1.0f, float heightScale = 1.0f);
     ~Image2D() override;
 
     void DrawPropertiesGUI() override;
     void onUpdate() override;
-    void setSize(int x, int y);
+    void setSize(float w, float h);
     void setScreenPosition(int x, int y);
     void setFilePath(const std::string &filepath);
     void setImage(Image *value);
