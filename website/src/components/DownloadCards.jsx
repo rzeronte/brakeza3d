@@ -7,7 +7,7 @@ const downloads = [
         title: 'Windows 10/11',
         arch: 'amd64',
         size: '68.9 MB',
-        url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Windows-installer.exe',
+        url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.4/Brakeza3D-x64-86-Windows-installer.exe',
         label: 'Download .exe'
     },
     {
@@ -15,7 +15,7 @@ const downloads = [
         title: 'Ubuntu/Debian',
         arch: 'amd64',
         size: '33.3 MB',
-        url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Linux-installer.deb',
+        url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.4/Brakeza3D-x64_86-Linux-installer.deb',
         label: 'Download .deb'
     },
     {

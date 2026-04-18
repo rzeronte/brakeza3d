@@ -381,7 +381,7 @@ target_include_directories(Brakeza3D PRIVATE
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_compile_options(Brakeza3D PRIVATE -O0 -Wall -g -Wa,-mbig-obj)
+    target_compile_options(Brakeza3D PRIVATE -O0 -Wall -g)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_options(Brakeza3D PRIVATE -O3 -w)
 endif()
