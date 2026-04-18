@@ -1,0 +1,36 @@
+Source: brakeza3d
+Section: games
+Priority: optional
+Maintainer: Eduardo <eduardo.rzeronte@gmail.com>
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake,
+ build-essential,
+ libsdl2-dev,
+ libsdl2-image-dev,
+ libsdl2-ttf-dev,
+ libsdl2-mixer-dev,
+ libbullet-dev,
+ libassimp-dev,
+ liblua5.2-dev,
+ libgl1-mesa-dev,
+ libglu1-mesa-dev,
+ libglew-dev,
+ libcurl4-openssl-dev,
+ libglm-dev,
+ libavcodec-dev,
+ libavformat-dev,
+ libavutil-dev,
+ libswscale-dev,
+ libswresample-dev
+Standards-Version: 4.6.0
+Homepage: https://github.com/rzeronte/brakeza3d
+
+Package: brakeza3d
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Open-source 3D game engine with built-in editor and Lua scripting
+ Brakeza3D is a free and open-source 3D game engine designed for rapid game
+ development. Features include a built-in visual editor (ImGui), Lua scripting,
+ OpenGL deferred rendering pipeline, Bullet Physics integration, 3D model
+ loading with skeletal animation (Assimp), and a node-based GLSL shader editor.
