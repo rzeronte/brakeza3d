@@ -161,6 +161,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "scripting-api/swarm",
+              "path": "/docs/scripting-api/swarm",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "scripting-api/text-system",
               "path": "/docs/scripting-api/text-system",
               "sidebar": "tutorialSidebar"
