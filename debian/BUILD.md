@@ -35,4 +35,4 @@ dpkg-buildpackage -us -uc -b
 ```
 
 El flag `-us -uc` omite la firma GPG (util si no tienes clave configurada).
-El `.deb` quedara un nivel arriba: `../brakeza3d_0.26.4-1_amd64.deb`.
+El `.deb` quedara un nivel arriba: `../brakeza3d_0.26.4_amd64.deb`.
