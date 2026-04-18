@@ -20,7 +20,7 @@ class ObjectFactory {
 
     public:
     static Object3D* CreateObject3D(const Vertex3D &position);
-    static Image2D* CreateImage2D(const std::string &file, int x, int y, int w, int h);
+    static Image2D* CreateImage2D(const std::string &file, int x, int y, float w, float h);
     static Image2DAnimation* CreateImage2DAnimation(const std::string &file, int x, int y, int sw, int sh, int frames, int fps);
     static Image3D* CreateImage3D(const std::string &file, const Vertex3D &position, float width, float height);
     static Image3DAnimation* CreateImage3DAnimation(const std::string &file, const Vertex3D &position, float width, float height, float sw, float sh, int frames, int fps);

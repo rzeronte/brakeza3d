@@ -19,8 +19,8 @@ cJSON * Image2DSerializer::JsonByObject(Object3D *o)
 
     cJSON_AddNumberToObject(root, "x", image->x);
     cJSON_AddNumberToObject(root, "y", image->y);
-    cJSON_AddNumberToObject(root, "width", image->width);
-    cJSON_AddNumberToObject(root, "height", image->height);
+    cJSON_AddNumberToObject(root, "widthScale", image->widthScale);
+    cJSON_AddNumberToObject(root, "heightScale", image->heightScale);
 
     cJSON_AddStringToObject(root, "image", image->filepath.c_str());
     cJSON_AddStringToObject(root, "video", image->videoPath.c_str());
@@ -50,9 +50,11 @@ void Image2DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     auto *videoItem = cJSON_GetObjectItemCaseSensitive(json, "video");
     if (videoItem && videoItem->valuestring && videoItem->valuestring[0] != '\0')
         image->videoPath = videoItem->valuestring;
+    auto *wItem = cJSON_GetObjectItemCaseSensitive(json, "widthScale");
+    auto *hItem = cJSON_GetObjectItemCaseSensitive(json, "heightScale");
     image->setSize(
-        cJSON_GetObjectItemCaseSensitive(json, "width")->valueint,
-        cJSON_GetObjectItemCaseSensitive(json, "height")->valueint
+        wItem ? (float)wItem->valuedouble : 1.0f,
+        hItem ? (float)hItem->valuedouble : 1.0f
     );
     image->setScreenPosition(
         cJSON_GetObjectItemCaseSensitive(json, "x")->valueint,
@@ -64,7 +66,7 @@ void Image2DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
 void Image2DSerializer::MenuLoad(const std::string &file)
 {
-    auto *o = new Image2D(file, Config::get()->screenWidth/4, Config::get()->screenHeight/4);
+    auto *o = new Image2D(file, 1.0f, 1.0f);
 
     const auto x = Config::get()->screenWidth/2 - 100;
     const auto y = Config::get()->screenHeight/2 - 100;

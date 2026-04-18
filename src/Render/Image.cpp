@@ -84,26 +84,20 @@ void Image::DrawFlat(int x, int y, int w, int h, GLuint fbo) const
 
     auto window = Components::get()->Window();
 
-    int windowWidth = window->getWidth();
-    int windowHeight = window->getHeight();
-
-    /*SDL_Rect srcRect;
-    srcRect.x = 0;
-    srcRect.y = 0;
-    srcRect.w = surface->w;
-    srcRect.h = surface->h;*/
+    const int renderW = window->getWidthRender();
+    const int renderH = window->getHeightRender();
 
     SDL_Rect dstRect;
-    dstRect.x = x * windowWidth / Config::get()->screenWidth;
-    dstRect.y = y * windowHeight / Config::get()->screenHeight;
-    dstRect.w = w * windowWidth / Config::get()->screenWidth;
-    dstRect.h = h * windowHeight / Config::get()->screenHeight;
+    dstRect.x = x * renderW / Config::get()->screenWidth;
+    dstRect.y = y * renderH / Config::get()->screenHeight;
+    dstRect.w = w * renderW / Config::get()->screenWidth;
+    dstRect.h = h * renderH / Config::get()->screenHeight;
 
     Components::get()->Render()->getShaders()->shaderOGLImage->renderTexture(
         textureId,
         dstRect.x, dstRect.y,
-        dstRect.w,dstRect.h,
-        dstRect.w,dstRect.h,
+        dstRect.w, dstRect.h,
+        renderW, renderH,
         alpha,
         false,
         fbo
