@@ -21,6 +21,7 @@ public:
     void LoadUniforms() override;
 
     void drawOutline(Mesh3D *m, const Color &c, float borderThickness, GLuint fbo);
+    void drawOutlineSubmesh(Mesh3D *m, const std::string &submeshName, const Color &c, float borderThickness, GLuint fbo);
     void drawOutlineImage3D(Image3D *i, const Color &c, float borderThickness, GLuint fbo);
     void drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint fbo);
     void Destroy() override;

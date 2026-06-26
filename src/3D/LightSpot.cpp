@@ -35,7 +35,7 @@ void LightSpot::onUpdate()
     assert(cutOff >= 0.0f && cutOff <= 1.0f);
     assert(outerCutOff >= 0.0f && outerCutOff <= 1.0f);
 
-    RenderDebugCone(std::acos(cutOff), Color::red());
+    RenderDebugCone(std::acos(cutOff), Color(1.0f, 0.3f, 0.0f, 0.35f));
 }
 
 void LightSpot::RenderDebugCone(float radians, const Color &c)
@@ -57,7 +57,7 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
         if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
             glDisable(GL_CULL_FACE);
             glEnable(GL_BLEND);
-            glBlendFunc(getRenderSettings().mode_src, getRenderSettings().mode_dst);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             render->getShaders()->shaderOGLColor->RenderColor(
                 getModelMatrix(),
                 vertexBuffer,
@@ -66,22 +66,20 @@ void LightSpot::RenderDebugCone(float radians, const Color &c)
                 (int) cone.vertices.size(),
                 c,
                 false,
-                Components::get()->Window()->getGBuffer().FBO
+                Components::get()->Window()->getForegroundFramebuffer()
             );
             glEnable(GL_CULL_FACE);
         }
 
-        if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
-            render->getShaders()->shaderOGLWireframe->render(
-                getModelMatrix(),
-                vertexBuffer,
-                uvBuffer,
-                normalBuffer,
-                static_cast<int>(cone.vertices.size()),
-                c,
-                Components::get()->Window()->getSceneFramebuffer()
-            );
-        }
+        render->getShaders()->shaderOGLWireframe->render(
+            getModelMatrix(),
+            vertexBuffer,
+            uvBuffer,
+            normalBuffer,
+            (int) cone.vertices.size(),
+            c,
+            Components::get()->Window()->getForegroundFramebuffer()
+        );
     }
 }
 

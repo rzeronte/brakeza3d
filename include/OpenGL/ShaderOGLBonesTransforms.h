@@ -20,8 +20,8 @@ public:
     void PrepareMainThread() override;
 
     void LoadUniforms() override;
-    void render(Mesh3DData &meshData, std::vector<glm::mat4> transformations,GLuint fbo);
-    void setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer);
+    void render(Mesh3DData &meshData, const std::vector<glm::mat4>& transformations, GLuint fbo);
+    void setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer, GLuint normalBuffer);
 
     void Destroy() override;
 };

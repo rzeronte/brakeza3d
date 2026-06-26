@@ -13,6 +13,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../../include/Brakeza.h"
+#include "../../include/2D/Image2D.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/IconsGUI.h"
 #include "../../include/GUI/GUI.h"
@@ -34,7 +35,7 @@ void ComponentWindow::onStart()
     ImGuiInitialize(Config::get()->CONFIG_FOLDER + "ImGuiDefault.ini");
 
     CreateGBuffer();
-    CreateFramebuffer();
+    CreateFramebuffers();
     CreatePickingColorBuffer();
 }
 
@@ -49,6 +50,13 @@ void ComponentWindow::preUpdate()
 void ComponentWindow::onUpdate()
 {
     Component::onUpdate();
+
+    for (const auto &o : Brakeza::get()->getSceneObjects()) {
+        if (!o->isEnabled()) continue;
+        if (o->getTypeObject() != ObjectType::Image2D) continue;
+        auto *img = static_cast<Image2D*>(o);
+        if (img->isDrawInBackground()) img->drawBackground();
+    }
 }
 
 void ComponentWindow::postUpdate()
@@ -149,6 +157,7 @@ void ComponentWindow::InitFontsTTF()
 
 void ComponentWindow::ResetOpenGLSettings()
 {
+    //glActiveTexture(GL_TEXTURE0);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_CULL_FACE);
@@ -159,7 +168,7 @@ void ComponentWindow::ResetOpenGLSettings()
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
-void ComponentWindow::CreateFramebuffer()
+void ComponentWindow::CreateFramebuffers()
 {
     glGenFramebuffers(1, &openGLBuffers.globalFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.globalFBO);
@@ -169,15 +178,16 @@ void ComponentWindow::CreateFramebuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.globalTexture, 0);
     LOG_MESSAGE("[Render] Creating globalTexture(%d, %d)", widthRender, heightRender);
 
     GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Error al configurar el framebuffer" << std::endl;
+        LOG_ERROR("Error setting framebuffer!");
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     // ----
 
     glGenFramebuffers(1, &openGLBuffers.sceneFBO);
@@ -188,13 +198,15 @@ void ComponentWindow::CreateFramebuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.sceneTexture, 0);
     LOG_MESSAGE("[Render] Creating sceneTexture(%d, %d)", widthRender, heightRender);
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gBuffer.depth, 0);
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Error al configurar el framebuffer" << std::endl;
+        LOG_ERROR("Error setting framebuffer!");
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // ----
@@ -207,12 +219,14 @@ void ComponentWindow::CreateFramebuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.backgroundTexture, 0);
     LOG_MESSAGE("[Render] Creating backgroundTexture(%d, %d)", widthRender, heightRender);
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Error al configurar el framebuffer" << std::endl;
+        LOG_ERROR("Error setting framebuffer!");
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     // ----
@@ -225,12 +239,14 @@ void ComponentWindow::CreateFramebuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.foregroundTexture, 0);
     LOG_MESSAGE("[Render] Creating foregroundTexture(%d, %d)", widthRender, heightRender);
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Error al configurar el framebuffer" << std::endl;
+        LOG_ERROR("Error setting framebuffer!");
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -243,12 +259,14 @@ void ComponentWindow::CreateFramebuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthWindow, heightWindow, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, openGLBuffers.uiTexture, 0);
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-    LOG_MESSAGE("[Render] Creating globalTexture(%d, %d)", widthWindow, heightWindow);
+    LOG_MESSAGE("[Render] Creating UITexture(%d, %d)", widthWindow, heightWindow);
 
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "Error al configurar el framebuffer" << std::endl;
+        LOG_ERROR("Error setting framebuffer!");
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -256,12 +274,13 @@ void ComponentWindow::CreateFramebuffer()
 
 void ComponentWindow::ResetFramebuffer()
 {
+    LOG_WARNING("[Render] ResetFramebuffer()...");
+
     glDeleteFramebuffers(1, &openGLBuffers.globalFBO);
     glDeleteTextures(1, &openGLBuffers.globalTexture);
 
     glDeleteFramebuffers(1, &openGLBuffers.sceneFBO);
     glDeleteTextures(1, &openGLBuffers.sceneTexture);
-    //glDeleteTextures(1, &openGLBuffers.sceneDepthTexture);
 
     glDeleteFramebuffers(1, &openGLBuffers.backgroundFBO);
     glDeleteTextures(1, &openGLBuffers.backgroundTexture);
@@ -273,9 +292,10 @@ void ComponentWindow::ResetFramebuffer()
     glDeleteTextures(1, &openGLBuffers.uiTexture);
 
     ResizeGBuffer();
-    CreateFramebuffer();
+    CreateFramebuffers();
 
     Components::get()->Render()->resizeShadersFramebuffers();
+    postProcessingManager->resize(widthRender, heightRender);
 
 }
 
@@ -285,41 +305,62 @@ void ComponentWindow::FlipGlobalToWindow()
 
     if (Config::get()->ENABLE_IMGUI) {
        ImGuiOnUpdate();
-   }
+    } else {
+        glViewport(0, 0, widthRender, heightRender);
+        Components::get()->Render()->DrawSelectionBox();
+    }
 
-    // Selection rectangle drawn via line shader — always visible regardless of ImGui state
-    Components::get()->Render()->DrawSelectionRect();
+    // Restore window-space viewport explicitly — ImGui_ImplOpenGL3_RenderDrawData
+    // overrides the viewport to (drawable_w, drawable_h) which may differ on HiDPI.
+    glViewport(0, 0, widthWindow, heightWindow);
+
+    glDisable(GL_SCISSOR_TEST);
+    glDisable(GL_DEPTH_TEST);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     auto shaderOGLImage = Components::get()->Render()->getShaders()->shaderOGLImage;
-    shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, openGLBuffers.globalFBO);
+
+    shaderOGLImage->renderTexture(openGLBuffers.backgroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
+    shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.uiTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
+
+    glEnable(GL_DEPTH_TEST);
 
     SDL_GL_SwapWindow(window);
 }
 
 void ComponentWindow::ClearOGLFrameBuffers() const
 {
-    const GLuint framebuffers[] = {
-        openGLBuffers.foregroundFBO,
-        openGLBuffers.uiFBO,
-        openGLBuffers.backgroundFBO,
-        openGLBuffers.globalFBO,
-        openGLBuffers.sceneFBO,
-        gBuffer.FBO,
-        pickingColorBuffer.FBO
-    };
+    glDisable(GL_SCISSOR_TEST);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-    for (const GLuint fbo : framebuffers) {
-        glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    }
+    auto render = Components::get()->Render();
+
+    // G-Buffer siempre a negro: sus canales codifican posición/normal/albedo,
+    // no un color de fondo. El check "dot(fragPos,fragPos)<0.001" requiere (0,0,0).
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    render->ChangeOpenGLFramebuffer(gBuffer.FBO);            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // sceneFBO: color configurable — es el fondo visible donde no hay geometría
+    glClearColor(clearColorR, clearColorG, clearColorB, 1.0f);
+    render->ChangeOpenGLFramebuffer(openGLBuffers.sceneFBO); glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Picking y capas de composición siempre transparentes
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    render->ChangeOpenGLFramebuffer(pickingColorBuffer.FBO);          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    render->ChangeOpenGLFramebuffer(openGLBuffers.globalFBO);         glClear(GL_COLOR_BUFFER_BIT);
+    render->ChangeOpenGLFramebuffer(openGLBuffers.backgroundFBO);     glClear(GL_COLOR_BUFFER_BIT);
+    render->ChangeOpenGLFramebuffer(openGLBuffers.foregroundFBO);     glClear(GL_COLOR_BUFFER_BIT);
+    render->ChangeOpenGLFramebuffer(openGLBuffers.uiFBO);             glClear(GL_COLOR_BUFFER_BIT);
 
     if (Config::get()->ENABLE_SHADOW_MAPPING) {
         Components::get()->Render()->getShaders()->shaderShadowPass->clearDirectionalLightDepthTexture();
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -374,6 +415,8 @@ void ComponentWindow::ImGuiInitialize(const std::string& configFile)
 
 void ComponentWindow::ImGuiOnUpdate()
 {
+    Components::get()->Render()->ChangeOpenGLFramebuffer(getUIFramebuffer());
+
     if (ImGuiConfig != ImGuiConfigChanged) {
         switch(ImGuiConfigChanged) {
             case Config::ImGUIConfigs::DEFAULT: {
@@ -399,18 +442,18 @@ void ComponentWindow::ImGuiOnUpdate()
         Brakeza::get()->GUI()->setLayoutToDefault(getImGuiConfig());
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, getUIFramebuffer());
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame();
 
     ImGui::NewFrame();
+    Components::get()->Render()->DrawSelectionRectFill();
     Brakeza::get()->GUI()->DrawGUI();
 
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 bool ComponentWindow::isWindowMaximized() const
@@ -458,6 +501,8 @@ void ComponentWindow::CreatePickingColorBuffer()
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, widthRender, heightRender, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickingColorBuffer.rbgTexture, 0);
 
     glGenRenderbuffers(1, &pickingColorBuffer.depthTexture);
@@ -482,7 +527,7 @@ void ComponentWindow::CreateGBuffer()
         glDeleteTextures(1, &gBuffer.albedo);
         glDeleteTextures(1, &gBuffer.normals);
         glDeleteTextures(1, &gBuffer.positions);
-        glDeleteRenderbuffers(1, &gBuffer.depth);
+        glDeleteTextures(1, &gBuffer.depth);
     }
 
     glGenFramebuffers(1, &gBuffer.FBO);
@@ -537,6 +582,7 @@ void ComponentWindow::CreateGBuffer()
 
 void ComponentWindow::ResizeGBuffer()
 {
+    LOG_WARNING("[Window] Resizing GBuffer...");
     CreateGBuffer();
     CreatePickingColorBuffer();
 }
@@ -665,6 +711,7 @@ void ComponentWindow::setImGuiConfig(Config::ImGUIConfigs c)
 void ComponentWindow::CheckForResizeOpenGLWindow(const SDL_Event &e)
 {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+        LOG_WARNING("[Window] Detected size windows changed!");
         UpdateWindowSize();
         glViewport(0,0, getWidth(), getHeight());
         ResetFramebuffer();
@@ -731,6 +778,7 @@ void ComponentWindow::setWindowSize(int w, int h)
 
 void ComponentWindow::setRendererSize(int w, int h)
 {
+    LOG_WARNING("[Window] Set Renderer size to %dx%d", w, h);
     widthRender = w;
     heightRender = h;
     customRenderResolution = true;

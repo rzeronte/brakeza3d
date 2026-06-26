@@ -4,6 +4,7 @@
 
 #include "ObjectFactory.h"
 
+#include "../3D/Projectile.h"
 #include "../2D/Image2D.h"
 #include "../2D/Image2DAnimation.h"
 #include "../3D/Image3D.h"
@@ -215,6 +216,20 @@ TextWriter* ObjectFactory::CreateTextWriter(const std::string& fontFile)
         Components::get()->Window()->getRenderer(),
         TTF_OpenFont(fontFile.c_str(), 35)
     );
+}
+
+Projectile* ObjectFactory::CreateProjectile(const std::string &file, const Vertex3D &position)
+{
+    auto *o = new Projectile(Vertex3D(0, 0, 0));
+    o->setSourceFile(file);
+    o->setName(Brakeza::UniqueObjectLabel("Projectile"));
+    o->setPosition(position);
+    o->setCollisionsEnabled(false);
+
+    auto json = JSONSerializerRegistry::instance().serialize(o);
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
+
+    return o;
 }
 
 ScriptLUA * ObjectFactory::CreateScriptLUA(const std::string &pathFile)

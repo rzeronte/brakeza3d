@@ -35,13 +35,14 @@ void ShaderOGLRenderDeferred::LoadUniforms()
 void ShaderOGLRenderDeferred::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const
 {
     for (const auto& m: o->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         render(
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelSpecularTextures()[m.materialIndex]->getOGLTextureID(),
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
-            m.normalBuffer,
+            useFeedbackBuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             o->getAlpha(),
             fbo
@@ -67,6 +68,7 @@ void ShaderOGLRenderDeferred::render(
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 
     auto window = Components::get()->Window();
     glViewport(0,0, window->getWidthRender(), window->getHeightRender());
@@ -106,13 +108,11 @@ void ShaderOGLRenderDeferred::render(
 
     glBindVertexArray(0);
 
+    glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
 }
 
 void ShaderOGLRenderDeferred::Destroy()
 {
-    if (VertexArrayID != 0) {
-        glDeleteVertexArrays(1, &VertexArrayID);
-        VertexArrayID = 0;
-    }
+    // VAO is size-independent — nothing to destroy on resize
 }

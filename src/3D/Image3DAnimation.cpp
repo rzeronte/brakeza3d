@@ -12,7 +12,6 @@ Image3DAnimation::Image3DAnimation(const Vertex3D &position, float w, float h)
     billboard(new Image3D(position, w, h, nullptr))
 {
     setPosition(position);
-    luaEnvironment["this"] = this;
 }
 
 void Image3DAnimation::onUpdate()

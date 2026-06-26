@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Demos/ProjectileLauncher.lua",
+	"typesFile":	"../assets/scripts/Demos/ProjectileLauncher.json",
+	"name":	"ProjectileLauncher",
+	"type":	"Global",
+	"types":	[]
+}

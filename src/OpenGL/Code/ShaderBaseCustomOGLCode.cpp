@@ -39,7 +39,6 @@ ShaderBaseCustomOGLCode::ShaderBaseCustomOGLCode(
 :
     ShaderBaseCustom(label, type, vsFile, fsFile, typesFile, type == SHADER_OBJECT)
 {
-    ParseTypesFromFileAttributes();
 }
 
 void ShaderBaseCustomOGLCode::PrepareBackground()
@@ -358,7 +357,10 @@ void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *s
 void ShaderBaseCustomOGLCode::Destroy()
 {
     glDeleteFramebuffers(1, &resultFramebuffer);
-    glDeleteTextures(1, &textureResult);
+    if (internalTextureOwned) {
+        glDeleteTextures(1, &internalTexture);
+        internalTexture = 0;
+    }
     CreateFramebuffer();
 }
 
@@ -412,6 +414,57 @@ void ShaderBaseCustomOGLCode::setDataTypesFromJSON(const cJSON *typesJSON)
             LOG_MESSAGE("[ShaderBaseCustomOGLCode] Loading shader variable: %s => %s", name, type);
         } else {
             LOG_MESSAGE("[ShaderBaseCustomOGLCode] Keeping shader variable: %s => %s", name, type);
+        }
+    }
+}
+
+void ShaderBaseCustomOGLCode::overrideDataTypesFromJSON(const cJSON *typesJSON)
+{
+    cJSON *currentType;
+    cJSON_ArrayForEach(currentType, typesJSON) {
+        auto name = cJSON_GetObjectItemCaseSensitive(currentType, "name")->valuestring;
+        auto type = cJSON_GetObjectItemCaseSensitive(currentType, "type")->valuestring;
+        auto value = cJSON_GetObjectItemCaseSensitive(currentType, "value");
+
+        if (existDataType(name, type)) {
+            for (auto &dt : dataTypes) {
+                if (dt.name == name && dt.type == type) {
+                    switch (GLSLTypeMapping[type].type) {
+                        case ShaderOpenGLCustomDataType::INT:
+                            dt.value = value->valueint;
+                            break;
+                        case ShaderOpenGLCustomDataType::FLOAT:
+                            dt.value = static_cast<float>(value->valuedouble);
+                            break;
+                        case ShaderOpenGLCustomDataType::VEC2:
+                            dt.value = glm::vec2(
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble)
+                            );
+                            break;
+                        case ShaderOpenGLCustomDataType::VEC3:
+                            dt.value = glm::vec3(
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble),
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble)
+                            );
+                            break;
+                        case ShaderOpenGLCustomDataType::VEC4:
+                            dt.value = glm::vec4(
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "x")->valuedouble),
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "y")->valuedouble),
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "z")->valuedouble),
+                                static_cast<float>(cJSON_GetObjectItemCaseSensitive(value, "w")->valuedouble)
+                            );
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                }
+            }
+        } else {
+            addDataType(name, type, value);
         }
     }
 }
@@ -484,6 +537,10 @@ void ShaderBaseCustomOGLCode::addDataType(const char *name, const char *type, cJ
             LUAValue = nullptr;
             break;
         }
+        case ShaderOpenGLCustomDataType::GPOSITION: {
+            LUAValue = nullptr;
+            break;
+        }
         default:
             break;
     }
@@ -537,8 +594,14 @@ void ShaderBaseCustomOGLCode::setDataTypesUniforms()
                 auto image = std::get<Image *>(type.value);
                 if (image != nullptr) {
                     setTexture(type.name, image->getOGLTextureID(), numTextures);
-                    IncreaseNumberTextures();
+                } else {
+                    // Always claim the unit even when null: prevents stale LightPass
+                    // bindings (e.g. gAlbedoSpec on unit 2) from leaking into this slot.
+                    glActiveTexture(GL_TEXTURE0 + numTextures);
+                    glBindTexture(GL_TEXTURE_2D, 0);
+                    setInt(type.name, numTextures);
                 }
+                IncreaseNumberTextures();
                 break;
             }
             case ShaderOpenGLCustomDataType::DELTA_TIME: {
@@ -550,12 +613,19 @@ void ShaderBaseCustomOGLCode::setDataTypesUniforms()
                 break;
             }
             case ShaderOpenGLCustomDataType::SCENE: {
-                setTexture(type.name, textureResult, numTextures);
+                //LOG_MESSAGE("[setDataTypesUniforms] Shader %s is setting SCENE texture FROM: Uniform: %s, TexId: %d, NumTexturesNow: %d", this->getLabel().c_str(), type.name.c_str(), internalTexture, numTextures);
+                setTexture(type.name, internalTexture, numTextures);
                 IncreaseNumberTextures();
                 break;
             }
             case ShaderOpenGLCustomDataType::DEPTH: {
                 auto globalTexture = Components::get()->Window()->getGBuffer().depth;
+                setTexture(type.name, globalTexture, numTextures);
+                IncreaseNumberTextures();
+                break;
+            }
+            case ShaderOpenGLCustomDataType::GPOSITION: {
+                auto globalTexture = Components::get()->Window()->getGBuffer().positions;
                 setTexture(type.name, globalTexture, numTextures);
                 IncreaseNumberTextures();
                 break;
@@ -639,6 +709,11 @@ void ShaderBaseCustomOGLCode::AddDataTypeEmpty(const char *name, const char *typ
         }
         case ShaderOpenGLCustomDataType::DEPTH: {
             LOG_MESSAGE("[ShaderBaseCustomOGLCode] Added DEPTH type: %s => %s", name, type);
+            typeValue = nullptr;
+            break;
+        }
+        case ShaderOpenGLCustomDataType::GPOSITION: {
+            LOG_MESSAGE("[ShaderBaseCustomOGLCode] Added GPOSITION type: %s => %s", name, type);
             typeValue = nullptr;
             break;
         }
@@ -863,17 +938,21 @@ void ShaderBaseCustomOGLCode::CreateFramebuffer()
     int w = window->getWidthRender();
     int h = window->getHeightRender();
 
-    glGenTextures(1, &textureResult);
-    glBindTexture(GL_TEXTURE_2D, textureResult);
+    glGenTextures(1, &internalTexture);
+    glBindTexture(GL_TEXTURE_2D, internalTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureResult, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, internalTexture, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    internalTextureOwned = true;
 }
 
-void ShaderBaseCustomOGLCode::setTextureResult(GLuint value)
+void ShaderBaseCustomOGLCode::setInternalTexture(GLuint value)
 {
-    textureResult = value;
+    internalTexture = value;
+    internalTextureOwned = false;
 }
 
 

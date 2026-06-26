@@ -1,8 +1,8 @@
 {
-	"screenshot":	"../assets/screenshots/scene_544573.png",
+	"screenshot":	"../assets/screenshots/DemoScene04.png",
 	"ads":	{
 		"direction":	{
-			"x":	0.75999999046325684,
+			"x":	0.759999990463257,
 			"y":	-0.76999998092651367,
 			"z":	-0.37134084105491638
 		},
@@ -27,9 +27,10 @@
 			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
+			"selectable":	true,
 			"position":	{
-				"x":	8.7248344421386719,
-				"y":	8.0066709518432617,
+				"x":	8.72483444213867,
+				"y":	8.00667095184326,
 				"z":	0
 			},
 			"rotation":	{
@@ -43,33 +44,31 @@
 				"depthTest":	true,
 				"writeDepth":	true,
 				"shadowMap":	true,
-				"blend_function_src":	771,
-				"blend_function_dst":	771
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models//eye.fbx",
 			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
 			"shaders":	[],
-			"grid":	{
-				"x":	7,
-				"y":	7,
-				"z":	7
-			},
 			"type":	2
 		}, {
 			"name":	"Mesh3D_393556",
 			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
+			"selectable":	true,
 			"position":	{
 				"x":	-5.1786613464355469,
-				"y":	9.3398494720458984,
+				"y":	9.3398494720459,
 				"z":	1.4721266031265259
 			},
 			"rotation":	{
 				"x":	0,
-				"y":	-0,
+				"y":	0,
 				"z":	0
 			},
 			"renderSettings":	{
@@ -78,34 +77,32 @@
 				"depthTest":	true,
 				"writeDepth":	true,
 				"shadowMap":	true,
-				"blend_function_src":	771,
-				"blend_function_dst":	771
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models//ChessPawn.fbx",
 			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
 			"shaders":	[],
-			"grid":	{
-				"x":	7,
-				"y":	7,
-				"z":	7
-			},
 			"type":	2
 		}, {
 			"name":	"space_shuttle",
 			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
+			"selectable":	true,
 			"position":	{
 				"x":	-13.068856239318848,
-				"y":	8.4987878799438477,
+				"y":	8.49878787994385,
 				"z":	0.13435380160808563
 			},
 			"rotation":	{
-				"x":	89.094314575195313,
-				"y":	0.12339146435260773,
-				"z":	-0.9320334792137146
+				"x":	89.0943145751953,
+				"y":	0.12339137494564056,
+				"z":	-0.93117493391037
 			},
 			"renderSettings":	{
 				"blend":	true,
@@ -113,17 +110,45 @@
 				"depthTest":	true,
 				"writeDepth":	true,
 				"shadowMap":	true,
-				"blend_function_src":	771,
-				"blend_function_dst":	771
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
 			},
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"model":	"../assets/models//spaceShuttle.fbx",
 			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
 			"shaders":	[],
 			"type":	2
 		}],
-	"shaders":	[],
+	"shaders":	[{
+			"name":	"BlurPostprocessing",
+			"type":	"Postprocessing",
+			"vsFile":	"../assets/shaders/Examples/CodePostprocessing/BlurPostprocessing.vs",
+			"fsFile":	"../assets/shaders/Examples/CodePostprocessing/BlurPostprocessing.fs",
+			"typesFile":	"../assets/shaders/Examples/CodePostprocessing/BlurPostprocessing.json",
+			"types":	[{
+					"name":	"sceneTexture",
+					"type":	"scene"
+				}, {
+					"name":	"intensity",
+					"type":	"float",
+					"value":	0.12999998033046722
+				}],
+			"enabled":	true
+		}, {
+			"name":	"QuarterBlue",
+			"type":	"Postprocessing",
+			"vsFile":	"../assets/shaders/Examples/CodePostprocessing/Testing/Quarter03.vs",
+			"fsFile":	"../assets/shaders/Examples/CodePostprocessing/Testing/Quarter03.fs",
+			"typesFile":	"../assets/shaders/Examples/CodePostprocessing/Testing/Quarter03.json",
+			"types":	[{
+					"name":	"sceneTexture",
+					"type":	"scene"
+				}],
+			"enabled":	true
+		}],
 	"scripts":	[],
 	"camera":	{
 		"position":	{

@@ -173,6 +173,37 @@ float ComponentSound::getSoundDuration(const std::string& sound)
     return totalSamples / frequency;
 }
 
+void ComponentSound::LoadSoundsFromFile(const std::string& filePath)
+{
+    LOG_MESSAGE("[Sound] Loading sounds from: %s", filePath.c_str());
+
+    auto contentFile = Tools::ReadFile(filePath);
+    cJSON *root = cJSON_Parse(contentFile);
+
+    if (root == nullptr) {
+        LOG_ERROR("[Sound] Cannot parse JSON: %s", filePath.c_str());
+        free(contentFile);
+        return;
+    }
+
+    cJSON *currentSound;
+    cJSON_ArrayForEach(currentSound, cJSON_GetObjectItemCaseSensitive(root, "sounds")) {
+        cJSON *file  = cJSON_GetObjectItemCaseSensitive(currentSound, "file");
+        cJSON *label = cJSON_GetObjectItemCaseSensitive(currentSound, "label");
+        cJSON *type  = cJSON_GetObjectItemCaseSensitive(currentSound, "type");
+
+        if (!file || !label || !type) continue;
+
+        SoundPackageItemType selectedType = (strcmp(type->valuestring, "music") == 0) ? MUSIC : SOUND;
+
+        LOG_MESSAGE("[Sound] Loading: %s -> %s", file->valuestring, label->valuestring);
+        soundPackage.addItem(Config::get()->SOUNDS_FOLDER + file->valuestring, label->valuestring, selectedType);
+    }
+
+    cJSON_Delete(root);
+    free(contentFile);
+}
+
 void ComponentSound::AddSound(const std::string &soundFile, const std::string &label)
 {
     soundPackage.addItem(soundFile, label, SOUND);

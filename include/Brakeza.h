@@ -2,6 +2,7 @@
 #define BRAKEDA3D_BRAKEZA3D_H
 
 #include <vector>
+#include <unordered_map>
 #include "Components/Component.h"
 #include "GUI/GUIManager.h"
 #include "Render/ThreadPool.h"
@@ -18,6 +19,7 @@ class Brakeza
     Timer timer;
 
     std::vector<Object3D *> objects;
+    std::unordered_map<std::string, Object3D *> objectsByName;
 
     GUIManager managerGUI;
     ThreadPool pool;
@@ -48,6 +50,8 @@ public:
     Timer *getTimer() { return &this->timer; }
     Object3D *getObjectById(unsigned int id) const;
     Object3D *getObjectByName(const std::string &label) const;
+    void removeObjectFromIndex(Object3D *obj);
+    Object3D *getObjectAtScreen(int rawX, int rawY) const;
 
     float getExecutionTime() const                              { return executionTime; }
     std::vector<Object3D *> &getSceneObjects()                  { return objects; }
@@ -59,8 +63,13 @@ public:
     Object3D *getObjectByIndex(int index) const                 { return objects[index]; }
     ThreadPool & PoolCompute()                                  { return pool; }
     ThreadPool & PoolImages()                                   { return poolImages; }
+    int getPendingJobsCount() const {
+        return (int)(pool.getPendingTasks() + pool.getActiveTasks() + pool.getPendingCallbacks() +
+                     poolImages.getPendingTasks() + poolImages.getActiveTasks() + poolImages.getPendingCallbacks());
+    }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };
+    void removeAllObjects() { for (auto &o : objects) o->setRemoved(true); }
     static unsigned int getNextUniqueObjectId();
     static std::string UniqueObjectLabel(const char *prefix);
 

@@ -17,6 +17,12 @@
 			"path":	"../assets/scenes/DemoScene04.json"
 		}, {
 			"path":	"../assets/scenes/RainCubesScene.json"
+		}, {
+			"path":	"../assets/scenes/ParticleTest.json"
+		}, {
+			"path":	"../assets/scenes/TestQuarters.json"
+		}, {
+			"path":	"../assets/scenes/PerformanceTest.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,

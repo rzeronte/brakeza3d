@@ -1,0 +1,124 @@
+{
+	"screenshot":	"../assets/screenshots/PerformanceTest.png",
+	"ads":	{
+		"direction":	{
+			"x":	-0.300000011920929,
+			"y":	-0.800000011920929,
+			"z":	-0.5
+		},
+		"diffuse":	{
+			"x":	0.5,
+			"y":	0.5,
+			"z":	0.5
+		},
+		"specular":	{
+			"x":	0.300000011920929,
+			"y":	0.300000011920929,
+			"z":	0.300000011920929
+		},
+		"ambient":	{
+			"x":	0.34999999403953552,
+			"y":	0.34999999403953552,
+			"z":	0.34999999403953552
+		}
+	},
+	"objects":	[{
+			"name":	"floor",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-0.22656756639480591,
+				"y":	0,
+				"z":	0.0045360326766967773
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	false,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	false,
+				"frustumCulling":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	0.800000011920929,
+				"mass":	0,
+				"margin":	0.0040000001899898052,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0.20000000298023224,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	11.937715530395508,
+					"y":	4.34900951385498,
+					"z":	8.68570041656494
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			},
+			"scripts":	[],
+			"model":	"../assets/models//StudioCorner.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[{
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/PerformanceTest.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/PerformanceTest.json",
+			"name":	"PerformanceTest",
+			"type":	"Global",
+			"types":	[{
+					"name":	"maxObjects",
+					"type":	"int",
+					"value":	500
+				}, {
+					"name":	"spawnArea",
+					"type":	"float",
+					"value":	15
+				}, {
+					"name":	"spawnY",
+					"type":	"float",
+					"value":	12
+				}]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	-0.044850125908851624,
+			"y":	32.287216186523438,
+			"z":	67.1458511352539
+		},
+		"rotation":	{
+			"x":	28.800004959106445,
+			"y":	-359.25009155273438,
+			"z":	0
+		}
+	}
+}

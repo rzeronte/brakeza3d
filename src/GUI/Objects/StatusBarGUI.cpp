@@ -4,6 +4,7 @@
 
 #include "../../../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Components/ComponentRender.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUI.h"
 
@@ -86,6 +87,8 @@ void StatusBarGUI::RenderContent(GUIAddonResourceHub* resourceHub)
         DrawSeparator();
         DrawObjectCount();
         DrawSeparator();
+        DrawCullingStats();
+        DrawSeparator();
         DrawLightsStatus();
         DrawSeparator();
         DrawScriptsStatus();
@@ -140,12 +143,25 @@ void StatusBarGUI::DrawObjectCount()
     );
 }
 
+void StatusBarGUI::DrawCullingStats()
+{
+    int visible = ComponentRender::getLastFrameVisible();
+    int culled  = ComponentRender::getLastFrameCulled();
+    DrawIconWithFormattedText(
+        IconGUI::MNU_ADD_OBJECT,
+        "Visible: %d / Culled: %d",
+        visible, culled
+    );
+}
+
 void StatusBarGUI::DrawLightsStatus()
 {
     bool lightsEnabled = Config::get()->ENABLE_LIGHTS;
     auto icon = lightsEnabled ? IconGUI::LIGHT_ON : IconGUI::LIGHT_OFF;
 
-    DrawIconWithText(icon, "Lights");
+    int visible = ComponentRender::getLastFrameLightsVisible();
+    int culled  = ComponentRender::getLastFrameLightsCulled();
+    DrawIconWithFormattedText(icon, "Lights: %d / Culled: %d", visible, culled);
 }
 
 void StatusBarGUI::DrawScriptsStatus()

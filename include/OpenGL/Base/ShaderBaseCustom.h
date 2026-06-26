@@ -11,6 +11,8 @@
 #include "../../GUI/NodeEditorManager.h"
 #include "../../Misc/cJSON.h"
 
+class Scene;
+
 class ShaderBaseCustom : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
 {
     bool enabled = true;
@@ -18,6 +20,7 @@ protected:
     std::string fileTypes;
     std::string label;
     ShaderCustomType type;
+    Scene* scene = nullptr;
 public:
     ShaderBaseCustom(
         const std::string &label,
@@ -41,6 +44,8 @@ public:
     [[nodiscard]] bool isEnabled() const                    { return enabled; }
     [[nodiscard]] ShaderCustomType getType() const          { return type; }
     [[nodiscard]] std::string getTypesFile() const          { return fileTypes;}
+    [[nodiscard]] Scene* getScene() const                   { return scene; }
+    void setScene(Scene* s)                                 { scene = s; }
 
     void setLabel(const std::string &value);
     void setEnabled(bool value);

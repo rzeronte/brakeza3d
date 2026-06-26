@@ -69,6 +69,11 @@ class ComponentWindow : public Component
     bool customCursor = false;
     SDL_Cursor* cursor = nullptr;
 
+    float clearColorR = 0.0f;
+    float clearColorG = 0.0f;
+    float clearColorB = 0.0f;
+    float clearColorA = 0.0f;
+
 public:
     ComponentWindow();
     void onStart() override;
@@ -85,7 +90,7 @@ public:
     void CreateGBuffer();
     void ResizeGBuffer();
     void UpdateWindowSize();
-    void CreateFramebuffer();
+    void CreateFramebuffers();
     void FlipGlobalToWindow();
     void SaveImGuiCurrentLayout() const;
     void ImGuiOnUpdate();
@@ -127,6 +132,11 @@ public:
     void setImGuiMouse();
     void setWindowSize(int w, int h);
     void setRendererSize(int w, int h);
+    void setClearColor(float r, float g, float b, float a) { clearColorR = r; clearColorG = g; clearColorB = b; clearColorA = a; }
+    [[nodiscard]] float getClearColorR() const { return clearColorR; }
+    [[nodiscard]] float getClearColorG() const { return clearColorG; }
+    [[nodiscard]] float getClearColorB() const { return clearColorB; }
+    [[nodiscard]] float getClearColorA() const { return clearColorA; }
 
     static void ResetOpenGLSettings();
 };

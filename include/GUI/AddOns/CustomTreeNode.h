@@ -13,9 +13,13 @@ struct TreeActionItem {
     std::string tooltip;
     std::function<void()> onClick;
     ImVec2 size = ImVec2(16, 16);
+    std::string confirmTitle;
+    std::string confirmQuestion;
 
-    TreeActionItem(ImTextureID icon, const std::string& tooltip, std::function<void()> callback)
-        : icon(icon), tooltip(tooltip), onClick(callback) {}
+    TreeActionItem(ImTextureID icon, const std::string& tooltip, std::function<void()> callback,
+                   const std::string& confirmTitle = "", const std::string& confirmQuestion = "")
+        : icon(icon), tooltip(tooltip), onClick(callback),
+          confirmTitle(confirmTitle), confirmQuestion(confirmQuestion) {}
 };
 
 struct TreeDragDropConfig {
@@ -196,8 +200,30 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
 
             if (clicked) {
                 action_button_clicked = true;
-                if (item.onClick)
+                if (!item.confirmTitle.empty()) {
+                    ImGui::OpenPopup(item.confirmTitle.c_str());
+                } else if (item.onClick) {
                     item.onClick();
+                }
+            }
+
+            if (!item.confirmTitle.empty()) {
+                ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+                ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+                if (ImGui::BeginPopupModal(item.confirmTitle.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+                    ImGui::Text("%s", item.confirmQuestion.c_str());
+                    ImGui::Separator();
+                    if (ImGui::Button("OK", ImVec2(120, 0))) {
+                        if (item.onClick) item.onClick();
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::SetItemDefaultFocus();
+                    ImGui::SameLine();
+                    if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                        ImGui::CloseCurrentPopup();
+                    }
+                    ImGui::EndPopup();
+                }
             }
 
             if (ImGui::IsItemHovered() && !item.tooltip.empty()) {

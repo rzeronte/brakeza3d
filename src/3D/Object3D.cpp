@@ -8,18 +8,14 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/Objects/Object3DGUI.h"
+#include "../../include/Render/Profiler.h"
 
 Object3D::Object3D()
 :
     id(Brakeza::getNextUniqueObjectId()),
-    luaEnvironment(sol::environment(
-        Components::get()->Scripting()->getLua(),
-        sol::create, Components::get()->Scripting()->getLua().globals())
-    ),
     pickingColor(Color::idToColor(id)),
     type(ObjectType::Object3D)
 {
-    luaEnvironment["this"] = this;
 }
 
 Vertex3D Object3D::up() const
@@ -61,6 +57,22 @@ Vertex3D Object3D::left() const
     return v.getNormalize();
 }
 
+void Object3D::onUpdateScripts()
+{
+    if (isRemoved() || !isEnabled()) return;
+
+    distanceToCamera = Components::get()->Camera()->getCamera()->getPosition().distance(getPosition());
+
+    for (auto &a : attachedObjects) {
+        if (!a->isEnabled()) continue;
+        a->onUpdateScripts();
+    }
+
+    if (Components::get()->Scripting()->isExecuting()) {
+        RunScripts();
+    }
+}
+
 void Object3D::onUpdate()
 {
     if (isRemoved() || !isEnabled()) return;
@@ -69,18 +81,20 @@ void Object3D::onUpdate()
         if (!a->isEnabled()) continue;
         a->onUpdate();
     }
-
-    distanceToCamera = Components::get()->Camera()->getCamera()->getPosition().distance(getPosition());
-
-    if (Components::get()->Scripting()->isExecuting()) {
-        RunScripts();
-    }
 }
 
 void Object3D::RunScripts()
 {
+    auto* profiler  = Profiler::get();
+    bool  profileOn = profiler->isScriptDetailEnabled();
+    auto& sm        = profiler->getScriptMeasures();
+    const std::string objPrefix = "[O] " + getName() + "/";
+
     for (auto &script: scripts) {
+        const std::string key = objPrefix + script->getName() + "_update";
+        if (profileOn) Profiler::StartMeasure(sm, key);
         script->RunEnvironment(luaEnvironment, "onUpdate");
+        if (profileOn) Profiler::EndMeasure(sm, key);
         if (isGUISelected()) {
             //script->RunEnvironment(luaEnvironment, "onClick");
         }
@@ -97,6 +111,20 @@ void Object3D::postUpdate()
 
     if (Config::get()->RENDER_OBJECTS_AXIS) {
         Drawable::drawObject3DAxis(this,true,true,true);
+    }
+
+    {
+        auto* profiler  = Profiler::get();
+        bool  profileOn = profiler->isScriptDetailEnabled();
+        auto& sm        = profiler->getScriptMeasures();
+        const std::string objPrefix = "[O] " + getName() + "/";
+
+        for (auto &script: scripts) {
+            const std::string key = objPrefix + script->getName() + "_post";
+            if (profileOn) Profiler::StartMeasure(sm, key);
+            script->RunEnvironment(luaEnvironment, "postUpdate");
+            if (profileOn) Profiler::EndMeasure(sm, key);
+        }
     }
 }
 
@@ -117,11 +145,23 @@ void Object3D::setEnableLights(bool value)
 
 void Object3D::LookAt(Object3D *o)
 {
-    Vertex3D direction = (o->getPosition() - position).getInverse().getNormalize();
+    LookAt(o->getPosition());
+}
 
-    Vertex3D rightVector = Vertex3D(0, 0, 1) % (direction).getNormalize();
-    Vertex3D correctedUpVector = direction % (rightVector).getNormalize();
+void Object3D::LookAt(const Vertex3D &target)
+{
+    Vertex3D direction = (target - position).getInverse().getNormalize();
 
+    // Primary world-up: (0,0,1). Fallback (0,1,0) when direction is parallel to it
+    // (movement purely along Z) to avoid a zero cross-product and NaN rotation.
+    Vertex3D worldUp(0, 0, 1);
+    Vertex3D rightVector = worldUp % direction;
+    if (rightVector.getModule() < 0.001f) {
+        worldUp = Vertex3D(0, 1, 0);
+        rightVector = worldUp % direction;
+    }
+
+    Vertex3D correctedUpVector = direction % rightVector.getNormalize();
     setRotation(M3::getFromVectors(direction, correctedUpVector));
 }
 
@@ -134,11 +174,15 @@ void Object3D::AttachScript(ScriptLUA *script)
     }
 
     scripts.push_back(script);
-    ReloadScriptsEnvironment();
 }
 
 void Object3D::ReloadScriptsEnvironment()
 {
+    if (!luaEnvironment.valid()) {
+        auto &lua = Components::get()->Scripting()->getLua();
+        luaEnvironment = sol::environment(lua, sol::create, lua.globals());
+        luaEnvironment["this"] = this;
+    }
     for (auto &script : scripts) {
         script->ReloadEnvironment(luaEnvironment);
     }
@@ -288,6 +332,63 @@ void Object3D::MakeSimpleRigidBody(float mass, btDiscreteDynamicsWorld *world, i
     world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
+btRigidBody* Object3D::BuildSimpleRigidBodyOnly(float mass)
+{
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(getPosition().toBullet());
+
+    btMatrix3x3 brakezaRotation = rotation.toBulletMat3();
+    btQuaternion qRotation;
+    brakezaRotation.getRotation(qRotation);
+    transformation.setRotation(qRotation);
+
+    btCollisionShape *collisionShape = nullptr;
+
+    if (getCollisionShape() == SIMPLE_SHAPE) {
+        collisionShape = new btBoxShape(simpleShapeSize.toBullet());
+    }
+
+    if (getCollisionShape() == CAPSULE_SHAPE) {
+        collisionShape = new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    }
+
+    if (collisionShape == nullptr) {
+        LOG_ERROR("Collider Shape not valid!!. Exiting...");
+        return nullptr;
+    }
+
+    collisionShape->setMargin(shapeMargin);
+
+    btVector3 inertia(0, 0, 0);
+    if (mass > 0) {
+        collisionShape->calculateLocalInertia(mass, inertia);
+    }
+
+    btRigidBody::btRigidBodyConstructionInfo cInfo(
+        mass,
+        new btDefaultMotionState(transformation),
+        collisionShape,
+        inertia
+    );
+
+    auto* b = new btRigidBody(cInfo);
+    b->activate(true);
+    b->setUserPointer(this);
+    b->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
+    b->setRestitution(restitution);
+    b->setAngularFactor(angularFactor.toBullet());
+    b->setLinearFactor(linearFactor.toBullet());
+    b->setFriction(friction);
+    b->setDamping(linearDamping, angularDamping);
+    b->setCcdMotionThreshold(ccdMotionThreshold);
+    b->setCcdSweptSphereRadius(ccdSweptSphereRadius);
+
+    return b;
+}
+
 void Object3D::Integrate()
 {
     if (!isCollisionsEnabled()) return;
@@ -401,6 +502,9 @@ void Object3D::setScale(float value)
 
 void Object3D::setRemoved(bool value)
 {
+    if (value && !removed) {
+        LOG_MESSAGE("[Object3D] setRemoved(true) on '%s'", getName().c_str());
+    }
     removed = value;
 }
 

@@ -31,7 +31,7 @@ public:
         }
 
         Mesh3DSerializer::ApplyGeometryFromFile(mesh, json);
-        Mesh3DSerializer::ApplyShadersCreation(mesh, json);
+        Mesh3DSerializer::ApplyShadersFileRead(mesh, json);
         Mesh3DSerializer::ApplyShadersBackground(mesh);
 
         LOG_MESSAGE("[ThreadJobLoadMesh3D] Process END");

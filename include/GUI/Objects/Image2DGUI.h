@@ -38,6 +38,8 @@ public:
                 ImGui::TreePop();
             }
             ImGui::Separator();
+            ImGui::Checkbox("Draw in background", &o->drawInBackground);
+            ImGui::Separator();
             if (ImGui::TreeNode("Image / Video")) {
                 bool hasVideo = o->getVideoPlayer() != nullptr;
 

@@ -5,6 +5,7 @@
 #define BRAKEZA3D_SCRIPTLUA_H
 
 #include <map>
+#include <unordered_map>
 #include <string>
 #include <utility>
 #include "cJSON.h"
@@ -12,7 +13,7 @@
 #include "../3D/Vertex3D.h"
 #include "../OpenGL/Base/SharedOpenGLStructs.h"
 
-typedef std::variant<int, float, Vertex3D, const char*> LUADataValue;
+typedef std::variant<int, float, Vertex3D, std::string> LUADataValue;
 
 enum class LUADataType {
     INT,
@@ -68,10 +69,16 @@ struct ScriptMetaInfo {
     std::string typesFile;
 };
 
+class Scene;
+
 class ScriptLUA
 {
     bool paused = false;
     bool globalLoaded = false;
+    sol::environment globalEnvironment;
+    std::unordered_map<std::string, sol::protected_function> globalFuncCache;
+
+    void ensureGlobalEnvironment();
 
 public:
     std::string content;
@@ -82,6 +89,7 @@ public:
     std::string fileTypes;
     std::string name;
     ScriptType type = SCRIPT_GLOBAL;
+    Scene* scene = nullptr;
 
     explicit ScriptLUA(const std::string& name, const std::string& codeFile, const std::string &typesFile);
     ScriptLUA(const std::string& name, const std::string &codeFile, const std::string &typesFile, const cJSON *types);
@@ -99,10 +107,13 @@ public:
     void InitEnvironment(sol::environment &environment);
     void Reload();
     void UpdateScriptCodeWith(const std::string &content) const;
-    void ReloadGlobals() const;
+    void ReloadGlobals();
     void DrawImGuiProperties();
     void AddDataTypeEmpty(const char *name, const char *type);
 
+    void applyTypeToEnvironment(const ScriptLUATypeData& type);
+
+    sol::environment &getGlobalEnvironment()                                          { return globalEnvironment; }
     [[nodiscard]] ScriptType getType() const                                        { return type; }
     [[nodiscard]] bool isPaused() const                                             { return paused; }
     [[nodiscard]] const std::vector<ScriptLUATypeData> &getDataTypes() const        { return dataTypes; }
@@ -120,6 +131,8 @@ public:
     void setDataTypesFromJSON(const cJSON *typesJSON);
 
     void setType(ScriptType value);
+    [[nodiscard]] Scene* getScene() const   { return scene; }
+    void setScene(Scene* s)                 { scene = s; }
 
     friend class ScriptLuaGUI;
 };

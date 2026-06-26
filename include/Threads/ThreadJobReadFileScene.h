@@ -12,6 +12,7 @@
 #include "../Misc/Tools.h"
 #include "../Misc/FilePaths.h"
 #include "../Loaders/SceneLoader.h"
+#include "../Loaders/Scene.h"
 #include "ThreadJobResolveSwarms.h"
 
 class ThreadJobReadFileScene : public ThreadJobBase
@@ -19,10 +20,31 @@ class ThreadJobReadFileScene : public ThreadJobBase
     FilePath::SceneFile filename;
     cJSON* json = nullptr;
 
+    bool additive;
+    bool loadScripts;
+    bool loadShaders;
+    bool loadCamera;
+    bool loadRenderSettings;
+    Scene *scene = nullptr;
+
 public:
-    explicit ThreadJobReadFileScene(const FilePath::SceneFile& file)
+    explicit ThreadJobReadFileScene(
+        const FilePath::SceneFile& file,
+        Scene *scene            = nullptr,
+        bool additive           = false,
+        bool loadScripts        = true,
+        bool loadShaders        = true,
+        bool loadCamera         = true,
+        bool loadRenderSettings = true
+    )
     :
-        filename(file)
+        filename(file),
+        scene(scene),
+        additive(additive),
+        loadScripts(loadScripts),
+        loadShaders(loadShaders),
+        loadCamera(loadCamera),
+        loadRenderSettings(loadRenderSettings)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -34,7 +56,7 @@ public:
     {
         LOG_MESSAGE("[ThreadJobReadFileScene] START - File: %s", filename.c_str());
 
-        auto contentFile = Tools::ReadFile(filename);
+        char *contentFile = Tools::ReadFile(filename);
 
         if (!contentFile) {
             LOG_ERROR("[ThreadJobReadFileScene] Failed to read file: %s", filename.c_str());
@@ -42,30 +64,45 @@ public:
         }
 
         json = cJSON_Parse(contentFile);
+        free(contentFile);
 
         LOG_MESSAGE("[ThreadJobReadFileScene] Process END");
     }
 
     void fnCallback()
     {
-        SceneLoader::LoadSceneSettings(json);
+        if (loadCamera && loadRenderSettings) {
+            SceneLoader::LoadSceneSettings(json);
+        } else {
+            if (loadCamera)         SceneLoader::LoadCameraSettings(json);
+            if (loadRenderSettings) SceneLoader::LoadADSSettings(json);
+        }
 
         auto objects = cJSON_GetObjectItemCaseSensitive(json, "objects");
 
         int objectCount = 0;
         cJSON *currentObject;
         cJSON_ArrayForEach(currentObject, objects) {
-            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadObject>(currentObject, true));
-
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+                std::make_shared<ThreadJobLoadObject>(currentObject, true, scene)
+            );
             objectCount++;
         }
 
-        Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobReadSceneScript>(json));
+        if (loadScripts)
+            Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobReadSceneScript>(json, scene));
 
-        Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json));
+        if (loadShaders)
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json, scene));
+
         Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobResolveSwarms>());
-        auto defaultPathScene = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE;
-        Components::get()->Scripting()->setCurrentScene(filename == defaultPathScene ? nullptr : new Scene(filename));
+
+        if (!additive) {
+            auto defaultPathScene = Config::get()->CONFIG_FOLDER + Config::get()->DEFAULT_SCENE;
+            Components::get()->Scripting()->setCurrentScene(filename == defaultPathScene ? nullptr : scene);
+        } else if (scene != nullptr) {
+            Components::get()->Scripting()->addScene(scene);
+        }
 
         SceneLoader::setLoading(false);
         LOG_MESSAGE("[ThreadJobReadFileScene] Callback END | Loaded %d objects.", objectCount);

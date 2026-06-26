@@ -24,7 +24,7 @@ public:
 
     static void ApplyGeometryFromFile(Mesh3D *m, cJSON* json);
     static void ApplyCollider(Mesh3D* m, cJSON* json);
-    static void ApplyShadersCreation(Mesh3D* m, cJSON* json);
+    static void ApplyShadersFileRead(Mesh3D* m, cJSON* json);
     static void ApplyShadersBackground(Mesh3D* m);
     static void ApplyCustomShadersMainThread(Mesh3D* m);
     static const char* ExtractFileModelPath(cJSON* json);

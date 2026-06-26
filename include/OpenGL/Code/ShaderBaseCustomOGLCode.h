@@ -16,7 +16,8 @@
 class ShaderBaseCustomOGLCode: public ShaderBaseCustom
 {
     GLuint resultFramebuffer = 0;
-    GLuint textureResult = 0;
+    GLuint internalTexture = 0;      // Object: FBO output tex. Post-processing: borrowed ping-pong sampler input.
+    bool internalTextureOwned = false; // true only when CreateFramebuffer() allocated it; false when setInternalTexture() borrowed it.
     std::vector<ShaderOGLCustomType> dataTypesDefaultValues;
 protected:
 
@@ -29,6 +30,7 @@ public:
 
     void PrepareBackground() override;
     void PrepareMainThread() override;
+
 
     static void DrawTypeImGuiControl(ShaderOGLCustomType &type, bool showName);
     static int CountTypesByFilter(const std::vector<ShaderOGLCustomType> &types,const std::vector<ShaderOpenGLCustomDataType> &filterTypes);
@@ -52,6 +54,7 @@ protected:
     void addDataType(const char *name, const char *type, cJSON *value);
 
 public:
+    void overrideDataTypesFromJSON(const cJSON *typesJSON);
     void onUpdate() const;
     void postUpdate(GLuint outputFBO, GLuint inputTexture);
     void setDataTypesUniforms();
@@ -75,7 +78,8 @@ public:
     void Reload() override;
     void CaptureDragDropUpdateImage(ShaderOGLCustomType &type, const Image *texture) const;
     void CreateFramebuffer();
-    void setTextureResult(GLuint value);
+    void setInternalTexture(GLuint value);
+    [[nodiscard]] GLuint getInternalTexture() const { return internalTexture; }
 
     static bool IsCustomUniform(const ShaderOGLCustomType &type);
 };

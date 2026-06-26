@@ -2,26 +2,15 @@
 #include <chrono>
 #include <iostream>
 
-ThreadPool::ThreadPool(size_t numThreads)
-:
-    stop(false),
-    activeTasks(0),
-    cont(0),
-    maxCallbacksPerFrame(5),      // Por defecto: 5 callbacks por frame
-    maxConcurrentTasks(4),        // Por defecto: 4 tareas concurrentes
-    maxEnqueuedTasks(1000)         // Por defecto: máximo 100 en cola
+void ThreadPool::spawnWorkers(size_t n)
 {
-    for (size_t i = 0; i < numThreads; ++i) {
+    for (size_t i = 0; i < n; ++i) {
         workers.emplace_back([this] {
             while (true) {
                 std::shared_ptr<ThreadJobBase> job;
 
                 {
                     std::unique_lock<std::mutex> lock(queueMutex);
-
-                    // Esperar hasta que:
-                    // 1. Se ordene parar, O
-                    // 2. Haya tareas Y no excedamos el límite de tareas concurrentes
                     condition.wait(lock, [this] {
                         return stop ||
                                (!tasks.empty() && activeTasks < (int)maxConcurrentTasks);
@@ -30,7 +19,6 @@ ThreadPool::ThreadPool(size_t numThreads)
                     if (stop && tasks.empty())
                         return;
 
-                    // Si ya hay demasiadas tareas activas, seguir esperando
                     if (activeTasks >= (int)maxConcurrentTasks)
                         continue;
 
@@ -51,12 +39,23 @@ ThreadPool::ThreadPool(size_t numThreads)
                 }
 
                 activeTasks--;
-
-                // Notificar que hay un slot disponible
                 condition.notify_one();
             }
         });
     }
+}
+
+ThreadPool::ThreadPool(size_t numThreads)
+:
+    stop(false),
+    activeTasks(0),
+    cont(0),
+    maxCallbacksPerFrame(5),
+    maxConcurrentTasks(4),
+    maxEnqueuedTasks(4096),
+    maxEnqueuedCallbacks(4096)
+{
+    spawnWorkers(numThreads);
 }
 
 ThreadPool::~ThreadPool() {
@@ -99,9 +98,15 @@ void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> jo
         // y encola callback para main thread
         auto workerJob = std::make_shared<ThreadJobBase>(
             job->function,
-            [this, job]() {  // ← Capturar job para mantenerlo vivo
+            [this, job]() {
                 std::unique_lock<std::mutex> callbackLock(callbackMutex);
-                // ← Pushear lambda que captura job para mantenerlo vivo hasta callback
+
+                if (mainThreadCallbacks.size() >= maxEnqueuedCallbacks) {
+                    std::cerr << "[ThreadPool] Callback queue full (" << maxEnqueuedCallbacks
+                              << "), dropping callback" << std::endl;
+                    return;
+                }
+
                 mainThreadCallbacks.push([job]() {
                     job->callback();
                 });
@@ -168,4 +173,25 @@ void ThreadPool::waitAll() {
 int ThreadPool::getCont()
 {
     return (int)cont;
+}
+
+void ThreadPool::resize(size_t newNumThreads)
+{
+    if (newNumThreads == 0) newNumThreads = 1;
+
+    waitAll();
+
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        stop = true;
+    }
+    condition.notify_all();
+
+    for (std::thread& worker : workers)
+        worker.join();
+
+    workers.clear();
+    stop = false;
+
+    spawnWorkers(newNumThreads);
 }

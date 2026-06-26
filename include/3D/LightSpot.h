@@ -14,7 +14,8 @@ class LightSpot : public LightPoint
 {
     float cutOff = 0.f;
     float outerCutOff = 0.f;
-    bool showDebugCone = false;
+    bool showDebugCone = true;
+    bool castsShadow = true;
 
     GLuint vertexBuffer = 0;
     GLuint normalBuffer = 0;
@@ -38,6 +39,8 @@ public:
     void RenderDebugCone(float radians, const Color &c);
     void setCutOff(float value);
     void setOuterCutOff(float value);
+    void setCastsShadow(bool value) { castsShadow = value; }
+    [[nodiscard]] bool getCastsShadow() const { return castsShadow; }
     void onUpdate() override;
     void crearBuffersCono();
     void clearConeBuffers();

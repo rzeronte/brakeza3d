@@ -32,8 +32,8 @@ All scene loading is non-blocking via thread pool (`ThreadPool` — `include/Ren
 | ThreadJobReadSceneShaders | Load scene shader chain |
 | ThreadJobMakeRigidBody | Build Bullet physics body |
 | ThreadJobStepSimulation | Physics substep |
-| ThreadJobCleanScene | Cleanup scene resources |
-| ThreadJobClearScene | Full scene clear |
+| ThreadJobCleanWorld | Remove only runtime-created objects (keeps scene-loaded objects) |
+| ThreadJobClearWorld | Full world clear (all objects, scripts, shaders, scenes) |
 
 ## JSON Serialization
 - **Registry:** `include/Render/JSONSerializerRegistry.h` / `src/Render/JSONSerializerRegistry.cpp`

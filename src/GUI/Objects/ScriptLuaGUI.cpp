@@ -33,7 +33,7 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 
                 ImGui::TableSetColumnIndex(1);
                 ImGui::PushID(i);
-                DrawTypeImGuiControl(type, false, true);
+                DrawTypeImGuiControl(type, false, true, o);
                 ImGui::PopID();
 
                 i++;
@@ -157,30 +157,33 @@ void ScriptLuaGUI::DrawWinObjectScripts()
     }
 }
 
-void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon)
+void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon, ScriptLUA* script)
 {
-    // Preparar el label
     std::string label = showName ? type.name : ("##" + type.name);
 
-    // Si no mostramos el nombre, forzar el ancho completo
     if (!showName) {
-        ImGui::SetNextItemWidth(-FLT_MIN);  // Ocupa todo el ancho disponible
+        ImGui::SetNextItemWidth(-FLT_MIN);
     }
+
+    bool changed = false;
 
     switch (LUADataTypesMapping[type.type].type) {
         case LUADataType::INT: {
             int valueInt = std::get<int>(type.value);
             if (ImGui::InputInt(label.c_str(), &valueInt)) {
                 type.value = valueInt;
+                changed = true;
             }
             break;
         }
         case LUADataType::STRING: {
-            std::string valueString = std::get<const char*>(type.value);
+            std::string valueString = std::get<std::string>(type.value);
             static char name[256];
-            strncpy(name, valueString.c_str(), sizeof(name));
+            strncpy(name, valueString.c_str(), sizeof(name) - 1);
+            name[sizeof(name) - 1] = '\0';
             if (ImGui::InputText(label.c_str(), name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite)) {
-                type.value = name;
+                type.value = std::string(name);
+                changed = true;
             }
             break;
         }
@@ -188,6 +191,7 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
             float valueFloat = std::get<float>(type.value);
             if (ImGui::InputFloat(label.c_str(), &valueFloat, 0.01f, 1.0f, "%.3f")) {
                 type.value = valueFloat;
+                changed = true;
             }
             break;
         }
@@ -200,11 +204,16 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
                 valueVertex.y = vec4f[1];
                 valueVertex.z = vec4f[2];
                 type.value = valueVertex;
+                changed = true;
             }
             break;
         }
         default:
             std::cerr << "Unknown data type." << std::endl;
+    }
+
+    if (changed && script != nullptr) {
+        script->applyTypeToEnvironment(type);
     }
 }
 

@@ -150,14 +150,40 @@ You can find the shaders that **Brakeza3D** uses internally in the `/GLSL` folde
 
 | Shader               | Files                                             | Description                                         |
 |----------------------|---------------------------------------------------|-----------------------------------------------------|
-| DeepOfField          | DeepOfField.vs / DeepOfField.fs                   | Depth of field effect                               |
-| FOG                  | FOG.vs / FOG.fs                                   | Fog effect                                          |
+| FOG                  | FOG.vs / Fog.fs                                   | Atmospheric fog effect                              |
 | DepthMap             | DepthMap.vs / DepthMap.fs                         | Draws the depth map of the scene                    |
 | Tint                 | Tint.vs / Tint.fs                                 | Colors the screen with a given color and alpha      |
 | BonesTransforms      | BonesTransforms.vs                                | Bone transform calculations for skeletal animation  |
 | GBuffer              | GBuffer.vs / GBuffer.fs                           | G-buffer pass for deferred rendering                |
 | LightingPass         | LightingPass.vs / LightingPass.fs                 | Handles lighting computations for deferred pipeline |
 | ShadowPass           | ShadowPass.vs / ShadowPass.fs                     | Shadow mapping pass                                 |
-| ShadowPassDebugLight | ShadowPassDebugLight.vs / ShadowPassDebugLight.fs | Debugging shadows visualization                     |
+| ShadowPassDebugLight | ShadowPassDebugLight.vs / ShadowPassDebugLight.fs | Shadow debugging visualization                      |
+| Grid                 | Grid.vs / Grid.fs                                 | Debug grid overlay on the ground plane              |
+| GroundCircle         | GroundCircle.vs / GroundCircle.fs                 | Selection circle projected on the ground, masked by G-Buffer geometry |
+| GroundDecal          | GroundDecal.vs / GroundDecal.fs                   | Decal texture projected onto the ground under an object |
+| AxisQuad             | AxisQuad.vs / AxisQuad.fs                         | Flat quad aligned to a world axis (used for markers/overlays) |
+| Rect                 | Rect.fs                                           | Filled rectangle for 2D UI drawing                 |
 
 If you know what you’re doing, you can freely manipulate the shaders as you see fit!
+
+---
+
+## Scripting API for Shaders
+---
+
+You can retrieve and modify scene shaders at runtime from Lua using `ComponentRender`.
+
+```lua
+local shader = Components:Render():getSceneShaderByLabel("MyShader")
+shader:setEnabled(true)
+shader:setDataTypeValue("myUniform", value)
+```
+
+### ShaderBaseCustomOGLCode methods
+
+| Method | Description |
+|--------|-------------|
+| `setEnabled(bool)` | Enables or disables the shader in the pipeline |
+| `isEnabled()` | Returns whether the shader is currently active |
+| `setDataTypeValue(name, value)` | Sets a uniform value by name (float, int, vec2, vec3, vec4) |
+| `setTextureValue(name, texture)` | Assigns a texture to the named sampler uniform |

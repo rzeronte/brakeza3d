@@ -18,7 +18,10 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
             items[i] = o->scene->mAnimations[i]->mName.C_Str();
         }
         auto comboTitle = "Animations##" + o->getName();
-        ImGui::Combo("Animation", &o->indexCurrentAnimation, items, IM_ARRAYSIZE(items));
+        int animIdx = o->indexCurrentAnimation;
+        if (ImGui::Combo("Animation", &animIdx, items, IM_ARRAYSIZE(items))) {
+            o->setIndexCurrentAnimation(animIdx);
+        }
 
         ImGui::Separator();
         ImGui::DragScalar("Speed", ImGuiDataType_Float, &o->animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);

@@ -48,7 +48,7 @@ void ShaderOGLCustomCodeMesh3D::PrepareMainThread()
 void ShaderOGLCustomCodeMesh3D::Render(GLuint fbo, GLuint texture)
 {
     if (!isEnabled()) return;
-    setTextureResult(texture);
+    setInternalTexture(texture);
     for (const auto& m: mesh->getMeshData()) {
         renderMesh(
             mesh,
@@ -97,21 +97,28 @@ void ShaderOGLCustomCodeMesh3D::renderMesh(
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
-    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, feedbackBuffer);  // Vinculamos el buffer de feedback
-    glBeginTransformFeedback(GL_TRIANGLES);  // Especificamos el tipo de primitivas que estamos procesando
+    const bool hasFeedback = (feedbackBuffer != 0);
 
-    glDrawArrays(GL_TRIANGLES, 0, size );
+    if (hasFeedback) {
+        glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, feedbackBuffer);
+        glBeginTransformFeedback(GL_TRIANGLES);
+    }
 
-    glEndTransformFeedback();
+    glDrawArrays(GL_TRIANGLES, 0, size);
+
+    if (hasFeedback) {
+        glEndTransformFeedback();
+    }
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
-    // Copia los datos del feedbackBuffer al vertexbuffer
-    glBindBuffer(GL_COPY_READ_BUFFER, feedbackBuffer);  // Vincula el buffer de feedback como buffer de lectura
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);      // Vincula el buffer de vértices como buffer de escritura
-    glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec4) * size);
+    if (hasFeedback) {
+        glBindBuffer(GL_COPY_READ_BUFFER, feedbackBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+        glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_ARRAY_BUFFER, 0, 0, sizeof(glm::vec4) * size);
+    }
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }

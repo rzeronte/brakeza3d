@@ -20,6 +20,8 @@
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
+struct MaterialEntryData;
+
 struct Mesh3DData {
     std::vector<Triangle *> modelTriangles;
     std::vector<Vertex3D *> modelVertices;
@@ -30,16 +32,23 @@ struct Mesh3DData {
 
     GLuint vertexBuffer;
     GLuint feedbackBuffer;
+    GLuint feedbackNormalBuffer = 0;
     GLuint uvBuffer;
     GLuint normalBuffer;
     GLuint vertexBoneDataBuffer;
 
     int materialIndex;
+
+    std::string name;
+    unsigned int submeshPickingId = 0;
+    Color submeshPickingColor;
+
+    AABB3D localAabb;
+    bool visibleInFrustum = true;
 };
 
 class Mesh3D : public Object3D
 {
-    bool sharedTextures = false;
     std::mutex mtx;
 
 protected:
@@ -58,7 +67,9 @@ protected:
     Grid3D *grid = nullptr;
     bool loaded = false;
 
+    bool sharedTextures = false;
     bool renderDefaultPipeline = true;
+    bool frustumCullSubmeshes = false;
 public:
 
 
@@ -67,9 +78,11 @@ public:
     ~Mesh3D() override;
 
     void AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName);
-    void AssimpInitMaterials(const aiScene *pScene);
+    void AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntryData>* outMaterialEntries = nullptr);
     void ProcessNodes(const aiScene *scene, const aiNode *node);
-    void LoadMesh(int meshId, const aiMesh *mesh);
+    void LoadMesh(int meshId, const aiMesh *mesh, const std::string &nodeName = "");
+    void RegisterSubmeshPicking();
+    void UnregisterSubmeshPicking();
     void onUpdate() override;
     void RunObjectShaders() const;
     void postUpdate() override;
@@ -77,6 +90,8 @@ public:
     void DrawPropertiesGUI() override;
     void makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
     void makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask);
+    btRigidBody* BuildRigidBodyFromTriangleMeshOnly(float mass);
+    btRigidBody* BuildRigidBodyFromConvexHullOnly(float mass);
     void makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask) override;
     void SetupGhostCollider(CollisionShape modeShape) override;
     void SetupRigidBodyCollider(CollisionShape modeShape) override;
@@ -88,9 +103,10 @@ public:
     void RemoveShader(int i);
     void MoveShaderUp(ShaderBaseCustom* shader);
     void MoveShaderDown(ShaderBaseCustom* shader);
-    void FillOGLBuffers();
+    virtual void FillOGLBuffers();
     virtual void ShadowMappingPass();
     virtual void UpdateBoundingBox();
+    void updateSubmeshFrustumVisibility();
     [[nodiscard]] btBvhTriangleMeshShape *getTriangleMeshFromMesh3D(btVector3 inertia) const;
     [[nodiscard]] btConvexHullShape *getConvexHullShapeFromMesh(btVector3 inertia);
 
@@ -101,6 +117,8 @@ public:
     void InitializeShaderChain(int screenWidth, int screenHeight);
     void ProcessShaderChain(GLuint finalFBO);
     void CleanupShaderChain();
+
+    [[nodiscard]] Mesh3DShaderChain* GetShaderChain() const { return shaderChain; }
     
     void SetChainTempTexture(GLuint texture) const { chainTempTexture = texture; }
     GLuint GetChainTempTexture() const { return chainTempTexture; }
@@ -113,6 +131,9 @@ public:
     AABB3D &getAABB()                                                             { return aabb; }
     [[nodiscard]] const std::vector<ShaderBaseCustom *> &getCustomShaders() const { return customShaders; }
     [[nodiscard]] const std::vector<Image *> &getModelSpecularTextures() const    { return modelSpecularTextures; }
+    std::vector<Image *> &getModelSpecularTextures()                              { return modelSpecularTextures; }
+    void setSharedTextures(bool v)                                                { sharedTextures = v; }
+    [[nodiscard]] bool isSharedTextures() const                                   { return sharedTextures; }
     [[nodiscard]] Grid3D *getGrid3D() const                                       { return grid; }
     [[nodiscard]] Octree *getOctree() const                                       { return octree; }
     [[nodiscard]] std::vector<Triangle *> &getModelTriangles(int i)               { return meshes[i].modelTriangles; }
@@ -120,6 +141,8 @@ public:
     [[nodiscard]] const std::vector<Image *> &getModelTextures() const             { return modelTextures; }
     [[nodiscard]] std::vector<Vertex3D *> &getModelVertices(int i)                { return meshes[i].modelVertices; }
     [[nodiscard]] bool isRenderPipelineDefault() const                            { return renderDefaultPipeline; }
+    [[nodiscard]] bool isFrustumCullSubmeshes() const                             { return frustumCullSubmeshes; }
+    void setFrustumCullSubmeshes(bool value)                                      { frustumCullSubmeshes = value; }
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;

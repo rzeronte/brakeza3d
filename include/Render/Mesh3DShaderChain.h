@@ -105,6 +105,13 @@ public:
         createFramebuffer(pongFBO, pongPositionTex, pongNormalTex, pongAlbedoTex, pongDepthRB, width, height);
     }
 
+    void Resize(int w, int h) {
+        if (w == width && h == height) return;
+        deleteFramebuffer(pingFBO, pingPositionTex, pingNormalTex, pingAlbedoTex, pingDepthRB);
+        deleteFramebuffer(pongFBO, pongPositionTex, pongNormalTex, pongAlbedoTex, pongDepthRB);
+        Initialize(w, h);
+    }
+
     GLuint GetLastOutputTexture() const {
         return lastOutputTexture;
     }

@@ -52,6 +52,13 @@ void ShaderOGLLightPass::PrepareMainThread()
     LoadUniforms();
     CreateQuadVBO();
     SetupQuadUniforms(programID);
+
+    glGenBuffers(1, &bufferSpotLightsMatricesUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, bufferSpotLightsMatricesUBO);
+    glBufferData(GL_UNIFORM_BUFFER, MAX_SHADOW_CASTERS * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 2, bufferSpotLightsMatricesUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    spotMatricesBufferReady = true;
 }
 
 void ShaderOGLLightPass::render(
@@ -109,6 +116,7 @@ void ShaderOGLLightPass::render(
     DrawQuad();
 
     glBindVertexArray(0);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void ShaderOGLLightPass::Destroy()
@@ -118,20 +126,19 @@ void ShaderOGLLightPass::Destroy()
 
 void ShaderOGLLightPass::FillSpotLightsMatricesUBO()
 {
-    glDeleteBuffers(1, &bufferSpotLightsMatricesUBO);
+    if (!spotMatricesBufferReady) return;
 
-    std::vector<glm::mat4> spotLightsShadowMapLightMatrices;
+    auto& spotLights = Components::get()->Render()->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
 
-    auto spotLights = Components::get()->Render()->getShaders()->shaderOGLRender->getShadowMappingSpotLights();
+    int n = static_cast<int>(std::min(spotLights.size(), static_cast<size_t>(MAX_SHADOW_CASTERS)));
+    if (n == 0) return;
 
-    for (auto & spotLight : spotLights) {
-        spotLightsShadowMapLightMatrices.push_back(spotLight->getLightSpaceMatrix());
-    }
+    std::vector<glm::mat4> matrices;
+    matrices.reserve(n);
+    for (int i = 0; i < n; i++)
+        matrices.push_back(spotLights[i]->getLightSpaceMatrix());
 
-    glGenBuffers(1, &bufferSpotLightsMatricesUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, bufferSpotLightsMatricesUBO);
-    glBufferData(GL_UNIFORM_BUFFER, static_cast<int>(spotLightsShadowMapLightMatrices.size() * sizeof(glm::mat4)), spotLightsShadowMapLightMatrices.data(), GL_STATIC_DRAW);
-    glBindBufferBase(GL_UNIFORM_BUFFER, 2, bufferSpotLightsMatricesUBO);
-
-    spotLightsShadowMapLightMatrices.clear();
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, n * sizeof(glm::mat4), matrices.data());
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }

@@ -314,7 +314,7 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 
     // Leer los píxeles de la textura al surface
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+    glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, surface->pixels);
 
     // Restaurar el estado previo de OpenGL
     glBindFramebuffer(GL_FRAMEBUFFER, previousFramebuffer);

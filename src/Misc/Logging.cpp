@@ -40,14 +40,15 @@ void Logging::OutputVa(const char *message, bool forceSTD, va_list args)
         std::cout << buffer << std::endl;
     }
 
-    // Feed structured event to EngineObserver (for AI agent observability)
-    std::string msg(buffer);
-    if (msg.rfind("[Error]", 0) == 0)
-        EngineObserver::appendEvent("error", msg);
-    else if (msg.rfind("[Warning]", 0) == 0)
-        EngineObserver::appendEvent("warning", msg);
-    else
-        EngineObserver::appendEvent("info", msg);
+    if (Config::get()->OBSERVER_AI_ENABLED) {
+        std::string msg(buffer);
+        if (msg.rfind("[Error]", 0) == 0)
+            EngineObserver::appendEvent("error", msg);
+        else if (msg.rfind("[Warning]", 0) == 0)
+            EngineObserver::appendEvent("warning", msg);
+        else
+            EngineObserver::appendEvent("info", msg);
+    }
 
     delete[] buffer;
 }

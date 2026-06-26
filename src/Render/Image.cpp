@@ -7,7 +7,6 @@
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Threads/ThreadJobLoadImage.h"
-#include "../../include/Render/Profiler.h"
 
 Image::Image(const FilePath::ImageFile& filename)
 :
@@ -25,7 +24,6 @@ Image::Image(SDL_Surface *surface, SDL_Texture *texture)
     surface(surface),
     texture(texture)
 {
-    Profiler::get()->AddImage(this);
 }
 
 Image::Image(GLuint externalTextureId, int width, int height)
@@ -221,13 +219,73 @@ void Image::setFilePath(const FilePath::ImageFile &path)
     fileName = path;
 }
 
+Image* Image::createEmpty(int w, int h)
+{
+    auto* surface = SDL_CreateRGBSurfaceWithFormat(0, w, h, 32, SDL_PIXELFORMAT_RGBA32);
+    SDL_FillRect(surface, nullptr, 0);
+    return new Image(surface, nullptr);
+}
+
+void Image::clearChannel(int channel, uint8_t value)
+{
+    auto* pixels = static_cast<uint8_t*>(surface->pixels);
+    int total = surface->w * surface->h;
+    for (int i = 0; i < total; i++) {
+        pixels[i * 4 + channel] = value;
+    }
+}
+
+void Image::fillCircle(int cx, int cy, int radius,
+                       uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    auto* pixels = static_cast<uint8_t*>(surface->pixels);
+    int w = surface->w, h = surface->h;
+    int r2 = radius * radius;
+    for (int dz = -radius; dz <= radius; dz++) {
+        for (int dx = -radius; dx <= radius; dx++) {
+            if (dx*dx + dz*dz > r2) continue;
+            int nx = cx + dx, ny = cy + dz;
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+            int idx = (ny * w + nx) * 4;
+            pixels[idx + 0] = r;
+            pixels[idx + 1] = g;
+            pixels[idx + 2] = b;
+            pixels[idx + 3] = a;
+        }
+    }
+}
+
+void Image::upload()
+{
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0,
+                    surface->w, surface->h,
+                    GL_RGBA, GL_UNSIGNED_BYTE, surface->pixels);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Image::destroy()
+{
+    if (loaded) {
+        if (textureId != 0) {
+            glDeleteTextures(1, &textureId);
+            textureId = 0;
+        }
+        if (surface != nullptr) {
+            SDL_FreeSurface(surface);
+            surface = nullptr;
+        }
+        if (texture != nullptr) {
+            SDL_DestroyTexture(texture);
+            texture = nullptr;
+        }
+        loaded = false;
+    }
+}
+
 Image::~Image()
 {
-    Profiler::get()->RemoveImage(this);
-
-    if (loaded) {
-        SDL_FreeSurface(surface);
-        SDL_DestroyTexture(texture);
-        glDeleteTextures(1, &textureId);
-    }
+    if (texture != nullptr) SDL_DestroyTexture(texture);
+    if (surface != nullptr) SDL_FreeSurface(surface);
+    if (textureId != 0)     glDeleteTextures(1, &textureId);
 }

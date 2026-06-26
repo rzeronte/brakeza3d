@@ -32,6 +32,7 @@ public:
     void LoadSoundsConfigFile();
     void AddSound(const std::string& soundFile, const std::string& label);
     void AddMusic(const std::string& soundFile, const std::string& label);
+    void LoadSoundsFromFile(const std::string& filePath);
     void PlaySound(const std::string& sound, int channel, int times);
     void PlayMusic(const std::string& sound);
     float getSoundDuration(const std::string &sound);

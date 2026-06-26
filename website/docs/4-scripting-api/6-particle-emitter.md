@@ -80,14 +80,44 @@ The following methods allow you to configure and control the behavior of a Parti
 access to its particle context, color interpolation, texture assignment, and emission state, enabling
 dynamic adjustment of particle effects at runtime through LUA scripts.
 
-| Method                       | Description                                                                                         |
-|------------------------------|-----------------------------------------------------------------------------------------------------|
-| setContext(ParticlesContext) | Assigns a new particle context to the emitter, defining how particles are generated and behave      |
-| setColorFrom(Color)          | Sets the initial color of particles at the moment they are spawned                                  |
-| setColorTo(Color)            | Sets the final color of particles when they reach the end of their lifespan                         |
-| setTexture(string)           | Sets the texture image used by the particle emitter                                                 |
-| setStopAdd(bool)             | Enables or disables the emission of new particles while allowing existing ones to continue updating |
-| isActive()                   | Returns whether the particle emitter is currently active                                            |
-| getColorFrom()               | Returns the current start color used for newly spawned particles                                    |
-| getColorTo()                 | Returns the current end color applied to particles at the end of their lifespan                     |
-| getTexture()                 | Returns the file path of the texture currently used by the particle emitter                         |
+| Method                        | Description                                                                                         |
+|-------------------------------|-----------------------------------------------------------------------------------------------------|
+| setContext(ParticlesContext)  | Assigns a new particle context to the emitter, defining how particles are generated and behave      |
+| setColorFrom(Color)           | Sets the initial color of particles at the moment they are spawned                                  |
+| setColorTo(Color)             | Sets the final color of particles when they reach the end of their lifespan                         |
+| setTexture(string)            | Sets the texture image used by the particle emitter                                                 |
+| setStopAdd(bool)              | Enables or disables the emission of new particles while allowing existing ones to continue updating |
+| isActive()                    | Returns whether the particle emitter is currently active                                            |
+| getColorFrom()                | Returns the current start color used for newly spawned particles                                    |
+| getColorTo()                  | Returns the current end color applied to particles at the end of their lifespan                     |
+| getTexture()                  | Returns the file path of the texture currently used by the particle emitter                         |
+| setGPUMode(bool)              | Switches the emitter between CPU mode (default) and GPU mode (compute shader simulation)            |
+| isGPUMode()                   | Returns true if the emitter is running in GPU mode                                                  |
+
+## GPU Mode
+---
+
+ParticleEmitter supports two simulation modes:
+
+- **CPU mode** (default): Particles are simulated on the CPU each frame and uploaded to the GPU for rendering. Supports up to 512 particles per emitter.
+- **GPU mode**: Particle simulation runs entirely on the GPU via an OpenGL compute shader. Supports up to 1024 particles per emitter with lower CPU overhead, ideal for dense effects like smoke, fire, or explosions.
+
+GPU mode can be enabled from the editor inspector, the scene JSON (`"gpuMode": true`), or via Lua:
+
+```lua
+-- Enable GPU simulation
+emitter:setGPUMode(true)
+
+-- Check current mode
+if emitter:isGPUMode() then
+    print("Running on GPU")
+end
+```
+
+:::note
+GPU mode requires OpenGL 4.3 or higher (compute shader support). On hardware that does not support
+compute shaders, the emitter will silently fall back to no output — use CPU mode in that case.
+:::
+
+Both modes share the same `ParticlesContext` parameters and color interpolation (`colorFrom` → `colorTo`).
+The visual result is equivalent; GPU mode simply offloads the simulation work to the graphics card.

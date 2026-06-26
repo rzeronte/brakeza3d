@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include <SDL2/SDL_image.h>
 #include "../../include/Misc/TextureAtlas.h"
 
@@ -214,6 +215,23 @@ TextureAtlasImageInfo TextureAtlas::getAtlasTextureInfoForName(const std::string
     return TextureAtlasImageInfo();
 }
 
+void TextureAtlas::uploadAtlasToGL()
+{
+    if (atlasSurface == nullptr) return;
+    if (atlasTextureGL != 0) glDeleteTextures(1, &atlasTextureGL);
+
+    glGenTextures(1, &atlasTextureGL);
+    glBindTexture(GL_TEXTURE_2D, atlasTextureGL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    GLint mode = (atlasSurface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
+    glTexImage2D(GL_TEXTURE_2D, 0, mode, atlasSurface->w, atlasSurface->h, 0,
+                 mode, GL_UNSIGNED_BYTE, atlasSurface->pixels);
+}
+
 void TextureAtlas::SavePNG(const std::string& name) const
 {
     IMG_SavePNG(atlasSurface, name.c_str());
@@ -223,4 +241,5 @@ TextureAtlas::~TextureAtlas()
 {
     delete[] mask;
     SDL_FreeSurface(atlasSurface);
+    if (atlasTextureGL != 0) glDeleteTextures(1, &atlasTextureGL);
 }

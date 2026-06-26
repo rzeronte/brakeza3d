@@ -3,17 +3,20 @@
 
 #include "ThreadJobBase.h"
 #include "../Render/JSONSerializerRegistry.h"
+#include "../Loaders/Scene.h"
 
 class ThreadJobLoadObject : public ThreadJobBase
 {
     cJSON *json = nullptr;
     Object3D *object = nullptr;
     bool isBelongingToScene = false;
+    Scene *scene = nullptr;
 public:
-    ThreadJobLoadObject(cJSON *json, bool is_belonging_to_scene = false)
+    ThreadJobLoadObject(cJSON *json, bool is_belonging_to_scene = false, Scene *scene = nullptr)
     :
         json(cJSON_Duplicate(json, 1)),
-        isBelongingToScene(is_belonging_to_scene)
+        isBelongingToScene(is_belonging_to_scene),
+        scene(scene)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -28,6 +31,10 @@ public:
 
     void fnCallback()
     {
+        if (scene != nullptr && object != nullptr) {
+            object->setScene(scene);
+            scene->addObject(object);
+        }
         LOG_MESSAGE("[ThreadJobLoadObject] Callback END");
     }
 

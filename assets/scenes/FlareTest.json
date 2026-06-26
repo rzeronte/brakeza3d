@@ -1,0 +1,210 @@
+{
+	"screenshot":	"",
+	"ads":	{
+		"direction":	{
+			"x":	-0.2,
+			"y":	-0.8,
+			"z":	-0.5
+		},
+		"diffuse":	{
+			"x":	0.05,
+			"y":	0.05,
+			"z":	0.05
+		},
+		"specular":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		},
+		"ambient":	{
+			"x":	0.02,
+			"y":	0.02,
+			"z":	0.02
+		}
+	},
+	"objects":	[{
+			"name":	"ground",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	-1,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	false,
+				"culling":	true,
+				"frustumCulling":	false,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	false,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"pillar_north",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	-5
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	false,
+				"culling":	true,
+				"frustumCulling":	false,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	false,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"pillar_east",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	5,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	false,
+				"culling":	true,
+				"frustumCulling":	false,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	false,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"pillar_west",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-5,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	false,
+				"culling":	true,
+				"frustumCulling":	false,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	false,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"sphere_center",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	false,
+				"culling":	true,
+				"frustumCulling":	false,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	false,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/icosphere.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[{
+			"name":	"TemporalManager",
+			"codeFile":	"../assets/scripts/RTS/Global/TemporalManager.lua",
+			"typesFile":	"../assets/scripts/RTS/Global/TemporalManager.json",
+			"types":	[]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	0,
+			"y":	15,
+			"z":	20
+		},
+		"rotation":	{
+			"x":	27,
+			"y":	0,
+			"z":	0
+		}
+	}
+}

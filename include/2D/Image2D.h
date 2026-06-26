@@ -18,6 +18,8 @@ class Image2D : public Object3D
     float widthScale = 1.0f;
     float heightScale = 1.0f;
 
+    bool drawInBackground = false;
+
     Image *image = nullptr;
     std::string filepath;
     std::string videoPath;
@@ -30,6 +32,7 @@ public:
     ~Image2D() override;
 
     void DrawPropertiesGUI() override;
+    void drawBackground();
     void onUpdate() override;
     void setSize(float w, float h);
     void setScreenPosition(int x, int y);
@@ -40,6 +43,9 @@ public:
     void stopVideo();
     [[nodiscard]] bool isVideoFinished() const;
     [[nodiscard]] bool hasVideo() const;
+
+    void setDrawInBackground(bool value) { drawInBackground = value; }
+    [[nodiscard]] bool isDrawInBackground() const { return drawInBackground; }
 
     [[nodiscard]] VideoPlayer   *getVideoPlayer() const { return videoPlayer; }
     [[nodiscard]] const std::string &getVideoPath() const { return videoPath; }

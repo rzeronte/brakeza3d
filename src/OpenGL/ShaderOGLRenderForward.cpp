@@ -1,5 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include <algorithm>
 #include <glm/gtc/type_ptr.hpp>
 #include "../../include/OpenGL/ShaderOGLRenderForward.h"
 #include "../../include/Components/Components.h"
@@ -140,6 +141,11 @@ void ShaderOGLRenderForward::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
@@ -177,6 +183,7 @@ void ShaderOGLRenderForward::CreateUBOFromLights()
     pointsLights.resize(0);
     spotLights.resize(0);
     shadowMappingLights.resize(0);
+    ComponentRender::setLastFrameLightsCulled(0);
 
     if (Config::get()->ENABLE_LIGHTS) {
         for (auto &o : Brakeza::get()->getSceneObjects()) {
@@ -188,6 +195,12 @@ void ShaderOGLRenderForward::CreateUBOFromLights()
             }
         }
     }
+
+    // Count visible vs culled from what ExtractLights actually added
+    int totalEnabled = static_cast<int>(pointsLights.size() + spotLights.size());
+    ComponentRender::setLastFrameLightsVisible(totalEnabled);
+    // Culled = enabled lights in scene minus those that made it into the UBO
+    // (approximation: we count during extraction below in ExtractLights)
 
     FillUBOLights();
 }
@@ -204,13 +217,14 @@ void ShaderOGLRenderForward::Destroy()
 void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const
 {
     for (const auto& m: o->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         render(
             o,
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
-            m.normalBuffer,
+            useFeedbackBuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             fbo
         );
@@ -238,16 +252,29 @@ void ShaderOGLRenderForward::FillUBOLights()
         glBufferSubData(GL_UNIFORM_BUFFER, 0, numSpotLights * sizeof(SpotLightOpenGL),spotLights.data());
     }
 
-    if (spotLights.size() > MAX_POINT_LIGHTS) {
-        LOG_MESSAGE("Spot lights exceed max: %zu > %zu", spotLights.size(), MAX_POINT_LIGHTS);
+    if (spotLights.size() > MAX_SPOT_LIGHTS) {
+        LOG_MESSAGE("Spot lights exceed max: %zu > %zu", spotLights.size(), MAX_SPOT_LIGHTS);
     }
 }
 
 void ShaderOGLRenderForward::ExtractLights(Object3D *o)
 {
-    if (o->getTypeObject() == ObjectType::LightSpot) {
+    auto type = o->getTypeObject();
+    if (type != ObjectType::LightPoint && type != ObjectType::LightSpot)
+        return;
+
+    auto *light = static_cast<LightPoint*>(o);
+
+    float lr = light->frustumCullingEnabled ? light->frustumCullingOffset : light->getRadius();
+    if (lr > 0.0f && !Components::get()->Render()->isInFrustum(o, lr)) {
+        ComponentRender::setLastFrameLightsCulled(ComponentRender::getLastFrameLightsCulled() + 1);
+        return;
+    }
+
+    if (type == ObjectType::LightSpot) {
         auto s = static_cast<LightSpot*>(o);
-        shadowMappingLights.push_back(s);
+        if (s->getCastsShadow())
+            shadowMappingLights.push_back(s);
         spotLights.push_back(SpotLightOpenGL{
             o->getPosition().toGLM4(),
             s->getDirection(),
@@ -258,7 +285,8 @@ void ShaderOGLRenderForward::ExtractLights(Object3D *o)
             s->linear,
             s->quadratic,
             s->getCutOff(),
-            s->getOuterCutOff()
+            s->getOuterCutOff(),
+            lr
         });
         return;
     }
@@ -272,7 +300,8 @@ void ShaderOGLRenderForward::ExtractLights(Object3D *o)
             l->specular,
             l->constant,
             l->linear,
-            l->quadratic
+            l->quadratic,
+            lr
         });
     }
 }
@@ -314,11 +343,7 @@ int ShaderOGLRenderForward::getNumSpotLights() const
 
 bool ShaderOGLRenderForward::hasSpotLightsChanged() const
 {
-    if (static_cast<size_t>(getNumSpotLights()) != lastSpotLightsSize) {
-        return true;
-    }
-
-    return false;
+    return shadowMappingLights.size() != lastSpotLightsSize;
 }
 
 bool ShaderOGLRenderForward::HasPointLightsChanged() const

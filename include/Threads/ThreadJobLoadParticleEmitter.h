@@ -26,12 +26,13 @@ public:
 
     void fnProcess()
     {
-        Brakeza::get()->AddObject3D(emitter, emitter->getName());
         LOG_MESSAGE("[ThreadJobLoadParticleEmitter] Process END");
     }
 
     void fnCallback()
     {
+        emitter->InitGLBuffers();
+        Brakeza::get()->AddObject3D(emitter, emitter->getName());
         LOG_MESSAGE("[ThreadJobLoadParticleEmitter] Callback END");
     }
 };

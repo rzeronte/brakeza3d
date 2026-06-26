@@ -14,6 +14,7 @@
 #include "../3D/Mesh3D.h"
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/ParticleEmitter.h"
+#include "../3D/Projectile.h"
 #include "../Render/TextWriter.h"
 
 class ObjectFactory {
@@ -30,8 +31,9 @@ class ObjectFactory {
     static LightPoint* CreateLightPoint(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular);
     static LightSpot* CreateLightSpot(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular);
     static ParticleEmitter* CreateParticleEmitter(const Vertex3D &position, const Color &from, const Color &to);
+    static Projectile* CreateProjectile(const std::string &file, const Vertex3D &position);
     static TextWriter* CreateTextWriter(const std::string& fontFile);
-    static ScriptLUA* CreateScriptLUA(const std::string& scriptFile);
+    static ScriptLUA* CreateScriptLUA(const std::string& pathFile);
 
 };
 

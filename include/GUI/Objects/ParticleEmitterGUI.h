@@ -79,6 +79,55 @@ public:
 
                 ImGui::TreePop();
             }
+            ImGui::Separator();
+            if (ImGui::TreeNode("Attached Light")) {
+                if (o->attachedLight != nullptr) {
+                    ImGui::Text("Light: %s", o->attachedLight->getName().c_str());
+
+                    ImVec4 color = {o->attachedLight->diffuse.r, o->attachedLight->diffuse.g, o->attachedLight->diffuse.b, 1};
+                    bool changed = ImGui::ColorEdit4("Diffuse##", (float*)&color, ImGuiColorEditFlags_NoOptions);
+                    if (changed) {
+                        o->attachedLight->diffuse = glm::vec4(color.x, color.y, color.z, 0);
+                    }
+
+                    color = {o->attachedLight->ambient.r, o->attachedLight->ambient.g, o->attachedLight->ambient.b, 1};
+                    changed = ImGui::ColorEdit4("Ambient##", (float*)&color, ImGuiColorEditFlags_NoOptions);
+                    if (changed) {
+                        o->attachedLight->ambient = glm::vec4(color.x, color.y, color.z, 0);
+                    }
+
+                    color = {o->attachedLight->specular.r, o->attachedLight->specular.g, o->attachedLight->specular.b, 1};
+                    changed = ImGui::ColorEdit4("Specular##", (float*)&color, ImGuiColorEditFlags_NoOptions);
+                    if (changed) {
+                        o->attachedLight->specular = glm::vec4(color.x, color.y, color.z, 0);
+                    }
+
+                    ImGui::DragFloat("Constant", &o->attachedLight->constant, 0.01f, 0.0f, 10.0f, "%.4f");
+                    ImGui::DragFloat("Linear", &o->attachedLight->linear, 0.001f, 0.0f, 10.0f, "%.4f");
+                    ImGui::DragFloat("Quadratic", &o->attachedLight->quadratic, 0.001f, 0.0f, 10.0f, "%.4f");
+
+                    if (ImGui::Button("Remove Light")) {
+                        o->removeAttachedLight();
+                    }
+                } else {
+                    ImGui::Text("No attached light.");
+
+                    static float range = 15.0f;
+                    static ImVec4 color = {1, 0, 0, 1};
+                    ImGui::ColorEdit4("Color##new", (float*)&color, ImGuiColorEditFlags_NoOptions);
+                    ImGui::DragFloat("Range", &range, 0.5f, 1.0f, 100.0f, "%.1f");
+
+                    if (ImGui::Button("Create Light")) {
+                        o->createAttachedLight(
+                            Color(color.x, color.y, color.z),
+                            Color(color.x * 0.05f, color.y * 0.05f, color.z * 0.05f),
+                            Color(color.x, color.y, color.z),
+                            range
+                        );
+                    }
+                }
+                ImGui::TreePop();
+            }
         }
     }
 };

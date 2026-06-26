@@ -9,6 +9,8 @@ description: Render text on screen using TrueType fonts with the TextWriter clas
 
 The **TextWriter** class allows you to render text on screen using TrueType fonts (`.ttf`). It's essential for creating HUDs, menus, debug information, and any text-based UI elements.
 
+It also provides a **TextCache** system that lets you render text to an off-screen FBO once and blit it cheaply every frame — ideal for overlays with mostly static content.
+
 ## Creating a TextWriter
 ---
 
@@ -24,6 +26,10 @@ textWriter = ObjectFactory.TextWriter("../assets/fonts/Courier.ttf")
 
 :::note
 The font file path is relative to the executable. Common fonts are stored in `assets/fonts/`.
+:::
+
+:::warning
+`Courier.ttf` only covers ASCII characters (0x00–0x7F). Characters with accents, tildes, or non-Latin glyphs will produce corrupted output. Use only ASCII strings with this font.
 :::
 
 ## TextWriter Methods
@@ -49,6 +55,10 @@ textWriter:writeTextTTFAutoSize(x, y, text, color, sizeRatio)
 -- Display FPS in green at top-left
 textWriter:writeTextTTFAutoSize(10, 10, "FPS: " .. fps, Color.new(0, 1, 0, 1), 1.0)
 ```
+
+:::note
+`sizeRatio` must be ≥ 1.0 — values below 1.0 result in invisible text due to integer truncation in the size calculation.
+:::
 
 ---
 
@@ -147,6 +157,126 @@ textWriter:setFont(newFont)
 This method requires a TTF_Font pointer. For changing fonts, it's recommended to create a new TextWriter instead.
 :::
 
+---
+
+## TextCache System
+---
+
+Every call to `writeTextTTFAutoSize` creates and destroys a GL texture internally. For overlays with mostly static content (help screens, key bindings, tech trees, etc.) this cost adds up quickly.
+
+The **TextCache** API lets you render a block of text to a persistent off-screen FBO once, then blit the result cheaply every frame with a single draw call.
+
+### How it works
+
+1. Call `beginTextCache` to open a named cache and clear it.
+2. Issue any number of `writeTextTTFAutoSize` / `writeTextTTF` calls — they render into the cache instead of the screen.
+3. Call `endTextCache` to close the cache and restore the screen framebuffer.
+4. Call `drawTextCache` every frame to blit the cached image onto the screen.
+
+Only rebuild the cache when its content actually changes.
+
+---
+
+### beginTextCache
+
+Opens a named text cache for recording. Clears it and redirects all subsequent `writeText*` calls into an off-screen FBO of the given size.
+
+```lua
+textWriter:beginTextCache(name, width, height)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | `string` | Unique cache identifier |
+| `width` | `int` | Cache width in pixels |
+| `height` | `int` | Cache height in pixels |
+
+:::note
+Coordinates inside the begin/end block are **cache-local**: (0, 0) is the top-left of the cache, not the screen.
+:::
+
+---
+
+### endTextCache
+
+Closes the active cache and restores the screen framebuffer.
+
+```lua
+textWriter:endTextCache()
+```
+
+Always pair this with `beginTextCache`. Forgetting it will leave subsequent draws going to the FBO instead of the screen.
+
+---
+
+### drawTextCache
+
+Blits a previously built cache to the screen at the given position.
+
+```lua
+textWriter:drawTextCache(name, x, y)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `name` | `string` | Cache identifier (must match `beginTextCache`) |
+| `x` | `int` | X position on screen in pixels |
+| `y` | `int` | Y position on screen in pixels |
+
+The cache image is drawn at its original size (width × height passed to `beginTextCache`).
+
+---
+
+### TextCache Example — Static HUD Overlay
+
+```lua
+local tw
+local cacheDirty    = true
+local cacheFrame    = 0
+local REBUILD_EVERY = 60   -- max frames between rebuilds
+
+local CACHE_W = 300
+local CACHE_H = 400
+
+function onStart()
+    tw = ObjectFactory.TextWriter("../assets/fonts/Courier.ttf")
+end
+
+function onUpdate()
+    local sw = Components:Window():getWidth()
+    local x  = sw - CACHE_W - 10
+    local y  = 80
+
+    -- Rebuild the cache when content changes or periodically
+    cacheFrame = cacheFrame + 1
+    if cacheDirty or cacheFrame >= REBUILD_EVERY then
+        cacheDirty = false
+        cacheFrame = 0
+
+        -- Coordinates inside begin/end are relative to the cache (0,0 = top-left)
+        tw:beginTextCache("helpOverlay", CACHE_W, CACHE_H)
+            tw:writeTextTTFAutoSize(0,   0, "CAMERA",         Color.new(0, 0.2, 0.8, 1), 0.9)
+            tw:writeTextTTFAutoSize(0,  22, "WASD      move", Color.new(0.2, 0.2, 0.2, 1), 0.8)
+            tw:writeTextTTFAutoSize(0,  42, "Q/E       zoom", Color.new(0.2, 0.2, 0.2, 1), 0.8)
+            tw:writeTextTTFAutoSize(0,  62, "H         reset", Color.new(0.2, 0.2, 0.2, 1), 0.8)
+            tw:writeTextTTFAutoSize(0,  90, "SELECTION",      Color.new(0, 0.2, 0.8, 1), 0.9)
+            tw:writeTextTTFAutoSize(0, 112, "LClick    select",Color.new(0.2, 0.2, 0.2, 1), 0.8)
+            tw:writeTextTTFAutoSize(0, 132, "LDrag     area",  Color.new(0.2, 0.2, 0.2, 1), 0.8)
+            tw:writeTextTTFAutoSize(0, 152, "RClick    move",  Color.new(0.2, 0.2, 0.2, 1), 0.8)
+        tw:endTextCache()
+    end
+
+    -- One blit per frame regardless of how many lines are inside
+    tw:drawTextCache("helpOverlay", x, y)
+
+    -- Dynamic content rendered normally on top
+    local formation = tostring(Components:Scripting():getGlobalScriptVar("Orders", "formation") or "circle")
+    tw:writeTextTTFAutoSize(x, y + CACHE_H + 8, "Formation: " .. formation, Color.new(0, 0.5, 0.1, 1), 0.85)
+end
+```
+
+---
+
 ## Complete Example
 ---
 
@@ -215,19 +345,12 @@ end
 function onUpdate()
     local dt = Brakeza:getDeltaTime()
 
-    -- Fade logic
     if fadeIn then
         alpha = alpha + dt * 0.5
-        if alpha >= 1 then
-            alpha = 1
-            fadeIn = false
-        end
+        if alpha >= 1 then alpha = 1; fadeIn = false end
     else
         alpha = alpha - dt * 0.5
-        if alpha <= 0 then
-            alpha = 0
-            fadeIn = true
-        end
+        if alpha <= 0 then alpha = 0; fadeIn = true end
     end
 
     textWriter:setAlpha(alpha)
@@ -251,10 +374,9 @@ function onStart()
 end
 
 function onUpdate()
-    local input = Components:Input()
+    local input   = Components:Input()
     local screenH = Components:Window():getHeight()
 
-    -- Navigation
     if input:isCharFirstEventDown("W") then
         selectedIndex = selectedIndex - 1
         if selectedIndex < 1 then selectedIndex = #menuItems end
@@ -264,24 +386,17 @@ function onUpdate()
         if selectedIndex > #menuItems then selectedIndex = 1 end
     end
 
-    -- Render menu items
     local startY = screenH / 2 - (#menuItems * 30) / 2
 
     for i, item in ipairs(menuItems) do
         local color
         if i == selectedIndex then
-            color = Color.new(1, 1, 0, 1)  -- Yellow for selected
+            color = Color.new(1, 1, 0, 1)
             item = "> " .. item .. " <"
         else
-            color = Color.new(0.7, 0.7, 0.7, 1)  -- Gray for others
+            color = Color.new(0.7, 0.7, 0.7, 1)
         end
-
-        textWriter:writeTTFCenterHorizontal(
-            startY + (i - 1) * 40,
-            item,
-            color,
-            1.5
-        )
+        textWriter:writeTTFCenterHorizontal(startY + (i - 1) * 40, item, color, 1.5)
     end
 end
 ```
@@ -289,17 +404,21 @@ end
 ## Tips and Best Practices
 ---
 
-1. **Create once, use many**: Create your TextWriter in `onStart()` and reuse it in `onUpdate()`
+1. **Create once, use many**: Create your TextWriter in `onStart()` and reuse it in `onUpdate()`.
 
-2. **Performance**: Text rendering happens every frame. Avoid creating new TextWriter instances in `onUpdate()`
+2. **Use TextCache for static content**: Any overlay that doesn't change every frame (key bindings, tech trees, help screens) should use `beginTextCache` / `endTextCache` / `drawTextCache` to avoid per-frame GL texture allocation.
 
-3. **Screen coordinates**: Remember that (0,0) is the top-left corner
+3. **Rebuild only when dirty**: Track a `dirty` flag and rebuild the cache only when content actually changes. Add a periodic max interval (e.g. every 60 frames) as a safety net.
 
-4. **Color alpha**: The Color's alpha component affects transparency independently of `setAlpha()`
+4. **Cache coordinates are local**: Inside a `beginTextCache` / `endTextCache` block, (0, 0) is the top-left of the cache, not the screen. `drawTextCache(name, x, y)` places the result at screen position (x, y).
 
-5. **Available fonts**: Check `assets/fonts/` for included fonts:
-   - `Courier.ttf` - Monospace font (good for debug info)
-   - Other TTF fonts you add to the project
+5. **ASCII only with Courier.ttf**: The bundled `Courier.ttf` covers only ASCII (0x00–0x7F). Use only ASCII strings; non-ASCII characters render as garbage.
+
+6. **Screen coordinates**: (0, 0) is the top-left corner of the window.
+
+7. **Available fonts**: Check `assets/fonts/` for included fonts:
+   - `Courier.ttf` — Monospace font (good for debug info, ASCII only)
+   - Other TTF fonts you add to the project.
 
 ## Method Summary
 ---
@@ -313,3 +432,6 @@ end
 | `setAlpha(alpha)` | Set global transparency |
 | `getAlpha()` | Get current transparency |
 | `setFont(font)` | Change font (advanced) |
+| `beginTextCache(name, w, h)` | Start recording text into a named off-screen FBO |
+| `endTextCache()` | Stop recording and restore screen framebuffer |
+| `drawTextCache(name, x, y)` | Blit a cached text FBO to the screen |

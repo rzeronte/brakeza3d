@@ -18,13 +18,14 @@ Brakeza::Brakeza()
     pool(4),
     poolImages(4)
 {
-    componentsManager = Components::get();
+    componentsManager =
+        Components::get();
 
-    pool.setMaxCallbacksPerFrame(5);
-    pool.setMaxConcurrentTasks(2);
+    pool.setMaxCallbacksPerFrame(8);
+    pool.setMaxConcurrentTasks(4);
 
-    poolImages.setMaxCallbacksPerFrame(5);
-    poolImages.setMaxConcurrentTasks(2);
+    poolImages.setMaxCallbacksPerFrame(8);
+    poolImages.setMaxConcurrentTasks(4);
 }
 
 Brakeza *Brakeza::get()
@@ -113,41 +114,45 @@ void Brakeza::MainLoop()
     GUI::ShowLoadTime("Time until main loop starts", timer);
 
     while (!Config::get()->EXIT) {
-        EngineObserver::frameCount++;
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::frameCount++;
 
         Profiler::get()->ResetTotalFrameTime();                              // Reset profiler measures
+
         ControlFrameRate();                                                  // Control framerate based on SDL_Delay
         UpdateTimer();                                                       // Refresh main timer
         PoolImages().processMainThreadCallbacks();                           // Main Thread pool images
         PoolCompute().processMainThreadCallbacks();                          // Main Thread pool compute
 
-        EngineObserver::setPipelineStep("PreUpdate");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("PreUpdate");
         PreUpdateComponents();                                               // PreUpdate for componentes
-        CaptureInputEvents(event);                                           // Capture keyboard/mouse status
+        CaptureInputEvents(event);                                        // Capture keyboard/mouse status
         Components::get()->Window()->ClearOGLFrameBuffers();                 // Clean video framebuffers
 
-        EngineObserver::setPipelineStep("OnUpdate+ObjectShaders");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("OnUpdate+ObjectShaders");
         OnUpdateComponents();                                                // OnUpdate for componentes
 
-        EngineObserver::setPipelineStep("LightPass");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("ShadowPass");
+        Components::get()->Render()->RunShadowPass();                        // Centralised shadow pass (all casters × all lights)
+
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("LightPass");
         Components::get()->Render()->LightPass();                            // Deferred opaque objects light pass
 
-        EngineObserver::setPipelineStep("PostUpdate");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("PostUpdate");
         PostUpdateComponents();                                              // PostUpdate for componentes (transparent mainly)
 
-        EngineObserver::setPipelineStep("FlipBuffersToGlobal");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("FlipBuffersToGlobal");
         Components::get()->Render()->FlipBuffersToGlobal();                  // Buffers compositing
 
-        EngineObserver::setPipelineStep("PostProcessingChain");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("PostProcessingChain");
         ComponentRender::PostProcessingShadersChain();                       // Post-pass running for shaders
 
-        EngineObserver::setPipelineStep("FlipToWindow");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("FlipToWindow");
         Profiler::get()->EndTotalFrameTime();                                // End frame time measures
         Components::get()->Window()->FlipGlobalToWindow();                   // Flip to screen
 
-        EngineObserver::setPipelineStep("idle");
+        if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("idle");
 
-        if (EngineObserver::frameCount % 60 == 0)
+        if (Config::get()->OBSERVER_AI_ENABLED && EngineObserver::frameCount % 60 == 0)
             DumpObserverState();
     }
 
@@ -178,6 +183,12 @@ void Brakeza::AddObject3D(Object3D *obj, const std::string &label)
     LOG_MESSAGE("[AddObject] Adding object '%s' to scene...", label.c_str());
     obj->setName(label);
     objects.push_back(obj);
+    objectsByName[label] = obj;
+
+    obj->ReloadScriptsEnvironment();
+    if (componentsManager->Scripting()->isExecuting()) {
+        obj->RunStartScripts();
+    }
 }
 
 void Brakeza::UpdateTimer()
@@ -271,13 +282,17 @@ std::string Brakeza::UniqueObjectLabel(const char *prefix)
 
 Object3D *Brakeza::getObjectByName(const std::string &label) const
 {
-    for (const auto &o : objects) {
-        if (o->getName() == label) {
-            return o;
-        }
-    }
-
+    auto it = objectsByName.find(label);
+    if (it != objectsByName.end()) return it->second;
     return nullptr;
+}
+
+void Brakeza::removeObjectFromIndex(Object3D *obj)
+{
+    auto it = objectsByName.find(obj->getName());
+    if (it != objectsByName.end() && it->second == obj) {
+        objectsByName.erase(it);
+    }
 }
 
 Object3D *Brakeza::getObjectById(const unsigned int id) const
@@ -289,6 +304,19 @@ Object3D *Brakeza::getObjectById(const unsigned int id) const
     }
 
     return nullptr;
+}
+
+Object3D *Brakeza::getObjectAtScreen(int rawX, int rawY) const
+{
+    auto *window = Components::get()->Window();
+    int renderX = (int)((float)rawX / (float)window->getWidth()  * (float)window->getWidthRender());
+    int renderY = (int)((float)rawY / (float)window->getHeight() * (float)window->getHeightRender());
+    unsigned int id = window->getObjectIDByPickingColorFramebuffer(renderX, renderY);
+    Object3D *obj = getObjectById(id);
+    if (obj == nullptr) {
+        obj = Components::get()->Render()->hitTestAvatar(rawX, rawY);
+    }
+    return obj;
 }
 
 bool Brakeza::ReadArgs(int argc, char **argv)

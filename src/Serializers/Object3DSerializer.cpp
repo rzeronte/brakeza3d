@@ -21,6 +21,7 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
     cJSON_AddNumberToObject(root, "scale", o->getScale());
     cJSON_AddNumberToObject(root, "alpha", o->getAlpha());
     cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
+    cJSON_AddBoolToObject(root, "selectable", o->isSelectable());
     cJSON_AddItemToObject(root, "position", ToolsJSON::Vertex3DToJSON(o->getPosition()));
     cJSON_AddItemToObject(root, "rotation", ToolsJSON::Vertex3DToJSON(o->getRotation().getVertex3DAngles()));
 
@@ -30,7 +31,8 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
     cJSON_AddBoolToObject(renderSettings, "depthTest", o->getRenderSettings().depthTest);
     cJSON_AddBoolToObject(renderSettings, "writeDepth", o->getRenderSettings().writeDepth);
     cJSON_AddBoolToObject(renderSettings, "shadowMap", o->getRenderSettings().shadowMap);
-    cJSON_AddNumberToObject(renderSettings, "blend_function_src", o->getRenderSettings().mode_dst);
+    cJSON_AddBoolToObject(renderSettings, "frustumCulling", o->getRenderSettings().frustumCulling);
+    cJSON_AddNumberToObject(renderSettings, "blend_function_src", o->getRenderSettings().mode_src);
     cJSON_AddNumberToObject(renderSettings, "blend_function_dst", o->getRenderSettings().mode_dst);
     cJSON_AddItemToObject(root, "renderSettings", renderSettings);
 
@@ -86,6 +88,12 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         o->setEnabled(static_cast<bool>(cJSON_GetObjectItem(json, "enabled")->valueint));
     }
 
+    // Selectable
+    o->setSelectable(true);
+    if (cJSON_GetObjectItem(json, "selectable") != nullptr) {
+        o->setSelectable(static_cast<bool>(cJSON_GetObjectItem(json, "selectable")->valueint));
+    }
+
     // alpha
     o->setAlpha(1.0f);
     if (cJSON_GetObjectItem(json, "alpha") != nullptr) {
@@ -101,8 +109,11 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         renderSettings.depthTest = (bool) cJSON_GetObjectItem(renderSettingsJSON, "depthTest")->valueint;
         renderSettings.writeDepth = (bool) cJSON_GetObjectItem(renderSettingsJSON, "writeDepth")->valueint;
         renderSettings.shadowMap = (bool) cJSON_GetObjectItem(renderSettingsJSON, "shadowMap")->valueint;
-        renderSettings.mode_src = (bool) cJSON_GetObjectItem(renderSettingsJSON, "blend_function_src")->valueint;
-        renderSettings.mode_dst = (bool) cJSON_GetObjectItem(renderSettingsJSON, "blend_function_dst")->valueint;
+        auto *frustumCullingItem = cJSON_GetObjectItem(renderSettingsJSON, "frustumCulling");
+        if (frustumCullingItem) renderSettings.frustumCulling = (bool) frustumCullingItem->valueint;
+        renderSettings.mode_src = static_cast<GLenum>(cJSON_GetObjectItem(renderSettingsJSON, "blend_function_src")->valueint);
+        renderSettings.mode_dst = static_cast<GLenum>(cJSON_GetObjectItem(renderSettingsJSON, "blend_function_dst")->valueint);
+        o->getRenderSettings() = renderSettings;
     }
 
     //Position

@@ -10,14 +10,18 @@
 #include "../GUI/Objects/ShadersGUI.h"
 #include "../Misc/cJSON.h"
 #include "../OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
+#include "../OpenGL/Code/ShaderBaseCustomOGLCode.h"
+#include "../Loaders/Scene.h"
 
 class ThreadJobReadSceneShaders : public ThreadJobBase
 {
     cJSON *json;
+    Scene *scene;
 public:
-    ThreadJobReadSceneShaders(cJSON *json)
+    ThreadJobReadSceneShaders(cJSON *json, Scene *scene = nullptr)
     :
-        json(cJSON_Duplicate(json, 1))
+        json(cJSON_Duplicate(json, 1)),
+        scene(scene)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -25,8 +29,7 @@ public:
 
     void fnProcess()
     {
-
-        LOG_MESSAGE("[ThreadJobReadFileScene] Process END");
+        LOG_MESSAGE("[ThreadJobReadSceneShaders] Process END");
     }
 
     void fnCallback()
@@ -34,18 +37,27 @@ public:
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
-            Components::get()->Render()->LoadShaderIntoScene(typesFile);
+            auto shader = Components::get()->Render()->LoadShaderIntoScene(typesFile);
 
+            if (shader) {
+                shader->setScene(scene);
+
+                auto typesArray = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
+                if (typesArray) {
+                    if (auto* codeShader = dynamic_cast<ShaderBaseCustomOGLCode*>(shader)) {
+                        codeShader->overrideDataTypesFromJSON(typesArray);
+                    }
+                }
+
+                auto enabledItem = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "enabled");
+                if (cJSON_IsBool(enabledItem)) {
+                    shader->setEnabled(cJSON_IsTrue(enabledItem));
+                }
+            }
         }
 
-        /*auto &shaders = Components::get()->Render()->getSceneShaders();
-        for (auto &s : shaders) {
-            s->PrepareMainThread();
-        }*/
-        LOG_MESSAGE("[ThreadJobReadFileScene] Callback END");
+        LOG_MESSAGE("[ThreadJobReadSceneShaders] Callback END");
     }
-
-
 };
 
 

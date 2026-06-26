@@ -45,19 +45,30 @@ void ShaderOGLCustomCodePostprocessing::Render(GLuint fbo, GLuint texture)
 {
     if (!isEnabled()) return;
 
+    auto window = Components::get()->Window();
     auto render = Components::get()->Render();
+
     render->ChangeOpenGLFramebuffer(fbo);
+    glViewport(0, 0, window->getWidthRender(), window->getHeightRender());
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glDisable(GL_SCISSOR_TEST);
     render->ChangeOpenGLProgram(programID);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     LoadQuadMatrixUniforms();
 
     ResetNumberTextures();
-    setTextureResult(texture);
+    setInternalTexture(texture);
     setDataTypesUniforms();
 
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     DrawQuad();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    render->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLCustomCodePostprocessing::Destroy()

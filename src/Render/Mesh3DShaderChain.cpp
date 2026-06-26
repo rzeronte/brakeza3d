@@ -54,10 +54,10 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
 
         // Limpiar FBOs intermedios antes de renderizar
         if (!isLast) {
-            glBindFramebuffer(GL_FRAMEBUFFER, outFBO);
+            Components::get()->Render()->ChangeOpenGLFramebuffer(outFBO);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            Components::get()->Render()->ChangeOpenGLFramebuffer(0);
         }
 
         // Manejar shaders de nodos para mesh

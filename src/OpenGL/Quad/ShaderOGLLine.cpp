@@ -28,35 +28,35 @@ void ShaderOGLLine::PrepareMainThread()
 
 void ShaderOGLLine::LoadUniforms()
 {
-    lineStartUniform = glGetUniformLocation(programID, "lineStart");
-    lineEndUniform = glGetUniformLocation(programID, "lineEnd");
-    lineColorUniform = glGetUniformLocation(programID, "lineColor");
-    weightUniform = glGetUniformLocation(programID, "weight");
+    lineStartUniform  = glGetUniformLocation(programID, "lineStart");
+    lineEndUniform    = glGetUniformLocation(programID, "lineEnd");
+    lineColorUniform  = glGetUniformLocation(programID, "lineColor");
+    weightUniform     = glGetUniformLocation(programID, "weight");
+    resolutionUniform = glGetUniformLocation(programID, "resolution");
 }
 
 void ShaderOGLLine::render(Point2D a, Point2D b, Color c, float weight, GLuint fbo)
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
-
     Components::get()->Render()->ChangeOpenGLProgram(programID);
-
     LoadQuadMatrixUniforms();
 
-    const auto normAx = (float) a.y / (float) Config::get()->screenHeight;
-    const auto normAy = (float) a.x / (float) Config::get()->screenWidth;
+    const float w = (float)Config::get()->screenWidth;
+    const float h = (float)Config::get()->screenHeight;
 
-    const auto normBx = (float) b.y / (float) Config::get()->screenHeight;
-    const auto normBy = (float) b.x / (float) Config::get()->screenWidth;
-
-    setVec2Uniform(lineStartUniform, glm::vec2(normAx, normAy));
-    setVec2Uniform(lineEndUniform, glm::vec2(normBx, normBy));
-    setVec4Uniform(lineColorUniform, glm::vec4(c.r, c.g, c.b, 1.0f));
-    setFloatUniform(weightUniform, weight);
+    setVec2Uniform(lineStartUniform,  glm::vec2((float)a.x / w, (float)a.y / h));
+    setVec2Uniform(lineEndUniform,    glm::vec2((float)b.x / w, (float)b.y / h));
+    setVec4Uniform(lineColorUniform,  glm::vec4(c.r, c.g, c.b, c.a));
+    setFloatUniform(weightUniform,    weight);
+    setVec2Uniform(resolutionUniform, glm::vec2(w, h));
 
     glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     DrawQuad();
 
+    glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
 }
 

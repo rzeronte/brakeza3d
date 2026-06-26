@@ -3,6 +3,7 @@
 //
 
 #include "../../../include/GUI/AddOns/GUIAddonObjects3D.h"
+#include <algorithm>
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
@@ -172,10 +173,17 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
         if (isCategoryOpen) {
             int localCount = 0;
 
+            std::vector<Object3D*> sorted;
             for (auto &o : objects) {
                 if (o->getTypeObject() != type.type) continue;
                 if (!filter.empty() && !exist(o->getName(), filter)) continue;
+                sorted.push_back(o);
+            }
+            std::sort(sorted.begin(), sorted.end(), [](Object3D* a, Object3D* b) {
+                return a->getName() < b->getName();
+            });
 
+            for (auto &o : sorted) {
                 DrawObjectWithCustomNode(o, globalIndex);
 
                 globalIndex++;
@@ -282,14 +290,56 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
 
     ImGui::Separator();
 
-    switch (type) {
-        case GUIType::ViewerObjectsMode::TREE:
-            DrawObjectsTree(gui, gameObjects, filterGUI);
-            break;
-        case GUIType::ViewerObjectsMode::LIST:
-            DrawObjectList(gui, gameObjects, filterGUI);
-            break;
-        default:
-            DrawObjectList(gui, gameObjects, filterGUI);
+    auto &loadedScenes = Components::get()->Scripting()->getLoadedScenes();
+
+    if (loadedScenes.size() > 1) {
+        for (auto *scene : loadedScenes) {
+            std::string sceneLabel = scene->getName();
+            if (!scene->isActive()) sceneLabel += "  [inactive]";
+
+            bool headerOpen = ImGui::CollapsingHeader(sceneLabel.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+
+            if (headerOpen) {
+                ImGui::PushID(scene);
+                switch (type) {
+                    case GUIType::ViewerObjectsMode::TREE:
+                        DrawObjectsTree(gui, scene->getObjects(), filterGUI);
+                        break;
+                    default:
+                        DrawObjectList(gui, scene->getObjects(), filterGUI);
+                        break;
+                }
+                ImGui::PopID();
+            }
+        }
+
+        // Objetos sin escena (multiScene, creados por script, etc.)
+        std::vector<Object3D*> unscoped;
+        for (auto *o : gameObjects) {
+            if (o->getScene() == nullptr && !o->isRemoved()) unscoped.push_back(o);
+        }
+        if (!unscoped.empty()) {
+            if (ImGui::CollapsingHeader("Global", ImGuiTreeNodeFlags_DefaultOpen)) {
+                switch (type) {
+                    case GUIType::ViewerObjectsMode::TREE:
+                        DrawObjectsTree(gui, unscoped, filterGUI);
+                        break;
+                    default:
+                        DrawObjectList(gui, unscoped, filterGUI);
+                        break;
+                }
+            }
+        }
+    } else {
+        switch (type) {
+            case GUIType::ViewerObjectsMode::TREE:
+                DrawObjectsTree(gui, gameObjects, filterGUI);
+                break;
+            case GUIType::ViewerObjectsMode::LIST:
+                DrawObjectList(gui, gameObjects, filterGUI);
+                break;
+            default:
+                DrawObjectList(gui, gameObjects, filterGUI);
+        }
     }
 }

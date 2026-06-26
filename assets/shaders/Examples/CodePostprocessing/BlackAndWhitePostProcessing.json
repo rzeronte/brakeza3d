@@ -7,7 +7,7 @@
 	"types":	[{
 			"name":	"intensity",
 			"type":	"float",
-			"value":	1.0099999904632568
+			"value":	1.0
 		}, {
 			"name":	"sceneTexture",
 			"type":	"scene"

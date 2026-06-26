@@ -21,10 +21,14 @@ void main()
 
     if (enableLights) {
         for (int i = 0; i < numLights; i++) {
+            float dist = distance(pointLights[i].position.xyz, FragPos);
+            if (dist > pointLights[i].radius) continue;
             result += CalcPointLight(pointLights[i], norm, FragPos, viewDir, TexCoords);
         }
 
         for (int i = 0; i < numSpotLights; i++) {
+            float dist = distance(spotLights[i].position.xyz, FragPos);
+            if (dist > spotLights[i].radius) continue;
             result += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, i, TexCoords);
         }
     }

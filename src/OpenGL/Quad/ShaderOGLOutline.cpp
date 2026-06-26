@@ -44,7 +44,11 @@ void ShaderOGLOutline::renderOutline(GLuint textureId, const Color &c, float bor
 
     setTextureUniform(textureUniform, textureId, 0);
 
+    glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
     DrawQuad();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void ShaderOGLOutline::Destroy()
@@ -75,6 +79,35 @@ void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickn
     renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, fbo);
 }
 
+void ShaderOGLOutline::drawOutlineSubmesh(Mesh3D *m, const std::string &submeshName, const Color &c, float borderThickness, GLuint fbo)
+{
+    auto shaderColor = Components::get()->Render()->getShaders()->shaderOGLColor;
+
+    // "BUILDING_1042.001" -> prefix "BUILDING_1042" (todo antes del último punto)
+    std::string prefix = submeshName;
+    const auto dot = submeshName.rfind('.');
+    if (dot != std::string::npos) prefix = submeshName.substr(0, dot);
+
+    Components::get()->Render()->ChangeOpenGLFramebuffer(shaderColor->getFramebuffer());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    for (const auto& mm : m->getMeshData()) {
+        if (mm.name.rfind(prefix, 0) != 0) continue;   // no empieza con el prefijo
+        shaderColor->RenderColor(
+            m->getModelMatrix(),
+            mm.vertexBuffer,
+            mm.uvBuffer,
+            mm.normalBuffer,
+            (int) mm.vertices.size(),
+            Color::white(),
+            false,
+            shaderColor->getFramebuffer()
+        );
+    }
+
+    renderOutline(shaderColor->getTextureColorBuffer(), c, borderThickness, fbo);
+}
+
 void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThickness, GLuint fbo)
 {
     auto componentRender = Components::get()->Render();
@@ -85,7 +118,7 @@ void ShaderOGLOutline::drawOutline(Mesh3DAnimation *m, Color c, float borderThic
             m->getModelMatrix(),
             mm.feedbackBuffer,
             mm.uvBuffer,
-            mm.normalBuffer,
+            mm.feedbackNormalBuffer,
             static_cast<int>(mm.vertices.size()),
             Color::white(),
             true,

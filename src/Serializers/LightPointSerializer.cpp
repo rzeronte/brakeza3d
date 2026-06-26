@@ -27,6 +27,9 @@ cJSON * LightPointSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(root, "linear", light->linear);
     cJSON_AddNumberToObject(root, "quadratic", light->quadratic);
 
+    cJSON_AddBoolToObject(root,   "frustumCullingEnabled", light->frustumCullingEnabled);
+    cJSON_AddNumberToObject(root, "frustumCullingOffset",  light->frustumCullingOffset);
+
     return root;
 }
 
@@ -65,6 +68,12 @@ void LightPointSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     light->setConstant(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "constant")->valuedouble));
     light->setLinear(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "linear")->valuedouble));
     light->setCuadratic(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "quadratic")->valuedouble));
+
+    auto *fce = cJSON_GetObjectItemCaseSensitive(json, "frustumCullingEnabled");
+    if (fce) light->frustumCullingEnabled = cJSON_IsTrue(fce);
+
+    auto *fco = cJSON_GetObjectItemCaseSensitive(json, "frustumCullingOffset");
+    if (fco) light->frustumCullingOffset = static_cast<float>(fco->valuedouble);
 }
 
 void LightPointSerializer::MenuLoad(const std::string &model)

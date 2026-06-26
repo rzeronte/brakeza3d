@@ -22,11 +22,12 @@ void ShaderOGLShading::LoadUniforms()
 void ShaderOGLShading::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo)
 {
     for (auto &m: mesh->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         render(
             mesh->getModelMatrix(),
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
-            m.normalBuffer,
+            useFeedbackBuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             m.vertices.size(),
             fbo
         );

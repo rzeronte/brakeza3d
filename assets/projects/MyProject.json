@@ -8,6 +8,8 @@
 	},
 	"scripts":	[],
 	"scenes":	[{
+			"path":	"../assets/scenes/ParticleTest.json"
+		}, {
 			"path":	"../assets/scenes/RainCubesScene.json"
 		}, {
 			"path":	"../assets/scenes/DemoScene.json"

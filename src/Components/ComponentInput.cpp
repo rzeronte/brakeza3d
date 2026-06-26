@@ -19,8 +19,9 @@ void ComponentInput::preUpdate()
     ResetKeyboardMapping();
     ResetMouseMapping();
 
-    keyDownEvent = false;
-    keyUpEvent = false;
+    keyDownEvent           = false;
+    keyUpEvent             = false;
+    leftClickConsumedByUI  = false;
 }
 
 void ComponentInput::onUpdate()
@@ -39,6 +40,9 @@ void ComponentInput::postUpdate()
     Component::postUpdate();
 
     keyboardEvents.clear();
+    mouseRightButtonUp = false;
+    mouseButtonDown    = false;
+    mouseButtonUp      = false;
 }
 
 void ComponentInput::onEnd()
@@ -75,10 +79,14 @@ void ComponentInput::HandleMouseLook(SDL_Event *event)
 
     if (!Config::get()->MOUSE_LOOK) return;
 
+    if (event->type == SDL_MOUSEWHEEL && event->wheel.y != 0) {
+        auto camera = Components::get()->Camera()->getCamera();
+        camera->MoveForward(-(float)event->wheel.y * Config::get()->WALKING_SPEED * 3.0f);
+    }
+
     if (mouseMotion && isRightMouseButtonPressed()) {
         if (event->type == SDL_MOUSEMOTION) {
             auto camera = Components::get()->Camera()->getCamera();
-
 
             camera->Yaw(-event->motion.xrel * Config::get()->MOUSE_SENSITIVITY);
             camera->Pitch(event->motion.yrel * Config::get()->MOUSE_SENSITIVITY);
@@ -89,23 +97,6 @@ void ComponentInput::HandleMouseLook(SDL_Event *event)
                 camera->getRoll()
             ));
         }
-    }
-
-    if (event->type == SDL_MOUSEWHEEL) {
-        if (event->wheel.y > 0) {
-            Components::get()->Camera()->getCamera()->MoveForward(-Config::get()->WALKING_SPEED * 5);
-        } else if (event->wheel.y < 0) {
-            Components::get()->Camera()->getCamera()->MoveBackward(-Config::get()->WALKING_SPEED * 5);
-        }
-    }
-
-    if (event->type == SDL_MOUSEBUTTONDOWN) {
-        mouseButtonDown = true;
-    }
-
-    if (event->type == SDL_MOUSEBUTTONUP) {
-        mouseButtonUp = true;
-        drag = false;
     }
 }
 
@@ -157,13 +148,30 @@ void ComponentInput::ResetKeyboardMapping()
 
 void ComponentInput::UpdateMouseStates(SDL_Event *event)
 {
+    if (event->type == SDL_MOUSEWHEEL) {
+        mouseWheelY = event->wheel.y;
+    }
+
     if (event->type == SDL_MOUSEMOTION) {
         mouseMotion = true;
         mouseMotionXRel = (float) event->motion.xrel;
         mouseMotionYRel = (float) event->motion.yrel;
-        if (mouseLeftButton) {
-            drag = true;
-        }
+        if (mouseLeftButton)  drag      = true;
+        if (mouseRightButton) rightDrag = true;
+    }
+
+    if (event->type == SDL_MOUSEBUTTONDOWN) {
+        mouseButtonDown = true;
+        if (event->button.button == SDL_BUTTON_RIGHT) rightDrag = false;
+    }
+
+    if (event->type == SDL_MOUSEBUTTONUP) {
+        mouseButtonUp = true;
+        drag = false;
+    }
+
+    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_RIGHT) {
+        mouseRightButtonUp = true;
     }
 }
 
@@ -173,8 +181,14 @@ void ComponentInput::ResetMouseMapping()
 
     mouseLeftButton = false;
     mouseRightButton = false;
-    mouseButtonDown = false;
-    mouseButtonUp = false;
+    mouseMiddleButton = false;
+    mouseWheelY = 0;
+
+    // Siempre actualizar posición raw y botón central, independientemente de ImGui
+    unsigned int rawButtons = SDL_GetMouseState(&rawMouseX, &rawMouseY);
+    if ((rawButtons & SDL_BUTTON_MMASK) != 0) {
+        mouseMiddleButton = true;
+    }
 
     if (ImGui::GetIO().WantCaptureMouse) {
         return;
@@ -269,10 +283,10 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             scripting->ReloadLUAScripts();
         }
         if (keyboard[SDL_SCANCODE_F3]) {
-            SceneLoader::ClearScene();
+            SceneLoader::ClearWorld();
         }
         if (keyboard[SDL_SCANCODE_F4]) {
-            SceneLoader::CleanScene();
+            SceneLoader::CleanWorld();
         }
 
         if (keyboard[SDL_SCANCODE_F5]) {

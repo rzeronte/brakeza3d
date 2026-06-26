@@ -1,0 +1,34 @@
+{
+	"name": "DepthOfField",
+	"typesFile": "../assets/shaders/Examples/CodePostprocessing/DepthOfField.json",
+	"vsFile":    "../assets/shaders/Examples/CodePostprocessing/DepthOfField.vs",
+	"fsFile":    "../assets/shaders/Examples/CodePostprocessing/DepthOfField.fs",
+	"type": "Postprocessing",
+	"types": [{
+			"name": "sceneTexture",
+			"type": "scene"
+		}, {
+			"name": "depthTexture",
+			"type": "depth"
+		}, {
+			"name": "focusNear",
+			"type": "float",
+			"value": 100.0
+		}, {
+			"name": "focusFar",
+			"type": "float",
+			"value": 300.0
+		}, {
+			"name": "blurRadius",
+			"type": "float",
+			"value": 6.0
+		}, {
+			"name": "far_plane",
+			"type": "float",
+			"value": 10000.0
+		}, {
+			"name": "intensity",
+			"type": "float",
+			"value": 1.0
+		}]
+}

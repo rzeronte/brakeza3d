@@ -29,9 +29,11 @@ public:
             return;
         }
 
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyGeometry");
         Mesh3DAnimationSerializer::ApplyGeometryAnimationFromFile(mesh, json);
-
-        Mesh3DSerializer::ApplyShadersCreation(mesh, json);
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyShadersFileRead");
+        Mesh3DSerializer::ApplyShadersFileRead(mesh, json);
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyShadersBackground");
         Mesh3DSerializer::ApplyShadersBackground(mesh);
 
         LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] Process END");
@@ -44,13 +46,17 @@ public:
             return;
         }
 
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step FillOGLBuffers");
         mesh->FillOGLBuffers();
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step FillAnimationBoneDataOGLBuffers");
         mesh->FillAnimationBoneDataOGLBuffers();
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step UpdateBonesFinalTransformations");
         mesh->UpdateBonesFinalTransformations(0);
-
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyCustomShadersMainThread");
         Mesh3DSerializer::ApplyCustomShadersMainThread(mesh);
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyCollider");
         Mesh3DSerializer::ApplyCollider(mesh, json);
-
+        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step AddObject3D");
         Brakeza::get()->AddObject3D(mesh, mesh->getName());
 
         LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] Callback END");
