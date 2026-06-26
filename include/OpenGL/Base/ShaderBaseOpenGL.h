@@ -66,7 +66,7 @@ public:
     static void setTextureArrayUniform(GLuint uniform, GLuint texture, int index);
     void setTexture(const std::string &name, GLuint textureID, int index) const;
     void setMat4Array(const std::string &name, std::vector<glm::mat4> &Transforms) const;
-    static void setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4> &Transforms);
+    static void setMat4ArrayUniform(GLuint uniform, const std::vector<glm::mat4> &Transforms);
 
     [[nodiscard]] GLuint getProgramID() const;
     [[nodiscard]] const FilePath::VertexShaderFile& getVertexFilename() const;

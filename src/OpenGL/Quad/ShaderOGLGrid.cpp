@@ -27,10 +27,12 @@ void ShaderOGLGrid::PrepareMainThread()
 
 void ShaderOGLGrid::LoadUniforms()
 {
-
-    gridSizeUniform = glGetUniformLocation(programID, "gridSize");
+    gridSizeUniform    = glGetUniformLocation(programID, "gridSize");
     gridOpacityUniform = glGetUniformLocation(programID, "gridOpacity");
-    gridColorUniform = glGetUniformLocation(programID, "gridColor");
+    gridColorUniform   = glGetUniformLocation(programID, "gridColor");
+    cameraPosUniform   = glGetUniformLocation(programID, "cameraPos");
+    fadeStartUniform   = glGetUniformLocation(programID, "fadeStart");
+    fadeEndUniform     = glGetUniformLocation(programID, "fadeEnd");
 }
 
 void ShaderOGLGrid::render(GLuint fbo)
@@ -45,10 +47,12 @@ void ShaderOGLGrid::render(GLuint fbo)
     setMat4Uniform(modelMatrixUniform, camera->getGLMMat4ViewMatrix());
     setMat4Uniform(projectionMatrixUniform, camera->getGLMMat4ProjectionMatrix());
 
-    // Parámetros de la rejilla
     setFloatUniform(gridSizeUniform, gridSize);
     setFloatUniform(gridOpacityUniform, opacity);
     setVec3Uniform(gridColorUniform, color.toGLM());
+    setVec3Uniform(cameraPosUniform, camera->getPosition().toGLM());
+    setFloatUniform(fadeStartUniform, fadeStart);
+    setFloatUniform(fadeEndUniform, fadeEnd);
 
     // Habilitar blending
     glEnable(GL_BLEND);
@@ -60,6 +64,8 @@ void ShaderOGLGrid::render(GLuint fbo)
     DrawQuad();
 
     glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
 }
 
 void ShaderOGLGrid::Destroy()

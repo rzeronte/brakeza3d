@@ -1,0 +1,38 @@
+{
+	"name": "FogPostProcessing",
+	"typesFile": "../assets/shaders/Examples/CodePostprocessing/FogPostProcessing.json",
+	"vsFile":    "../assets/shaders/Examples/CodePostprocessing/FogPostProcessing.vs",
+	"fsFile":    "../assets/shaders/Examples/CodePostprocessing/FogPostProcessing.fs",
+	"type": "Postprocessing",
+	"types": [{
+			"name": "sceneTexture",
+			"type": "scene"
+		}, {
+			"name": "depthTexture",
+			"type": "depth"
+		}, {
+			"name": "nearPlane",
+			"type": "float",
+			"value": 0.1
+		}, {
+			"name": "farPlane",
+			"type": "float",
+			"value": 1000.0
+		}, {
+			"name": "fogMinDist",
+			"type": "float",
+			"value": 400.0
+		}, {
+			"name": "fogMaxDist",
+			"type": "float",
+			"value": 900.0
+		}, {
+			"name": "intensity",
+			"type": "float",
+			"value": 0.8
+		}, {
+			"name": "fogColor",
+			"type": "vec3",
+			"value": {"x": 0.6, "y": 0.65, "z": 0.7}
+		}]
+}

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <mutex>
 #include "../Misc/cJSON.h"
+#include "../Config.h"
 
 // EngineObserver — machine-readable observability for AI agents
 //
@@ -34,6 +35,7 @@ public:
 
     // Call once after Config is ready
     static void init(const std::string &rootFolder) {
+        if (!Config::get()->OBSERVER_AI_ENABLED) return;
         statePath  = rootFolder + "brakeza_state.json";
         eventsPath = rootFolder + "brakeza_events.jsonl";
         // Truncate events file at each session start (fresh log)
@@ -42,6 +44,7 @@ public:
 
     static void setScene(const std::string &name) {
         currentScene = name;
+        if (!Config::get()->OBSERVER_AI_ENABLED) return;
         appendEvent("scene", "Loaded: " + name);
     }
 
@@ -52,6 +55,7 @@ public:
     // Append one JSON line to brakeza_events.jsonl
     // Thread-safe: called from Logging which can fire from worker threads
     static void appendEvent(const std::string &level, const std::string &msg) {
+        if (!Config::get()->OBSERVER_AI_ENABLED) return;
         std::lock_guard<std::mutex> lock(eventsMutex);
         if (!eventsFile.is_open()) return;
 

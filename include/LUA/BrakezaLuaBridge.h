@@ -12,15 +12,22 @@
 #include "../Components/ComponentCamera.h"
 #include "../Components/Components.h"
 #include "../Brakeza.h"
+#include "../Render/GlyphAtlas.h"
 #include "../2D/Image2D.h"
 #include "../2D/Image2DAnimation.h"
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/Image3D.h"
 #include "../3D/LightPoint.h"
+#include "../3D/LightSpot.h"
 #include "../3D/Image3DAnimation.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/ParticleEmitter.h"
 #include "../Misc/VideoPlayer.h"
+#include "../Threads/ThreadJobPathfinding.h"
+#include "../Loaders/FBXLightLoader.h"
+#include "../Loaders/Scene.h"
+#include "../Loaders/SceneLoader.h"
+#include "../3D/Projectile.h"
 
 // Undefine Windows API macro that conflicts with ComponentSound::PlaySound
 #ifdef PlaySound
@@ -73,7 +80,7 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<Object3D>(
         "Object3D",
         "addToPosition", &Object3D::AddToPosition,
-        "getPosition", &Object3D::getPosition,
+        "getPosition", static_cast<Vertex3D&(Object3D::*)()>(&Object3D::getPosition),
         "setPosition", &Object3D::setPosition,
         "setRotation", &Object3D::setRotation,
         "getTypeObject", &Object3D::getTypeObject,
@@ -121,9 +128,17 @@ inline void LUAIntegration(sol::state &lua)
         "setWalkingDirection", &Object3D::setWalkingDirection,
         "Jump", &Object3D::Jump,
         "onGround", &Object3D::onGround,
-        "getLocalScriptVar", &Object3D::getLocalScriptVar,
+        "getLocalScriptVar",  &Object3D::getLocalScriptVar,
+        "setLocalScriptVar",  &Object3D::setLocalScriptVar,
+        "isSelectable",       &Object3D::isSelectable,
+        "setSelectable",      &Object3D::setSelectable,
+        "setHighlight",       &Object3D::setHighlight,
+        "clearHighlight",     &Object3D::clearHighlight,
         "AttachScript", &Object3D::AttachScript,
-        "LookAt", &Object3D::LookAt,
+        "LookAt", sol::overload(
+            static_cast<void(Object3D::*)(Object3D*)>(&Object3D::LookAt),
+            static_cast<void(Object3D::*)(const Vertex3D&)>(&Object3D::LookAt)
+        ),
         "ReloadScriptsEnvironment", &Object3D::ReloadScriptsEnvironment,
         "getLinearVelocity", &Object3D::getLinearVelocity,
         "setParent", &Object3D::setParent,
@@ -139,7 +154,10 @@ inline void LUAIntegration(sol::state &lua)
         "isEnabled", &Object3D::isEnabled,
         "setCcdMotionThreshold", &Object3D::setCcdMotionThreshold,
         "setCcdSweptSphereRadius", &Object3D::setCcdSweptSphereRadius,
-        "setShapeMargin", &Object3D::setShapeMargin
+        "setShapeMargin", &Object3D::setShapeMargin,
+        "setFrustumCulling", [](Object3D* o, bool v) { o->getRenderSettings().frustumCulling = v; },
+        "setShadowMap",      [](Object3D* o, bool v) { o->getRenderSettings().shadowMap = v; },
+        "isVisibleInFrustum", &Object3D::isVisibleInFrustum
     );
 
     lua.new_usertype<Component>("Component",
@@ -153,7 +171,8 @@ inline void LUAIntegration(sol::state &lua)
         "isEnabled", &ComponentCamera::isEnabled,
         "setEnabled", &ComponentCamera::setEnabled,
         "getGLMMat4ViewMatrix", &ComponentCamera::getGLMMat4ViewMatrix,
-        "getGLMMat4ProjectionMatrix", &ComponentCamera::getGLMMat4ProjectionMatrix
+        "getGLMMat4ProjectionMatrix", &ComponentCamera::getGLMMat4ProjectionMatrix,
+        "worldToScreen", &ComponentCamera::worldToScreen
     );
 
     lua.new_usertype<ComponentSound>("ComponentSound",
@@ -166,7 +185,8 @@ inline void LUAIntegration(sol::state &lua)
         "PlayMusic", &ComponentSound::PlayMusic,
         "StopMusic", [](ComponentSound*) { ComponentSound::StopMusic(); },
         "StopChannel", [](ComponentSound*, int channel) { ComponentSound::StopChannel(channel); },
-        "getSoundDuration", &ComponentSound::getSoundDuration
+        "getSoundDuration", &ComponentSound::getSoundDuration,
+        "LoadSoundsFromFile", &ComponentSound::LoadSoundsFromFile
     );
 
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
@@ -186,13 +206,18 @@ inline void LUAIntegration(sol::state &lua)
         "getWidthRender", &ComponentWindow::getWidthRender,
         "isWindowMaximized", &ComponentWindow::isWindowMaximized,
         "LoadCursorImage", &ComponentWindow::LoadCursorImage,
-        "setImGuiMouse", &ComponentWindow::setImGuiMouse
+        "setImGuiMouse", &ComponentWindow::setImGuiMouse,
+        "setClearColor", &ComponentWindow::setClearColor
     );
 
     lua.new_usertype<ComponentRender>("ComponentRender",
     sol::base_classes, sol::bases<Component>(),
         "getSceneLoader", &ComponentRender::getSceneLoader,
-        "DrawLine",  &ComponentRender::DrawLine,
+        "DrawLine",    &ComponentRender::DrawLine,
+        "DrawLine2D",     &ComponentRender::DrawLine2D,
+        "DrawFilledRect", &ComponentRender::DrawFilledRect,
+        "DrawImage2D",    &ComponentRender::DrawImage2D,
+        "DrawImage2DFromImage", &ComponentRender::DrawImage2DFromImage,
         "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
         "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
         "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
@@ -201,7 +226,10 @@ inline void LUAIntegration(sol::state &lua)
         "getGlobalIlluminationAmbient", &ComponentRender::getGlobalIlluminationAmbient,
         "getGlobalIlluminationDiffuse", &ComponentRender::getGlobalIlluminationDiffuse,
         "getGlobalIlluminationSpecular", &ComponentRender::getGlobalIlluminationSpecular,
-        "getSceneShaderByLabel", &ComponentRender::getSceneShaderByLabel,
+        "getSceneShaderByLabel", [](ComponentRender& r, const std::string& label) -> ShaderBaseCustomOGLCode* {
+            return dynamic_cast<ShaderBaseCustomOGLCode*>(r.getSceneShaderByLabel(label));
+        },
+        "clearSceneShaders", &ComponentRender::clearSceneShaders,
         "getFps", &ComponentRender::getFps,
         "MakeScreenShot", &ComponentRender::MakeScreenShot,
         // Single-selection (returns nil when 0 or >1 selected)
@@ -219,7 +247,21 @@ inline void LUAIntegration(sol::state &lua)
         "hasMultipleSelected", &ComponentRender::hasMultipleSelected,
         "isObjectInSelection", [](ComponentRender* cr, Object3D* o) -> bool {
             return cr->isObjectInSelection(o);
-        }
+        },
+        "getLastRightClickedObject", &ComponentRender::getLastRightClickedObject,
+        "clearRightClickedObject", &ComponentRender::clearRightClickedObject,
+        "getLastRightClickedSubmeshName", &ComponentRender::getLastRightClickedSubmeshName,
+        "getLastLeftClickedObject", &ComponentRender::getLastLeftClickedObject,
+        "clearLeftClickedObject", &ComponentRender::clearLeftClickedObject,
+        "getLastLeftClickedSubmeshName", &ComponentRender::getLastLeftClickedSubmeshName,
+        "drawGroundCircle",  sol::overload(&ComponentRender::drawGroundCircle,  &ComponentRender::drawGroundCircleToFB),
+        "drawGroundBlob",    sol::overload(&ComponentRender::drawGroundBlob,    &ComponentRender::drawGroundBlobToFB),
+        "drawGroundDecal",   sol::overload(&ComponentRender::drawGroundDecal,   &ComponentRender::drawGroundDecalToFB),
+        "drawOutlineSubmesh",  &ComponentRender::drawOutlineSubmesh,
+        "getSubmeshCenter",    &ComponentRender::getSubmeshCenter,
+        "DrawCircle3D", &ComponentRender::DrawCircle3D,
+        "drawAxisQuad",    &ComponentRender::drawAxisQuad,
+        "getTextWriter",   &ComponentRender::getTextWriter
     );
 
     lua.new_usertype<ComponentScripting>("ComponentScripting",
@@ -229,7 +271,11 @@ inline void LUAIntegration(sol::state &lua)
         "ReloadLUAScripts", &ComponentScripting::ReloadLUAScripts,
         "AddSceneLUAScript", &ComponentScripting::AddSceneLUAScript,
         "AddProjectLUAScript", &ComponentScripting::AddProjectLUAScript,
-        "getGlobalScriptVar",  &ComponentScripting::getGlobalScriptVar
+        "getGlobalScriptVar",  &ComponentScripting::getGlobalScriptVar,
+        "setGlobalScriptVar",  &ComponentScripting::setGlobalScriptVar,
+        "RunProjectScriptsOnStart", &ComponentScripting::RunProjectScriptsOnStart,
+        "loadJSON",  &ComponentScripting::loadJSON,
+        "saveJSON",  &ComponentScripting::saveJSON
     );
 
     lua.new_usertype<ComponentInput>("ComponentInput",
@@ -247,6 +293,10 @@ inline void LUAIntegration(sol::state &lua)
         "isMouseMotion", &ComponentInput::isMouseMotion,
         "isClickLeft", &ComponentInput::isClickLeft,
         "isClickRight", &ComponentInput::isClickRight,
+        "isClickRightUp", &ComponentInput::isClickRightUp,
+        "isMouseButtonDown", &ComponentInput::isMouseButtonDown,
+        "isMouseButtonUp", &ComponentInput::isMouseButtonUp,
+        "consumeLeftClick", &ComponentInput::consumeLeftClick,
         "isEnabled", &ComponentInput::isEnabled,
         "isAnyControllerButtonPressed", &ComponentInput::isAnyControllerButtonPressed,
         "getRelativeRendererMouseX", &ComponentInput::getRelativeRendererMouseX,
@@ -255,6 +305,10 @@ inline void LUAIntegration(sol::state &lua)
         "getMouseMotionYRel", &ComponentInput::getMouseMotionYRel,
         "isLeftMouseButtonPressed", &ComponentInput::isLeftMouseButtonPressed,
         "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed,
+        "isMiddleMouseButtonPressed", &ComponentInput::isMiddleMouseButtonPressed,
+        "getMouseWheelY", &ComponentInput::getMouseWheelY,
+        "getRawMouseX", &ComponentInput::getRawMouseX,
+        "getRawMouseY", &ComponentInput::getRawMouseY,
         "isGameControllerAvailable", &ComponentInput::isGameControllerAvailable,
         "getControllerButtonA",  &ComponentInput::getControllerButtonA,
         "getControllerButtonB",  &ComponentInput::getControllerButtonB,
@@ -297,7 +351,36 @@ inline void LUAIntegration(sol::state &lua)
         "uniqueObjectLabel", &Brakeza::UniqueObjectLabel,
         "Shutdown", &Brakeza::Shutdown,
         "AddObject3D",  &Brakeza::AddObject3D,
-        "getObjectByName",&Brakeza::getObjectByName
+        "getObjectByName",    &Brakeza::getObjectByName,
+        "getObjectAtScreen",  &Brakeza::getObjectAtScreen,
+        "removeAllObjects",      &Brakeza::removeAllObjects,
+        "getPendingJobsCount",   &Brakeza::getPendingJobsCount,
+        "getMesh3DAnimationByName", [](Brakeza* b, const std::string& name) -> Mesh3DAnimation* {
+            return dynamic_cast<Mesh3DAnimation*>(b->getObjectByName(name));
+        },
+        "getProjectileByName", [](Brakeza* b, const std::string& name) -> Projectile* {
+            return dynamic_cast<Projectile*>(b->getObjectByName(name));
+        },
+        "loadLightsFromFBX", [](Brakeza* b, const std::string& path,
+                                   float posX, float posY, float posZ,
+                                   float rotX, float rotY, float rotZ,
+                                   float scale,
+                                   sol::optional<bool> enabledByDefault,
+                                   sol::this_state s) -> sol::table {
+            bool enabled = enabledByDefault.value_or(true);
+            auto lights = FBXLightLoader::LoadLightsFromFile(path, posX, posY, posZ, rotX, rotY, rotZ, scale, enabled);
+            sol::state_view lua(s);
+            sol::table result = lua.create_table();
+            int idx = 1;
+            for (auto* light : lights) {
+                b->AddObject3D(light, light->getName());
+                if (light->getTypeObject() == ObjectType::LightSpot)
+                    result[idx++] = static_cast<LightSpot*>(light);
+                else
+                    result[idx++] = static_cast<LightPoint*>(light);
+            }
+            return result;
+        }
     );
 
     lua.new_usertype<Camera3D>("Camera3D",
@@ -305,7 +388,11 @@ inline void LUAIntegration(sol::state &lua)
         "getM3ViewMatrix", &Camera3D::getM3ViewMatrix,
        "setFOV", &Camera3D::setFOV,
        "getM3ProjectionMatrix", &Camera3D::getM3ProjectionMatrix,
-       "setRotationFromEulerAngles", &Camera3D::setRotationFromEulerAngles
+       "setRotationFromEulerAngles", &Camera3D::setRotationFromEulerAngles,
+       "getNearPlane", [](Camera3D*) { return Config::get()->FRUSTUM_NEARPLANE_DISTANCE; },
+       "setNearPlane", [](Camera3D*, float v) { Config::get()->FRUSTUM_NEARPLANE_DISTANCE = v; },
+       "getFarPlane",  [](Camera3D*) { return Config::get()->FRUSTUM_FARPLANE_DISTANCE; },
+       "setFarPlane",  [](Camera3D*, float v) { Config::get()->FRUSTUM_FARPLANE_DISTANCE = v; }
     );
 
     lua.new_usertype<AABB3D>("AABB3D",
@@ -355,7 +442,19 @@ inline void LUAIntegration(sol::state &lua)
         "getNumberCubesZ", &Grid3D::getNumberCubesZ,
         "getBoxes", &Grid3D::getBoxes,
         "setTravel", &Grid3D::setTravel,
-        "MakeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid
+        "MakeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid,
+        "fillGrid3DFromImage", &Grid3D::fillGrid3DFromImage,
+        "drawDebug", sol::overload(
+            [](Grid3D& g)              { g.drawDebug(); },
+            [](Grid3D& g, Color color) { g.drawDebug(color); }
+        ),
+        "isCellWalkable", &Grid3D::isCellWalkable,
+        "snapToWalkable", &Grid3D::snapToWalkable,
+        "requestPath", [](Grid3D& g, const std::string& unitName, int gx1, int gz1, int gx2, int gz2) {
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+                std::make_shared<ThreadJobPathfinding>(&g, unitName, gx1, gz1, gx2, gz2)
+            );
+        }
     );
 
     lua.new_usertype<Mesh3D>("Mesh3D",
@@ -380,6 +479,33 @@ inline void LUAIntegration(sol::state &lua)
         "isLoop", &Mesh3DAnimation::isLoop
     );
 
+    lua.new_usertype<Projectile>("Projectile",
+    sol::base_classes, sol::bases<Mesh3D, Object3D>(),
+        "fire", [](Projectile* p, const Vertex3D& dir, float impulse, float accuracy, float shapeRadius, int collisionGroup, int collisionMask) {
+            p->setCollisionsEnabled(true);
+            float r = (shapeRadius > 0.001f) ? shapeRadius : 0.1f;
+            p->setSimpleShapeSize(Vertex3D(r, r, r));
+            p->setCollisionShape(SIMPLE_SHAPE);
+            p->setCollisionMode(CollisionMode::BODY);
+            p->setLinearDamping(0.0f);
+            p->setAngularDamping(0.0f);
+            p->setCcdMotionThreshold(0.05f);
+            p->setCcdSweptSphereRadius(r);
+            p->makeProjectileRigidBody(
+                1.0f,
+                dir,
+                impulse,
+                accuracy,
+                Components::get()->Collisions()->getDynamicsWorld(),
+                SIMPLE_SHAPE,
+                collisionGroup,
+                collisionMask
+            );
+        },
+        "getDirection", &Projectile::getDirection,
+        "setDirection", &Projectile::setDirection
+    );
+
     lua.new_usertype<Image3DAnimation>("BillboardAnimation",
     sol::base_classes, sol::bases<Object3D>(),
         "CreateAnimation", &Image3DAnimation::CreateAnimation,
@@ -396,26 +522,64 @@ inline void LUAIntegration(sol::state &lua)
         "value", &ScriptLUATypeData::value
     );
 
+    lua.new_usertype<Scene>("Scene",
+        "getName",    &Scene::getName,
+        "getFilePath",&Scene::getFilePath,
+        "isActive",   &Scene::isActive,
+        "setActive",  &Scene::setActive,
+        "getObjects", [](Scene* s, sol::this_state st) -> sol::table {
+            sol::state_view lua(st);
+            sol::table result = lua.create_table();
+            int i = 1;
+            for (auto *obj : s->getObjects()) result[i++] = obj;
+            return result;
+        }
+    );
+
     lua.new_usertype<SceneLoader>("SceneLoader",
-        "clearScene", &SceneLoader::ClearScene,
-        "cleanScene", &SceneLoader::CleanScene,
+        "clearWorld", &SceneLoader::ClearWorld,
+        "cleanWorld", &SceneLoader::CleanWorld,
+        "setSceneActive", [](SceneLoader*, std::string name, bool active) {
+            SceneLoader::setSceneActive(name, active);
+        },
+        "unloadScene", [](SceneLoader*, std::string name) {
+            SceneLoader::UnloadScene(name);
+        },
+        "reloadScene", [](SceneLoader*, std::string name) {
+            SceneLoader::ReloadScene(name);
+        },
         "SaveScene", [](SceneLoader*, std::string path) {
             SceneLoader::SaveScene(FilePath::SceneFile(path));
         },
         "LoadScene", [](SceneLoader*, std::string path) {
             SceneLoader::LoadScene(FilePath::SceneFile(path));
+        },
+        "loadSceneAdditive", [](SceneLoader*, std::string path,
+                                sol::optional<bool> scripts,
+                                sol::optional<bool> shaders,
+                                sol::optional<bool> camera,
+                                sol::optional<bool> renderSettings) {
+            SceneLoader::LoadSceneAdditive(
+                FilePath::SceneFile(path),
+                scripts.value_or(false),
+                shaders.value_or(false),
+                camera.value_or(false),
+                renderSettings.value_or(false)
+            );
         }
     );
 
     lua.new_usertype<Image2D>("Image2D",
     sol::base_classes, sol::bases<Object3D>(),
-        "setScreenPosition", &Image2D::setScreenPosition,
-        "setSize",           &Image2D::setSize,
-        "setFilePath",       &Image2D::setFilePath,
-        "loadVideo",         &Image2D::loadVideo,
-        "stopVideo",         &Image2D::stopVideo,
-        "isVideoFinished",   &Image2D::isVideoFinished,
-        "hasVideo",          &Image2D::hasVideo
+        "setScreenPosition",    &Image2D::setScreenPosition,
+        "setSize",              &Image2D::setSize,
+        "setFilePath",          &Image2D::setFilePath,
+        "loadVideo",            &Image2D::loadVideo,
+        "stopVideo",            &Image2D::stopVideo,
+        "isVideoFinished",      &Image2D::isVideoFinished,
+        "hasVideo",             &Image2D::hasVideo,
+        "setDrawInBackground",  &Image2D::setDrawInBackground,
+        "isDrawInBackground",   &Image2D::isDrawInBackground
     );
 
     lua.new_usertype<Image2DAnimation>("Image2DAnimation",
@@ -434,13 +598,19 @@ inline void LUAIntegration(sol::state &lua)
         "setCuadratic", &LightPoint::setCuadratic,
         "setColor", &LightPoint::setColor,
         "setColorSpecular", &LightPoint::setColorSpecular,
-        "setAmbient", &LightPoint::setAmbient
+        "setAmbient", &LightPoint::setAmbient,
+        "setFrustumCullingEnabled", &LightPoint::setFrustumCullingEnabled,
+        "setFrustumCullingOffset",  &LightPoint::setFrustumCullingOffset,
+        "getFrustumCullingEnabled", &LightPoint::getFrustumCullingEnabled,
+        "getFrustumCullingOffset",  &LightPoint::getFrustumCullingOffset
     );
 
     lua.new_usertype<LightSpot>("SpotLight3D",
     sol::base_classes, sol::bases<LightPoint, Object3D>(),
         "setCutOff", &LightSpot::setCutOff,
-        "setOuterCutOff", &LightSpot::setOuterCutOff
+        "setOuterCutOff", &LightSpot::setOuterCutOff,
+        "setCastsShadow", &LightSpot::setCastsShadow,
+        "getCastsShadow", &LightSpot::getCastsShadow
     );
 
     lua.new_usertype<ScriptLUA>(
@@ -487,17 +657,38 @@ inline void LUAIntegration(sol::state &lua)
         "setContext", &ParticleEmitter::setContext,
         "setColorTo", &ParticleEmitter::setColorTo,
         "setColorFrom", &ParticleEmitter::setColorFrom,
-        "setTexture", &ParticleEmitter::setTexture,
+        "setTexture", sol::overload(
+            &ParticleEmitter::setTexture,
+            [](ParticleEmitter& e, const std::string& path) {
+                auto* img = new Image(FilePath::ImageFile(path));
+                e.setTexture(img);
+            }
+        ),
         "setStopAdd", &ParticleEmitter::setStopAdd,
         "isActive", &ParticleEmitter::isActive,
         "getColorTo", &ParticleEmitter::getColorTo,
         "getColorFrom", &ParticleEmitter::getColorFrom,
-        "getTexture", &ParticleEmitter::getTexture
+        "getTexture", &ParticleEmitter::getTexture,
+        "setGPUMode", &ParticleEmitter::setGPUMode,
+        "isGPUMode", &ParticleEmitter::isGPUMode,
+        "createAttachedLight", &ParticleEmitter::createAttachedLight,
+        "removeAttachedLight", &ParticleEmitter::removeAttachedLight,
+        "getAttachedLight", &ParticleEmitter::getAttachedLight
     );
 
     lua.new_enum("CollisionShape",
        "SIMPLE_SHAPE", SIMPLE_SHAPE,
        "TRIANGLE_MESH_SHAPE", TRIANGLE_MESH_SHAPE
+    );
+
+    lua.new_enum("CollisionGroups",
+        "Player",          Config::Player,
+        "Enemy",           Config::Enemy,
+        "ProjectileGroup", Config::Projectile,
+        "ProjectileEnemy", Config::ProjectileEnemy,
+        "Health",          Config::Health,
+        "Weapon",          Config::Weapon,
+        "AllFilter",       Config::AllFilter
     );
 
     lua.new_usertype<TextWriter>(
@@ -508,7 +699,30 @@ inline void LUAIntegration(sol::state &lua)
         "writeTTFCenterHorizontal", &TextWriter::WriteTTFCenterHorizontal,
         "getAlpha", &TextWriter::getAlpha,
         "setAlpha", &TextWriter::setAlpha,
-        "setFont", &TextWriter::setFont
+        "setFont", &TextWriter::setFont,
+        "beginTextCache", &TextWriter::beginTextCache,
+        "endTextCache",   &TextWriter::endTextCache,
+        "drawTextCache",  &TextWriter::drawTextCache,
+        "writeTextAtlas",      &TextWriter::writeTextAtlas,
+        "writeTextAtlasCache", &TextWriter::writeTextAtlasCache,
+        "flushTextBatch",      &TextWriter::flushTextBatch,
+        "buildGlyphAtlas", &TextWriter::buildGlyphAtlas,
+        "getGlyphAtlas",   &TextWriter::getGlyphAtlas
+    );
+
+    lua.new_usertype<GlyphAtlas>("GlyphAtlas",
+        "isBuilt", &GlyphAtlas::isBuilt,
+        "getAtlasTexture", &GlyphAtlas::getAtlasTexture,
+        "getLineHeight", &GlyphAtlas::getLineHeight,
+        "getAscent", &GlyphAtlas::getAscent
+    );
+
+    lua.new_usertype<Image>("Image",
+        "createEmpty",  [](int w, int h) { return Image::createEmpty(w, h); },
+        "destroy",      &Image::destroy,
+        "clearChannel", &Image::clearChannel,
+        "fillCircle",   &Image::fillCircle,
+        "upload",       &Image::upload
     );
 
     lua.new_usertype<ShaderBaseCustomOGLCode>("ShaderOpenGLCustom",
@@ -535,7 +749,12 @@ inline void LUAIntegration(sol::state &lua)
                 static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec2)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
                 static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec3)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
                 static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec4)>(&ShaderBaseCustomOGLCode::setDataTypeValue)
-            )
+            ),
+            "setTextureValue", [](ShaderBaseCustomOGLCode& s, const std::string& name, Image* img) {
+                s.setDataTypeValue(name, ShaderOpenGLCustomDataValue(img));
+            },
+            "setEnabled", [](ShaderBaseCustomOGLCode& s, bool v) { s.setEnabled(v); },
+            "isEnabled",  [](ShaderBaseCustomOGLCode& s) { return s.isEnabled(); }
     );
 
     lua.new_usertype<glm::vec2>("vec2",
@@ -579,6 +798,7 @@ inline void LUAIntegration(sol::state &lua)
         "LightPoint",         &ObjectFactory::CreateLightPoint,
         "LightSpot",          &ObjectFactory::CreateLightSpot,
         "ParticleEmitter",    &ObjectFactory::CreateParticleEmitter,
+        "Projectile",         &ObjectFactory::CreateProjectile,
         "TextWriter",         &ObjectFactory::CreateTextWriter,
         "ScriptLUA",          &ObjectFactory::CreateScriptLUA,
         "PlayVideoCutscene",  [](ObjectFactory*, const std::string &path) {

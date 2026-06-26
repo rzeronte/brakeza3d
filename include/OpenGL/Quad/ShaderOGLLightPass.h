@@ -32,8 +32,10 @@ class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad 
     GLuint enableDirectionalLightShadowMapUniform = 0;
 
     GLuint bufferSpotLightsMatricesUBO = 0;
+    bool spotMatricesBufferReady = false;
 
 public:
+    static constexpr int MAX_SHADOW_CASTERS = 16;
     ShaderOGLLightPass();
 
     void LoadUniforms() override;

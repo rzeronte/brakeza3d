@@ -98,12 +98,14 @@ public:
     bool ENABLE_LIGHTS = true;
     bool ENABLE_SHADOW_MAPPING = true;
     bool ENABLE_DOF_BLUR = false;
+    bool ENABLE_POST_PROCESSING_CHAIN = true;
     bool ENABLE_TRIANGLE_MODE_DEPTHMAP = false;
     bool ENABLE_GAMEPAD_CONTROLLER = true;
-    bool ENABLE_FOG = false;
+    bool ENABLE_FRUSTUM_CULLING = true;
     bool ENABLE_SOUND = true;
     bool ENABLE_LOGGING_CONSOLE = true;
     bool ENABLE_LOGGING_STD = true;
+    bool OBSERVER_AI_ENABLED = false;
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;
     bool ENABLE_IMGUI_STATUSBAR = true;
@@ -116,6 +118,7 @@ public:
     bool V_SYNC = true;
     int FRAMERATE = 60;
 
+    float FRUSTUM_NEARPLANE_DISTANCE = 0.1f;
     float FRUSTUM_FARPLANE_DISTANCE = 1000;
     float HORIZONTAL_FOV = 90;
 
@@ -129,6 +132,22 @@ public:
     bool TRIANGLE_MODE_SHADING = false;
     bool TRIANGLE_MODE_PICKING_COLORS = false;
     bool TRIANGLE_MODE_TEXTURIZED = true;
+
+    // Avatar system (Show object icons in 3D world).
+    // Lights enabled by default (they have no visible mesh); other types opt-in.
+    bool SHOW_AVATARS = true;
+    bool SHOW_AVATAR_OBJECT3D             = false;
+    bool SHOW_AVATAR_MESH3D               = false;
+    bool SHOW_AVATAR_MESH3D_ANIMATION     = false;
+    bool SHOW_AVATAR_LIGHT_POINT          = true;
+    bool SHOW_AVATAR_LIGHT_SPOT           = true;
+    bool SHOW_AVATAR_PARTICLE_EMITTER     = true;
+    bool SHOW_AVATAR_IMAGE3D_ANIMATION    = false;
+    bool SHOW_AVATAR_IMAGE3D_ANIMATION360 = false;
+    bool SHOW_AVATAR_IMAGE2D_ANIMATION    = false;
+    bool SHOW_AVATAR_IMAGE3D              = false;
+    bool SHOW_AVATAR_IMAGE2D              = false;
+    bool SHOW_AVATAR_SWARM                = false;
 
     // View options
     bool DRAW_ANIMATION_BONES = false;
@@ -144,6 +163,7 @@ public:
     bool DRAW_FPS_RENDER = true;
 
     float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
+    float SORT_OBJECTS_INTERVAL_MS = 150.0f;
 
     // ShadowMapping options
     bool SHADOW_MAPPING_DEBUG = false;

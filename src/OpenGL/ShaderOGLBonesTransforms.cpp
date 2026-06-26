@@ -29,7 +29,7 @@ void ShaderOGLBonesTransforms::LoadUniforms()
 
 void ShaderOGLBonesTransforms::render(
     Mesh3DData &meshData,
-    std::vector<glm::mat4> transformations,
+    const std::vector<glm::mat4>& transformations,
     GLuint fbo
 ) {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
@@ -38,10 +38,11 @@ void ShaderOGLBonesTransforms::render(
 
     setMat4ArrayUniform(gBonesUniform, transformations);
 
-    setVAOAttributes(meshData.vertexBuffer, meshData.vertexBoneDataBuffer);
+    setVAOAttributes(meshData.vertexBuffer, meshData.vertexBoneDataBuffer, meshData.normalBuffer);
 
     // Buffer Feedback!
     glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, meshData.feedbackBuffer);
+    glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 1, meshData.feedbackNormalBuffer);
     glBeginTransformFeedback(GL_TRIANGLES);
 
     glDrawArrays(GL_TRIANGLES, 0, meshData.vertices.size());
@@ -51,11 +52,12 @@ void ShaderOGLBonesTransforms::render(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
-void ShaderOGLBonesTransforms::setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer)
+void ShaderOGLBonesTransforms::setVAOAttributes(GLuint vertexbuffer, GLuint vertexBoneDataBuffer, GLuint normalBuffer)
 {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -68,6 +70,10 @@ void ShaderOGLBonesTransforms::setVAOAttributes(GLuint vertexbuffer, GLuint vert
     glEnableVertexAttribArray(2);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBoneDataBuffer);
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)offsetof(VertexBoneData, Weights));
+
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
 void ShaderOGLBonesTransforms::Destroy() {

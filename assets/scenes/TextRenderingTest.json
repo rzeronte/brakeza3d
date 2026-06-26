@@ -1,0 +1,50 @@
+{
+	"screenshot":	"../assets/screenshots/TextRenderingTest.png",
+	"ads":	{
+		"direction":	{
+			"x":	-0.300000011920929,
+			"y":	-0.800000011920929,
+			"z":	-0.5
+		},
+		"diffuse":	{
+			"x":	0.5,
+			"y":	0.5,
+			"z":	0.5
+		},
+		"specular":	{
+			"x":	0.300000011920929,
+			"y":	0.300000011920929,
+			"z":	0.300000011920929
+		},
+		"ambient":	{
+			"x":	0.34999999403953552,
+			"y":	0.34999999403953552,
+			"z":	0.34999999403953552
+		}
+	},
+	"objects":	[],
+	"shaders":	[],
+	"scripts":	[{
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/TextRenderingTest.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/TextRenderingTest.json",
+			"name":	"TextRenderingTest",
+			"type":	"Global",
+			"types":	[{
+					"name":	"toggleAll",
+					"type":	"int",
+					"value":	1
+				}]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	0,
+			"y":	10,
+			"z":	50
+		},
+		"rotation":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		}
+	}
+}

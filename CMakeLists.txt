@@ -82,6 +82,8 @@ add_executable(Brakeza3D
         src/Config.cpp include/Config.h
         src/Loaders/ProjectLoader.cpp include/Loaders/ProjectLoader.h
         src/Loaders/SceneLoader.cpp include/Loaders/SceneLoader.h
+        src/Loaders/Scene.cpp include/Loaders/Scene.h
+        src/Loaders/FBXLightLoader.cpp include/Loaders/FBXLightLoader.h
         include/LUA/BrakezaLuaBridge.h
         include/SceneObjectTypes.h
 
@@ -156,6 +158,16 @@ add_executable(Brakeza3D
         imgui/backends/imgui_impl_opengl3.cpp imgui/backends/imgui_impl_opengl3.h
         imgui/backends/imgui_impl_sdl2.cpp imgui/backends/imgui_impl_sdl2.h
 
+        # Cache
+        src/Cache/ResourceCacheBase.cpp include/Cache/ResourceCacheBase.h
+        src/Cache/ImageCache.cpp include/Cache/ImageCache.h
+        src/Cache/ModelData.cpp include/Cache/ModelData.h
+        src/Cache/ModelDataCache.cpp include/Cache/ModelDataCache.h
+        src/Cache/AnimationData.cpp include/Cache/AnimationData.h
+        src/Cache/AnimationDataCache.cpp include/Cache/AnimationDataCache.h
+        src/Cache/ScriptDataCache.cpp include/Cache/ScriptDataCache.h
+        src/Cache/ScriptTypeCache.cpp include/Cache/ScriptTypeCache.h
+
         # Misc
         src/Misc/cJSON.c include/Misc/cJSON.h
         src/Misc/VideoPlayer.cpp include/Misc/VideoPlayer.h
@@ -165,6 +177,7 @@ add_executable(Brakeza3D
         src/Render/Octree.cpp include/Render/Octree.h
         src/Misc/SoundPackage.cpp include/Misc/SoundPackage.h
         src/Misc/TextureAtlas.cpp include/Misc/TextureAtlas.h
+        src/Render/GlyphAtlas.cpp include/Render/GlyphAtlas.h
         src/Misc/TexturePackage.cpp include/Misc/TexturePackage.h
         src/Misc/TileManager.cpp include/Misc/TileManager.h
         src/Misc/Timer.cpp include/Misc/Timer.h
@@ -195,15 +208,20 @@ add_executable(Brakeza3D
 
         # OpenGL
         src/OpenGL/Base/ShaderBaseOpenGL.cpp include/OpenGL/Base/ShaderBaseOpenGL.h
+        src/OpenGL/Base/ShaderBaseCompute.cpp include/OpenGL/Base/ShaderBaseCompute.h
+        src/OpenGL/ShaderOGLComputeParticles.cpp include/OpenGL/ShaderOGLComputeParticles.h
+        src/OpenGL/ShaderOGLGPUParticles.cpp include/OpenGL/ShaderOGLGPUParticles.h
         src/OpenGL/Code/ShaderBaseCustomOGLCode.cpp include/OpenGL/Code/ShaderBaseCustomOGLCode.h
         src/OpenGL/Base/ShaderBaseOpenGLQuad.cpp include/OpenGL/Base/ShaderBaseOpenGLQuad.h
         src/OpenGL/ShaderOGLBonesTransforms.cpp include/OpenGL/ShaderOGLBonesTransforms.h
         src/OpenGL/ShaderOGLColor.cpp include/OpenGL/ShaderOGLColor.h
+        src/OpenGL/ShaderOGLGroundCircle.cpp include/OpenGL/ShaderOGLGroundCircle.h
+        src/OpenGL/ShaderOGLGroundDecal.cpp include/OpenGL/ShaderOGLGroundDecal.h
+        src/OpenGL/ShaderOGLAxisQuad.cpp include/OpenGL/ShaderOGLAxisQuad.h
+        src/OpenGL/ShaderOGLRect.cpp include/OpenGL/ShaderOGLRect.h
         src/OpenGL/Code/ShaderOGLCustomCodeMesh3D.cpp include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h
         src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h
         src/OpenGL/Quad/ShaderOGLDepthMap.cpp include/OpenGL/Quad/ShaderOGLDepthMap.h
-        src/OpenGL/Quad/ShaderOGLDOF.cpp include/OpenGL/Quad/ShaderOGLDOF.h
-        src/OpenGL/Quad/ShaderOGLFog.cpp include/OpenGL/Quad/ShaderOGLFog.h
         src/OpenGL/ShaderOGLImage.cpp include/OpenGL/ShaderOGLImage.h
         src/OpenGL/Quad/ShaderOGLLightPass.cpp include/OpenGL/Quad/ShaderOGLLightPass.h
         src/OpenGL/Quad/ShaderOGLLine.cpp include/OpenGL/Quad/ShaderOGLLine.h
@@ -291,7 +309,7 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobLoadImage3DAnimation.h
         include/LUA/ObjectFactory.h
         include/Threads/ThreadJobStepSimulation.h
-        include/Threads/ThreadJobClearScene.h
+        include/Threads/ThreadJobClearWorld.h
         include/Render/PostProcessingManager.cpp include/Render/PostProcessingManager.h
         imgui/ImGuiColorTextEdit/TextEditor.h
         imgui/ImGuiColorTextEdit/TextEditor.cpp
@@ -354,7 +372,7 @@ add_executable(Brakeza3D
         include/Loaders/Project.h
         include/GUI/AddOns/CustomTreeNode.h
         src/GUI/AddOns/CustomTreeNode.cpp
-        include/Threads/ThreadJobCleanScene.h
+        include/Threads/ThreadJobCleanWorld.h
         include/GUI/Objects/ColliderGUI.h
         include/GUI/Objects/ColliderGUI.cpp
 )
@@ -367,6 +385,11 @@ set_source_files_properties(
     include/GUI/imgui-node-editor-master/imgui_canvas.cpp
     include/GUI/imgui-node-editor-master/crude_json.cpp
     PROPERTIES COMPILE_OPTIONS "-w"
+)
+
+set_source_files_properties(
+    src/Components/ComponentScripting.cpp
+    PROPERTIES COMPILE_OPTIONS "-Wa,-mbig-obj"
 )
 
 target_include_directories(Brakeza3D PRIVATE

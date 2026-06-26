@@ -11,6 +11,7 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 2));
         if (ImGui::TreeNodeEx("Mesh render options", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
             ImGui::Checkbox("Render default pipeline", &o->renderDefaultPipeline);
+            ImGui::Checkbox("Frustum cull submeshes", &o->frustumCullSubmeshes);
             ImGui::TreePop();
         }
         ImGui::Separator();
@@ -20,13 +21,15 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             ImGui::SameLine();
             ImGui::Text(o->sourceFile.c_str());
             ImGui::Spacing();
-            if (ImGui::BeginTable("MeshTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
+            if (ImGui::BeginTable("MeshTable", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
                 // Header
                 ImGui::TableSetupColumn("Mesh");
                 ImGui::TableSetupColumn("Vertices");
                 ImGui::TableSetupColumn("UVs");
                 ImGui::TableSetupColumn("Normals");
                 ImGui::TableSetupColumn("Textures");
+                ImGui::TableSetupColumn("AABB center");
+                ImGui::TableSetupColumn("Visible");
                 ImGui::TableHeadersRow();
 
                 // Rows
@@ -48,6 +51,27 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
 
                     ImGui::TableNextColumn();
                     ImGui::Text("%d", (int) o->modelTextures.size());
+
+                    ImGui::TableNextColumn();
+                    {
+                        Vertex3D center(
+                            (m.localAabb.min.x + m.localAabb.max.x) * 0.5f,
+                            (m.localAabb.min.y + m.localAabb.max.y) * 0.5f,
+                            (m.localAabb.min.z + m.localAabb.max.z) * 0.5f
+                        );
+                        ImGui::Text("%.0f %.0f %.0f", center.x, center.y, center.z);
+                    }
+
+                    ImGui::TableNextColumn();
+                    if (o->frustumCullSubmeshes) {
+                        if (m.visibleInFrustum) {
+                            ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "YES");
+                        } else {
+                            ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "NO");
+                        }
+                    } else {
+                        ImGui::TextDisabled("--");
+                    }
 
                     cont++;
                 }

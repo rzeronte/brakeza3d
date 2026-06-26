@@ -24,6 +24,7 @@ cJSON * Image2DSerializer::JsonByObject(Object3D *o)
 
     cJSON_AddStringToObject(root, "image", image->filepath.c_str());
     cJSON_AddStringToObject(root, "video", image->videoPath.c_str());
+    cJSON_AddBoolToObject(root, "drawInBackground", image->drawInBackground);
 
     return root;
 }
@@ -60,6 +61,9 @@ void Image2DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         cJSON_GetObjectItemCaseSensitive(json, "x")->valueint,
         cJSON_GetObjectItemCaseSensitive(json, "y")->valueint
     );
+
+    auto *bgItem = cJSON_GetObjectItemCaseSensitive(json, "drawInBackground");
+    if (bgItem) image->drawInBackground = cJSON_IsTrue(bgItem);
 
     Object3DSerializer().ApplyJsonToObject(json, o);
 }

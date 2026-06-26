@@ -12,6 +12,11 @@
 
 void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 {
+    auto scripting = Components::get()->Scripting();
+    if (scripting->getCurrentScene() != nullptr) {
+        SceneLoader::ClearWorld();
+    }
+
     RemoveProjectScripts();
     RemoveProjectScenes();
 
@@ -147,7 +152,7 @@ void ProjectLoader::CloseCurrentProject()
 
     auto scripting = Components::get()->Scripting();
     if (scripting->getCurrentScene() != nullptr) {
-        SceneLoader::ClearScene();
+        SceneLoader::ClearWorld();
     }
     scripting->setCurrentProject(nullptr);
     FileSystemGUI::autoExpandProject = false;

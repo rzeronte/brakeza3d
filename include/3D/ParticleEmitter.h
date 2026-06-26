@@ -6,6 +6,7 @@
 #define BRAKEDA3D_PARTICLEEMISSOR_H
 
 #include "Object3D.h"
+#include "LightPoint.h"
 #include "../Misc/Counter.h"
 #include "../Render/Color.h"
 #include "../Render/Image.h"
@@ -28,11 +29,20 @@ class ParticleEmitter : public Object3D
 
     Image *texture = nullptr;
 
-    Particle ParticlesContainer[MaxParticles];
+    LightPoint *attachedLight = nullptr;
 
-    GLuint billboard_vertex_buffer = 0;
+    // CPU mode
+    Particle ParticlesContainer[MaxParticles];
+    GLuint billboard_vertex_buffer   = 0;
     GLuint particles_position_buffer = 0;
-    GLuint particles_color_buffer = 0;
+    GLuint particles_color_buffer    = 0;
+
+    // GPU mode
+    bool   gpuMode    = false;
+    float  gpuTotalTime = 0.0f;
+    GLuint particles_state_buffer = 0;
+    std::vector<OCParticle> gpuParticles;
+
 protected:
     Counter lifeCounter;
     Color colorTo;
@@ -51,9 +61,12 @@ public:
 
     void onUpdate() override;
     void DrawPropertiesGUI() override;
+    void InitGLBuffers();
     int FindUnusedParticle();
+    int FindUnusedGPUParticle();
     void SortParticles();
     void Draw();
+    void DrawGPU();
     void postUpdate() override;
     glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, int noiseRange);
 
@@ -62,8 +75,15 @@ public:
     void setColorFrom(const Color &colorFrom);
     void setTexture(Image *texture);
     void setStopAdd(bool stopAdd);
+    void setGPUMode(bool enabled);
+
+    void setAttachedLight(LightPoint *light);
+    void createAttachedLight(const Color &diffuse, const Color &ambient, const Color &specular, float range);
+    void removeAttachedLight();
+    [[nodiscard]] LightPoint *getAttachedLight() const      { return attachedLight; }
 
     [[nodiscard]] bool isActive() const                     { return active; }
+    [[nodiscard]] bool isGPUMode() const                    { return gpuMode; }
     [[nodiscard]] ParticlesContext& getContextPointer()     { return context; }
     [[nodiscard]] ObjectType getTypeObject() const override { return ObjectType::ParticleEmitter; }
     GUIType::Sheet getIcon() override                       { return IconObject::PARTICLE_EMITTER; }

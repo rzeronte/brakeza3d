@@ -165,11 +165,11 @@ void GUIAddonToolbar::LUAStatusIcons()
     VerticalSeparator();
     ImGui::SameLine();
     GUI::DrawButton("Clear scene (F3)", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
-        SceneLoader::ClearScene();
+        SceneLoader::ClearWorld();
     });
     ImGui::SameLine();
     GUI::DrawButton("Clean scene (F4)", IconGUI::CLEAN_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
-        SceneLoader::CleanScene();
+        SceneLoader::CleanWorld();
     });
 
 }
@@ -187,7 +187,15 @@ void GUIAddonToolbar::Helpers()
     GUI::DrawButton("Screenshot", IconGUI::TOOLBAR_TAKE_SCREENSHOT, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->TRIANGLE_MODE_PICKING_COLORS,[&]() {
         ComponentRender::MakeScreenShot();
     });
+    ImGui::SameLine();
+    GUI::DrawButton("Show/Hide object avatars", IconGUI::TOOLBAR_SHOW_AVATARS, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->SHOW_AVATARS, [&]() {
+        GUI::Toggle(Config::get()->SHOW_AVATARS);
+    });
     VerticalSeparator();
+    ImGui::SameLine();
+    GUI::DrawButton("Profiler", IconGUI::WIN_PROFILER, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen, [&]() {
+        Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen;
+    });
     ImGui::SameLine();
     GUI::DrawButton("Documentation", IconGUI::WIN_DOCUMENTATION, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen,[&]() {
         Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen;

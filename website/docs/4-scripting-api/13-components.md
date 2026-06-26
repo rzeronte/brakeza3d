@@ -27,9 +27,9 @@ Through your LUA scripts, you can access the following methods:
 | `isWindowMaximized()`          | Returns whether the window is currently maximized        |
 | `setWindowTitle(string)`       | Sets the window title                                    |
 | `ToggleFullScreen()`           | Switches the window between fullscreen and windowed mode |
-| `setWindowSize(int, int)`      | Changes the window size                                  |
-| `setRendererSize(int, int)`    | Changes the renderer size                                |
 | `LoadCursorImage(string path)` | Loads the specified image as the mouse cursor            |
+| `setClearColor(r, g, b, a)`   | Sets the background clear color of the scene framebuffer |
+| `setImGuiMouse()`              | Restores mouse control to ImGui (call when stopping play mode) |
 
 
 
@@ -49,6 +49,7 @@ Through your LUA scripts, you can access the following methods:
 | `setGlobalIlluminationDiffuse()`          | Sets the diffuse color or intensity of the global illumination                                              |
 | `setGlobalIlluminationSpecular()`         | Sets the specular color or intensity of the global illumination                                             |
 | `getSceneShaderByLabel()`                 | Returns a scene shader by its assigned label                                                                |
+| `clearSceneShaders()`                     | Removes all scene-level post-processing shaders from the current render pipeline                            |
 | `getFps()`                                | Returns frames per second                                                                                   |
 | `MakeScreenShot(string path)`             | Makes a PNG screenshot at the given path                                                                    |
 | `DrawLine()`                              | Draws a line in the scene, typically for debugging or visualization purposes                                |
@@ -60,6 +61,22 @@ Through your LUA scripts, you can access the following methods:
 | `clearSelection()`                        | Empties the selection group                                                                                  |
 | `hasMultipleSelected()`                   | Returns `true` when more than one object is selected                                                        |
 | `isObjectInSelection(Object3D)`           | Returns `true` if the given object is currently part of the selection group                                 |
+| `getLastRightClickedObject()`             | Returns the object under the cursor when right mouse button was last released, or `nil`                     |
+| `clearRightClickedObject()`               | Clears the stored right-click object (call after consuming it)                                              |
+| `getLastLeftClickedObject()`              | Returns the object under the cursor when left mouse button was last clicked, or `nil`                       |
+| `clearLeftClickedObject()`                | Clears the stored left-click object (call after consuming it)                                               |
+| `getLastLeftClickedSubmeshName()`         | Returns the submesh name of the last left-clicked object                                                    |
+| `DrawLine2D(x1, y1, x2, y2, color, w)`   | Draws a 2D line on screen between two pixel coordinates                                                     |
+| `DrawFilledRect(x, y, w, h, color)`       | Draws a filled rectangle on screen in pixel coordinates                                                     |
+| `DrawImage2D(path, x, y, w, h)`           | Draws an image on screen from a file path; cached after first load                                          |
+| `DrawImage2DFromImage(img, x, y, w, h)`   | Draws an Image object directly on screen                                                                    |
+| `DrawCircle3D(center, radius, r, g, b, a)`| Draws a 3D circle at the given world position                                                               |
+| `drawGroundCircle(obj, r, g, b, a, radius)`| Draws a circle on the ground under an object, masked by G-Buffer geometry                                  |
+| `drawGroundDecal(obj, tex, r, g, b, a, radius)` | Projects a decal texture onto the ground under an object                                             |
+| `drawAxisQuad(obj, r, g, b, a, halfSize)` | Draws a flat quad aligned to an axis under an object                                                        |
+| `drawOutlineSubmesh(obj, name, r, g, b, a, thickness)` | Draws a colored outline around a specific submesh                                                |
+| `getSubmeshCenter(obj, name)`             | Returns the world-space center of the given submesh                                                         |
+| `getTextWriter()`                         | Returns the engine's shared TextWriter instance                                                             |
 
 ### Multi-selection example
 
@@ -111,15 +128,23 @@ Through your LUA scripts, you can access the following methods:
 | `isCharFirstEventDown()`          | Returns true only on the first press of a character key, ignoring key repeat |
 | `isAnyControllerButtonPressed()`  | Returns true if any game controller button is pressed                        |
 | `isMouseMotion()`                 | Returns true when mouse movement is detected                                 |
-| `isClickLeft()`                   | Returns true when the left mouse button is clicked                           |
-| `isClickRight()`                  | Returns true when the right mouse button is clicked                          |
+| `isClickLeft()`                   | Returns true while the left mouse button is being held down                  |
+| `isClickRight()`                  | Returns true while the right mouse button is being held down                 |
+| `isClickRightUp()`                | Returns true for one frame when the right mouse button is released           |
 | `getRelativeRendererMouseX()`     | Returns the mouse X position relative to the renderer viewport               |
 | `getRelativeRendererMouseY()`     | Returns the mouse Y position relative to the renderer viewport               |
+| `getRawMouseX()`                  | Returns the raw mouse X position in window coordinates                       |
+| `getRawMouseY()`                  | Returns the raw mouse Y position in window coordinates                       |
 | `getMouseMotionXRel()`            | Returns the relative horizontal mouse movement since the last frame          |
 | `getMouseMotionYRel()`            | Returns the relative vertical mouse movement since the last frame            |
 | `isLeftMouseButtonPressed()`      | Returns true while the left mouse button is being held down                  |
 | `isRightMouseButtonPressed()`     | Returns true while the right mouse button is being held down                 |
-| `isGameControllerEnabled()`       | Returns true if a game controller is connected and enabled                   |
+| `getMouseWheelY()`                | Returns the mouse wheel scroll delta for the current frame                   |
+| `isGameControllerAvailable()`     | Returns true if a game controller is connected and available                 |
+| `isMouseButtonDown(button)`       | Returns true while the given button is held (0=left, 1=middle, 2=right)      |
+| `isMouseButtonUp(button)`         | Returns true for one frame when the given button is released                 |
+| `consumeLeftClick()`              | Consumes the current left click so other systems don't process it            |
+| `isMiddleMouseButtonPressed()`    | Returns true while the middle mouse button is held down                      |
 | `getControllerButtonA()`          | Returns the state of the controller A button                                 |
 | `getControllerButtonB()`          | Returns the state of the controller B button                                 |
 | `getControllerButtonX()`          | Returns the state of the controller X button                                 |
@@ -150,6 +175,7 @@ Through your LUA scripts, you can access the following methods:
 | `getCamera()`                  | Returns the camera's `Object3D`        |
 | `getGLMMat4ViewMatrix()`       | Returns the camera's view matrix       |
 | `getGLMMat4ProjectionMatrix()` | Returns the camera's projection matrix |
+| `worldToScreen(pos, w, h)`     | Converts a world-space Vertex3D to screen coordinates; returns Vertex3D where x/y are screen pixels and z > 0 means visible |
 
 
 ## Component Collisions
@@ -174,8 +200,13 @@ Through your LUA scripts, you can access the following methods:
 | `PlayLUAScripts()`      | Starts the execution of all active LUA scripts         |
 | `StopLUAScripts()`      | Stops the execution of all running LUA scripts         |
 | `ReloadLUAScripts()`    | Reloads all LUA scripts and restarts their execution   |
-| `AddSceneLUAScript()`   | Adds a LUA script that is executed at the scene level  |
-| `AddProjectLUAScript()` | Adds a global LUA script executed at the project level |
+| `AddSceneLUAScript()`          | Adds a LUA script that is executed at the scene level                   |
+| `AddProjectLUAScript()`        | Adds a global LUA script executed at the project level                  |
+| `getGlobalScriptVar(name, var)`| Returns the value of a variable from another script's environment       |
+| `setGlobalScriptVar(name, var, val)` | Sets a variable in another script's environment                   |
+| `RunProjectScriptsOnStart()`   | Re-runs `onStart()` on all project-level scripts                        |
+| `loadJSON(path)`               | Reads a JSON file and returns it as a Lua table                         |
+| `saveJSON(path, table)`        | Serializes a Lua table to a JSON file at the given path                 |
 
 
 ## SceneLoader
@@ -187,30 +218,47 @@ Through your LUA scripts, you can access the following methods:
 
 | Function                  | Description                                                                                      |
 |---------------------------|--------------------------------------------------------------------------------------------------|
-| `clearScene()`            | Removes all objects from the scene, including objects defined in the scene file                  |
-| `cleanScene()`            | Removes only runtime-created objects, keeping objects that were loaded from the scene file       |
-| `LoadScene(string path)`  | Loads a scene from the specified JSON file path                                                  |
-| `SaveScene(string path)`  | Saves the current scene state to the specified JSON file path                                    |
+| `clearWorld()`                                                      | Removes everything: all objects, scripts, shaders and loaded scenes (full reset)             |
+| `cleanWorld()`                                                      | Removes only runtime-created objects, keeping objects loaded from scene files                |
+| `LoadScene(string path)`                                            | Loads a scene from the specified JSON file path (destructive, replaces current world)        |
+| `loadSceneAdditive(path, scripts, shaders, camera, renderSettings)` | Loads a scene additively alongside existing ones                                             |
+| `unloadScene(string name)`                                          | Unloads a specific scene and its objects, scripts and shaders                                |
+| `reloadScene(string name)`                                          | Reloads a specific scene without affecting other loaded scenes                               |
+| `setSceneActive(string name, bool active)`                          | Shows or hides a loaded scene (objects, physics)                                             |
+| `SaveScene(string path)`                                            | Saves the current scene state to the specified JSON file path                                |
 
 ### Usage Example
 
 ```lua
 local sceneLoader = brakeza:Render():getSceneLoader()
 
--- Load a scene
+-- Load a scene (clears everything first)
 sceneLoader:LoadScene("../assets/scenes/MyScene.json")
 
--- Clear all objects (full reset)
-sceneLoader:clearScene()
+-- Load an interior scene additively (objects only)
+sceneLoader:loadSceneAdditive("../assets/scenes/Interior.json")
 
--- Clean only runtime objects (keep scene objects)
-sceneLoader:cleanScene()
+-- Load additively with scripts and shaders too
+sceneLoader:loadSceneAdditive("../assets/scenes/Interior.json", true, true, false, false)
+
+-- Hide the exterior while inside
+sceneLoader:setSceneActive("MyScene", false)
+
+-- Unload the interior when leaving
+sceneLoader:unloadScene("Interior")
+
+-- Reset everything (full world clear)
+sceneLoader:clearWorld()
+
+-- Remove only runtime-spawned objects (projectiles, effects, etc.)
+sceneLoader:cleanWorld()
 
 -- Save current scene
 sceneLoader:SaveScene("../assets/scenes/MyScene.json")
 ```
 
 :::note
-- `clearScene()` removes **all** objects and is typically used when switching between scenes
-- `cleanScene()` preserves scene-defined objects and only removes objects created at runtime via scripts
+- `clearWorld()` removes **everything** and is used when switching projects or doing a full reset
+- `cleanWorld()` preserves scene-loaded objects and only removes objects created at runtime via scripts
+- `unloadScene()` is scene-aware: only removes objects, scripts and shaders belonging to that specific scene
 :::

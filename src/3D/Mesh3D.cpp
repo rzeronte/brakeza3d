@@ -12,6 +12,9 @@
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include <assimp/postprocess.h>
 
+#include "../../include/Cache/ImageCache.h"
+#include "../../include/Cache/ModelDataCache.h"
+#include "../../include/Cache/ModelData.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/Mesh3DGUI.h"
 #include "../../include/GUI/Objects/ShadersGUI.h"
@@ -22,7 +25,6 @@
 
 Mesh3D::Mesh3D()
 {
-    luaEnvironment["this"] = this;
     shaderChain = new Mesh3DShaderChain();
 }
 
@@ -30,7 +32,6 @@ Mesh3D::Mesh3D(const FilePath::ModelFile& modelFile)
 :
     sourceFile(modelFile)
 {
-    luaEnvironment["this"] = this;
     shaderChain = new Mesh3DShaderChain();
 }
 
@@ -50,7 +51,12 @@ Mesh3D::~Mesh3D()
 
         if (glIsBuffer(m.normalBuffer))
             glDeleteBuffers(1, &m.normalBuffer);
+
+        if (glIsBuffer(m.feedbackNormalBuffer))
+            glDeleteBuffers(1, &m.feedbackNormalBuffer);
     }
+
+    UnregisterSubmeshPicking();
 
     if (!sharedTextures) {
         for (auto texture : modelTextures) delete texture;
@@ -65,12 +71,20 @@ Mesh3D::~Mesh3D()
 
 void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
 {
-    LOG_MESSAGE("[Mesh3D] Loading geometry for %s...", fileName.c_str());
-
     if (!Tools::FileExists(fileName.c_str())) {
         LOG_ERROR("[Mesh3D] Error import 3D file not exist");
         return;
     }
+
+    auto cached = modelDataCache.get(fileName);
+    if (cached) {
+        LOG_MESSAGE("[Mesh3D] Cache HIT for '%s'", fileName.c_str());
+        cached->cloneInto(*this);
+        loaded = true;
+        return;
+    }
+
+    LOG_MESSAGE("[Mesh3D] Cache MISS, loading '%s'...", fileName.c_str());
 
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
@@ -78,26 +92,55 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
         aiProcess_Triangulate |
         aiProcess_SortByPType |
         aiProcess_FlipUVs |
-        aiProcess_OptimizeMeshes
+        aiProcess_GenSmoothNormals
     );
 
     if (!scene) {
-        LOG_MESSAGE("[Mesh3D] Error import 3D file for ASSIMP");
-        exit(-1);
+        LOG_MESSAGE("[Mesh3D] ERROR loading '%s': %s", fileName.c_str(), assimpImporter.GetErrorString());
+        return;
     }
 
     LOG_MESSAGE("[Mesh3D] Processing %d meshes in file...", scene->mNumMeshes);
     meshes.resize(scene->mNumMeshes);
 
-    AssimpInitMaterials(scene);
+    sourceFile = fileName;
+
+    std::vector<MaterialEntryData> materialEntries;
+    AssimpInitMaterials(scene, &materialEntries);
     ProcessNodes(scene, scene->mRootNode);
 
-    sourceFile = fileName;
+    auto modelData = std::make_shared<ModelData>();
+    modelData->sourceFile = fileName;
+    modelData->materials = std::move(materialEntries);
+
+    for (size_t i = 0; i < meshes.size(); i++) {
+        MeshEntryData entry;
+        const auto& src = meshes[i];
+
+        entry.vertices = src.vertices;
+        entry.uvs = src.uvs;
+        entry.normals = src.normals;
+        entry.materialIndex = src.materialIndex;
+        entry.name = src.name;
+
+        for (Triangle* tri : src.modelTriangles) {
+            entry.triangleVertices.push_back(tri->A);
+            entry.triangleVertices.push_back(tri->B);
+            entry.triangleVertices.push_back(tri->C);
+        }
+
+        modelData->meshes.push_back(std::move(entry));
+    }
+
+    modelDataCache.store(fileName, modelData);
+
+    LOG_MESSAGE("[Mesh3D] Stored '%s' in ModelDataCache (%zu meshes, %zu materials)",
+        fileName.c_str(), modelData->meshes.size(), modelData->materials.size());
+
     loaded = true;
-    //ComponentRender::FillOGLBuffers(meshes);
 }
 
-void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
+void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntryData>* outMaterialEntries)
 {
     LOG_MESSAGE("[Mesh3D] Prepare to load %d materials", pScene->mNumMaterials);
 
@@ -106,39 +149,59 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene)
         aiMaterial *pMaterial = pScene->mMaterials[i];
         LOG_MESSAGE("[Mesh3D] Loading material: %s", pMaterial->GetName().C_Str());
 
-        if (std::string(pMaterial->GetName().C_Str()) == AI_DEFAULT_MATERIAL_NAME) {
-            continue;
-        }
-        //if (pMaterial->GetTextureCount(aiTextureType_DIFFUSE)  >= 1) {
         aiString Path;
         if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS) {
             std::string p(Path.data);
+            LOG_MESSAGE("[Mesh3D] Material texture path: '%s'", p.c_str());
 
             std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
 
-            if (p.substr(0, 2) == ".\\") {
-                p = p.substr(2, p.size() - 2);
-            }
+            std::replace(p.begin(), p.end(), '\\', '/');
+            if (p.substr(0, 2) == "./") p = p.substr(2);
 
-            std::string FullPath = Config::get()->TEXTURES_FOLDER + base_filename;
+            std::string fbxDir = std::string(sourceFile.c_str());
+            fbxDir = fbxDir.substr(0, fbxDir.find_last_of("/\\") + 1);
+            std::string relativePath = fbxDir + p;
+
+            std::string FullPath;
+            std::string textureSubPath = Config::get()->TEXTURES_FOLDER + p;
+            if (Tools::FileExists(relativePath.c_str())) {
+                FullPath = relativePath;
+            } else if (Tools::FileExists(textureSubPath.c_str())) {
+                FullPath = textureSubPath;
+            } else {
+                FullPath = Config::get()->TEXTURES_FOLDER + base_filename;
+            }
             LOG_MESSAGE("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
 
-            modelTextures.emplace_back(new Image(FullPath));
-            modelSpecularTextures.push_back(new Image(FullPath));
+            if (outMaterialEntries) {
+                outMaterialEntries->push_back({true, FullPath, true, FullPath});
+            }
+
+            modelTextures.push_back(imageCache.getOrLoad(FullPath));
+            modelSpecularTextures.push_back(imageCache.getOrLoad(FullPath));
         } else {
-            LOG_MESSAGE("[Mesh3D] ERROR: mMaterial[%s]: Not valid color", i);
+            LOG_MESSAGE("[Mesh3D] Material[%d] has no diffuse texture, using fallback", i);
+            if (outMaterialEntries) {
+                outMaterialEntries->push_back({false, "", false, ""});
+            }
+
+            modelTextures.push_back(new Image((GLuint)0, 1, 1));
+            modelSpecularTextures.push_back(new Image((GLuint)0, 1, 1));
         }
-        //}
     }
+
+    sharedTextures = true;
 }
 
 void Mesh3D::ProcessNodes(const aiScene *scene, const aiNode *node)
 {
+    std::string nodeName = node->mName.C_Str();
     unsigned int numMeshes = node->mNumMeshes;
 
     for (unsigned int x = 0; x < numMeshes; x++) {
         int idMesh = (int) node->mMeshes[x];
-        this->LoadMesh(idMesh, scene->mMeshes[idMesh]);
+        this->LoadMesh(idMesh, scene->mMeshes[idMesh], nodeName);
     }
 
     for (unsigned int j = 0; j < node->mNumChildren; j++) {
@@ -146,7 +209,7 @@ void Mesh3D::ProcessNodes(const aiScene *scene, const aiNode *node)
     }
 }
 
-void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh)
+void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh, const std::string &nodeName)
 {
     LOG_MESSAGE("[Mesh3D] Loading mesh: %d |  Vertices: %d", meshId, mesh->mNumVertices);
 
@@ -174,8 +237,8 @@ void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh)
         meshes[meshId].vertices.emplace_back(v.toGLM4());
         meshes[meshId].uvs.emplace_back(v.u, v.v);
 
-        aiVector3t vn = mesh->mNormals[j];
-        meshes[meshId].normals.emplace_back(vn.x, vn.y, vn.z);
+        const aiVector3D *pNormal = mesh->mNormals ? &mesh->mNormals[j] : &Zero3D;
+        meshes[meshId].normals.emplace_back(pNormal->x, pNormal->y, pNormal->z);
     }
 
     for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
@@ -189,6 +252,34 @@ void Mesh3D::LoadMesh(int meshId, const aiMesh *mesh)
 
         meshes[meshId].modelTriangles.push_back(new Triangle(V3, V2, V1, this));
     }
+
+    meshes[meshId].name = nodeName.empty() ? mesh->mName.C_Str() : nodeName;
+    unsigned int sid = Brakeza::getNextUniqueObjectId();
+    meshes[meshId].submeshPickingId = sid;
+    meshes[meshId].submeshPickingColor = Color::idToColor(sid);
+
+    float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
+    for (const auto& v : meshes[meshId].vertices) {
+        maxX = std::max(maxX, v.x); minX = std::min(minX, v.x);
+        maxY = std::max(maxY, v.y); minY = std::min(minY, v.y);
+        maxZ = std::max(maxZ, v.z); minZ = std::min(minZ, v.z);
+    }
+    meshes[meshId].localAabb.max = Vertex3D(maxX, maxY, maxZ);
+    meshes[meshId].localAabb.min = Vertex3D(minX, minY, minZ);
+    meshes[meshId].localAabb.updateVertices();
+}
+
+void Mesh3D::updateSubmeshFrustumVisibility()
+{
+    glm::mat4 model = getModelMatrix();
+    for (auto& m : meshes) {
+        AABB3D worldAabb;
+        for (int i = 0; i < 8; i++) {
+            glm::vec4 wp = model * glm::vec4(m.localAabb.vertices[i].toGLM(), 1.0f);
+            worldAabb.vertices[i] = Vertex3D(wp.x / wp.w, wp.y / wp.w, wp.z / wp.w);
+        }
+        m.visibleInFrustum = Frustum::isAABBVisibleInFrustum(&worldAabb);
+    }
 }
 
 void Mesh3D::onUpdate()
@@ -200,16 +291,28 @@ void Mesh3D::onUpdate()
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();
 
-    // Inicializar shader chain si no está inicializado
-    if (shaderChain && !shaderChain->isInitialized()) {
+    // Inicializar shader chain solo si hay custom shaders que la van a usar.
+    // SIN esta condición, cada Mesh3D alloca ~91 MB de VRAM (2 FBOs full-screen)
+    // aunque nunca tenga shaders → GPU OOM/TDR con 50+ objetos en escena.
+    if (shaderChain && !shaderChain->isInitialized() && !customShaders.empty()) {
         shaderChain->Initialize(window->getWidthRender(), window->getHeightRender());
     }
 
     auto sceneFramebuffer = window->getSceneFramebuffer();
 
-    if (isGUISelected()) {
-        render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
+    if (isGUISelected() && !Components::get()->Scripting()->isExecuting()) {
+        render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getForegroundFramebuffer());
     }
+
+    if (render->getLastRightClickedObject() == this && !isGUISelected()) {
+        render->getShaders()->shaderOGLOutline->drawOutline(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+    }
+
+    if (highlighted) {
+        render->getShaders()->shaderOGLOutline->drawOutline(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+    }
+
+    if (frustumCullSubmeshes) updateSubmeshFrustumVisibility();
 
     GLuint fbo = Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : sceneFramebuffer;
 
@@ -218,9 +321,6 @@ void Mesh3D::onUpdate()
             if (Config::get()->ENABLE_LIGHTS && enableLights) {
                 if (isRenderPipelineDefault())
                     render->getShaderOGLRenderDeferred()->renderMesh(this, false, fbo);
-                if (Config::get()->ENABLE_SHADOW_MAPPING && getRenderSettings().shadowMap) {
-                    ShadowMappingPass();
-                }
             } else {
                 render->getShaders()->shaderOGLRender->renderMesh(this, false, fbo);
             }
@@ -253,10 +353,9 @@ void Mesh3D::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
-        render->getShaders()->shaderOGLColor->renderMesh(
+        render->getShaders()->shaderOGLColor->renderMeshWithSubmeshColors(
             this,
             false,
-            getPickingColor(),
             false,
             window->getPickingColorFramebuffer().FBO
         );
@@ -281,10 +380,9 @@ void Mesh3D::postUpdate()
 void Mesh3D::RunObjectShaders() const
 {
     if (customShaders.empty() || !shaderChain) return;
+    if (!isVisibleInFrustum()) return;
 
     auto window = Components::get()->Window();
-    
-    // Procesar shaders a través del chain
     shaderChain->ProcessChain(this, customShaders, window->getGBuffer().FBO);
 }
 
@@ -386,6 +484,81 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
     world->addRigidBody(body, collisionGroup, collisionMask);
 }
 
+btRigidBody* Mesh3D::BuildRigidBodyFromTriangleMeshOnly(float mass)
+{
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(getPosition().toBullet());
+
+    btVector3 inertia(0, 0, 0);
+
+    auto shape = getTriangleMeshFromMesh3D(inertia);
+    btTriangleInfoMap* triangleInfoMap = new btTriangleInfoMap();
+    btGenerateInternalEdgeInfo((btBvhTriangleMeshShape*)shape, triangleInfoMap);
+    ((btBvhTriangleMeshShape*)shape)->setTriangleInfoMap(triangleInfoMap);
+
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(transformation),
+        shape,
+        inertia
+    );
+
+    auto* b = new btRigidBody(info);
+    b->activate(true);
+    b->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    b->setUserPointer(this);
+    b->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
+    b->setAngularFactor(angularFactor.toBullet());
+    b->setCollisionFlags(b->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+
+    if (mass <= 0) {
+        b->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT);
+    }
+
+    return b;
+}
+
+btRigidBody* Mesh3D::BuildRigidBodyFromConvexHullOnly(float mass)
+{
+    setMass(mass);
+
+    btTransform transformation;
+    transformation.setIdentity();
+    transformation.setOrigin(getPosition().toBullet());
+
+    btVector3 inertia(0, 0, 0);
+    btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
+    if (mass > 0) {
+        shape->calculateLocalInertia(mass, inertia);
+    }
+
+    btRigidBody::btRigidBodyConstructionInfo info(
+        mass,
+        new btDefaultMotionState(transformation),
+        shape,
+        inertia
+    );
+
+    auto* b = new btRigidBody(info);
+    b->activate(true);
+    b->setContactProcessingThreshold(BT_LARGE_FLOAT);
+    b->setUserPointer(this);
+    b->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
+    b->setRestitution(restitution);
+    b->setActivationState(ACTIVE_TAG);
+    b->setLinearFactor(linearFactor.toBullet());
+    b->setAngularFactor(angularFactor.toBullet());
+    b->setFriction(friction);
+    b->setDamping(linearDamping, angularDamping);
+    b->setCcdMotionThreshold(ccdMotionThreshold);
+    b->setCcdSweptSphereRadius(ccdSweptSphereRadius);
+
+    return b;
+}
+
 void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, int collisionMask)
 {
     auto *convexHullShape = new btConvexHullShape();
@@ -444,7 +617,7 @@ void Mesh3D::SetupRigidBodyCollider(CollisionShape modeShape)
 {
     std::lock_guard<std::mutex> lock(mtx);
 
-    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobMakeRigidBody>(this, modeShape));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobMakeRigidBody>(this, modeShape));
 }
 
 void Mesh3D::DrawImGuiCollisionShapeSelector()
@@ -626,6 +799,16 @@ void Mesh3D::UpdateBoundingBox()
     this->aabb.min.z = minZ;
 
     this->aabb.updateVertices();
+
+    // Bounding sphere: max distance from object position to any AABB corner
+    const Vertex3D& pos = getPosition();
+    float maxR2 = 0.f;
+    for (const auto& v : this->aabb.vertices) {
+        float dx = v.x - pos.x, dy = v.y - pos.y, dz = v.z - pos.z;
+        float r2 = dx*dx + dy*dy + dz*dz;
+        if (r2 > maxR2) maxR2 = r2;
+    }
+    boundingRadius = sqrtf(maxR2);
 }
 
 btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) const
@@ -675,6 +858,22 @@ void Mesh3D::FillOGLBuffers()
 {
     LOG_MESSAGE("[Mesh3D] Filling buffers...");
     ComponentRender::FillOGLBuffers(meshes);
+    RegisterSubmeshPicking();
+}
+
+void Mesh3D::RegisterSubmeshPicking()
+{
+    auto render = Components::get()->Render();
+    for (const auto &m : meshes) {
+        if (m.submeshPickingId != 0) {
+            render->registerSubmesh(m.submeshPickingId, this, m.name);
+        }
+    }
+}
+
+void Mesh3D::UnregisterSubmeshPicking()
+{
+    Components::get()->Render()->unregisterSubmeshes(this);
 }
 
 void Mesh3D::setSourceFile(const FilePath::ModelFile &sourceFile)
@@ -696,7 +895,7 @@ void Mesh3D::InitializeShaderChain(int screenWidth, int screenHeight)
 
 void Mesh3D::ProcessShaderChain(GLuint finalFBO)
 {
-    if (shaderChain && !customShaders.empty()) {
+    if (shaderChain && !customShaders.empty() && isVisibleInFrustum()) {
         shaderChain->ProcessChain(this, customShaders, finalFBO);
     }
 }

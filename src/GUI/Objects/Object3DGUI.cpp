@@ -134,6 +134,17 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
             ImGui::DragScalar("Alpha##001", ImGuiDataType_Float, &o->getAlpha(), 0.01, &range_alpha_min, &range_alpha_max, "%f", 1.0f);
             ImGui::Spacing();
+            ImGui::Checkbox("Selectable", &o->selectable);
+            ImGui::SameLine();
+            ImGui::Checkbox("Highlighted", &o->highlighted);
+            if (o->highlighted) {
+                ImGui::SameLine();
+                float col[4] = {o->highlightColor.r, o->highlightColor.g, o->highlightColor.b, o->highlightColor.a};
+                if (ImGui::ColorEdit4("Highlight Color", col, ImGuiColorEditFlags_NoInputs)) {
+                    o->highlightColor = Color(col[0], col[1], col[2], col[3]);
+                }
+            }
+            ImGui::SameLine();
             ImGui::Checkbox(std::string("Lit/Unlit").c_str(), &o->enableLights);
             if (!o->isTransparent() && o->isEnableLights()) {
                 ImGui::Separator();
@@ -141,6 +152,8 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
             }
             ImGui::Separator();
             ImGui::Checkbox(std::string("Back Face Culling").c_str(), &o->getRenderSettings().culling);
+            ImGui::SameLine();
+            ImGui::Checkbox(std::string("Frustum Culling").c_str(), &o->getRenderSettings().frustumCulling);
             ImGui::Separator();
             ImGui::Checkbox(std::string("Depth Test").c_str(), &o->getRenderSettings().depthTest);
             ImGui::SameLine();
@@ -151,6 +164,11 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 SelectorOGLBlendMode(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
             }
             ImGui::Spacing();
+
+            bool avatarGlobal = Config::get()->SHOW_AVATARS;
+            ImGui::BeginDisabled(!avatarGlobal);
+            ImGui::Checkbox("Show Avatar", &o->showAvatar);
+            ImGui::EndDisabled();
         }
     }
 
@@ -234,6 +252,8 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
 void Object3DGUI::DrawSelectedObjectGuizmo()
 {
+    if (Components::get()->Scripting()->isExecuting()) return;
+
     auto render = Components::get()->Render();
 
     if (render->getSelectedObject() != nullptr) {

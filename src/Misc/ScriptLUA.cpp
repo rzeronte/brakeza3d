@@ -4,12 +4,14 @@
 
 #include <fstream>
 #include "../../include/Misc/ScriptLUA.h"
+#include "../../include/Cache/ScriptTypeCache.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/Cache/ScriptDataCache.h"
 
 ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeScript, const std::string &typesFile)
 :
@@ -47,8 +49,7 @@ ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeFile, const
 
 void ScriptLUA::getCode(const std::string &script)
 {
-    content.clear();
-    content = Tools::ReadFile(script);
+    content = scriptDataCache.getOrLoad(script);
 }
 
 void ScriptLUA::InitEnvironment(sol::environment &environment)
@@ -57,37 +58,26 @@ void ScriptLUA::InitEnvironment(sol::environment &environment)
 
     try {
 
-        // 2. Cargar variables con conversión explícita
+        lua.script(content, environment);
+
         for (const auto& type : dataTypes) {
             switch (LUADataTypesMapping[type.type].type) {
-                case LUADataType::INT: {
-                    int value = std::get<int>(type.value);
-                    environment[type.name] = value;
+                case LUADataType::INT:
+                    environment[type.name] = std::get<int>(type.value);
                     break;
-                }
-                case LUADataType::FLOAT: {
-                    float value = std::get<float>(type.value);
-                    environment[type.name] = value;
+                case LUADataType::FLOAT:
+                    environment[type.name] = std::get<float>(type.value);
                     break;
-                }
-                case LUADataType::STRING: {
-                    const char* value = std::get<const char*>(type.value);
-                    environment[type.name] = std::string(value);  // ← Convertir a std::string
+                case LUADataType::STRING:
+                    environment[type.name] = std::get<std::string>(type.value);
                     break;
-                }
-                case LUADataType::VERTEX3D: {
-                    Vertex3D value = std::get<Vertex3D>(type.value);
-                    environment[type.name] = value;
+                case LUADataType::VERTEX3D:
+                    environment[type.name] = std::get<Vertex3D>(type.value);
                     break;
-                }
                 default:
                     LOG_ERROR("[ScriptLUA] Unknown data type for '%s'", type.name.c_str());
                     break;
             }
-
-            lua.script(content, environment);
-
-            LOG_MESSAGE("[ScriptLUA] Set variable '%s' = '%s'", type.name.c_str(), ScriptLUATypeData::toString(type.value).c_str());
         }
 
         LOG_MESSAGE("[ScriptLUA] Environment initialized for '%s'", name.c_str());
@@ -108,22 +98,10 @@ void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string&
 
     sol::object obj = environment[func];
     if (!obj.is<sol::function>()) {
-        LOG_ERROR("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
         return;
     }
 
     try {
-
-        if (!obj.valid()) {
-            LOG_ERROR("[ScriptLUA] Object '%s' is invalid in environment", func.c_str());
-            return;
-        }
-
-        if (!obj.is<sol::function>()) {
-            LOG_MESSAGE("[ScriptLUA Error] Function %s not exists in script '%s'", func.c_str(), scriptFilename.c_str());
-            return;
-        }
-
         sol::protected_function f = obj.as<sol::protected_function>();
         sol::protected_function_result result;
 
@@ -143,24 +121,55 @@ void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string&
     }
 }
 
+void ScriptLUA::ensureGlobalEnvironment()
+{
+    if (globalEnvironment.valid()) return;
+
+    sol::state &lua = Components::get()->Scripting()->getLua();
+    globalEnvironment = sol::environment(lua, sol::create, lua.globals());
+
+    for (const auto& type : dataTypes) {
+        switch (LUADataTypesMapping[type.type].type) {
+            case LUADataType::INT:     globalEnvironment[type.name] = std::get<int>(type.value);         break;
+            case LUADataType::FLOAT:   globalEnvironment[type.name] = std::get<float>(type.value);       break;
+            case LUADataType::STRING:  globalEnvironment[type.name] = std::get<std::string>(type.value); break;
+            case LUADataType::VERTEX3D:globalEnvironment[type.name] = std::get<Vertex3D>(type.value);    break;
+            default: break;
+        }
+    }
+}
+
 void ScriptLUA::RunGlobal(const std::string& func)
 {
     if (paused) return;
     sol::state &lua = Components::get()->Scripting()->getLua();
 
+    ensureGlobalEnvironment();
+
     try {
         if (!globalLoaded) {
-            lua.script(content);
+            lua.script(content, globalEnvironment);
             globalLoaded = true;
+            globalFuncCache.clear();
         }
 
-        sol::function f = lua[func];
-        sol::function_result result = f();
+        auto cacheIt = globalFuncCache.find(func);
+        if (cacheIt == globalFuncCache.end()) {
+            sol::object obj = globalEnvironment[func];
+            sol::protected_function pf = obj.is<sol::function>()
+                ? obj.as<sol::protected_function>()
+                : sol::protected_function{};
+            cacheIt = globalFuncCache.emplace(func, std::move(pf)).first;
+        }
+
+        if (!cacheIt->second.valid()) return;
+
+        sol::protected_function_result result = cacheIt->second();
 
         if (!result.valid()) {
             sol::error err = result;
             LOG_ERROR("[ScriptLUA] Error in LUA Script %s", scriptFilename.c_str());
-            LOG_ERROR("[ScriptLUA] %s", scriptFilename.c_str(), err.what());
+            LOG_ERROR("[ScriptLUA] %s", err.what());
             Components::get()->Scripting()->StopLUAScripts();
         }
     } catch (const sol::error& e) {
@@ -184,7 +193,7 @@ void ScriptLUA::AddDataTypeEmpty(const char *name, const char *type)
             break;
         }
         case LUADataType::STRING: {
-            LUAValue = "";
+            LUAValue = std::string("");
             break;
         }
         case LUADataType::VERTEX3D: {
@@ -205,15 +214,17 @@ void ScriptLUA::AddDataType(const char *name, const char *type, cJSON *value)
 
     switch (LUADataTypesMapping[type].type) {
         case LUADataType::INT: {
-            LUAValue = value->valueint;
+            LUAValue = cJSON_IsNumber(value) ? value->valueint
+                     : (value->valuestring   ? atoi(value->valuestring) : 0);
             break;
         }
         case LUADataType::FLOAT: {
-            LUAValue = static_cast<float>(value->valuedouble);
+            LUAValue = cJSON_IsNumber(value) ? static_cast<float>(value->valuedouble)
+                     : (value->valuestring   ? static_cast<float>(atof(value->valuestring)) : 0.0f);
             break;
         }
         case LUADataType::STRING: {
-            LUAValue = value->valuestring;
+            LUAValue = std::string(value->valuestring ? value->valuestring : "");
             break;
         }
         case LUADataType::VERTEX3D: {
@@ -239,14 +250,21 @@ bool ScriptLUA::hasDataType(const char *name, const char *type) const
     return false;
 }
 
-void ScriptLUA::ReloadGlobals() const
+void ScriptLUA::ReloadGlobals()
 {
     LOG_MESSAGE("[ScriptLUA] Reloading LUA Global Environment (%s)", this->fileTypes.c_str());
 
-    sol::state &lua = Components::get()->Scripting()->getLua();
+    ensureGlobalEnvironment();
+
     for (const auto& type : dataTypes) {
-        LOG_MESSAGE("[ScriptLUA] Setting GLOBAL variable => Script: '%s', Name: '%s', Type: '%s', Value: '%s'", this->getName().c_str(), type.name.c_str(), type.type.c_str(), ScriptLUATypeData::toString(type.value).c_str());
-        lua[type.name] = type.value;
+        LOG_MESSAGE("[ScriptLUA] Setting variable => Script: '%s', Name: '%s'", this->getName().c_str(), type.name.c_str());
+        switch (LUADataTypesMapping[type.type].type) {
+            case LUADataType::INT:     globalEnvironment[type.name] = std::get<int>(type.value);         break;
+            case LUADataType::FLOAT:   globalEnvironment[type.name] = std::get<float>(type.value);       break;
+            case LUADataType::STRING:  globalEnvironment[type.name] = std::get<std::string>(type.value); break;
+            case LUADataType::VERTEX3D:globalEnvironment[type.name] = std::get<Vertex3D>(type.value);    break;
+            default: break;
+        }
     }
 }
 
@@ -273,12 +291,23 @@ void ScriptLUA::ReloadEnvironment(sol::environment &environment)
                 environment[type.name] = std::get<float>(type.value);
                 break;
             case LUADataType::STRING:
-                environment[type.name] = std::string(std::get<const char*>(type.value));
+                environment[type.name] = std::get<std::string>(type.value);
                 break;
             case LUADataType::VERTEX3D:
                 environment[type.name] = std::get<Vertex3D>(type.value);
                 break;
         }
+    }
+}
+
+void ScriptLUA::applyTypeToEnvironment(const ScriptLUATypeData& type)
+{
+    switch (LUADataTypesMapping[type.type].type) {
+        case LUADataType::INT:    globalEnvironment[type.name] = std::get<int>(type.value);      break;
+        case LUADataType::FLOAT:  globalEnvironment[type.name] = std::get<float>(type.value);    break;
+        case LUADataType::STRING: globalEnvironment[type.name] = std::get<std::string>(type.value); break;
+        case LUADataType::VERTEX3D: globalEnvironment[type.name] = std::get<Vertex3D>(type.value); break;
+        default: break;
     }
 }
 
@@ -290,10 +319,15 @@ void ScriptLUA::ProcessFileTypes()
         return;
     }
 
-    auto contentFile = Tools::ReadFile(fileTypes);
+    const std::string& contentFile = scriptTypeCache.getOrLoad(fileTypes);
     LOG_MESSAGE("[ScriptLUA] Parsing attributes from: '%s'", fileTypes.c_str());
 
-    cJSON *root = cJSON_Parse(contentFile);
+    cJSON *root = cJSON_Parse(contentFile.c_str());
+    if (!root) {
+        LOG_ERROR("[ScriptLUA] Failed to parse JSON: '%s'", fileTypes.c_str());
+        return;
+    }
+
     setName(cJSON_GetObjectItemCaseSensitive(root, "name")->valuestring);
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(root, "types"));
 
@@ -301,6 +335,8 @@ void ScriptLUA::ProcessFileTypes()
     if (typeJSON && typeJSON->valuestring) {
         type = (strcmp(typeJSON->valuestring, "Global") == 0) ? SCRIPT_GLOBAL : SCRIPT_OBJECT;
     }
+
+    cJSON_Delete(root);
 }
 
 void ScriptLUA::setDataTypesFromJSON(const cJSON *typesJSON)
@@ -403,6 +439,7 @@ void ScriptLUA::setPaused(bool value)
 void ScriptLUA::setGlobalLoaded(bool value)
 {
     globalLoaded = value;
+    if (!value) globalFuncCache.clear();
 }
 
 void ScriptLUA::DrawImGuiProperties()
@@ -433,7 +470,7 @@ cJSON *ScriptLUA::getTypesJSON() const
                 break;
             }
             case LUADataType::STRING: {
-                std::string valueString = std::get<const char *>(dataType.value);
+                std::string valueString = std::get<std::string>(dataType.value);
                 cJSON_AddStringToObject(typeJSON, "value", valueString.c_str());
                 break;
             }

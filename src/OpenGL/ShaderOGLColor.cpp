@@ -32,13 +32,31 @@ void ShaderOGLColor::LoadUniforms()
 void ShaderOGLColor::renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const
 {
     for (const auto& mm : m->getMeshData()) {
+        if (!mm.visibleInFrustum) continue;
         RenderColor(
             m->getModelMatrix(),
             useFeedbackBuffer ? mm.feedbackBuffer : mm.vertexBuffer,
             mm.uvBuffer,
-            mm.normalBuffer,
+            useFeedbackBuffer ? mm.feedbackNormalBuffer : mm.normalBuffer,
             static_cast<int>(mm.vertices.size()),
             color,
+            clearFramebuffer,
+            fbo
+        );
+    }
+}
+
+void ShaderOGLColor::renderMeshWithSubmeshColors(Mesh3D* m, bool useFeedbackBuffer, bool clearFramebuffer, GLuint fbo) const
+{
+    for (const auto& mm : m->getMeshData()) {
+        if (!mm.visibleInFrustum) continue;
+        RenderColor(
+            m->getModelMatrix(),
+            useFeedbackBuffer ? mm.feedbackBuffer : mm.vertexBuffer,
+            mm.uvBuffer,
+            useFeedbackBuffer ? mm.feedbackNormalBuffer : mm.normalBuffer,
+            static_cast<int>(mm.vertices.size()),
+            mm.submeshPickingColor,
             clearFramebuffer,
             fbo
         );
@@ -68,6 +86,7 @@ void ShaderOGLColor::RenderColor(
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+    glDisable(GL_BLEND);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glDepthMask(GL_TRUE);
@@ -87,6 +106,9 @@ void ShaderOGLColor::RenderColor(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     render->ChangeOpenGLFramebuffer(0);
 }
@@ -130,6 +152,10 @@ void ShaderOGLColor::CreateBuffer()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorBuffer, 0);
 
     // --- Depth buffer ---
+    if (depthBuffer != 0) {
+        glDeleteRenderbuffers(1, &depthBuffer);
+        depthBuffer = 0;
+    }
     glGenRenderbuffers(1, &depthBuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, w, h);
@@ -143,6 +169,8 @@ void ShaderOGLColor::CreateBuffer()
         std::cerr << "FBO INCOMPLETE: " << std::hex << status << std::dec << std::endl;
         exit(-1);
     }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 GLuint ShaderOGLColor::getFramebuffer() const

@@ -5,7 +5,6 @@
 
 #include "ThreadJobBase.h"
 #include "../Render/Image.h"
-#include "../Render/Profiler.h"
 #include "../Misc/FilePaths.h"
 
 class ThreadJobLoadImage : public ThreadJobBase
@@ -29,11 +28,14 @@ public:
 
     void fnCallback()
     {
+        if (image->getSurface() == nullptr) {
+            LOG_ERROR("[ThreadJobLoadImage] Surface is null, skipping '%s'", filename.c_str());
+            return;
+        }
+
         image->CreateSDLTexture();
         image->MakeAutoOGLImage();
         image->setAlreadyLoaded();
-
-        Profiler::get()->AddImage(image);
 
         LOG_MESSAGE("[ThreadJobLoadImage] Callback END");
     }

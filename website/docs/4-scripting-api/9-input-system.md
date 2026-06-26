@@ -31,21 +31,29 @@ isEnabled = input::isEnabled()
 
 
     - isMouseMotion(): Returns true when mouse movement is detected.
-    - isClickLeft(): Returns true when the left mouse button is clicked.
-    - isClickRight(): Returns true when the right mouse button is clicked.
+    - isClickLeft(): Returns true while the left mouse button is being held down.
+    - isClickRight(): Returns true while the right mouse button is being held down.
+    - isClickRightUp(): Returns true for one frame when the right mouse button is released.
+    - isMouseButtonDown(button): Returns true while the given mouse button is held down (0=left, 1=middle, 2=right).
+    - isMouseButtonUp(button): Returns true for one frame when the given mouse button is released.
+    - consumeLeftClick(): Consumes the current left click event so other systems don't process it.
+    - isMiddleMouseButtonPressed(): Returns true while the middle mouse button is held down.
     - getRelativeRendererMouseX(): Returns the mouse X position relative to the renderer viewport.
     - getRelativeRendererMouseY(): Returns the mouse Y position relative to the renderer viewport.
+    - getRawMouseX(): Returns the raw mouse X position in window coordinates.
+    - getRawMouseY(): Returns the raw mouse Y position in window coordinates.
     - getMouseMotionXRel(): Returns the relative horizontal mouse movement since the last frame.
     - getMouseMotionYRel(): Returns the relative vertical mouse movement since the last frame.
     - isLeftMouseButtonPressed(): Returns true while the left mouse button is being held down.
     - isRightMouseButtonPressed(): Returns true while the right mouse button is being held down.
+    - getMouseWheelY(): Returns the mouse wheel scroll delta for the current frame.
 
 
 
 ## Pad
 
 
-    - isGameControllerEnabled(): Returns true if a game controller is connected and enabled.
+    - isGameControllerAvailable(): Returns true if a game controller is connected and available.
     - getControllerButtonA(): Returns the state of the controller A button.
     - getControllerButtonB(): Returns the state of the controller B button.
     - getControllerButtonX(): Returns the state of the controller X button.

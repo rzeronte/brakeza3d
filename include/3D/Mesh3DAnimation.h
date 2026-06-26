@@ -4,13 +4,14 @@
 #include "Mesh3D.h"
 #include "../Misc/Logging.h"
 #include <cassert>
+#include <unordered_map>
 #include <assimp/Importer.hpp>
 
-#define NUM_BONES_PER_VERTEX 4
+#define NUM_BONES_PER_VERTEX 6
 #define MAX_BONES 100
 
 struct VertexBoneData {
-    int IDs[NUM_BONES_PER_VERTEX];
+    int IDs[NUM_BONES_PER_VERTEX] = {0};
     float Weights[NUM_BONES_PER_VERTEX] = {0};
 
     void AddBoneData(int boneId, float weight) {
@@ -66,6 +67,8 @@ class Mesh3DAnimation : public Mesh3D
     float runningTime = 0;
     float animation_speed = 1;
     bool loop = true;
+    std::vector<glm::mat4> boneTransformCache;
+    std::unordered_map<std::string, const aiNodeAnim*> nodeAnimCache;
     bool boneColliderEnabled = false;
     bool removeOnAnimationEnd = false;
     bool finished = false;
@@ -102,6 +105,7 @@ public:
     void setAnimationSpeed(float value);
     void setIndexCurrentAnimation(int indexCurrentAnimation);
     void CheckIfEndAnimation();
+    void FillOGLBuffers() override;
     void FillAnimationBoneDataOGLBuffers();
     void UpdateOpenGLBones();
     void UpdateBoundingBox() override;
@@ -129,7 +133,7 @@ public:
     static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
     static void CalcInterpolatedPosition(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
     static void LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Vertex3D> &meshVertex, std::vector<Vertex3D> &meshNormals);
-    static const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
+    const aiNodeAnim *FindNodeAnim(const aiAnimation *pAnimation, const std::string& NodeName);
     static unsigned int FindRotation(float AnimationTime, const aiNodeAnim *pNodeAnim);
     static unsigned int FindPosition(float AnimationTime, const aiNodeAnim *pNodeAnim);
     static unsigned int FindScaling(float AnimationTime, const aiNodeAnim *pNodeAnim);

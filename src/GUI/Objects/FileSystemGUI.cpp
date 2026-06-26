@@ -166,25 +166,27 @@ void FileSystemGUI::DrawProjectsTable(GUIType::BrowserCache &browser)
         openItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(openItem);
 
-        // Save/Override (directo sin confirmación)
         CustomImGui::TreeActionItem saveItem(
             Icon(IconGUI::SAVE),
             "Override Project",
             [fullPath]() {
                 ProjectLoader::SaveProject(fullPath);
-            }
+            },
+            "Override Project",
+            "This will overwrite the saved project file. Are you sure?"
         );
         saveItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(saveItem);
 
-        // Delete (directo sin confirmación)
         CustomImGui::TreeActionItem removeItem(
             Icon(IconGUI::PROJECT_REMOVE),
             "Delete project",
             [&browser, fullPath]() {
                 ProjectLoader::RemoveProject(fullPath);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-            }
+            },
+            "Delete Project",
+            "This will permanently delete the project file. Are you sure?"
         );
         removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(removeItem);
@@ -292,32 +294,34 @@ void FileSystemGUI::DrawScenesTable(GUIType::BrowserCache &browser)
             Icon(IconGUI::SCENE_LOAD),
             "Load Scene file",
             [fullPath]() {
-                SceneLoader::ClearScene();
+                SceneLoader::ClearWorld();
                 SceneLoader::LoadScene(fullPath);
             }
         );
         loadItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(loadItem);
 
-        // Save (directo sin confirmación)
         CustomImGui::TreeActionItem saveItem(
             Icon(IconGUI::SAVE),
             "Override scene",
             [fullPath]() {
                 SceneLoader::SaveScene(fullPath);
-            }
+            },
+            "Override Scene",
+            "This will overwrite the saved scene file. Are you sure?"
         );
         saveItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(saveItem);
 
-        // Delete (directo sin confirmación)
         CustomImGui::TreeActionItem removeItem(
             Icon(IconGUI::SCENE_REMOVE),
             "Delete scene",
             [&browser, fullPath]() {
                 SceneLoader::RemoveScene(fullPath);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-            }
+            },
+            "Delete Scene",
+            "This will permanently delete the scene file. Are you sure?"
         );
         removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(removeItem);
@@ -747,7 +751,6 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
         editItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(editItem);
 
-        // Delete (directo sin confirmación)
         CustomImGui::TreeActionItem removeItem(
             Icon(IconGUI::SHADER_REMOVE),
             "Delete shader",
@@ -757,7 +760,9 @@ void FileSystemGUI::DrawShadersTable(GUIType::BrowserCache &browser)
                     Tools::getFilenameWithoutExtension(file)
                 );
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SHADERS_EXT);
-            }
+            },
+            "Delete Shader",
+            "This will permanently delete the shader files. Are you sure?"
         );
         removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(removeItem);
@@ -887,14 +892,15 @@ void FileSystemGUI::DrawScriptsTable(GUIType::BrowserCache &browser)
         editItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(editItem);
 
-        // Remove (directo sin confirmación)
         CustomImGui::TreeActionItem removeItem(
             Icon(IconGUI::SCRIPT_REMOVE),
             "Delete script",
             [&browser, fullPath]() {
                 ComponentScripting::RemoveScriptLUAFile(fullPath);
                 browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, Config::get()->SCRIPTS_EXT);
-            }
+            },
+            "Delete Script",
+            "This will permanently delete the script files. Are you sure?"
         );
         removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(removeItem);

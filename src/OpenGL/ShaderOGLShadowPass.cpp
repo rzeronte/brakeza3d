@@ -5,6 +5,7 @@
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Misc/Logging.h"
 
 ShaderOGLShadowPass::ShaderOGLShadowPass()
 :
@@ -34,12 +35,13 @@ void ShaderOGLShadowPass::PrepareMainThread()
 void ShaderOGLShadowPass::renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight ) const
 {
     for (const auto& m: o->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         renderIntoArrayDepthTextures(
             o,
             light,
             feedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
-            m.normalBuffer,
+            feedbackFBO ? m.feedbackNormalBuffer : m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             spotLightsDepthMapArray,
             indexLight,
@@ -51,12 +53,13 @@ void ShaderOGLShadowPass::renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFB
 void ShaderOGLShadowPass::renderMeshIntoDirectionalLightTexture(Mesh3D *o, bool useFeedbackFBO, const DirLightOpenGL& light) const
 {
     for (const auto& m: o->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         renderIntoDirectionalLightTexture(
             o,
             light,
             useFeedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
-            m.normalBuffer,
+            useFeedbackFBO ? m.feedbackNormalBuffer : m.normalBuffer,
             static_cast<int>(m.vertices.size()),
             directionalLightDepthMapFBO
         );
@@ -114,14 +117,12 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
     Components::get()->Render()->ChangeOpenGLProgram(programID);
 
     glBindVertexArray(VertexArrayID);
-
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
 
     setMat4Uniform(matrixViewUniform, light->getLightSpaceMatrix());
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
 
     glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMapArrayTex, 0, layer);
-
     glDrawArrays(GL_TRIANGLES, 0, size);
 
     glDisableVertexAttribArray(0);
@@ -129,6 +130,73 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
     glDisableVertexAttribArray(2);
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
+}
+
+void ShaderOGLShadowPass::renderSceneDirectionalLight(
+    const std::vector<Mesh3D*>& casters,
+    const DirLightOpenGL& light
+) const {
+    auto render = Components::get()->Render();
+    render->ChangeOpenGLFramebuffer(directionalLightDepthMapFBO);
+    render->ChangeOpenGLProgram(programID);
+    glBindVertexArray(VertexArrayID);
+
+    auto shaderRender = render->getShaders()->shaderOGLRender;
+    setMat4Uniform(matrixViewUniform, shaderRender->getDirectionalLightMatrix(light));
+
+    for (auto* mesh : casters) {
+        const bool feedbackFBO = dynamic_cast<Mesh3DAnimation*>(mesh) != nullptr;
+        setMat4Uniform(matrixModelUniform, mesh->getModelMatrix());
+        for (const auto& m : mesh->getMeshData()) {
+            if (!m.visibleInFrustum) continue;
+            setVAOAttributes(
+                feedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
+                m.uvBuffer,
+                feedbackFBO ? m.feedbackNormalBuffer : m.normalBuffer
+            );
+            glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m.vertices.size()));
+        }
+    }
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    render->ChangeOpenGLFramebuffer(0);
+}
+
+void ShaderOGLShadowPass::renderSceneSpotLight(
+    const std::vector<Mesh3D*>& casters,
+    LightSpot* light,
+    int layerIndex
+) const {
+    if (light == nullptr) return;
+
+    auto render = Components::get()->Render();
+    render->ChangeOpenGLFramebuffer(spotLightsDepthMapsFBO);
+    render->ChangeOpenGLProgram(programID);
+    glBindVertexArray(VertexArrayID);
+
+    glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, spotLightsDepthMapArray, 0, layerIndex);
+    setMat4Uniform(matrixViewUniform, light->getLightSpaceMatrix());
+
+    for (auto* mesh : casters) {
+        const bool feedbackFBO = dynamic_cast<Mesh3DAnimation*>(mesh) != nullptr;
+        setMat4Uniform(matrixModelUniform, mesh->getModelMatrix());
+        for (const auto& m : mesh->getMeshData()) {
+            if (!m.visibleInFrustum) continue;
+            setVAOAttributes(
+                feedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
+                m.uvBuffer,
+                feedbackFBO ? m.feedbackNormalBuffer : m.normalBuffer
+            );
+            glDrawArrays(GL_TRIANGLES, 0, static_cast<int>(m.vertices.size()));
+        }
+    }
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    render->ChangeOpenGLFramebuffer(0);
 }
 
 GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const
@@ -218,13 +286,12 @@ void ShaderOGLShadowPass::createDirectionalLightDepthTexture()
 void ShaderOGLShadowPass::clearDirectionalLightDepthTexture() const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(directionalLightDepthMapFBO);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, directionalLightDepthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void ShaderOGLShadowPass::ResetFramebuffers()
 {
+    createSpotLightsDepthTextures(MAX_SHADOW_CASTERS);
     setupFBOSpotLights();
     createDirectionalLightDepthTexture();
     setupFBODirectionalLight();
@@ -237,8 +304,13 @@ GLuint ShaderOGLShadowPass::getSpotLightsShadowMapArrayTextures() const
 
 void ShaderOGLShadowPass::createSpotLightsDepthTextures(int numLights)
 {
-    LOG_MESSAGE("[ShaderOGLShadowPass] Updating shadow maps for %d lights", numLights);
+    LOG_MESSAGE("[ShaderOGLShadowPass] Allocating shadow map array for %d shadow casters", numLights);
     auto window = Components::get()->Window();
+
+    if (spotLightsDepthMapArray != 0) {
+        glDeleteTextures(1, &spotLightsDepthMapArray);
+        spotLightsDepthMapArray = 0;
+    }
 
     glGenTextures(1, &spotLightsDepthMapArray);
     glBindTexture(GL_TEXTURE_2D_ARRAY, spotLightsDepthMapArray);

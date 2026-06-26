@@ -80,12 +80,12 @@ void GUIAddonMenu::MenuScriptControls()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAR_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Clear (all objects)", "F3")) {
-        SceneLoader::ClearScene();
+        SceneLoader::ClearWorld();
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAN_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Clean (not scene objects)", "F4")) {
-        SceneLoader::ClearScene();
+        SceneLoader::ClearWorld();
     }
 }
 
@@ -211,39 +211,59 @@ void GUIAddonMenu::MenuVideo()
 
     ImGui::SeparatorText("Post-processing");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_DOF), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable DOF", nullptr, &Config::get()->ENABLE_DOF_BLUR);
-    if (Config::get()->ENABLE_DOF_BLUR) {
-        const float depthValueSens = 0.1;
-        const float depthMinValues = 0;
-        const float depthMaxValues = 100;
-        ImGui::DragScalar("Focal range", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-        ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+    ImGui::MenuItem("Enable Post-Processing Chain", nullptr, &Config::get()->ENABLE_POST_PROCESSING_CHAIN);
+    //ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_DOF), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    //ImGui::MenuItem("Enable DOF", nullptr, &Config::get()->ENABLE_DOF_BLUR);
+    //if (Config::get()->ENABLE_DOF_BLUR) {
+    //    const float depthValueSens = 0.1;
+    //    const float depthMinValues = 0;
+    //    const float depthMaxValues = 100;
+    //    ImGui::DragScalar("Focal range", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->focalRange, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+    //    ImGui::DragScalar("Focal distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->focalDistance, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+    //    const int minBlurRadius = 0;
+    //    const int maxBlurRadius = 10;
+    //    ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
+    //    ImGui::DragScalar("Intensity", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
+    //    ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+    //}
 
-        const int minBlurRadius = 0;
-        const int maxBlurRadius = 10;
-        ImGui::DragScalar("Blur radius", ImGuiDataType_S32, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->blurRadius,1.0f, &minBlurRadius, &maxBlurRadius, "%d", 1.0f);
-        ImGui::DragScalar("Intensity", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->intensity, focalValueSens, &focalMinValues, &focalMaxValues, "%f", 1.0f);
-        ImGui::DragScalar("Far Plane", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLDOFBlur->farPlane, depthValueSens, &depthMinValues, &depthMaxValues, "%f", 1.0f);
+    ImGui::MenuItem("Enable Frustum Culling", nullptr, &Config::get()->ENABLE_FRUSTUM_CULLING);
+
+    {
+        const float sortMin = 0.0f, sortMax = 1000.0f;
+        ImGui::DragScalar("Sort objects interval (ms)", ImGuiDataType_Float, &Config::get()->SORT_OBJECTS_INTERVAL_MS, 5.0f, &sortMin, &sortMax, "%.0f ms");
     }
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_FOG), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable FOG", nullptr, &Config::get()->ENABLE_FOG);
-    if (Config::get()->ENABLE_FOG) {
-        const float rangeFogSens = 0.1;
-        const float rangeFogMin = 0.1;
-        const float rangeFogMax = 1000;
-        const float rangeFogIntensityMax= 1.0;
-
-        ImGui::DragScalar("FOG min distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLFOG->fogMinDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-        ImGui::DragScalar("FOG max distance", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLFOG->fogMaxDist, rangeFogSens, &rangeFogMin, &rangeFogMax, "%f", 1.0f);
-        ImGui::DragScalar("FOG intensity", ImGuiDataType_Float, &Components::get()->Render()->getShaders()->shaderOGLFOG->intensity, rangeFogSens, &rangeFogMin, &rangeFogIntensityMax, "%f", 1.0f);
-
-        auto p = Components::get()->Render()->getShaders()->shaderOGLFOG->fogColor;
-        ImVec4 fogVecColor = {p.r, p.g, p.b, 1};
-        if (ImGui::ColorEdit4("FOG Color##", reinterpret_cast<float *>(&fogVecColor), ImGuiColorEditFlags_NoOptions)) {
-            Components::get()->Render()->getShaders()->shaderOGLFOG->fogColor = {fogVecColor.x, fogVecColor.y, fogVecColor.z};
-        }
+    ImGui::SeparatorText("Avatars");
+    ImGui::MenuItem("Show Avatars", nullptr, &Config::get()->SHOW_AVATARS);
+    if (Config::get()->SHOW_AVATARS && ImGui::BeginMenu("Avatar Types...")) {
+        ImGui::Image(FileSystemGUI::Icon(IconObject::OBJECT_3D),              GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Object3D",             nullptr, &Config::get()->SHOW_AVATAR_OBJECT3D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D),                GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Mesh3D",               nullptr, &Config::get()->SHOW_AVATAR_MESH3D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D_ANIMATION),      GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Mesh3D Animation",     nullptr, &Config::get()->SHOW_AVATAR_MESH3D_ANIMATION);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT),            GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Light Point",          nullptr, &Config::get()->SHOW_AVATAR_LIGHT_POINT);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_SPOT),             GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Light Spot",           nullptr, &Config::get()->SHOW_AVATAR_LIGHT_SPOT);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER),       GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Particle Emitter",     nullptr, &Config::get()->SHOW_AVATAR_PARTICLE_EMITTER);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D),               GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image3D",              nullptr, &Config::get()->SHOW_AVATAR_IMAGE3D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION),     GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image3D Animation",    nullptr, &Config::get()->SHOW_AVATAR_IMAGE3D_ANIMATION);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_360), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image3D Anim 360",     nullptr, &Config::get()->SHOW_AVATAR_IMAGE3D_ANIMATION360);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D),               GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image2D",              nullptr, &Config::get()->SHOW_AVATAR_IMAGE2D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D_ANIMATION),     GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image2D Animation",    nullptr, &Config::get()->SHOW_AVATAR_IMAGE2D_ANIMATION);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::SWARM),                  GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Swarm",                nullptr, &Config::get()->SHOW_AVATAR_SWARM);
+        ImGui::EndMenu();
     }
+
     ImGui::SeparatorText("Screen helpers");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHADER_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw Grid", nullptr, &setup->ENABLE_GRID_BACKGROUND);
@@ -258,6 +278,9 @@ void GUIAddonMenu::MenuVideo()
         if (ImGui::ColorEdit4("Grid Color##", reinterpret_cast<float *>(&vecColor), ImGuiColorEditFlags_NoOptions)) {
             shaderGrid->color = {vecColor.x, vecColor.y, vecColor.z};
         }
+        const float fadeMin = 0.0f; const float fadeMax = 500.0f; const float fadeSens = 1.0f;
+        ImGui::DragScalar("Fade start", ImGuiDataType_Float, &shaderGrid->fadeStart, fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
+        ImGui::DragScalar("Fade end",   ImGuiDataType_Float, &shaderGrid->fadeEnd,   fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
         ImGui::Separator();
     }
 
@@ -419,8 +442,7 @@ void GUIAddonMenu::MenuCamera()
     ImGui::SeparatorText("Camera setup");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_FOV), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &GUIType::Levels::DRAG_FOV_MIN, &GUIType::Levels::DRAG_FOV_MAX, "%f", 1.0f);
-    const float range_far_plane_distance_sensibility = 1.0f;
-    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, range_far_plane_distance_sensibility, &GUIType::Levels::DRAG_FAR_PLANE_MIN, &GUIType::Levels::DRAG_FAR_PLANE_MIN, "%f", 1.0f);
+    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, 50.0f, &GUIType::Levels::DRAG_FAR_PLANE_MIN, &GUIType::Levels::DRAG_FAR_PLANE_MAX, "%.0f");
     // position
     ImGui::PushID("reset_camera_position");
     GUI::DrawButton("Reset position", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
@@ -530,6 +552,8 @@ void GUIAddonMenu::MenuLogging()
     ImGui::MenuItem("Output to Console", nullptr, &setup->ENABLE_LOGGING_CONSOLE);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Output to STD", nullptr, &setup->ENABLE_LOGGING_STD);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Observer AI", nullptr, &setup->OBSERVER_AI_ENABLED);
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_COLLIDER), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Log collider collisions", nullptr, &setup->LOG_COLLISION_OBJECTS);

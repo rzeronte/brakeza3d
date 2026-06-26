@@ -39,6 +39,7 @@ void ShaderOGLPoints::renderMeshAnimation(Mesh3DAnimation *mesh, GLuint fbo) con
 void ShaderOGLPoints::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo)
 {
     for (auto &m: mesh->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         render(
             mesh->getModelMatrix(),
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
@@ -74,6 +75,9 @@ void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int num
     glDrawArrays(GL_POINTS, 0, numberPoints);
 
     glDisableVertexAttribArray(0);
+
+    glDisable(GL_POINT_SPRITE);
+    glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
 }
 
 void ShaderOGLPoints::setVAOAttributes(GLuint vertexBuffer)

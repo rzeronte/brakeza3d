@@ -14,6 +14,12 @@
 
 // Static member definitions
 bool GUIAddonProjectSetup::openPopupEditProject = false;
+bool GUIAddonProjectSetup::openPopupAdditiveScene = false;
+bool GUIAddonProjectSetup::additiveLoadScripts = false;
+bool GUIAddonProjectSetup::additiveLoadShaders = false;
+bool GUIAddonProjectSetup::additiveLoadCamera = false;
+bool GUIAddonProjectSetup::additiveLoadRenderSettings = false;
+static std::string s_additiveScenePath;
 
 void GUIAddonProjectSetup::DrawWinProjectSettings()
 {
@@ -73,14 +79,18 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
                 "Save project",
                 [&]() {
                     ProjectLoader::SaveProject(project->getFilePath());
-                }
+                },
+                "Save Project",
+                "This will overwrite the saved project file. Are you sure?"
             );
             projectConfig.actionItems.emplace_back(
                 FileSystemGUI::Icon(IconGUI::PROJECT_CLOSE),
                 "Close project",
                 [&]() {
                     ProjectLoader::CloseCurrentProject();
-                }
+                },
+                "Close Project",
+                "Any unsaved changes will be lost. Are you sure?"
             );
         } else {
             projectConfig.actionItems.emplace_back(
@@ -115,83 +125,96 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     ImGui::Spacing();
 
     // ============================================
-    // NODO 2: SCENE ACTUAL
+    // NODO 2: ESCENAS CARGADAS
     // ============================================
-    {
-        std::string sceneLabel = scene != nullptr
-            ? "Scene: " + Tools::removeSubstring(scene->getFilePath(), Config::get()->ASSETS_FOLDER)
-            : "Scene: Unknown";
+    auto &loadedScenes = scripting->getLoadedScenes();
+
+    if (loadedScenes.empty()) {
+        CustomImGui::CustomTreeNodeConfig sceneConfig("Scene: Unknown");
+        sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE_UNNAMED);
+        sceneConfig.isLeaf = true;
+        CustomImGui::CustomTreeNode(sceneConfig, nullptr);
+    }
+
+    for (int si = 0; si < (int)loadedScenes.size(); si++) {
+        auto *loadedScene = loadedScenes[si];
+        ImGui::PushID(si);
+
+        std::string sceneLabel = "Scene: " + Tools::removeSubstring(loadedScene->getFilePath(), Config::get()->ASSETS_FOLDER);
+        if (!loadedScene->isActive()) sceneLabel += "  [inactive]";
 
         CustomImGui::CustomTreeNodeConfig sceneConfig(sceneLabel.c_str());
-
-        // Icono según estado
-        sceneConfig.leftIcon = FileSystemGUI::Icon(scene != nullptr ? IconGUI::SCENE_FILE : IconGUI::SCENE_FILE_UNNAMED);
-        sceneConfig.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-        sceneConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+        sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
+        sceneConfig.isLeaf = true;
         sceneConfig.defaultOpen = false;
-        sceneConfig.forceOpenPtr = &FileSystemGUI::autoExpandScene;
 
-        bool isTemporary = false;
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_INFO),
+            "Scene detail",
+            [loadedScene]() {
+                Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(loadedScene->getFilePath());
+            }
+        );
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_SAVE),
+            "Save scene",
+            [loadedScene]() {
+                SceneLoader::SaveScene(loadedScene->getFilePath());
+            },
+            "Save Scene",
+            "This will overwrite the saved scene file. Are you sure?"
+        );
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
+            "Reload scene",
+            [loadedScene]() {
+                SceneLoader::ReloadScene(loadedScene->getName());
+            }
+        );
 
-        // Botones de acción
-        if (scene != nullptr) {
-            // Capturar por valor las variables necesarias
-            auto currentScene = scene;
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_UNLOAD),
+            "Unload scene",
+            [loadedScene]() {
+                SceneLoader::UnloadScene(loadedScene->getName());
+            },
+            "Unload Scene",
+            "This will remove all objects belonging to this scene. Are you sure?"
+        );
 
-            sceneConfig.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::SCENE_INFO),
-                "Scene detail",
-                [currentScene]() {
-                    LOG_MESSAGE("wtf");
-                    Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(currentScene->getFilePath());
-                }
-            );
-            sceneConfig.actionItems.emplace_back(
-                FileSystemGUI::Icon(IconGUI::SCENE_SAVE),
-                "Save scene",
-                [currentScene]() {
-                    SceneLoader::SaveScene(currentScene->getFilePath());
-                }
-            );
-
-            isTemporary = !Components::get()->Scripting()->hasProjectScene(scene->getFilePath());
-        }
-
+        bool isTemporary = !scripting->hasProjectScene(loadedScene->getFilePath());
         if (isTemporary && project != nullptr) {
-            // Capturar por valor las variables necesarias
-            auto currentScene = scene;
-
             sceneConfig.actionItems.emplace_back(
                 FileSystemGUI::Icon(IconGUI::SCENE_ATTACH_PROJECT),
                 "Attach scene to Project",
-                [currentScene]() {
-                    Components::get()->Scripting()->AddProjectScene(currentScene->getFilePath());
+                [loadedScene]() {
+                    Components::get()->Scripting()->AddProjectScene(loadedScene->getFilePath());
                 }
             );
         }
 
-        bool isSceneOpen = CustomImGui::CustomTreeNode(sceneConfig, nullptr);
+        CustomImGui::CustomTreeNode(sceneConfig, nullptr);
 
-        if (isSceneOpen) {
-            ImGui::Spacing();
-            if (isTemporary) {
-                Drawable::WarningMessage("Scene not belonging to the project");
-            }
-
-            DrawSceneScriptsNode();
-            ImGui::Spacing();
-
-            DrawSceneShadersNode();
-            ImGui::Spacing();
-
-            CustomImGui::CustomTreePop();
-        }
+        ImGui::PopID();
     }
+
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    DrawSceneRenderSettingsNode();
+    ImGui::Spacing();
+
+    DrawSceneScriptsNode();
+    ImGui::Spacing();
+
+    DrawSceneShadersNode();
+    ImGui::Spacing();
 
     ImGui::PopStyleVar();
 
     // Draw edit popup if open
     DrawProjectEditPopup();
+    DrawAdditiveScenePopup();
 }
 
 // ============================================
@@ -395,6 +418,29 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
         }
     );
 
+    bool postProcessEnabled = Config::get()->ENABLE_POST_PROCESSING_CHAIN;
+    config.actionItems.emplace_back(
+        FileSystemGUI::Icon(postProcessEnabled ? IconGUI::SHADER_UNLOCK : IconGUI::SHADER_LOCK),
+        postProcessEnabled ? "Disable Post-Processing Chain" : "Enable Post-Processing Chain",
+        []() {
+            Config::get()->ENABLE_POST_PROCESSING_CHAIN = !Config::get()->ENABLE_POST_PROCESSING_CHAIN;
+        }
+    );
+
+    config.actionItems.emplace_back(
+        FileSystemGUI::Icon(IconGUI::SHADER_RELOAD),
+        "Reload all scene shaders",
+        []() {
+            auto render = Components::get()->Render();
+            for (auto& s : render->getSceneShaders()) {
+                s->Reload();
+            }
+            auto* pm = Components::get()->Window()->getPostProcessingManager();
+            pm->rebuildFBOs();
+            LOG_MESSAGE("[ProjectSetup] All scene shaders reloaded, FBOs rebuilt");
+        }
+    );
+
     bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
 
     if (isOpen) {
@@ -435,8 +481,21 @@ void GUIAddonProjectSetup::DrawProjectScenes()
             FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
             "Load Scene",
             [currentScene]() {
-                SceneLoader::ClearScene();
+                SceneLoader::ClearWorld();
                 SceneLoader::LoadScene(currentScene);
+            }
+        );
+
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_ATTACH_PROJECT),
+            "Load additive",
+            [currentScene]() {
+                s_additiveScenePath = currentScene;
+                GUIAddonProjectSetup::additiveLoadScripts = false;
+                GUIAddonProjectSetup::additiveLoadShaders = false;
+                GUIAddonProjectSetup::additiveLoadCamera = false;
+                GUIAddonProjectSetup::additiveLoadRenderSettings = false;
+                GUIAddonProjectSetup::openPopupAdditiveScene = true;
             }
         );
 
@@ -445,7 +504,9 @@ void GUIAddonProjectSetup::DrawProjectScenes()
             "Remove scene from project",
             [scripting, currentScene]() {
                 scripting->RemoveProjectScene(currentScene);
-            }
+            },
+            "Remove Scene",
+            "This will detach the scene from the project. Are you sure?"
         );
 
         bool isOpen = CustomImGui::CustomTreeNode(sceneConfig, nullptr);
@@ -559,7 +620,9 @@ void GUIAddonProjectSetup::DrawProjectScripts()
         scriptConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
             "Remove script",
-            [scripting, currentScript]() { scripting->RemoveProjectScript(currentScript); }
+            [scripting, currentScript]() { scripting->RemoveProjectScript(currentScript); },
+            "Remove Script",
+            "This will detach the script from the project. Are you sure?"
         );
 
         scriptConfig.actionItems.emplace_back(
@@ -596,7 +659,9 @@ void GUIAddonProjectSetup::DrawSceneScripts()
 
         // Evaluar estados ANTES de crear el config
         bool isPaused = currentScript->isPaused();
-        std::string scriptName = currentScript->getName();
+        auto *scriptScene = currentScript->getScene();
+        std::string sceneSuffix = scriptScene ? std::string("  [") + scriptScene->getName() + "]" : "";
+        std::string scriptName = currentScript->getName() + sceneSuffix;
 
         // Configurar CustomTreeNode para cada script
         CustomImGui::CustomTreeNodeConfig scriptConfig(scriptName.c_str());
@@ -628,7 +693,9 @@ void GUIAddonProjectSetup::DrawSceneScripts()
         scriptConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
             "Remove scene script",
-            [scripting, currentScript]() { scripting->RemoveSceneScript(currentScript); }
+            [scripting, currentScript]() { scripting->RemoveSceneScript(currentScript); },
+            "Remove Script",
+            "This will detach the script from the scene. Are you sure?"
         );
 
         scriptConfig.actionItems.emplace_back(
@@ -654,6 +721,35 @@ void GUIAddonProjectSetup::DrawSceneScripts()
     }
 }
 
+void GUIAddonProjectSetup::DrawSceneRenderSettingsNode()
+{
+    CustomImGui::CustomTreeNodeConfig config("Render settings");
+    config.iconSize    = ImVec2(18, 18);
+    config.leftIcon    = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
+    config.bulletOpen  = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    config.defaultOpen = false;
+
+    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
+    if (!isOpen) return;
+
+    ImGui::Spacing();
+
+    auto win = Components::get()->Window();
+    float col[4] = { win->getClearColorR(), win->getClearColorG(), win->getClearColorB(), win->getClearColorA() };
+
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::BULLET), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+    ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Clear color");
+    ImGui::SetNextItemWidth(-1);
+    if (ImGui::ColorEdit4("##ClearColor", col, ImGuiColorEditFlags_AlphaBar)) {
+        win->setClearColor(col[0], col[1], col[2], col[3]);
+    }
+
+    ImGui::Spacing();
+    CustomImGui::CustomTreePop();
+}
+
 void GUIAddonProjectSetup::DrawSceneCustomShaders()
 {
     auto render = Components::get()->Render();
@@ -665,7 +761,9 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
 
         // Evaluar estados ANTES de crear el config
         bool isEnabled = currentShader->isEnabled();
-        std::string shaderLabel = currentShader->getLabel();
+        auto *shaderScene = currentShader->getScene();
+        std::string sceneSuffix = shaderScene ? std::string("  [") + shaderScene->getName() + "]" : "";
+        std::string shaderLabel = currentShader->getLabel() + sceneSuffix;
 
         // Configurar CustomTreeNode para cada shader
         CustomImGui::CustomTreeNodeConfig shaderConfig(shaderLabel.c_str());
@@ -700,7 +798,9 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         shaderConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
             "Remove shader from scene",
-            [render, index]() { render->RemoveSceneShaderByIndex(index); }
+            [render, index]() { render->RemoveSceneShaderByIndex(index); },
+            "Remove Shader",
+            "This will detach the shader from the scene. Are you sure?"
         );
 
         shaderConfig.actionItems.emplace_back(
@@ -801,6 +901,53 @@ void GUIAddonProjectSetup::DrawProjectEditPopup()
             ImGui::CloseCurrentPopup();
         }
 
+        ImGui::EndPopup();
+    }
+}
+
+void GUIAddonProjectSetup::DrawAdditiveScenePopup()
+{
+    if (openPopupAdditiveScene) {
+        ImGui::OpenPopup("Load Additive Scene");
+        openPopupAdditiveScene = false;
+    }
+
+    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    ImGui::SetNextWindowSize(ImVec2(280, 0), ImGuiCond_Always);
+
+    if (ImGui::BeginPopupModal("Load Additive Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Spacing();
+        ImGui::TextUnformatted("Select what to load from the scene:");
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        ImGui::Checkbox("Scripts",         &additiveLoadScripts);
+        ImGui::Checkbox("Shaders",         &additiveLoadShaders);
+        ImGui::Checkbox("Camera",          &additiveLoadCamera);
+        ImGui::Checkbox("Render settings", &additiveLoadRenderSettings);
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        if (ImGui::Button("Load", ImVec2(120, 0))) {
+            SceneLoader::LoadSceneAdditive(
+                FilePath::SceneFile(s_additiveScenePath),
+                additiveLoadScripts,
+                additiveLoadShaders,
+                additiveLoadCamera,
+                additiveLoadRenderSettings
+            );
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::Spacing();
         ImGui::EndPopup();
     }
 }

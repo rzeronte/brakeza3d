@@ -12,6 +12,7 @@
 #include "../Misc/FilePaths.h"
 
 class Object3D;
+class Scene;
 
 class SceneLoader
 {
@@ -21,14 +22,30 @@ public:
     explicit SceneLoader();
     static bool isLoading;
     static bool isClearing;
+
     static void LoadSceneSettings(const cJSON *contentJSON);
+    static void LoadCameraSettings(const cJSON *contentJSON);
+    static void LoadADSSettings(const cJSON *contentJSON);
     static void InitSerializers();
+
     static void LoadScene(const FilePath::SceneFile& filename);
+    static void LoadSceneAdditive(
+        const FilePath::SceneFile& filename,
+        bool loadScripts        = false,
+        bool loadShaders        = false,
+        bool loadCamera         = false,
+        bool loadRenderSettings = false
+    );
+
+    static void setSceneActive(const std::string& name, bool active);
+    static void UnloadScene(const std::string& name);
+    static void ReloadScene(const std::string& name);
+
     static void SaveScene(const FilePath::SceneFile& filename);
     static void CreateScene(const FilePath::SceneFile& filename);
     static void RemoveScene(const FilePath::SceneFile& filename);
-    static void ClearScene();
-    static void CleanScene();
+    static void ClearWorld();
+    static void CleanWorld();
     static void SceneLoaderCreateObject(cJSON *object);
     static void setLoading(bool cond){ isLoading = cond; }
 };

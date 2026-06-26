@@ -1,0 +1,7 @@
+{
+    "codeFile": "../assets/scripts/Demos/ProjectileLauncherCaptureCollision.lua",
+    "typesFile": "../assets/scripts/Demos/ProjectileLauncherCaptureCollision.json",
+    "name": "ProjectileLauncherCaptureCollision",
+    "type": "Object",
+    "types": []
+}

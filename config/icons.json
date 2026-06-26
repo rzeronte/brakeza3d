@@ -875,6 +875,14 @@
 			"name":	"ARROW_DOWN",
 			"x":	4,
 			"y":	3
+		}, {
+			"name":	"TOOLBAR_SHOW_AVATARS",
+			"x":	4,
+			"y":	20
+		}, {
+			"name":	"SCENE_UNLOAD",
+			"x":	13,
+			"y":	10
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

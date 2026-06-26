@@ -1,11 +1,13 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include <algorithm>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/ParticleEmitterGUI.h"
+#include "../../include/Misc/Tools.h"
 
 ParticleEmitter::ParticleEmitter(
     ParticleEmitterState state,
@@ -29,52 +31,59 @@ ParticleEmitter::ParticleEmitter(
 
     lifeCounter.setEnabled(true);
 
-    // The VBO containing the 4 vertices of the particles.
-    // Thanks to instancing, they will be shared by all particles.
+    for (int i = 0; i < MaxParticles; i++) {
+        ParticlesContainer[i].life = -1.0f;
+        ParticlesContainer[i].cameradistance = -1.0f;
+    }
+    // GL buffers are created lazily in Draw() / DrawGPU() on the GL thread
+}
+
+void ParticleEmitter::InitGLBuffers()
+{
     static const GLfloat g_vertex_buffer_data[] = {
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            -0.5f,  0.5f, 0.0f,
-            0.5f,  0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+        -0.5f,  0.5f, 0.0f,
+         0.5f,  0.5f, 0.0f,
     };
 
     glGenBuffers(1, &billboard_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
 
-    // The VBO containing the positions and sizes of the particles
     glGenBuffers(1, &particles_position_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, particles_position_buffer);
-    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLfloat), nullptr, GL_STREAM_DRAW);
 
-    // The VBO containing the colors of the particles
     glGenBuffers(1, &particles_color_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, particles_color_buffer);
-    // Initialize with empty (NULL) buffer : it will be updated later, each frame.
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * 4 * sizeof(GLubyte), nullptr, GL_STREAM_DRAW);
-
-    for (int i=0; i<MaxParticles; i++) {
-        ParticlesContainer[i].life = -1.0f;
-        ParticlesContainer[i].cameradistance = -1.0f;
-    }
 }
 
 void ParticleEmitter::postUpdate()
 {
     Object3D::postUpdate();
-    Draw();
+    if (gpuMode) {
+        DrawGPU();
+    } else {
+        Draw();
+    }
 }
 
 void ParticleEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
+    if (attachedLight != nullptr && !attachedLight->isRemoved()) {
+        attachedLight->setPosition(getPosition());
+    }
 }
 
 void ParticleEmitter::Draw()
 {
     if (isRemoved() || !isActive() || !isEnabled() || texture == nullptr) return;
+
+    if (billboard_vertex_buffer == 0) InitGLBuffers();
 
     if (parent != nullptr && !parent->isRemoved()) {
         setPosition(parent->getPosition());
@@ -261,4 +270,180 @@ void ParticleEmitter::setColorFrom(const Color &colorFrom)
 void ParticleEmitter::setStopAdd(bool stopAdd)
 {
     ParticleEmitter::stopAdd = stopAdd;
+}
+
+int ParticleEmitter::FindUnusedGPUParticle()
+{
+    for (int i = LastUsedParticle; i < NUM_GPU_PARTICLES; i++) {
+        if (gpuParticles[i].active < 0.5f) {
+            LastUsedParticle = i;
+            return i;
+        }
+    }
+    for (int i = 0; i < LastUsedParticle; i++) {
+        if (gpuParticles[i].active < 0.5f) {
+            LastUsedParticle = i;
+            return i;
+        }
+    }
+    return 0;
+}
+
+void ParticleEmitter::DrawGPU()
+{
+    if (isRemoved() || !isActive() || !isEnabled() || texture == nullptr) return;
+
+    if (billboard_vertex_buffer == 0) InitGLBuffers();
+
+    if (gpuParticles.empty()) {
+        gpuParticles.resize(NUM_GPU_PARTICLES);
+        for (auto &p : gpuParticles) {
+            p.active = 0.0f;
+        }
+    }
+
+    if (particles_state_buffer == 0) {
+        glGenBuffers(1, &particles_state_buffer);
+        glBindBuffer(GL_ARRAY_BUFFER, particles_state_buffer);
+        glBufferData(GL_ARRAY_BUFFER,
+            static_cast<GLsizeiptr>(NUM_GPU_PARTICLES * sizeof(OCParticle)),
+            nullptr, GL_DYNAMIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    if (parent != nullptr && !parent->isRemoved()) {
+        setPosition(parent->getPosition());
+    }
+
+    lifeCounter.update();
+    if (lifeCounter.isFinished()) {
+        setRemoved(true);
+        return;
+    }
+
+    float delta = Brakeza::get()->getDeltaTime();
+    gpuTotalTime += delta;
+
+    Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
+    glm::vec3 dir = direction.toGLM();
+
+    int newParticles = static_cast<int>(delta * 100 * context.PARTICLES_BY_SECOND);
+
+    if (!stopAdd) {
+        for (int i = 0; i < newParticles; i++) {
+            int idx = FindUnusedGPUParticle();
+            OCParticle &p = gpuParticles[idx];
+
+            p.active = 1.0f;
+            p.timeToLive = context.PARTICLE_LIFESPAN;
+            p.timeLiving = 0.0f;
+
+            p.position = glm::vec4(
+                getPosition().toGLM() + glm::vec3(
+                    static_cast<float>(Tools::random(-context.POSITION_NOISE / 2, context.POSITION_NOISE / 2)),
+                    static_cast<float>(Tools::random(-context.POSITION_NOISE / 2, context.POSITION_NOISE / 2)),
+                    static_cast<float>(Tools::random(-context.POSITION_NOISE / 2, context.POSITION_NOISE / 2))
+                ) * delta,
+                (rand() % 1000) / 2000.0f + 0.1f
+            );
+
+            glm::vec3 maindir = AddNoiseToDirection(dir, context.SMOKE_ANGLE_RANGE / 2);
+            float speed = Tools::random(context.MIN_VELOCITY, context.MAX_VELOCITY) * delta;
+            p.velocity = glm::vec4(maindir * speed, 0.0f);
+            p.rotation = glm::vec4(0.0f);
+            p.force = Tools::random(context.MIN_ALPHA, context.MAX_ALPHA) / 255.0f;
+        }
+    }
+
+    int aliveCount = 0;
+    for (auto &p : gpuParticles) {
+        if (p.active < 0.5f) continue;
+
+        p.timeLiving += delta;
+
+        if (p.timeLiving >= p.timeToLive) {
+            p.active = 0.0f;
+            continue;
+        }
+
+        p.velocity.y += context.GRAVITY * delta;
+        glm::vec3 vel = glm::vec3(p.velocity);
+        vel = AddNoiseToDirection(vel, context.VELOCITY_NOISE / 2);
+        p.velocity = glm::vec4(vel, 0.0f);
+        p.velocity *= context.DECELERATION_FACTOR;
+        p.position = glm::vec4(glm::vec3(p.position) + glm::vec3(p.velocity) * delta, p.position.w);
+
+        aliveCount++;
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, particles_state_buffer);
+    glBufferData(GL_ARRAY_BUFFER,
+        static_cast<GLsizeiptr>(NUM_GPU_PARTICLES * sizeof(OCParticle)),
+        gpuParticles.data(),
+        GL_DYNAMIC_DRAW);
+
+    auto* shaders = Components::get()->Render()->getShaders();
+
+    shaders->shaderGPUParticles->render(
+        particles_state_buffer,
+        billboard_vertex_buffer,
+        texture->getOGLTextureID(),
+        colorFrom,
+        colorTo,
+        NUM_GPU_PARTICLES,
+        static_cast<int>(sizeof(OCParticle))
+    );
+}
+
+void ParticleEmitter::setAttachedLight(LightPoint *light)
+{
+    attachedLight = light;
+}
+
+void ParticleEmitter::createAttachedLight(const Color &diffuse, const Color &ambient, const Color &specular, float range)
+{
+    removeAttachedLight();
+
+    float linear = 4.5f / range;
+    float quadratic = 75.0f / (range * range);
+
+    auto *light = new LightPoint(
+        glm::vec4(ambient.toGLM(), 0),
+        glm::vec4(diffuse.toGLM(), 0),
+        glm::vec4(specular.toGLM(), 0),
+        1.0f,
+        linear,
+        quadratic
+    );
+
+    light->setName(getName() + "_light");
+    light->setPosition(getPosition());
+
+    attachedLight = light;
+    AttachObject(light);
+}
+
+void ParticleEmitter::removeAttachedLight()
+{
+    if (attachedLight != nullptr) {
+        auto it = std::find(attachedObjects.begin(), attachedObjects.end(), attachedLight);
+        if (it != attachedObjects.end()) {
+            attachedObjects.erase(it);
+        }
+        delete attachedLight;
+        attachedLight = nullptr;
+    }
+}
+
+void ParticleEmitter::setGPUMode(bool enabled)
+{
+    if (gpuMode == enabled) return;
+    gpuMode = enabled;
+    gpuTotalTime = 0.0f;
+    gpuParticles.clear();
+
+    if (!enabled && particles_state_buffer != 0) {
+        glDeleteBuffers(1, &particles_state_buffer);
+        particles_state_buffer = 0;
+    }
 }

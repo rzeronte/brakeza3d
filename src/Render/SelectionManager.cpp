@@ -3,10 +3,28 @@
 #include <SDL2/SDL.h>
 #include "../../include/Render/SelectionManager.h"
 #include "../../include/3D/Object3D.h"
-#include "../../include/OpenGL/Quad/ShaderOGLLine.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Logging.h"
+
+bool SelectionManager::isObjectAlive(Object3D* o) const
+{
+    if (o == nullptr) return false;
+    for (auto* obj : Brakeza::get()->getSceneObjects()) {
+        if (obj == o) return true;
+    }
+    return false;
+}
+
+Object3D* SelectionManager::getLastRightClickedObject() const
+{
+    return isObjectAlive(lastRightClickedObject) ? lastRightClickedObject : nullptr;
+}
+
+Object3D* SelectionManager::getLastLeftClickedObject() const
+{
+    return isObjectAlive(lastLeftClickedObject) ? lastLeftClickedObject : nullptr;
+}
 
 void SelectionManager::setSelectedObject(Object3D *o)
 {
@@ -48,34 +66,40 @@ bool SelectionManager::isObjectInSelection(const Object3D *o) const
     return false;
 }
 
-void SelectionManager::DrawSelectionRect(ShaderOGLLine *lineShader) const
+void SelectionManager::DrawSelectionRectFill() const
+{
+    if (!isRectSelecting) return;
+    ImDrawList *dl = ImGui::GetBackgroundDrawList();
+    const float x1 = (float)std::min(rectSelectStartX, rectSelectCurrentX);
+    const float y1 = (float)std::min(rectSelectStartY, rectSelectCurrentY);
+    const float x2 = (float)std::max(rectSelectStartX, rectSelectCurrentX);
+    const float y2 = (float)std::max(rectSelectStartY, rectSelectCurrentY);
+    dl->AddRectFilled(ImVec2(x1, y1), ImVec2(x2, y2), IM_COL32(100, 200, 255, 70));
+    dl->AddRect(ImVec2(x1, y1), ImVec2(x2, y2), IM_COL32(150, 220, 255, 230), 0.0f, 0, 2.0f);
+}
+
+void SelectionManager::DrawSelectionBox() const
 {
     if (!isRectSelecting) return;
 
-    auto *window = Components::get()->Window();
+    auto *render = Components::get()->Render();
 
-    auto toRender = [&](int wx, int wy) -> Point2D {
-        const int rx = (int)((float)wx / (float)window->getWidth()  * (float)Config::get()->screenWidth);
-        const int ry = (int)((float)wy / (float)window->getHeight() * (float)Config::get()->screenHeight);
-        return Point2D(rx, ry);
-    };
+    const int x1 = std::min(rectSelectStartX,   rectSelectCurrentX);
+    const int y1 = std::min(rectSelectStartY,   rectSelectCurrentY);
+    const int x2 = std::max(rectSelectStartX,   rectSelectCurrentX);
+    const int y2 = std::max(rectSelectStartY,   rectSelectCurrentY);
+    const int w  = x2 - x1;
+    const int h  = y2 - y1;
 
-    const Point2D a = toRender(rectSelectStartX,   rectSelectStartY);
-    const Point2D b = toRender(rectSelectCurrentX, rectSelectCurrentY);
+    const Color fill(0.39f, 0.78f, 1.0f, 0.27f);
+    const Color border(0.59f, 0.86f, 1.0f, 0.90f);
+    const int   t = 2;
 
-    const Point2D tl(a.x, a.y);
-    const Point2D tr(b.x, a.y);
-    const Point2D br(b.x, b.y);
-    const Point2D bl(a.x, b.y);
-
-    const Color  lineColor(0.39f, 0.78f, 1.0f, 1.0f);
-    const float  weight = 0.00025f;
-    const GLuint fbo    = window->getUIFramebuffer();
-
-    lineShader->render(tl, tr, lineColor, weight, fbo);
-    lineShader->render(tr, br, lineColor, weight, fbo);
-    lineShader->render(br, bl, lineColor, weight, fbo);
-    lineShader->render(bl, tl, lineColor, weight, fbo);
+    render->DrawFilledRect(x1, y1, w, h, fill);
+    render->DrawFilledRect(x1,     y1,     w, t, border);
+    render->DrawFilledRect(x1,     y2 - t, w, t, border);
+    render->DrawFilledRect(x1,     y1,     t, h, border);
+    render->DrawFilledRect(x2 - t, y1,     t, h, border);
 }
 
 void SelectionManager::processSDLEvent(SDL_Event *event)
@@ -116,37 +140,89 @@ void SelectionManager::processSDLEvent(SDL_Event *event)
         }
     }
 
-    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT) {
-        if (isRectSelecting) {
-            isRectSelecting = false;
-
-            const auto ids = window->readAsyncPickingRect();
-            if (!ctrlHeld) selectedObjects.clear();
-            for (unsigned int id : ids) {
-                Object3D *o = Brakeza::get()->getObjectById(id);
-                if (o != nullptr && !isObjectInSelection(o)) selectedObjects.push_back(o);
-            }
-            LOG_MESSAGE("[Selection] Rect selection: %zu objects", selectedObjects.size());
-
-        } else {
+    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_RIGHT) {
+        if (!input->isRightDrag()) {
             int nx, ny;
-            toNormalized(rectSelectStartX, rectSelectStartY, nx, ny);
-
-            const auto id = window->getObjectIDByPickingColorFramebuffer(nx, ny);
-            Object3D *clicked = Brakeza::get()->getObjectById(id);
-
-            if (ctrlHeld) {
-                if (clicked != nullptr) {
-                    addToSelection(clicked);
-                    LOG_MESSAGE("[Selection] Toggle: %s (%zu selected)", clicked->getName().c_str(), selectedObjects.size());
+            toNormalized(event->button.x, event->button.y, nx, ny);
+            const unsigned int pickedId = window->getObjectIDByPickingColorFramebuffer(nx, ny);
+            lastRightClickedObject = Brakeza::get()->getObjectById(pickedId);
+            lastRightClickedSubmeshName.clear();
+            if (lastRightClickedObject == nullptr) {
+                auto entry = Components::get()->Render()->getSubmeshEntry(pickedId);
+                if (entry.first != nullptr) {
+                    lastRightClickedObject = entry.first;
+                    lastRightClickedSubmeshName = entry.second;
+                    LOG_MESSAGE("[Selection] RClick submesh: '%s' (parent: %s)", entry.second.c_str(), entry.first->getName().c_str());
                 }
-            } else {
-                selectedObjects.clear();
-                if (clicked != nullptr) {
-                    selectedObjects.push_back(clicked);
-                    LOG_MESSAGE("[Selection] Selected: %s", clicked->getName().c_str());
-                }
+            }
+            if (lastRightClickedObject == nullptr) {
+                lastRightClickedObject = Components::get()->Render()->hitTestAvatar(event->button.x, event->button.y);
             }
         }
+    }
+
+    if (event->type == SDL_MOUSEBUTTONUP && event->button.button == SDL_BUTTON_LEFT) {
+        if (!isRectSelecting) {
+            // Calcular objeto bajo cursor y exponerlo a Lua (que corre antes que Render)
+            int nx, ny;
+            toNormalized(rectSelectStartX, rectSelectStartY, nx, ny);
+            const auto id = window->getObjectIDByPickingColorFramebuffer(nx, ny);
+            Object3D *clicked = Brakeza::get()->getObjectById(id);
+            std::string clickedSubmesh;
+            if (clicked == nullptr) {
+                auto entry = Components::get()->Render()->getSubmeshEntry(id);
+                if (entry.first != nullptr) {
+                    clicked        = entry.first;
+                    clickedSubmesh = entry.second;
+                }
+            }
+            if (clicked == nullptr) {
+                clicked = Components::get()->Render()->hitTestAvatar(event->button.x, event->button.y);
+            }
+            lastLeftClickedObject      = clicked;
+            lastLeftClickedSubmeshName = clickedSubmesh;
+            pendingClickObject         = clicked;
+        }
+        pendingLeftClick = true;
+        pendingClickCtrl = ctrlHeld;
+    }
+}
+
+void SelectionManager::update()
+{
+    if (!pendingLeftClick) return;
+    pendingLeftClick = false;
+
+    auto *input = Components::get()->Input();
+
+    if (isRectSelecting) {
+        isRectSelecting = false;
+        auto window = Components::get()->Window();
+        const auto ids = window->readAsyncPickingRect();
+        if (!pendingClickCtrl) selectedObjects.clear();
+        for (unsigned int id : ids) {
+            Object3D *o = Brakeza::get()->getObjectById(id);
+            if (o == nullptr) {
+                auto entry = Components::get()->Render()->getSubmeshEntry(id);
+                o = entry.first;
+            }
+            if (o != nullptr && o->isSelectable() && !isObjectInSelection(o))
+                selectedObjects.push_back(o);
+        }
+        LOG_MESSAGE("[Selection] Rect selection: %zu objects", selectedObjects.size());
+        return;
+    }
+
+    // Click simple — respetar consumo de UI (Lua puede haberlo consumido en su onUpdate)
+    if (input->isLeftClickConsumed()) return;
+
+    Object3D *clicked = pendingClickObject;
+    pendingClickObject = nullptr;
+    if (pendingClickCtrl) {
+        if (clicked != nullptr) addToSelection(clicked);
+    } else {
+        selectedObjects.clear();
+        if (clicked != nullptr && clicked->isSelectable())
+            selectedObjects.push_back(clicked);
     }
 }

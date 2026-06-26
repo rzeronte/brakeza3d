@@ -13,10 +13,11 @@
 
 class ShaderOGLLine : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
 {
-    GLuint lineStartUniform = 0;
-    GLuint lineEndUniform = 0;
-    GLuint lineColorUniform = 0;
-    GLuint weightUniform = 0;
+    GLuint lineStartUniform      = 0;
+    GLuint lineEndUniform        = 0;
+    GLuint lineColorUniform      = 0;
+    GLuint weightUniform         = 0;
+    GLuint resolutionUniform     = 0;
 public:
     ShaderOGLLine();
     void PrepareMainThread() override;

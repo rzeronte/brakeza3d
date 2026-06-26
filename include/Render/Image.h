@@ -43,6 +43,12 @@ public:
     void setAlreadyLoaded();
     void setFilePath(const FilePath::ImageFile &path);
 
+    static Image* createEmpty(int w, int h);
+    void destroy();
+    void clearChannel(int channel, uint8_t value);
+    void fillCircle(int cx, int cy, int radius, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+    void upload();
+
     [[nodiscard]] float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
 
     [[nodiscard]] float getAlpha() const                        { return alpha; }

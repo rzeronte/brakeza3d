@@ -27,6 +27,14 @@ Image2D::~Image2D()
     }
 }
 
+void Image2D::drawBackground()
+{
+    if (!image || !image->isLoaded()) return;
+    const int drawW = (int)(widthScale  * (float)Config::get()->screenWidth);
+    const int drawH = (int)(heightScale * (float)Config::get()->screenHeight);
+    image->DrawFlatAlpha(x, y, drawW, drawH, alpha, Components::get()->Window()->getUIFramebuffer());
+}
+
 void Image2D::onUpdate()
 {
     Object3D::onUpdate();
@@ -34,11 +42,12 @@ void Image2D::onUpdate()
     if (videoPlayer && !videoPlayer->isFinished())
         videoPlayer->onUpdate();
 
+    if (drawInBackground) return;
     if (!image || !image->isLoaded()) return;
 
     const int drawW = (int)(widthScale  * (float)Config::get()->screenWidth);
     const int drawH = (int)(heightScale * (float)Config::get()->screenHeight);
-    image->DrawFlatAlpha(x, y, drawW, drawH, alpha, Components::get()->Window()->getBackgroundFramebuffer());
+    image->DrawFlatAlpha(x, y, drawW, drawH, alpha, Components::get()->Window()->getUIFramebuffer());
 }
 
 void Image2D::setVideoPlayer(VideoPlayer *vp)

@@ -29,11 +29,12 @@ void ShaderOGLWire::LoadUniforms()
 void ShaderOGLWire::renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, const Color &c, GLuint fbo) const
 {
     for (auto &m: mesh->getMeshData()) {
+        if (!m.visibleInFrustum) continue;
         render(
             mesh->getModelMatrix(),
             useFeedbackFramebuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
-            m.normalBuffer,
+            useFeedbackFramebuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             m.vertices.size(),
             c,
             fbo
@@ -57,7 +58,6 @@ void ShaderOGLWire::render(
     glBindVertexArray(VertexArrayID);
 
     glDisable(GL_BLEND);
-    glLineWidth(1.0f);
     auto camera = Components::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();
@@ -74,6 +74,8 @@ void ShaderOGLWire::render(
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    glEnable(GL_BLEND);
 }
 
 void ShaderOGLWire::Destroy() {

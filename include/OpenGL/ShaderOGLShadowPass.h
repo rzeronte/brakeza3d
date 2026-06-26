@@ -7,8 +7,10 @@
 
 #include "Base/ShaderBaseOpenGL.h"
 #include "../3D/Mesh3D.h"
+#include "../3D/Mesh3DAnimation.h"
 #include "../3D/LightSpot.h"
 #include "Base/SharedOpenGLStructs.h"
+#include <vector>
 
 class ShaderOGLShadowPass : public ShaderBaseOpenGL
 {
@@ -25,6 +27,8 @@ class ShaderOGLShadowPass : public ShaderBaseOpenGL
     GLuint spotLightsDepthMapArray = 0;
 
 public:
+    static constexpr int MAX_SHADOW_CASTERS = 16;
+
     ShaderOGLShadowPass();
     void LoadUniforms() override;
 
@@ -32,6 +36,10 @@ public:
 
     void renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight) const;
     void renderMeshIntoDirectionalLightTexture(Mesh3D *o, bool feedbackFBO, const DirLightOpenGL& light) const;
+
+    void renderSceneDirectionalLight(const std::vector<Mesh3D*>& casters, const DirLightOpenGL& light) const;
+    void renderSceneSpotLight(const std::vector<Mesh3D*>& casters, LightSpot* light, int layerIndex) const;
+
     void renderIntoArrayDepthTextures(
         Object3D* o,
         LightSpot* light,

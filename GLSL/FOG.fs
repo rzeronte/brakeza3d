@@ -23,12 +23,11 @@ float LinearizeDepth(float depth)
 
 void main()
 {
-    float depthValue = texture(depthTexture, TexCoords).r * intensity;
-    float linearDepth = LinearizeDepth(depthValue) / farPlane;
+    float depthValue   = texture(depthTexture, TexCoords).r;
+    float linearDepth  = LinearizeDepth(depthValue) / farPlane;
 
-    float fogFactor = smoothstep(fogMinDist / farPlane, fogMaxDist / farPlane, linearDepth);
+    float fogFactor = clamp(smoothstep(fogMinDist / farPlane, fogMaxDist / farPlane, linearDepth) * intensity, 0.0, 1.0);
 
-    // Mezcla el color original con el color de la niebla
     vec3 finalColor = mix(texture(sceneTexture, TexCoords).rgb, fogColor, fogFactor);
 
     FragColor = vec4(finalColor, 1.0);

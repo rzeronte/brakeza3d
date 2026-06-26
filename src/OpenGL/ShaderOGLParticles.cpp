@@ -104,6 +104,8 @@ void ShaderOGLParticles::render(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
 
+    glDisable(GL_BLEND);
+
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 

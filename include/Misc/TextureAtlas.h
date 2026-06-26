@@ -27,6 +27,7 @@ class TextureAtlas
     SDL_Surface *atlasSurface = nullptr;
     std::vector<Image *> textures;
     std::vector<TextureAtlasImageInfo> texturesData;
+    GLuint atlasTextureGL = 0;
 
     void AllocateMask(int xpos, int ypos, int width, int height) const;
     [[nodiscard]] bool AllocationCheck(int xpos, int ypos, int width, int height) const;
@@ -40,6 +41,7 @@ public:
     bool AddToAtlas(Image *texture, const std::string& name);
     void AllocateEmptyMask(int totalWidth, int totalHeight);
     void SavePNG(const std::string& name) const;
+    void uploadAtlasToGL();
     void CreateFromSheet(const std::string &file, int spriteWidth, int spriteHeight);
     TextureAtlasImageInfo getAtlasTextureInfoForName(const std::string& name);
     [[nodiscard]] int getIndexByXY(int x, int y) const;
@@ -49,6 +51,8 @@ public:
     [[nodiscard]] int getNumColumns() const;
     [[nodiscard]] Image *getTextureByIndex(int index) const;
     [[nodiscard]] Image *getTextureByXY(int x, int y) const;
+    [[nodiscard]] SDL_Surface *getAtlasSurface() const { return atlasSurface; }
+    [[nodiscard]] GLuint getAtlasGLTexture() const { return atlasTextureGL; }
 };
 
 

@@ -1,0 +1,998 @@
+{
+	"screenshot":	"../assets/screenshots/ParticleTest.png",
+	"ads":	{
+		"direction":	{
+			"x":	-0.17000000178813934,
+			"y":	-0.0599999986588955,
+			"z":	-1
+		},
+		"diffuse":	{
+			"x":	0.300000011920929,
+			"y":	0.300000011920929,
+			"z":	0.300000011920929
+		},
+		"specular":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		},
+		"ambient":	{
+			"x":	0.15000000596046448,
+			"y":	0.15000000596046448,
+			"z":	0.15000000596046448
+		}
+	},
+	"objects":	[{
+			"name":	"GPU_Embers",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	8,
+				"y":	0,
+				"z":	-16
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-0.20000000298023224,
+				"PARTICLES_BY_SECOND":	5,
+				"PARTICLE_LIFESPAN":	3.5,
+				"SMOKE_ANGLE_RANGE":	45,
+				"MIN_ALPHA":	180,
+				"MAX_ALPHA":	255,
+				"MIN_VELOCITY":	1,
+				"MAX_VELOCITY":	3,
+				"POSITION_NOISE":	3,
+				"VELOCITY_NOISE":	4,
+				"DECELERATION_FACTOR":	0.98500001430511475
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.699999988079071,
+				"b":	0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.600000023841858,
+				"g":	0,
+				"b":	0,
+				"a":	0
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.10000000149011612,
+					"z":	0.014999999664723873
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.699999988079071,
+					"z":	0.10000000149011612
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.699999988079071,
+					"z":	0.10000000149011612
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"CPU_Snow",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-8,
+				"y":	4,
+				"z":	-16
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-0.800000011920929,
+				"PARTICLES_BY_SECOND":	10,
+				"PARTICLE_LIFESPAN":	4,
+				"SMOKE_ANGLE_RANGE":	75,
+				"MIN_ALPHA":	140,
+				"MAX_ALPHA":	220,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	2,
+				"POSITION_NOISE":	5,
+				"VELOCITY_NOISE":	1,
+				"DECELERATION_FACTOR":	0.99500000476837158
+			},
+			"colorFrom":	{
+				"r":	0.899999976158142,
+				"g":	0.949999988079071,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.699999988079071,
+				"g":	0.800000011920929,
+				"b":	1,
+				"a":	0
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.10000000149011612,
+					"y":	0.15000000596046448,
+					"z":	0.20000000298023224
+				},
+				"diffuse":	{
+					"x":	0.800000011920929,
+					"y":	0.8999999761581421,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.800000011920929,
+					"y":	0.8999999761581421,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"CPU_Sparks",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-4,
+				"y":	0,
+				"z":	-14
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-3,
+				"PARTICLES_BY_SECOND":	18,
+				"PARTICLE_LIFESPAN":	0.699999988079071,
+				"SMOKE_ANGLE_RANGE":	65,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"MIN_VELOCITY":	10,
+				"MAX_VELOCITY":	22,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	10,
+				"DECELERATION_FACTOR":	0.92000001668930054
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	1,
+				"b":	0.600000023841858,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1,
+				"g":	0.300000011920929,
+				"b":	0,
+				"a":	0
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_spark.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.15000000596046448,
+					"z":	0.05000000074505806
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	1,
+					"z":	0.30000001192092896
+				},
+				"specular":	{
+					"x":	1,
+					"y":	1,
+					"z":	0.30000001192092896
+				},
+				"constant":	1,
+				"linear":	0.15000000596046448,
+				"quadratic":	0.0833333358168602
+				},
+			"type":	6
+		}, {
+			"name":	"GPU_Magic",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	4,
+				"y":	0,
+				"z":	-14
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0.5,
+				"PARTICLES_BY_SECOND":	6,
+				"PARTICLE_LIFESPAN":	3,
+				"SMOKE_ANGLE_RANGE":	55,
+				"MIN_ALPHA":	160,
+				"MAX_ALPHA":	255,
+				"MIN_VELOCITY":	1,
+				"MAX_VELOCITY":	4,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	2,
+				"DECELERATION_FACTOR":	0.97000002861022949
+			},
+			"colorFrom":	{
+				"r":	0.800000011920929,
+				"g":	0.20000000298023224,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.20000000298023224,
+				"g":	0.600000023841858,
+				"b":	1,
+				"a":	0
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/particle_star.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.05000000074505806,
+					"z":	0.20000000298023224
+				},
+				"diffuse":	{
+					"x":	0.8999999761581421,
+					"y":	0.30000001192092896,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.8999999761581421,
+					"y":	0.30000001192092896,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"CPU_Smoke",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-6,
+				"y":	0,
+				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-0.5,
+				"PARTICLES_BY_SECOND":	3,
+				"PARTICLE_LIFESPAN":	2.5,
+				"SMOKE_ANGLE_RANGE":	20,
+				"MIN_ALPHA":	100,
+				"MAX_ALPHA":	220,
+				"MIN_VELOCITY":	2,
+				"MAX_VELOCITY":	6,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	3,
+				"DECELERATION_FACTOR":	0.98000001907348633
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.40000000596046448,
+				"b":	0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.600000023841858,
+				"g":	0.600000023841858,
+				"b":	0.600000023841858,
+				"a":	0
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.07000000029802322,
+					"z":	0
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.5,
+					"z":	0
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.5,
+					"z":	0
+				},
+				"constant":	1,
+				"linear":	0.15000000596046448,
+				"quadratic":	0.0833333358168602
+			},
+			"type":	6
+		}, {
+			"name":	"GPU_Fire",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	6,
+				"y":	0,
+				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-1.5,
+				"PARTICLES_BY_SECOND":	8,
+				"PARTICLE_LIFESPAN":	1.5,
+				"SMOKE_ANGLE_RANGE":	35,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	255,
+				"MIN_VELOCITY":	4,
+				"MAX_VELOCITY":	10,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	5,
+				"DECELERATION_FACTOR":	0.959999978542328
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.899999976158142,
+				"b":	0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1,
+				"g":	0.10000000149011612,
+				"b":	0,
+				"a":	0
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.11999999731779099,
+					"z":	0.014999999664723873
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.800000011920929,
+					"z":	0.10000000149011612
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.800000011920929,
+					"z":	0.10000000149011612
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"CPU_Fire",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-2,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-1.5,
+				"PARTICLES_BY_SECOND":	8,
+				"PARTICLE_LIFESPAN":	1.5,
+				"SMOKE_ANGLE_RANGE":	35,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	255,
+				"MIN_VELOCITY":	4,
+				"MAX_VELOCITY":	10,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	5,
+				"DECELERATION_FACTOR":	0.959999978542328
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.899999976158142,
+				"b":	0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1,
+				"g":	0.10000000149011612,
+				"b":	0,
+				"a":	0
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.11999999731779099,
+					"z":	0.014999999664723873
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.800000011920929,
+					"z":	0.10000000149011612
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.800000011920929,
+					"z":	0.10000000149011612
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"GPU_Smoke",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	2,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-0.5,
+				"PARTICLES_BY_SECOND":	3,
+				"PARTICLE_LIFESPAN":	2.5,
+				"SMOKE_ANGLE_RANGE":	20,
+				"MIN_ALPHA":	100,
+				"MAX_ALPHA":	220,
+				"MIN_VELOCITY":	2,
+				"MAX_VELOCITY":	6,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	3,
+				"DECELERATION_FACTOR":	0.98000001907348633
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.40000000596046448,
+				"b":	0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.600000023841858,
+				"g":	0.600000023841858,
+				"b":	0.600000023841858,
+				"a":	0
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.07000000029802322,
+					"z":	0
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.5,
+					"z":	0
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.5,
+					"z":	0
+				},
+				"constant":	1,
+				"linear":	0.15000000596046448,
+				"quadratic":	0.0833333358168602
+			},
+			"type":	6
+		}, {
+			"name":	"CPU_Fountain",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-10,
+				"y":	0,
+				"z":	-8
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-4,
+				"PARTICLES_BY_SECOND":	12,
+				"PARTICLE_LIFESPAN":	2,
+				"SMOKE_ANGLE_RANGE":	12,
+				"MIN_ALPHA":	120,
+				"MAX_ALPHA":	220,
+				"MIN_VELOCITY":	6,
+				"MAX_VELOCITY":	10,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	1,
+				"DECELERATION_FACTOR":	0.990000009536743
+			},
+			"colorFrom":	{
+				"r":	0.40000000596046448,
+				"g":	0.899999976158142,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0,
+				"g":	0.300000011920929,
+				"b":	0.800000011920929,
+				"a":	0
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.05999999865889549,
+					"y":	0.15000000596046448,
+					"z":	0.20000000298023224
+				},
+				"diffuse":	{
+					"x":	0.30000001192092896,
+					"y":	0.800000011920929,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.30000001192092896,
+					"y":	0.800000011920929,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"GPU_Fountain",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	10,
+				"y":	0,
+				"z":	-8
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-4,
+				"PARTICLES_BY_SECOND":	12,
+				"PARTICLE_LIFESPAN":	2,
+				"SMOKE_ANGLE_RANGE":	12,
+				"MIN_ALPHA":	120,
+				"MAX_ALPHA":	220,
+				"MIN_VELOCITY":	6,
+				"MAX_VELOCITY":	10,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	1,
+				"DECELERATION_FACTOR":	0.990000009536743
+			},
+			"colorFrom":	{
+				"r":	0.40000000596046448,
+				"g":	0.899999976158142,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0,
+				"g":	0.300000011920929,
+				"b":	0.800000011920929,
+				"a":	0
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.05999999865889549,
+					"y":	0.15000000596046448,
+					"z":	0.20000000298023224
+				},
+				"diffuse":	{
+					"x":	0.30000001192092896,
+					"y":	0.800000011920929,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.30000001192092896,
+					"y":	0.800000011920929,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.1125,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"Mesh_Torus",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-5,
+				"y":	0.5,
+				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/torus.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Cube",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	7,
+				"y":	0.5,
+				"z":	-14
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	30,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Cone",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0.5,
+				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cone.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Cylinder",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	3,
+				"y":	0.5,
+				"z":	-8
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cilinder.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Icosphere",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-7,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/icosphere.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Pyramid",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	5,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/piramid.fbx",
+			"enableLights":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	0,
+			"y":	5,
+			"z":	16
+		},
+		"rotation":	{
+			"x":	10.349997520446777,
+			"y":	-0.37499994039535522,
+			"z":	0
+		}
+	}
+}

@@ -1,31 +1,25 @@
 #version 330 core
 
 in vec2 TexCoords;
-
 out vec4 FragColor;
 
-uniform vec4 lineColor;
-uniform vec2 lineStart;
-uniform vec2 lineEnd;
-uniform float weight;
-
-float line(vec2 A, vec2 B, vec2 C, float thickness);
+uniform vec4  lineColor;
+uniform vec2  lineStart;    // normalized [0,1]: x=horizontal, y=vertical
+uniform vec2  lineEnd;
+uniform float weight;       // full thickness in pixels
+uniform vec2  resolution;   // render width, height
 
 void main()
 {
-    FragColor = mix(vec4(0, 0, 0, 0), lineColor, line(lineStart, lineEnd, TexCoords, weight));
-}
+    vec2 px = TexCoords * resolution;
+    vec2 A  = lineStart * resolution;
+    vec2 B  = lineEnd   * resolution;
 
-float line(vec2 A, vec2 B, vec2 C, float thickness)
-{
-    vec2 AB = B-A;
-    vec2 AC = C-A;
+    vec2 AB = B - A;
+    float t = clamp(dot(px - A, AB) / dot(AB, AB), 0.0, 1.0);
+    float dist = length(px - (A + t * AB));
 
-    float t = dot(AC, AB) / dot(AB, AB);
-    t = min(1.0f, max(0.0f, t));
-
-    vec2 Q = A + t * AB;
-
-    float dist = length(Q-C);
-    return smoothstep(0.0001f, -dist, -thickness) + smoothstep(-0.0002f, dist, thickness);
+    float halfW = weight * 0.5;
+    float alpha = lineColor.a * (1.0 - smoothstep(halfW - 0.5, halfW + 0.5, dist));
+    FragColor = vec4(lineColor.rgb, alpha);
 }

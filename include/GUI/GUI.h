@@ -89,8 +89,8 @@ namespace GUIType
         static constexpr int DRAG_FOV_MAX = 160.0f;
         static constexpr int DRAG_FRAMERATE_MIN = 1.0f;
         static constexpr int DRAG_FRAMERATE_MAX = 1024.0f;
-        static constexpr int DRAG_FAR_PLANE_MIN = 1.0f;
-        static constexpr int DRAG_FAR_PLANE_MAX = 1024.0f;
+        static constexpr float DRAG_FAR_PLANE_MIN = 1.0f;
+        static constexpr float DRAG_FAR_PLANE_MAX = 100000.0f;
         static constexpr int DRAG_UNIT_MIN = 0.f;
         static constexpr int DRAG_UNIT_MAX = 1.f;
         static constexpr float DRAG_VOLUME_MIN = 0.f;
@@ -376,6 +376,8 @@ namespace GUIType
     X(COLLIDER_EDIT, 0, 0) \
     X(ARROW_UP, 0, 0) \
     X(ARROW_DOWN, 0, 0) \
+    X(TOOLBAR_SHOW_AVATARS, 0, 0) \
+    X(SCENE_UNLOAD, 0, 0) \
 
 
 // IconObject is declared in GUITypes.h (no ImGui dependency)

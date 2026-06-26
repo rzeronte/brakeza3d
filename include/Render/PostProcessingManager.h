@@ -7,18 +7,16 @@
 #include <vector>
 
 #include "../OpenGL/Base/ShaderBaseCustom.h"
+#include "../OpenGL/ShaderOGLImage.h"
 
 class PostProcessingManager {
 private:
     std::vector<ShaderBaseCustom*> &postProcessingShaders;
 
-    // Ping framebuffer
-    GLuint pingFBO;
-    GLuint pingTexture;
-
-    // Pong framebuffer
-    GLuint pongFBO;
-    GLuint pongTexture;
+    // Per-shader framebuffers
+    std::vector<GLuint> shaderFBOs;
+    std::vector<GLuint> shaderTextures;
+    std::vector<GLuint> shaderDepthRBOs;
 
     // Quad fullscreen
     int currentWidth;
@@ -27,8 +25,8 @@ private:
     GLuint sceneDepthTexture = 0;
     GLuint sceneColorTexture = 0;
 
-    void createFramebuffer(GLuint& fbo, GLuint& texture, int width, int height);
-    void deleteFramebuffer(GLuint& fbo, GLuint& texture);
+    void createFramebuffer(GLuint& fbo, GLuint& texture, GLuint& rbo, int width, int height);
+    void deleteFramebuffer(GLuint& fbo, GLuint& texture, GLuint& rbo);
 
 public:
     PostProcessingManager();
@@ -38,10 +36,10 @@ public:
     void resize(int width, int height);
     void cleanup();
 
-    [[nodiscard]] GLuint getPingFBO() const { return pingFBO; }
-    [[nodiscard]] GLuint getPingTexture() const { return pingTexture; }
-    [[nodiscard]] GLuint getPongFBO() const { return pongFBO; }
-    [[nodiscard]] GLuint getPongTexture() const { return pongTexture;}
+    void rebuildFBOs();
+
+    [[nodiscard]] GLuint getShaderFBO(int index) const;
+    [[nodiscard]] GLuint getShaderTexture(int index) const;
 
     void processChain(GLuint inputTexture, GLuint outputFBO);
 

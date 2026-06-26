@@ -32,7 +32,7 @@ struct PointLightOpenGL {
     float constant;
     float linear;
     float quadratic;
-    float padding;
+    float radius;
 };
 
 struct SpotLightOpenGL {
@@ -46,9 +46,9 @@ struct SpotLightOpenGL {
     float quadratic;
     float cutOff;
     float outerCutOff;
+    float radius;
     float padding;
     float padding1;
-    float padding2;
 };
 
 struct OpenGLPickingBuffer {
@@ -106,7 +106,8 @@ enum class ShaderOpenGLCustomDataType {
     DELTA_TIME,
     EXECUTION_TIME,
     SCENE,
-    DEPTH
+    DEPTH,
+    GPOSITION
 };
 
 struct ShaderTypeInfo {

@@ -15,14 +15,16 @@ The most basic object in **Brakeza3D** is `Object3D`. Any element in the scene i
 
 ### Common properties
 
-| Property   | Type       | Description                                  |
-|------------|------------|----------------------------------------------|
-| `Name`     | `string`   | Name of object                               |
-| `Position` | `Vertex3D` | Position in the world                        |
-| `Rotation` | `M3`       | Object rotation                              |
-| `Scale`    | `float`    | Model scale factor                           |
-| `Enabled`  | `bool`     | Determines if the object is active or not    |
-| `Removed`  | `bool`     | Determines if the object is marked to remove |
+| Property     | Type       | Description                                                      |
+|--------------|------------|------------------------------------------------------------------|
+| `Name`       | `string`   | Name of object                                                   |
+| `Position`   | `Vertex3D` | Position in the world                                            |
+| `Rotation`   | `M3`       | Object rotation                                                  |
+| `Scale`      | `float`    | Model scale factor                                               |
+| `Enabled`    | `bool`     | Determines if the object is active or not                        |
+| `Removed`    | `bool`     | Determines if the object is marked to remove                     |
+| `Selectable` | `bool`     | Whether the object can be selected via mouse click               |
+| `Highlighted`| `bool`     | Whether the object renders a colored outline (set via `setHighlight`) |
 
 
 ## Interacting with an Object3D
@@ -54,23 +56,28 @@ We can interact with an Object3D using several methods:
 
 ### Setters
 
-| Method                            | Return | Description                          |
-|-----------------------------------|--------|--------------------------------------|
-| `setName(name: string)`           | void   | Sets a new object name               |
-| `setPosition(position: Vertex3D)` | void   | Sets a new position                  |
-| `setRotation(rotation: M3)`       | void   | Sets a new rotation                  |
-| `setScale(scale: float)`          | void   | Sets a new scale factor              |
-| `setAlpha(alpha: float)`          | void   | Sets a new opacity factor            |
-| `setEnable(enable: bool)`         | void   | Activates or deactivates the object  |
-| `setRemoved(removed: bool)`       | void   | Removes the object in the next frame |
+| Method                                      | Return | Description                                                  |
+|---------------------------------------------|--------|--------------------------------------------------------------|
+| `setName(name: string)`                     | void   | Sets a new object name                                       |
+| `setPosition(position: Vertex3D)`           | void   | Sets a new position                                          |
+| `setRotation(rotation: M3)`                 | void   | Sets a new rotation                                          |
+| `setScale(scale: float)`                    | void   | Sets a new scale factor                                      |
+| `setAlpha(alpha: float)`                    | void   | Sets a new opacity factor                                    |
+| `setEnable(enable: bool)`                   | void   | Activates or deactivates the object                          |
+| `setRemoved(removed: bool)`                 | void   | Removes the object in the next frame                         |
+| `setSelectable(selectable: bool)`           | void   | Enables or disables mouse selection for this object          |
+| `setHighlight(r, g, b, a: float)`           | void   | Draws a colored outline around the object (Mesh3D only)      |
+| `clearHighlight()`                          | void   | Removes the colored outline from the object                  |
 
 ---
 
 ### Actions
 
-| Method     | Parameters         | Description                               |
-|------------|--------------------|-------------------------------------------|
-| `LookAt()` | `target: Object3D` | Rotates the object to face another object |
+| Method         | Parameters         | Description                               |
+|----------------|--------------------|-------------------------------------------|
+| `LookAt()`     | `target: Object3D` | Rotates the object to face another object |
+| `isSelectable()` | —                | Returns whether the object can be selected via mouse |
+| `isHighlighted()` | —               | Returns whether the object has an active highlight outline |
 
 It is also possible to add new Object3D instances to the scene using code via ObjectFactory.
 

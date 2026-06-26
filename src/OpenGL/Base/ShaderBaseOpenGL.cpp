@@ -37,11 +37,8 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilen
     vertexFilename(vertexFilename),
     enableFeedback(enableFeedback)
 {
-    // Create the shaders
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    //GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
-    // Read the Vertex Shader code from the file
     std::string VertexShaderCode;
     std::ifstream VertexShaderStream(vertexFilename, std::ios::in);
     if (VertexShaderStream.is_open()){
@@ -51,90 +48,127 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilen
         VertexShaderStream.close();
     }
 
-    GLint Result = GL_FALSE;
-    int InfoLogLength;
-
-    // Compile Vertex Shader
-    LOG_MESSAGE("[OpenGL] Compiling vertex shader : %s", vertexFilename.c_str());
-    char const * VertexSourcePointer = VertexShaderCode.c_str();
-    glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
-    glCompileShader(VertexShaderID);
-
-    // Check Vertex Shader
-    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
-    glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if (InfoLogLength > 0) {
-        std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-        glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &VertexShaderErrorMessage[0]);
-        LOG_MESSAGE("[OpenGL] %s", &VertexShaderErrorMessage[0]);
+    if (VertexShaderCode.empty()) {
+        LOG_ERROR("[ShaderBaseOpenGL] Cannot read vertex shader file: %s", vertexFilename.c_str());
+        glDeleteShader(VertexShaderID);
+        return;
     }
-
-    // Link the program
-    LOG_MESSAGE("[OpenGL] Linking program...");
-    GLuint ProgramID = glCreateProgram();
-    glAttachShader(ProgramID, VertexShaderID);
-    //glAttachShader(ProgramID, FragmentShaderID);
-
-    if (enableFeedback) {
-        const char* feedbackVaryings[] = {"tf_Position"};  // Usamos un arreglo de cadenas (const char*)
-        glTransformFeedbackVaryings(ProgramID, 1, feedbackVaryings, GL_INTERLEAVED_ATTRIBS);
-    }
-
-    glLinkProgram(ProgramID);
-
-    // Check the program
-    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
-    glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if (InfoLogLength > 0) {
-        std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-        glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &ProgramErrorMessage[0]);
-        LOG_MESSAGE("[OpenGL] Check the program: %s", &ProgramErrorMessage[0]);
-    }
-
-    glDetachShader(ProgramID, VertexShaderID);
-
-    glDeleteShader(VertexShaderID);
-
-    programID = ProgramID;
-}
-
-void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
-{
-    // Create the shaders
-    GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
-    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
 
     GLint Result = GL_FALSE;
     int InfoLogLength;
 
     // Compile Vertex Shader
     LOG_MESSAGE("[OpenGL] Compiling vertex shader: %s", vertexFilename.c_str());
-    char const * VertexSourcePointer = sourceVS.c_str();
-    glShaderSource(VertexShaderID, 1, &VertexSourcePointer , nullptr);
+    const char* VertexSourcePointer = VertexShaderCode.c_str();
+    glShaderSource(VertexShaderID, 1, &VertexSourcePointer, nullptr);
     glCompileShader(VertexShaderID);
-
-    // Check Vertex Shader
     glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if (Result == GL_FALSE) {
+        std::vector<char> msg(InfoLogLength > 0 ? InfoLogLength + 1 : 1, '\0');
+        if (InfoLogLength > 0) glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &msg[0]);
+        LOG_ERROR("[OpenGL] VS compilation FAILED: %s\n%s", vertexFilename.c_str(), &msg[0]);
+        glDeleteShader(VertexShaderID);
+        return;
+    }
     if (InfoLogLength > 0) {
-        std::vector<char> VertexShaderErrorMessage(InfoLogLength+1);
-        glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &VertexShaderErrorMessage[0]);
-        LOG_MESSAGE("[OpenGL] ERROR: %s", &VertexShaderErrorMessage[0]);
+        std::vector<char> msg(InfoLogLength + 1);
+        glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &msg[0]);
+        LOG_MESSAGE("[OpenGL] VS warning: %s", &msg[0]);
+    }
+
+    // Link the program
+    LOG_MESSAGE("[OpenGL] Linking program...");
+    GLuint ProgramID = glCreateProgram();
+    glAttachShader(ProgramID, VertexShaderID);
+
+    if (enableFeedback) {
+        const char* feedbackVaryings[] = {"tf_Position", "tf_Normal"};
+        glTransformFeedbackVaryings(ProgramID, 2, feedbackVaryings, GL_SEPARATE_ATTRIBS);
+    }
+
+    glLinkProgram(ProgramID);
+    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
+    glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if (Result == GL_FALSE) {
+        std::vector<char> msg(InfoLogLength > 0 ? InfoLogLength + 1 : 1, '\0');
+        if (InfoLogLength > 0) glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &msg[0]);
+        LOG_ERROR("[OpenGL] Program linking FAILED: %s\n%s", vertexFilename.c_str(), &msg[0]);
+        glDeleteProgram(ProgramID);
+        glDeleteShader(VertexShaderID);
+        return;
+    }
+    if (InfoLogLength > 0) {
+        std::vector<char> msg(InfoLogLength + 1);
+        glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &msg[0]);
+        LOG_MESSAGE("[OpenGL] Linker warning: %s", &msg[0]);
+    }
+
+    glDetachShader(ProgramID, VertexShaderID);
+    glDeleteShader(VertexShaderID);
+
+    if (this->programID != 0) {
+        glDeleteProgram(this->programID);
+    }
+    programID = ProgramID;
+}
+
+void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
+{
+    if (sourceVS.empty()) {
+        LOG_ERROR("[ShaderBaseOpenGL] Empty vertex source for '%s'", vertexFilename.c_str());
+        return;
+    }
+    if (sourceFS.empty()) {
+        LOG_ERROR("[ShaderBaseOpenGL] Empty fragment source for '%s'", fragmentFilename.c_str());
+        return;
+    }
+
+    GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
+    GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
+    GLint Result = GL_FALSE;
+    int InfoLogLength;
+
+    // Compile Vertex Shader
+    LOG_MESSAGE("[OpenGL] Compiling vertex shader: %s", vertexFilename.c_str());
+    const char* VertexSourcePointer = sourceVS.c_str();
+    glShaderSource(VertexShaderID, 1, &VertexSourcePointer, nullptr);
+    glCompileShader(VertexShaderID);
+    glGetShaderiv(VertexShaderID, GL_COMPILE_STATUS, &Result);
+    glGetShaderiv(VertexShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if (Result == GL_FALSE) {
+        std::vector<char> msg(InfoLogLength > 0 ? InfoLogLength + 1 : 1, '\0');
+        if (InfoLogLength > 0) glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &msg[0]);
+        LOG_ERROR("[OpenGL] VS compilation FAILED: %s\n%s", vertexFilename.c_str(), &msg[0]);
+        glDeleteShader(VertexShaderID);
+        glDeleteShader(FragmentShaderID);
+        return;
+    }
+    if (InfoLogLength > 0) {
+        std::vector<char> msg(InfoLogLength + 1);
+        glGetShaderInfoLog(VertexShaderID, InfoLogLength, nullptr, &msg[0]);
+        LOG_MESSAGE("[OpenGL] VS warning: %s", &msg[0]);
     }
 
     // Compile Fragment Shader
     LOG_MESSAGE("[OpenGL] Compiling fragment shader: %s", fragmentFilename.c_str());
-    char const * FragmentSourcePointer = sourceFS.c_str();
-    glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , nullptr);
+    const char* FragmentSourcePointer = sourceFS.c_str();
+    glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, nullptr);
     glCompileShader(FragmentShaderID);
-
-    // Check Fragment Shader
     glGetShaderiv(FragmentShaderID, GL_COMPILE_STATUS, &Result);
     glGetShaderiv(FragmentShaderID, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    if (InfoLogLength > 0){
-        std::vector<char> FragmentShaderErrorMessage(InfoLogLength+1);
-        glGetShaderInfoLog(FragmentShaderID, InfoLogLength, nullptr, &FragmentShaderErrorMessage[0]);
-        LOG_MESSAGE("[OpenGL] %s", &FragmentShaderErrorMessage[0]);
+    if (Result == GL_FALSE) {
+        std::vector<char> msg(InfoLogLength > 0 ? InfoLogLength + 1 : 1, '\0');
+        if (InfoLogLength > 0) glGetShaderInfoLog(FragmentShaderID, InfoLogLength, nullptr, &msg[0]);
+        LOG_ERROR("[OpenGL] FS compilation FAILED: %s\n%s", fragmentFilename.c_str(), &msg[0]);
+        glDeleteShader(VertexShaderID);
+        glDeleteShader(FragmentShaderID);
+        return;
+    }
+    if (InfoLogLength > 0) {
+        std::vector<char> msg(InfoLogLength + 1);
+        glGetShaderInfoLog(FragmentShaderID, InfoLogLength, nullptr, &msg[0]);
+        LOG_MESSAGE("[OpenGL] FS warning: %s", &msg[0]);
     }
 
     // Link the program
@@ -149,24 +183,34 @@ void ShaderBaseOpenGL::CompileShaderToProgramID(bool enableFeedback)
     }
 
     glLinkProgram(ProgramID);
-
-    // Check the program
     glGetProgramiv(ProgramID, GL_LINK_STATUS, &Result);
     glGetProgramiv(ProgramID, GL_INFO_LOG_LENGTH, &InfoLogLength);
+    if (Result == GL_FALSE) {
+        std::vector<char> msg(InfoLogLength > 0 ? InfoLogLength + 1 : 1, '\0');
+        if (InfoLogLength > 0) glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &msg[0]);
+        LOG_ERROR("[OpenGL] Program linking FAILED: %s + %s\n%s", vertexFilename.c_str(), fragmentFilename.c_str(), &msg[0]);
+        glDeleteProgram(ProgramID);
+        glDeleteShader(VertexShaderID);
+        glDeleteShader(FragmentShaderID);
+        return;
+    }
     if (InfoLogLength > 0) {
-        std::vector<char> ProgramErrorMessage(InfoLogLength+1);
-        glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &ProgramErrorMessage[0]);
-        LOG_MESSAGE("[OpenGL] Check the program: %s", &ProgramErrorMessage[0]);
+        std::vector<char> msg(InfoLogLength + 1);
+        glGetProgramInfoLog(ProgramID, InfoLogLength, nullptr, &msg[0]);
+        LOG_MESSAGE("[OpenGL] Linker warning: %s", &msg[0]);
     }
 
     glDetachShader(ProgramID, VertexShaderID);
     glDetachShader(ProgramID, FragmentShaderID);
-
     glDeleteShader(VertexShaderID);
     glDeleteShader(FragmentShaderID);
 
+    if (this->programID != 0) {
+        glDeleteProgram(this->programID);
+    }
     this->programID = ProgramID;
     uniformLocationCache.clear();
+    LOG_MESSAGE("[OpenGL] Program compiled OK - programID=%d  (%s)", ProgramID, vertexFilename.c_str());
 }
 
 GLint ShaderBaseOpenGL::getUniformLocation(const std::string &name) const
@@ -176,11 +220,9 @@ GLint ShaderBaseOpenGL::getUniformLocation(const std::string &name) const
         return it->second;
     }
     GLint loc = glGetUniformLocation(programID, name.c_str());
-#ifdef DEBUG
     if (loc == -1) {
         LOG_ERROR("[ShaderBaseOpenGL] Uniform '%s' not found in shader program %d (%s)", name.c_str(), programID, vertexFilename.c_str());
     }
-#endif
     uniformLocationCache[name] = loc;
     return loc;
 }
@@ -299,7 +341,7 @@ void ShaderBaseOpenGL::setMat4Array(const std::string &name, std::vector<glm::ma
 {
     glUniformMatrix4fv(getUniformLocation(name), static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }
-void ShaderBaseOpenGL::setMat4ArrayUniform(GLuint uniform, std::vector<glm::mat4> &Transforms)
+void ShaderBaseOpenGL::setMat4ArrayUniform(GLuint uniform, const std::vector<glm::mat4> &Transforms)
 {
     glUniformMatrix4fv(uniform, static_cast<GLsizei>(Transforms.size()), GL_FALSE, glm::value_ptr(Transforms[0]));
 }

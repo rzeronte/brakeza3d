@@ -358,7 +358,6 @@ void ShadersGUI::LoadDialogShader(const std::string &file)
 
     if (!Brakeza::get()->GUI()->isEditableFileAlreadyOpen(uniqueId)) {
         auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
-        shader->PrepareSync();
         switch (type) {
             case SHADER_POSTPROCESSING: {
                 Brakeza::get()->GUI()->OpenEditableFile(

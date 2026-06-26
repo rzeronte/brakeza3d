@@ -11,7 +11,7 @@ void main()
 {
     vec2 UV = vec2(vertex.z, vertex.w);
     if (inverse > 0){
-        UV = vec2(vertex.z, -vertex.w);
+        UV = vec2(vertex.z, 1.0 - vertex.w);
     }
     TexCoords = UV;
     gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);

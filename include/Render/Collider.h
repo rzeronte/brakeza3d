@@ -96,6 +96,7 @@ public:
     void setScalingCollider(Vertex3D v);
     void moveCollider(Vertex3D v);
     void setSimpleShapeSize(const Vertex3D &simple_shape_size);
+    void setBody(btRigidBody* b) { body = b; }
     virtual void ResolveCollision(CollisionInfo o);
     virtual void Integrate();
     virtual void SetupGhostCollider(CollisionShape mode) = 0;

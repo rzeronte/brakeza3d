@@ -1,5 +1,7 @@
 
 #include "../../include/3D/LightPoint.h"
+#include <algorithm>
+#include <cmath>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/Misc/ToolsMaths.h"
@@ -56,6 +58,27 @@ void LightPoint::setLinear(float value)
 void LightPoint::setCuadratic(float value)
 {
     quadratic = value;
+}
+
+float LightPoint::getRadius() const
+{
+    float threshold = 1.0f / 256.0f;
+    float maxChannel = std::max({diffuse.r, diffuse.g, diffuse.b});
+    if (maxChannel < 0.001f) return 0.0f;
+
+    float cTerm = constant - maxChannel / threshold;
+
+    if (std::abs(quadratic) < 0.001f) {
+        if (std::abs(linear) < 0.001f) {
+            return (constant < maxChannel / threshold) ? 1000.0f : 0.0f;
+        }
+        return (maxChannel / threshold - constant) / linear;
+    }
+
+    float discriminant = linear * linear - 4.0f * quadratic * cTerm;
+    if (discriminant < 0.0f) return 1000.0f;
+
+    return (-linear + std::sqrt(discriminant)) / (2.0f * quadratic);
 }
 
 ObjectType LightPoint::getTypeObject() const

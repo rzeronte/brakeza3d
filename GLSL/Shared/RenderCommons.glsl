@@ -2,7 +2,8 @@
 // renderCommons.glsl - Código común de rendering
 // ============================================================
 
-#define NR_POINT_LIGHTS 64
+#define NR_POINT_LIGHTS 1024
+#define NR_SPOT_LIGHTS 1024
 
 // ============================================================
 // ESTRUCTURAS
@@ -29,7 +30,7 @@ struct PointLight {
     float constant;
     float linear;
     float quadratic;
-    float padding;
+    float radius;
 };
 
 struct SpotLight {
@@ -43,6 +44,7 @@ struct SpotLight {
     float quadratic;
     float cutOff;
     float outerCutOff;
+    float radius;
 };
 
 // ============================================================
@@ -74,11 +76,11 @@ layout (std140) uniform PointLightsBlock {
 };
 
 layout (std140) uniform SpotLightsBlock {
-    SpotLight spotLights[NR_POINT_LIGHTS];
+    SpotLight spotLights[NR_SPOT_LIGHTS];
 };
 
 layout (std140) uniform SpotLightsShadowMapDepthTexturesBlock {
-    mat4 spotLightsMatrix[NR_POINT_LIGHTS];
+    mat4 spotLightsMatrix[NR_SPOT_LIGHTS];
 };
 
 // ============================================================

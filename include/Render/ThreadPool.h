@@ -31,6 +31,9 @@ private:
     size_t maxCallbacksPerFrame;
     size_t maxConcurrentTasks;
     size_t maxEnqueuedTasks;
+    size_t maxEnqueuedCallbacks;
+
+    void spawnWorkers(size_t n);
 
 public:
     explicit ThreadPool(size_t numThreads);
@@ -51,10 +54,12 @@ public:
     void setMaxCallbacksPerFrame(size_t max)    { maxCallbacksPerFrame = max; }
     void setMaxConcurrentTasks(size_t max)      { maxConcurrentTasks = max; }
     void setMaxEnqueuedTasks(size_t max)        { maxEnqueuedTasks = max; }
+    void setMaxEnqueuedCallbacks(size_t max)    { maxEnqueuedCallbacks = max; }
 
     size_t getMaxCallbacksPerFrame() const  { return maxCallbacksPerFrame; }
     size_t getMaxConcurrentTasks() const    { return maxConcurrentTasks; }
     size_t getMaxEnqueuedTasks() const      { return maxEnqueuedTasks; }
+    size_t getMaxEnqueuedCallbacks() const  { return maxEnqueuedCallbacks; }
 
     // Información
     size_t getPendingTasks() const;
@@ -64,6 +69,11 @@ public:
 
     // Esperar a que termine todo
     void waitAll();
+
+    // Redimensionar el pool (espera tareas activas, reinicia workers)
+    void resize(size_t newNumThreads);
+
+    size_t getNumThreads() const { return workers.size(); }
 };
 
 #endif //BRAKEZA3D_THREADPOOL_H

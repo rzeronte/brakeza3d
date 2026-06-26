@@ -22,12 +22,6 @@ public:
             ImGui::DragScalar("Outer Cut Off", ImGuiDataType_Float, &o->outerCutOff, range_sensibility, &range_min, &range_max, "%f", 1.0f);
             ImGui::Separator();
             ImGui::Checkbox("Show Debug Cone", &o->showDebugCone);
-
-            if (o->showDebugCone) {
-                ImGui::Text("Blend Debug Mode Settings");
-
-                Object3DGUI::SelectorOGLBlendMode(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
-            }
         }
     }
 };

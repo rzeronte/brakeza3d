@@ -138,7 +138,7 @@ glm::mat4 Camera3D::getGLMMat4ProjectionMatrix()
 
     float verticalFOV = glm::degrees(2.0f * atan(tan(glm::radians(horizontalFOV) / 2.0f) / aspectRatio));
 
-    return glm::perspective(glm::radians(verticalFOV), aspectRatio, 0.1f, Config::get()->FRUSTUM_FARPLANE_DISTANCE);
+    return glm::perspective(glm::radians(verticalFOV), aspectRatio, Config::get()->FRUSTUM_NEARPLANE_DISTANCE, Config::get()->FRUSTUM_FARPLANE_DISTANCE);
 }
 
 M3 Camera3D::getM3ViewMatrix()

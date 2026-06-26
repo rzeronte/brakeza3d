@@ -27,11 +27,14 @@ M3 ToolsJSON::getRotationByJSON(cJSON *rotationJSON)
 
 Color ToolsJSON::getColorByJSON(cJSON *color)
 {
-    return Color(
-        cJSON_GetObjectItemCaseSensitive(color, "r")->valueint,
-        cJSON_GetObjectItemCaseSensitive(color, "g")->valueint,
-        cJSON_GetObjectItemCaseSensitive(color, "b")->valueint
-    );
+    float r = static_cast<float>(cJSON_GetObjectItemCaseSensitive(color, "r")->valuedouble);
+    float g = static_cast<float>(cJSON_GetObjectItemCaseSensitive(color, "g")->valuedouble);
+    float b = static_cast<float>(cJSON_GetObjectItemCaseSensitive(color, "b")->valuedouble);
+
+    cJSON *aItem = cJSON_GetObjectItemCaseSensitive(color, "a");
+    float a = aItem ? static_cast<float>(aItem->valuedouble) : 1.0f;
+
+    return Color(r, g, b, a);
 }
 
 cJSON * ToolsJSON::ColorToJSON(const Color &color)
@@ -40,6 +43,7 @@ cJSON * ToolsJSON::ColorToJSON(const Color &color)
     cJSON_AddNumberToObject(json, "r", color.r);
     cJSON_AddNumberToObject(json, "g", color.g);
     cJSON_AddNumberToObject(json, "b", color.b);
+    cJSON_AddNumberToObject(json, "a", color.a);
 
     return json;
 }

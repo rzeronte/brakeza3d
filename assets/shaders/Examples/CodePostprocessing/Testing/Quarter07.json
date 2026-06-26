@@ -1,0 +1,11 @@
+{
+    "name":    "QuarterWhite",
+    "typesFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter07.json",
+    "vsFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter07.vs",
+    "fsFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter07.fs",
+    "type":    "Postprocessing",
+    "types":    [{
+            "name":    "sceneTexture",
+            "type":    "scene"
+        }]
+}

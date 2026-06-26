@@ -16,5 +16,6 @@ std::map<std::string, ShaderTypeInfo> GLSLTypeMapping = {
     {"delta_time", {ShaderOpenGLCustomDataType::DELTA_TIME, "Delta time (internal)" }},
     {"execution_time", {ShaderOpenGLCustomDataType::EXECUTION_TIME, "Execution time (internal)" }},
     {"scene", {ShaderOpenGLCustomDataType::SCENE, "Scene texture (internal)" }},
-    {"depth", {ShaderOpenGLCustomDataType::DEPTH, "Depth texture (internal)" }}
+    {"depth", {ShaderOpenGLCustomDataType::DEPTH, "Depth texture (internal)" }},
+    {"gposition", {ShaderOpenGLCustomDataType::GPOSITION, "G-Buffer world positions (internal)" }}
 };

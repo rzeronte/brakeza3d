@@ -1,0 +1,11 @@
+{
+    "name":    "QuarterMagenta",
+    "typesFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter06.json",
+    "vsFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter06.vs",
+    "fsFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter06.fs",
+    "type":    "Postprocessing",
+    "types":    [{
+            "name":    "sceneTexture",
+            "type":    "scene"
+        }]
+}

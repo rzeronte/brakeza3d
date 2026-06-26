@@ -81,6 +81,12 @@ void Image3D::onUpdate()
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();
 
+    if (getRenderSettings().culling) {
+        glEnable(GL_CULL_FACE);
+    } else {
+        glDisable(GL_CULL_FACE);
+    }
+
     if (isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutlineImage3D(
             this,
@@ -90,7 +96,11 @@ void Image3D::onUpdate()
         );
     }
 
-    GLuint fbo =  Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : window->getSceneFramebuffer();
+    if (render->getLastRightClickedObject() == this && !isGUISelected()) {
+        render->getShaders()->shaderOGLOutline->drawOutlineImage3D(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+    }
+
+    GLuint fbo = Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : window->getSceneFramebuffer();
 
     if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
         if (!isTransparent()) {
@@ -226,7 +236,6 @@ void Image3D::ShadowMappingPass()
     auto shaderShadowPass = render->getShaders()->shaderShadowPass;
     auto shaderRender = render->getShaders()->shaderOGLRender;
 
-    // Directional Light
     shaderShadowPass->renderIntoDirectionalLightTexture(
         this,
         shaderRender->getDirectionalLight(),
@@ -237,20 +246,18 @@ void Image3D::ShadowMappingPass()
         shaderShadowPass->getDirectionalLightDepthMapFBO()
     );
 
-    // SpotLights
     const auto shadowSpotLights = shaderRender->getShadowMappingSpotLights();
     const auto numSpotLights = static_cast<int>(shadowSpotLights.size());
 
     for (int i = 0; i < numSpotLights; i++) {
-        const auto l = shadowSpotLights[i];
         shaderShadowPass->renderIntoArrayDepthTextures(
             this,
-            l,
+            shadowSpotLights[i],
             vertexBuffer,
             uvBuffer,
             normalBuffer,
             static_cast<int>(vertices.size()),
-            shaderShadowPass->getSpotLightsDepthMapsFBO(),
+            shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
             i,
             shaderShadowPass->getSpotLightsDepthMapsFBO()
         );

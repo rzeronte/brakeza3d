@@ -38,7 +38,12 @@ public:
     void LoadPathFindingBlocksFromGrid();
     void setTravel(int x1, int y1, int z1, int x2, int y2, int z2);
     std::vector<CubeGrid3D> MakeTravelCubesGrid();
+    std::vector<CubeGrid3D> computePath(int gx1, int gz1, int gx2, int gz2);
+    void fillGrid3DFromImage(const std::string& imagePath, int threshold = 128);
+    void drawDebug(Color color = Color::green());
     CubeGrid3D *getCubeFromPosition(int x, int y, int z);
+    bool isCellWalkable(int x, int z) const;
+    std::tuple<int,int> snapToWalkable(int gx, int gz, int maxRadius) const;
     Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex);
     PathFinding getPathFinding();
     cJSON *getJSON();

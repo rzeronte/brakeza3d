@@ -541,7 +541,7 @@ void ShaderNodeEditorManager::RenderEffect(GLuint fb)
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    glUseProgram(0);
+    Components::get()->Render()->ChangeOpenGLProgram(0);
 }
 
 GLuint ShaderNodeEditorManager::GetShaderProgram() const
@@ -1122,7 +1122,7 @@ void ShaderNodeEditorManager::RenderMesh(
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    glUseProgram(0);
+    Components::get()->Render()->ChangeOpenGLProgram(0);
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 

@@ -35,9 +35,22 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
 
     cJSON_AddItemToObject(root, "colorFrom", ToolsJSON::ColorToJSON(light->getColorFrom()));
     cJSON_AddItemToObject(root, "colorTo", ToolsJSON::ColorToJSON(light->getColorTo()));
+    cJSON_AddBoolToObject(root, "gpuMode", light->isGPUMode());
 
     if (light->getTexture() != nullptr) {
         cJSON_AddStringToObject(root, "texture", light->getTexture()->getFileName().c_str());
+    }
+
+    if (light->getAttachedLight() != nullptr) {
+        auto *lp = light->getAttachedLight();
+        cJSON *attachedLightJson = cJSON_CreateObject();
+        cJSON_AddItemToObject(attachedLightJson, "ambient", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(lp->ambient)));
+        cJSON_AddItemToObject(attachedLightJson, "diffuse", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(lp->diffuse)));
+        cJSON_AddItemToObject(attachedLightJson, "specular", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(lp->specular)));
+        cJSON_AddNumberToObject(attachedLightJson, "constant", lp->constant);
+        cJSON_AddNumberToObject(attachedLightJson, "linear", lp->linear);
+        cJSON_AddNumberToObject(attachedLightJson, "quadratic", lp->quadratic);
+        cJSON_AddItemToObject(root, "attachedLight", attachedLightJson);
     }
 
     return root;
@@ -69,6 +82,10 @@ Object3D * ParticleEmmitterSerializer::ObjectByJson(cJSON *json)
     );
 
     ApplyJsonToObject(json, o);
+
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+        std::make_shared<ThreadJobLoadParticleEmitter>(o, json)
+    );
 
     return o;
 }
@@ -103,6 +120,33 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
     if (cJSON_GetObjectItemCaseSensitive(json, "texture")) {
         emitter->setTexture(new Image(cJSON_GetObjectItemCaseSensitive(json, "texture")->valuestring));
+    }
+
+    auto gpuModeItem = cJSON_GetObjectItemCaseSensitive(json, "gpuMode");
+    if (gpuModeItem && cJSON_IsBool(gpuModeItem)) {
+        emitter->setGPUMode(cJSON_IsTrue(gpuModeItem));
+    }
+
+    auto attachedLightJson = cJSON_GetObjectItemCaseSensitive(json, "attachedLight");
+    if (attachedLightJson) {
+        Vertex3D ambient = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(attachedLightJson, "ambient"));
+        Vertex3D diffuse = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(attachedLightJson, "diffuse"));
+        Vertex3D specular = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(attachedLightJson, "specular"));
+
+        float constant = static_cast<float>(cJSON_GetObjectItemCaseSensitive(attachedLightJson, "constant")->valuedouble);
+        float linear = static_cast<float>(cJSON_GetObjectItemCaseSensitive(attachedLightJson, "linear")->valuedouble);
+        float quadratic = static_cast<float>(cJSON_GetObjectItemCaseSensitive(attachedLightJson, "quadratic")->valuedouble);
+
+        auto *light = new LightPoint(
+            glm::vec4(ambient.toGLM(), 0),
+            glm::vec4(diffuse.toGLM(), 0),
+            glm::vec4(specular.toGLM(), 0),
+            constant, linear, quadratic
+        );
+        light->setName(emitter->getName() + "_light");
+        light->setPosition(emitter->getPosition());
+        emitter->AttachObject(light);
+        emitter->setAttachedLight(light);
     }
 }
 

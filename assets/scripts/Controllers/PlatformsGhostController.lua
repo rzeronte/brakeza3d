@@ -509,7 +509,6 @@ local function debugDraw()
     -- Flecha de velocidad
     local velScale = 0.1
     local velEnd = pos + Vertex3D.new(velocity.x * velScale, velocity.y * velScale, 0)
-    render:DrawLine(pos, velEnd, cyan)
 
     -- Rays de suelo
     local groundColor = isGrounded and green or red

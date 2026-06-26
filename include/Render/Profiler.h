@@ -1,7 +1,3 @@
-//
-// Created by Eduardo on 29/11/2025.
-//
-
 #ifndef BRAKEZA3D_PROFILER_H
 #define BRAKEZA3D_PROFILER_H
 #include <unordered_map>
@@ -16,9 +12,8 @@ struct Measure {
     double startTime = 0.0f;
     double endTime = 0.0f;
     double diffTime = 0.0f;
-
-    std::vector<float> frameTimeHistory;  // Historial de tiempos
-    const int MAX_HISTORY = 120;  // 2 segundos a 60fps
+    std::vector<float> frameTimeHistory;
+    const int MAX_HISTORY = 120;
 };
 
 namespace ProfilerConstants {
@@ -34,47 +29,57 @@ class Profiler
     static Profiler *instance;
 
     MeasuresMap componentMeasures;
+    MeasuresMap scriptMeasures;
 
-    std::vector<Image *> images;
-    int memoryImageUsage = 0;
-
-    int numberOfGUIImages = 0;
-    int memoryOfGUIImages = 0;
     bool enable = false;
+    bool scriptDetailEnabled = false;
 
     Measure measureFrameTime;
+
+    int fboChanges = 0;
+    int programChanges = 0;
+    bool countFboSwitches     = false;
+    bool countProgramSwitches = false;
 
 public:
     Profiler() = default;
 
-    float getMemoryImageUsageKB() const;
-    void AddImage(Image *image);
-    void RemoveImage(const Image *image);
     void DrawComponentsTable(float cellHeight);
     void DrawImagesTable() const;
     void DrawPlotComponent(Component *c, float height);
     void DrawPlotFrameTime(Measure &measure);
-    void CaptureGUIMemoryUsage();
     void DrawPools();
     void DrawWinProfiler();
+    void DrawCachesTable() const;
     void ResetTotalFrameTime();
     void EndTotalFrameTime();
     void setEnabled(bool v);
     void DrawFlameGraph();
+    void DrawRenderDetail();
+    void DrawScriptDetail();
     void UpdateHistory(Measure &measure);
     void DrawComponentsHierarchy();
+    void DrawPostProcessingChain();
+    void DrawFrameBuffers();
+    void DrawOpenGLStatus();
     [[nodiscard]] bool isEnabled() const;
+    [[nodiscard]] bool isScriptDetailEnabled() const;
+    void setScriptDetailEnabled(bool v);
+    void incrementFboChanges();
+    void incrementProgramChanges();
     [[nodiscard]] MeasuresMap& getComponentMeasures();
+    [[nodiscard]] MeasuresMap& getScriptMeasures();
     [[nodiscard]] int getNumberOfImages() const;
     [[nodiscard]] int getMemoryImageUsage() const;
+    [[nodiscard]] float getMemoryImageUsageKB() const;
     static void DrawPool(const std::string &label, ThreadPool &pool);
     static void InitMeasure(MeasuresMap &map, const std::string & label);
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);
     static void DrawBreakDownComponent(Measure &pre, Measure &update, Measure &post, double total, float height);
     static double Ticks();
+    static float AverageHistory(const Measure &m);
     static Profiler *get();
 };
 
-
-#endif //BRAKEZA3D_PROFILER_H
+#endif

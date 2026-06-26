@@ -43,7 +43,7 @@ void GUIManager::OnStart()
         config->GUI_ICON_SHEET_H
     );
     IconsGUI::ImportIconsFromJSON(config->CONFIG_FOLDER + config->ICONS_CONFIG);
-    Profiler::get()->CaptureGUIMemoryUsage();
+    Profiler::get()->setEnabled(true);
 
     widgetConsole->setLua(&Components::get()->Scripting()->getLua());
 

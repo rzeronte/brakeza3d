@@ -33,6 +33,18 @@ img:setScreenPosition(300, 300)                     -- change screen position
 img:setSize(0.5, 0.5)                               -- half screen size
 ```
 
+### Draw order
+
+By default, Image2D objects are drawn during the scripting phase. Enable `drawInBackground` to draw
+the image **before** any global scripts run — useful when you need a backdrop behind script-drawn elements
+(e.g. a minimap background behind unit dots drawn by a global script).
+
+```lua
+img:setDrawInBackground(true)   -- draw before global scripts (ComponentWindow phase)
+img:setDrawInBackground(false)  -- draw during normal scripting phase (default)
+local isBg = img:isDrawInBackground()
+```
+
 ### Video playback on Image2D
 
 An Image2D can play a video file (MP4, AVI, etc.) as an overlay using the non-blocking mode.

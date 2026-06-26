@@ -5,6 +5,9 @@
 #include "../../include/Serializers/Mesh3DSerializer.h"
 #include "../../include/Components/Components.h"
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
+#include "../../include/OpenGL/Code/ShaderBaseCustomOGLCode.h"
+#include "../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
+#include "../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../include/Brakeza.h"
 #include "../../include/GUI/Objects/ShadersGUI.h"
 #include "../../include/Threads/ThreadJobLoadMesh3D.h"
@@ -21,6 +24,8 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
 
     cJSON_AddStringToObject(root, "model", mesh->sourceFile.c_str());
     cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());
+    cJSON_AddBoolToObject(root, "renderDefaultPipeline", mesh->isRenderPipelineDefault());
+    cJSON_AddBoolToObject(root, "frustumCullSubmeshes", mesh->isFrustumCullSubmeshes());
 
     // Shaders
     cJSON *effectsArrayJSON = cJSON_CreateArray();
@@ -51,6 +56,10 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
     Object3DSerializer().ApplyJsonToObject(json, o);
     mesh->setEnableLights(cJSON_GetObjectItemCaseSensitive(json, "enableLights")->valueint);
+    auto *renderDefaultItem = cJSON_GetObjectItemCaseSensitive(json, "renderDefaultPipeline");
+    if (renderDefaultItem) mesh->setRenderPipelineDefault(renderDefaultItem->valueint);
+    auto *frustumCullItem = cJSON_GetObjectItemCaseSensitive(json, "frustumCullSubmeshes");
+    if (frustumCullItem) mesh->setFrustumCullSubmeshes(frustumCullItem->valueint);
 }
 
 Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
@@ -130,17 +139,36 @@ void Mesh3DSerializer::ApplyCollider(Mesh3D *m, cJSON* json)
     }
 }
 
-void Mesh3DSerializer::ApplyShadersCreation(Mesh3D *mesh, cJSON* json)
+void Mesh3DSerializer::ApplyShadersFileRead(Mesh3D *mesh, cJSON* json)
 {
     if (cJSON_GetObjectItemCaseSensitive(json, "shaders") != nullptr) {
-        auto shaderTypesMapping = Components::get()->Render()->getShaderTypesMapping();
         cJSON *currentShaderJSON;
         cJSON_ArrayForEach(currentShaderJSON, cJSON_GetObjectItemCaseSensitive(json, "shaders")) {
             auto typesFile = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "typesFile")->valuestring;
             auto metaInfo = ShadersGUI::ExtractShaderCustomCodeMetainfo(typesFile);
 
-            auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, mesh);
+            ShaderBaseCustom* shader = nullptr;
+
+            if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_OBJECT) {
+                auto s = new ShaderOGLCustomCodeMesh3D(mesh, metaInfo.name, metaInfo.typesFile, metaInfo.vsFile, metaInfo.fsFile);
+                s->PrepareBackground();
+                shader = s;
+            } else if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_NODE_OBJECT) {
+                auto manager = new ShaderNodeEditorManager(SHADER_NODE_OBJECT);
+                manager->LoadFromFile(metaInfo.typesFile.c_str());
+                shader = new ShaderNodesMesh3D(metaInfo.name, metaInfo.typesFile, SHADER_NODE_OBJECT, manager, mesh);
+            } else {
+                LOG_ERROR("[Mesh3D] Unsupported shader type for Mesh3D: %s", metaInfo.type.c_str());
+                continue;
+            }
+
             if (shader != nullptr) {
+                auto typesArray = cJSON_GetObjectItemCaseSensitive(currentShaderJSON, "types");
+                if (typesArray) {
+                    if (auto* codeShader = dynamic_cast<ShaderBaseCustomOGLCode*>(shader)) {
+                        codeShader->overrideDataTypesFromJSON(typesArray);
+                    }
+                }
                 mesh->AddCustomShader(shader);
             } else {
                 LOG_ERROR("[Mesh3D] Cannot load shader %s...", typesFile);

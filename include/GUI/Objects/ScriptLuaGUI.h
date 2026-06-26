@@ -2,8 +2,8 @@
 // Created by Eduardo on 24/11/2025.
 //
 
-#ifndef BRAKEZA3D_IMAGE3DDRAWERGUI_H
-#define BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#ifndef BRAKEZA3D_SCRIPTLUAGUI_H
+#define BRAKEZA3D_SCRIPTLUAGUI_H
 
 #include "../../3D/Object3D.h"
 #include "../Editable/EditableOpenScriptFile.h"
@@ -23,7 +23,7 @@ public:
     static void DrawScriptConfigVarCreator(EditableOpenScriptFile &file);
     static void DrawScriptConfigVarsTable(EditableOpenScriptFile &file);
     static void DrawScriptConfigActionButtons(EditableOpenScriptFile &file);
-    static void DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon);
+    static void DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon, ScriptLUA* script = nullptr);
     static void DrawWinObjectVars(GUIManager *gui);
     static void DrawWinGlobalVars(GUIManager *gui);
     static void DrawWinObjectScripts();
@@ -31,4 +31,4 @@ public:
     static ScriptMetaInfo ExtractScriptMetainfo(const std::string &pathFile);
 };
 
-#endif //BRAKEZA3D_IMAGE3DDRAWERGUI_H
+#endif //BRAKEZA3D_SCRIPTLUAGUI_H

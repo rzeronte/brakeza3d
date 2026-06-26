@@ -96,7 +96,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
 
     ReadNodesFromRoot(meshes);
 
-    Components::get()->Render()->FillOGLBuffers(meshes);
+    Components::get()->Render()->FillOGLBuffers(meshes, true);
 
     FillAnimationBoneDataOGLBuffers(meshes);
 

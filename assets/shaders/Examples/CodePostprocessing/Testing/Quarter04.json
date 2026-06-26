@@ -1,0 +1,11 @@
+{
+    "name":    "QuarterYellow",
+    "typesFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter04.json",
+    "vsFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter04.vs",
+    "fsFile":    "../assets/shaders/Examples/CodePostprocessing/Testing/Quarter04.fs",
+    "type":    "Postprocessing",
+    "types":    [{
+            "name":    "sceneTexture",
+            "type":    "scene"
+        }]
+}

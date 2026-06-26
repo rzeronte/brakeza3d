@@ -2,6 +2,7 @@
 // Created by eduardo on 10/10/23.
 //
 
+#include <filesystem>
 #include "../../include/Loaders/SceneLoader.h"
 #include "../../include/Config.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
@@ -25,8 +26,8 @@
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../include/Serializers/SwarmSerializer.h"
-#include "../../include/Threads/ThreadJobCleanScene.h"
-#include "../../include/Threads/ThreadJobClearScene.h"
+#include "../../include/Threads/ThreadJobCleanWorld.h"
+#include "../../include/Threads/ThreadJobClearWorld.h"
 #include "../../include/Threads/ThreadJobReadFileScene.h"
 #include "../../include/Render/EngineObserver.h"
 
@@ -38,44 +39,54 @@ SceneLoader::SceneLoader()
     InitSerializers();
 }
 
-void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
+void SceneLoader::LoadADSSettings(const cJSON *contentJSON)
 {
-    auto camera = Components::get()->Camera()->getCamera();
     auto shaderRender = Components::get()->Render()->getShaders()->shaderOGLRender;
 
-    // ADS ILLUMINATION
     cJSON *adsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "ads");
-    if (adsJSON != nullptr) {
-        auto direction = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
-        auto ambient = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
-        auto diffuse = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
-        auto specular = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
+    if (adsJSON == nullptr) return;
 
-        shaderRender->getDirectionalLight().direction = direction.toGLM();
-        shaderRender->getDirectionalLight().ambient = ambient.toGLM();
-        shaderRender->getDirectionalLight().diffuse = diffuse.toGLM();
-        shaderRender->getDirectionalLight().specular = specular.toGLM();
-    }
+    auto direction = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "direction"));
+    auto ambient   = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "ambient"));
+    auto diffuse   = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "diffuse"));
+    auto specular  = ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(adsJSON, "specular"));
 
-    // CAMERA POSITION/ROTATION
+    shaderRender->getDirectionalLight().direction = direction.toGLM();
+    shaderRender->getDirectionalLight().ambient   = ambient.toGLM();
+    shaderRender->getDirectionalLight().diffuse   = diffuse.toGLM();
+    shaderRender->getDirectionalLight().specular  = specular.toGLM();
+}
+
+void SceneLoader::LoadCameraSettings(const cJSON *contentJSON)
+{
+    auto camera = Components::get()->Camera()->getCamera();
+
     cJSON *cameraJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "camera");
+    if (cameraJSON == nullptr) return;
+
     auto cameraPositionJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "position");
     auto cameraRotationJSON = cJSON_GetObjectItemCaseSensitive(cameraJSON, "rotation");
 
     auto cameraPosition = ToolsJSON::getVertex3DByJSON(cameraPositionJSON);
     camera->setPosition(cameraPosition);
-    LOG_MESSAGE("[SceneLoader] Camera position set to (%f, %f, %f)", cameraPosition.x, cameraPosition.y, cameraPosition.z );
+    LOG_MESSAGE("[SceneLoader] Camera position set to (%f, %f, %f)", cameraPosition.x, cameraPosition.y, cameraPosition.z);
 
     auto pitch = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "x")->valuedouble);
-    auto yaw = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble);
-    auto roll = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble);
+    auto yaw   = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "y")->valuedouble);
+    auto roll  = static_cast<float>(cJSON_GetObjectItemCaseSensitive(cameraRotationJSON, "z")->valuedouble);
 
     camera->getPitch() = pitch;
-    camera->getYaw() = yaw;
-    camera->getRoll() = roll;
+    camera->getYaw()   = yaw;
+    camera->getRoll()  = roll;
     camera->setRotation(M3::getMatrixRotationForEulerAngles(pitch, yaw, roll));
 
     LOG_MESSAGE("[SceneLoader] Camera rotation set to (%f, %f, %f)", camera->getPitch(), camera->getYaw(), camera->getRoll());
+}
+
+void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
+{
+    LoadADSSettings(contentJSON);
+    LoadCameraSettings(contentJSON);
 }
 
 void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
@@ -86,11 +97,87 @@ void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
     }
 
     LOG_MESSAGE("[SceneLoader] Loading scene: '%s'", filename.c_str());
-    EngineObserver::setScene(filename.str());
+    if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setScene(filename.str());
 
     isLoading = true;
-    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadFileScene>(filename));
+    auto *scene = new Scene(filename.str());
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+        std::make_shared<ThreadJobReadFileScene>(filename, scene)
+    );
     FileSystemGUI::autoExpandScene = true;
+}
+
+void SceneLoader::LoadSceneAdditive(
+    const FilePath::SceneFile& filename,
+    bool loadScripts,
+    bool loadShaders,
+    bool loadCamera,
+    bool loadRenderSettings
+)
+{
+    if (isLoading) {
+        LOG_ERROR("[SceneLoader] Cannot load while another operation is working... Ignoring: '%s'", filename.c_str());
+        return;
+    }
+
+    LOG_MESSAGE("[SceneLoader] Additive scene load: '%s'", filename.c_str());
+    isLoading = true;
+    auto *scene = new Scene(filename.str());
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+        std::make_shared<ThreadJobReadFileScene>(filename, scene, true, loadScripts, loadShaders, loadCamera, loadRenderSettings)
+    );
+}
+
+void SceneLoader::setSceneActive(const std::string& name, bool active)
+{
+    auto *scene = Components::get()->Scripting()->getSceneByName(name);
+    if (scene == nullptr) {
+        LOG_ERROR("[SceneLoader] setSceneActive: scene '%s' not found", name.c_str());
+        return;
+    }
+    scene->setActive(active);
+}
+
+void SceneLoader::ReloadScene(const std::string& name)
+{
+    auto *scene = Components::get()->Scripting()->getSceneByName(name);
+    if (scene == nullptr) {
+        LOG_ERROR("[SceneLoader] ReloadScene: scene '%s' not found", name.c_str());
+        return;
+    }
+    auto path = scene->getFilePath();
+    UnloadScene(name);
+    LoadSceneAdditive(FilePath::SceneFile(path), true, true, true, true);
+}
+
+void SceneLoader::UnloadScene(const std::string& name)
+{
+    auto *scripting = Components::get()->Scripting();
+    auto *render    = Components::get()->Render();
+
+    auto *scene = scripting->getSceneByName(name);
+    if (scene == nullptr) {
+        LOG_ERROR("[SceneLoader] UnloadScene: scene '%s' not found", name.c_str());
+        return;
+    }
+
+    for (auto *obj : scene->getObjects())
+        obj->setRemoved(true);
+
+    auto scriptsCopy = scripting->getSceneScripts();
+    for (auto *script : scriptsCopy) {
+        if (script->getScene() == scene)
+            scripting->RemoveSceneScript(script);
+    }
+
+    auto shadersCopy = render->getSceneShaders();
+    for (auto *shader : shadersCopy) {
+        if (shader->getScene() == scene)
+            render->RemoveSceneShader(shader);
+    }
+
+    scripting->removeScene(name);
+    LOG_MESSAGE("[SceneLoader] UnloadScene: '%s' unloaded", name.c_str());
 }
 
 void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
@@ -99,7 +186,8 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
 
     auto render = Components::get()->Render()->getShaders()->shaderOGLRender;
 
-    auto screenshotPath = std::string(Config::get()->SCREENSHOTS_FOLDER + Brakeza::UniqueObjectLabel("scene") + ".png");
+    auto sceneBaseName = std::filesystem::path(filename.str()).stem().string();
+    auto screenshotPath = std::string(Config::get()->SCREENSHOTS_FOLDER + sceneBaseName + ".png");
     ComponentRender::MakeScreenShot(screenshotPath);
     cJSON_AddStringToObject(root, "screenshot", screenshotPath.c_str());
 
@@ -125,6 +213,7 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
     cJSON *shadersArrayJSON = cJSON_CreateArray();
     for (auto &shader : Components::get()->Render()->getSceneShaders()) {
         auto shaderJson = shader->getTypesJSON();
+        cJSON_AddBoolToObject(shaderJson, "enabled", shader->isEnabled());
         cJSON_AddItemToArray(shadersArrayJSON, shaderJson);
     }
     cJSON_AddItemToObject(root, "shaders", shadersArrayJSON);
@@ -147,22 +236,22 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
     Tools::WriteToFile(filename, cJSON_Print(root));
 }
 
-void SceneLoader::ClearScene()
+void SceneLoader::ClearWorld()
 {
     if (isClearing) {
         LOG_ERROR("[SceneLoader] Cannot do a load or cleaning while another same operation is working... Ignoring");
     }
 
     isClearing = true;
-    LOG_MESSAGE("[SceneLoader] ClearScene");
+    LOG_MESSAGE("[SceneLoader] ClearWorld");
 
-    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobClearScene>());
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobClearWorld>());
 }
 
-void SceneLoader::CleanScene()
+void SceneLoader::CleanWorld()
 {
-    LOG_MESSAGE("[SceneLoader] CleanScene");
-    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobCleanScene>());
+    LOG_MESSAGE("[SceneLoader] CleanWorld");
+    Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobCleanWorld>());
 }
 
 void SceneLoader::CreateScene(const FilePath::SceneFile &filename)

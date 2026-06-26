@@ -15,9 +15,13 @@ class ComponentInput : public Component
     float mouseMotionYRel = 0.f;
     bool mouseLeftButton = false;
     bool mouseRightButton = false;
+    bool mouseRightButtonUp = false;
+    bool mouseMiddleButton = false;
     bool mouseButtonDown = false;
     bool mouseButtonUp = false;
     bool drag = false;
+    bool rightDrag = false;
+    int mouseWheelY = 0;
 
     Uint8 *keyboard = nullptr;
     std::unordered_map<SDL_Keycode, bool> keyboardEvents;
@@ -54,11 +58,14 @@ class ComponentInput : public Component
     int mouseY = 0;
     int relativeRendererMouseX = 0;
     int relativeRendererMouseY = 0;
+    int rawMouseX = 0;
+    int rawMouseY = 0;
 
     _SDL_GameController *gameController = nullptr;
 
     bool keyUpEvent = false;
     bool keyDownEvent = false;
+    bool leftClickConsumedByUI = false;
 
 public:
     ComponentInput() = default;
@@ -113,24 +120,32 @@ public:
     [[nodiscard]] float getControllerAxisRightY() const             { return controllerAxisRightY; }
     [[nodiscard]] _SDL_GameController *getGameController() const    { return gameController; }
     [[nodiscard]] int getRelativeRendererMouseX() const             { return relativeRendererMouseX; }
+    [[nodiscard]] int getRawMouseX() const                          { return rawMouseX; }
+    [[nodiscard]] int getRawMouseY() const                          { return rawMouseY; }
     [[nodiscard]] bool isMouseMotion() const                        { return mouseMotion;}
     [[nodiscard]] bool isKeyEventDown() const                       { return keyDownEvent; }
     [[nodiscard]] bool isKeyEventUp() const                         { return keyUpEvent; }
     [[nodiscard]] bool isLeftMouseButtonPressed() const             { return mouseLeftButton; }
     [[nodiscard]] bool isRightMouseButtonPressed() const            { return mouseRightButton; }
+    [[nodiscard]] bool isMiddleMouseButtonPressed() const           { return mouseMiddleButton; }
     [[nodiscard]] bool isClickLeft() const                          { return mouseLeftButton; }
     [[nodiscard]] bool isClickRight() const                         { return mouseRightButton; }
+    [[nodiscard]] bool isClickRightUp() const                       { return mouseRightButtonUp; }
+    [[nodiscard]] int getMouseWheelY() const                        { return mouseWheelY; }
     [[nodiscard]] bool isKeyboardEnabled() const                    { return keyboardEnabled; }
     [[nodiscard]] bool isMouseEnabled() const                       { return mouseEnabled; }
     [[nodiscard]] bool isPadEnabled() const                         { return padEnabled; }
     bool isMouseButtonUp() const                                    { return mouseButtonUp; }
     bool isMouseButtonDown() const                                  { return mouseButtonDown; }
     bool isDrag() const                                             { return drag; }
+    bool isRightDrag() const                                        { return rightDrag; }
     bool isGameControllerAvailable() const                          { return gameController != nullptr; }
 
     [[nodiscard]] bool isAnyControllerButtonPressed() const;
     [[maybe_unused]] bool isCharFirstEventDown(const char *character);
     [[maybe_unused]] bool isCharPressed(const char *character) const;
+    void consumeLeftClick()                   { leftClickConsumedByUI = true; }
+    [[nodiscard]] bool isLeftClickConsumed() const { return leftClickConsumedByUI; }
 
     static void HandleWindowEvents(SDL_Event *event, bool &);
 };

@@ -46,6 +46,7 @@ void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
     DrawQuad();
 
     glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depthTexture, int layer)
@@ -64,6 +65,7 @@ void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depth
     DrawQuad();
 
     glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void ShaderOGLShadowPassDebugLight::Destroy()

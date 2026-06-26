@@ -34,6 +34,7 @@ public:
     void Destroy() override;
     void DeleteTexture() const;
     void renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const;
+    void renderMeshWithSubmeshColors(Mesh3D* m, bool useFeedbackBuffer, bool clearFramebuffer, GLuint fbo) const;
     [[nodiscard]] GLuint getTextureColorBuffer() const;
     [[nodiscard]] GLuint getFramebuffer() const;
 };

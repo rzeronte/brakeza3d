@@ -55,7 +55,7 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     setMat4Uniform(matrixProjectionUniform, ProjectionMatrix);
     setMat4Uniform(matrixViewUniform, ViewMatrix);
-    setVec3Uniform(colorUniform, c.toGLM());
+    setVec4Uniform(colorUniform, glm::vec4(c.toGLM(), c.a));
 
     std::vector<glm::vec3> vertices;
 
@@ -66,6 +66,9 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     GLuint VBO;
     glGenBuffers(1, &VBO);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glBindVertexArray(VertexArrayID);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -79,6 +82,7 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);
+    glDisable(GL_BLEND);
 
     glDeleteBuffers(1, &VBO);
 

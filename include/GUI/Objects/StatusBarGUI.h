@@ -24,6 +24,7 @@ private:
     static void DrawFPSCounter();
     static void DrawSessionStatus(GUIAddonResourceHub* resourceHub);
     static void DrawObjectCount();
+    static void DrawCullingStats();
     static void DrawLightsStatus();
     static void DrawScriptsStatus();
     static void DrawProjectStatus();

@@ -73,6 +73,11 @@ namespace FilePath {
         using PathBase::PathBase;
     };
 
+    // Compute shader files (.cs)
+    struct ComputeShaderFile : PathBase<ComputeShaderFile> {
+        using PathBase::PathBase;
+    };
+
     // LUA script files (.lua)
     struct ScriptFile : PathBase<ScriptFile> {
         using PathBase::PathBase;
