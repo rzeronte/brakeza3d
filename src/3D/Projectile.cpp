@@ -56,5 +56,11 @@ void Projectile::onUpdate()
 
 void Projectile::ResolveCollision(CollisionInfo objectWithCollision)
 {
-    Collider::ResolveCollision(objectWithCollision);
+    auto *other = static_cast<Object3D*>(objectWithCollision.with);
+    LOG_MESSAGE("[Projectile] ResolveCollision: %s hit %s | scripts=%d",
+        getName().c_str(),
+        other ? other->getName().c_str() : "null",
+        (int)scripts.size()
+    );
+    Object3D::ResolveCollision(objectWithCollision);
 }

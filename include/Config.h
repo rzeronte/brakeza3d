@@ -243,6 +243,7 @@ public:
         ProjectileEnemy = 8,
         Health = 16,
         Weapon = 32,
+        StaticWorld = 64,
         AllFilter = -1  //all bits sets: DefaultFilter | StaticFilter | KinematicFilter | DebrisFilter | SensorTrigger
     };
 

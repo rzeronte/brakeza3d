@@ -74,7 +74,7 @@ class Mesh3DAnimation : public Mesh3D
     bool finished = false;
 
     const aiScene *scene = nullptr;
-    Assimp::Importer importer;
+    std::shared_ptr<Assimp::Importer> sharedImporter;
 
     aiMatrix4x4 globalInverseTransform;
 

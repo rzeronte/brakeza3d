@@ -167,6 +167,7 @@ add_executable(Brakeza3D
         src/Cache/AnimationDataCache.cpp include/Cache/AnimationDataCache.h
         src/Cache/ScriptDataCache.cpp include/Cache/ScriptDataCache.h
         src/Cache/ScriptTypeCache.cpp include/Cache/ScriptTypeCache.h
+        src/Cache/SceneCache.cpp include/Cache/SceneCache.h
 
         # Misc
         src/Misc/cJSON.c include/Misc/cJSON.h
@@ -374,7 +375,7 @@ add_executable(Brakeza3D
         src/GUI/AddOns/CustomTreeNode.cpp
         include/Threads/ThreadJobCleanWorld.h
         include/GUI/Objects/ColliderGUI.h
-        include/GUI/Objects/ColliderGUI.cpp
+        src/GUI/Objects/ColliderGUI.cpp
 )
 
 # Suppress warnings in third-party sources

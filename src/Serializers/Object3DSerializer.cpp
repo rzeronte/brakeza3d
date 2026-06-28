@@ -41,6 +41,7 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
         cJSON *collider = cJSON_CreateObject();
         cJSON_AddNumberToObject(collider, "mode", o->getCollisionMode());
         cJSON_AddNumberToObject(collider, "shape", o->getCollisionShape());
+        cJSON_AddBoolToObject(collider, "debugDraw", o->isDebugDraw());
 
         cJSON_AddNumberToObject(collider, "friction", o->friction);
         cJSON_AddNumberToObject(collider, "mass", o->mass);
@@ -51,6 +52,8 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
         cJSON_AddNumberToObject(collider, "angularDamping", o->angularDamping);
         cJSON_AddNumberToObject(collider, "restitution", o->restitution);
         cJSON_AddBoolToObject(collider, "colliderStatic", o->colliderStatic);
+        cJSON_AddNumberToObject(collider, "collisionGroup", o->collisionGroup);
+        cJSON_AddNumberToObject(collider, "collisionMask", o->collisionMask);
 
         cJSON_AddItemToObject(collider, "simpleShapeSize", ToolsJSON::Vertex3DToJSON(o->simpleShapeSize));
 
@@ -191,16 +194,22 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
                 );
             }
 
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionGroup") != nullptr) {
+                o->collisionGroup = cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionGroup")->valueint;
+            }
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionMask") != nullptr) {
+                o->collisionMask = cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionMask")->valueint;
+            }
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "debugDraw") != nullptr) {
+                o->setDebugDraw(cJSON_GetObjectItemCaseSensitive(colliderJSON, "debugDraw")->valueint);
+            }
+
             switch(mode) {
                 case GHOST:
-                    if (shape == SIMPLE_SHAPE) {
-                        o->SetupGhostCollider(SIMPLE_SHAPE);
-                    }
+                    o->SetupGhostCollider((CollisionShape)shape);
                     break;
                 case BODY:
-                    if (shape == SIMPLE_SHAPE) {
-                        o->SetupRigidBodyCollider(SIMPLE_SHAPE);
-                    }
+                    o->SetupRigidBodyCollider((CollisionShape)shape);
                     break;
                 case KINEMATIC:
                     o->setupKinematicCollider();
@@ -217,17 +226,21 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(json, "scripts")) {
-            auto name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
-            auto codeFile = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
+            auto name      = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
+            auto codeFile  = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
             auto typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
             auto typesJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "types");
 
             auto script = new ScriptLUA(name, codeFile, typesFile, typesJSON);
 
-            // Read script type from JSON
             cJSON *typeJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "type");
             if (typeJSON && typeJSON->valuestring) {
                 script->setType((strcmp(typeJSON->valuestring, "Global") == 0) ? SCRIPT_GLOBAL : SCRIPT_OBJECT);
+            }
+
+            cJSON *tpsJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "ticks_per_second");
+            if (tpsJSON && cJSON_IsNumber(tpsJSON)) {
+                script->setTicksPerSecond(tpsJSON->valueint);
             }
 
             o->AttachScript(script);

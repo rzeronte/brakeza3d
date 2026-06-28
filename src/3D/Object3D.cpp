@@ -68,6 +68,15 @@ void Object3D::onUpdateScripts()
         a->onUpdateScripts();
     }
 
+    if (!pendingScripts.empty()) {
+        for (auto *s : pendingScripts) {
+            scripts.push_back(s);
+            s->ReloadEnvironment(luaEnvironment);
+            s->RunEnvironment(luaEnvironment, "onStart");
+        }
+        pendingScripts.clear();
+    }
+
     if (Components::get()->Scripting()->isExecuting()) {
         RunScripts();
     }
@@ -173,7 +182,34 @@ void Object3D::AttachScript(ScriptLUA *script)
         return;
     }
 
+    if (luaEnvironment.valid()) {
+        // El objeto ya está en escena: el script se inicializará al inicio del siguiente
+        // onUpdateScripts(), fuera de cualquier iteración Lua activa.
+        pendingScripts.push_back(script);
+    } else {
+        // Todavía no en escena: AddObject3D lo inicializará vía ReloadScriptsEnvironment().
+        scripts.push_back(script);
+    }
+}
+
+void Object3D::AttachAndInitScript(ScriptLUA *script)
+{
+    if (!script || script->getScriptFilename().empty()) {
+        LOG_ERROR("[Object3D] AttachAndInitScript: script is null or failed to load.");
+        delete script;
+        return;
+    }
+    if (script->getType() != SCRIPT_OBJECT) {
+        LOG_ERROR("[Object3D] AttachAndInitScript: only Object scripts allowed.");
+        delete script;
+        return;
+    }
     scripts.push_back(script);
+    if (luaEnvironment.valid()) {
+        script->ReloadEnvironment(luaEnvironment);
+        script->RunEnvironment(luaEnvironment, "onStart");
+    }
+    LOG_MESSAGE("[Object3D] AttachAndInitScript: '%s' attached to '%s'", script->getName().c_str(), getName().c_str());
 }
 
 void Object3D::ReloadScriptsEnvironment()
@@ -242,7 +278,7 @@ void Object3D::MakeKineticBody(float x, float y, btDiscreteDynamicsWorld *world,
     kinematicBody = new btPairCachingGhostObject();
     kinematicBody->setWorldTransform(t);
 
-    auto capsule = new btCapsuleShapeZ(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
+    auto capsule = new btCapsuleShape(kinematicCapsuleSize.x, kinematicCapsuleSize.y);
     capsule->setMargin(shapeMargin);
 
     btVector3 inertia(0, 0, 0);
@@ -394,9 +430,11 @@ void Object3D::Integrate()
     if (!isCollisionsEnabled()) return;
 
     if (getCollisionMode() == GHOST) {
-        getGhostObject()->setWorldTransform(
-            Tools::GLMMatrixToBulletTransform(getModelMatrix())
-        );
+        bool simpleShape = getCollisionShape() == SIMPLE_SHAPE || getCollisionShape() == CAPSULE_SHAPE;
+        auto tf = simpleShape
+            ? Tools::GLMMatrixToBulletTransformNoScale(getModelMatrix())
+            : Tools::GLMMatrixToBulletTransform(getModelMatrix());
+        getGhostObject()->setWorldTransform(tf);
     }
 
     if (getCollisionMode() == BODY) {
@@ -464,8 +502,8 @@ void Object3D::SetupGhostCollider(CollisionShape mode)
             getModelMatrix(),
             simpleShapeSize,
             Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-            Config::collisionGroups::AllFilter,
-            Config::collisionGroups::AllFilter
+            collisionGroup,
+            collisionMask
         );
     }
 }

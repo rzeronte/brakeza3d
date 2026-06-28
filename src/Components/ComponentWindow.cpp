@@ -442,14 +442,6 @@ void ComponentWindow::ImGuiOnUpdate()
         Brakeza::get()->GUI()->setLayoutToDefault(getImGuiConfig());
     }
 
-
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame();
-
-    ImGui::NewFrame();
-    Components::get()->Render()->DrawSelectionRectFill();
-    Brakeza::get()->GUI()->DrawGUI();
-
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

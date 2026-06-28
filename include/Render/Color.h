@@ -13,7 +13,7 @@ public:
     float a;
 
     Color();
-    Color(float r, float g, float b, float a = 0);
+    Color(float r, float g, float b, float a = 1);
     explicit Color(uint32_t v);
 
     Color operator+(const Color &pm) const;

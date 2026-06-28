@@ -24,6 +24,7 @@
 #include "../3D/ParticleEmitter.h"
 #include "../Misc/VideoPlayer.h"
 #include "../Threads/ThreadJobPathfinding.h"
+#include "../Threads/ThreadJobReadObjectScript.h"
 #include "../Loaders/FBXLightLoader.h"
 #include "../Loaders/Scene.h"
 #include "../Loaders/SceneLoader.h"
@@ -100,11 +101,13 @@ inline void LUAIntegration(sol::state &lua)
         "RemoveCollisionObject", &Object3D::RemoveCollisionObject,
         "SleepCollider", &Object3D::SleepCollider,
         "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
+        "setCollisionGroupMask", [](Object3D* o, int group, int mask) { o->setCollisionGroupMask(group, mask); },
         "DisableSimulationCollider", &Object3D::DisableSimulationCollider,
         "EnableSimulationCollider", &Object3D::EnableSimulationCollider,
         "DisableDeactivationCollider", &Object3D::DisableDeactivationCollider,
         "UpdateShapeCollider", &Object3D::UpdateShapeCollider,
         "setScalingCollider", &Object3D::setScalingCollider,
+        "setSimpleShapeSize", [](Object3D* o, const Vertex3D& size) { o->setSimpleShapeSize(size); },
         "setCapsuleColliderSize", &Object3D::setCapsuleColliderSize,
         "moveCollider", &Object3D::moveCollider,
         "isCollisionsEnabled", &Object3D::isCollisionsEnabled,
@@ -112,6 +115,9 @@ inline void LUAIntegration(sol::state &lua)
         "setupGhostCollider", &Object3D::SetupGhostCollider,
         "SetupRigidBodyCollider", &Object3D::SetupRigidBodyCollider,
         "setColliderStatic", &Object3D::setColliderStatic,
+        "setDebugDraw", &Object3D::setDebugDraw,
+        "isDebugDraw", &Object3D::isDebugDraw,
+        "resetColliderRotation", &Object3D::resetColliderRotation,
         "ApplyCentralForce", &Object3D::ApplyCentralForce,
         "ApplyCentralImpulse", &Object3D::ApplyCentralImpulse,
         "ApplyImpulse", &Object3D::ApplyImpulse,
@@ -135,6 +141,11 @@ inline void LUAIntegration(sol::state &lua)
         "setHighlight",       &Object3D::setHighlight,
         "clearHighlight",     &Object3D::clearHighlight,
         "AttachScript", &Object3D::AttachScript,
+        "AttachScriptAsync", [](Object3D* obj, const std::string& jsonPath) {
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+                std::make_shared<ThreadJobReadObjectScript>(obj, jsonPath)
+            );
+        },
         "LookAt", sol::overload(
             static_cast<void(Object3D::*)(Object3D*)>(&Object3D::LookAt),
             static_cast<void(Object3D::*)(const Vertex3D&)>(&Object3D::LookAt)
@@ -157,7 +168,14 @@ inline void LUAIntegration(sol::state &lua)
         "setShapeMargin", &Object3D::setShapeMargin,
         "setFrustumCulling", [](Object3D* o, bool v) { o->getRenderSettings().frustumCulling = v; },
         "setShadowMap",      [](Object3D* o, bool v) { o->getRenderSettings().shadowMap = v; },
-        "isVisibleInFrustum", &Object3D::isVisibleInFrustum
+        "isVisibleInFrustum", &Object3D::isVisibleInFrustum,
+        "setScene", [](Object3D* o, const std::string& sceneName) {
+            auto* scene = Components::get()->Scripting()->getSceneByName(sceneName);
+            if (scene) {
+                o->setScene(scene);
+                scene->addObject(o);
+            }
+        }
     );
 
     lua.new_usertype<Component>("Component",
@@ -443,7 +461,10 @@ inline void LUAIntegration(sol::state &lua)
         "getBoxes", &Grid3D::getBoxes,
         "setTravel", &Grid3D::setTravel,
         "MakeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid,
-        "fillGrid3DFromImage", &Grid3D::fillGrid3DFromImage,
+        "fillGrid3DFromImage", sol::overload(
+            [](Grid3D& g, const std::string& path, int threshold)                   { g.fillGrid3DFromImage(path, threshold); },
+            [](Grid3D& g, const std::string& path, int threshold, bool fz, bool fx) { g.fillGrid3DFromImage(path, threshold, fz, fx); }
+        ),
         "drawDebug", sol::overload(
             [](Grid3D& g)              { g.drawDebug(); },
             [](Grid3D& g, Color color) { g.drawDebug(color); }
@@ -541,6 +562,9 @@ inline void LUAIntegration(sol::state &lua)
         "cleanWorld", &SceneLoader::CleanWorld,
         "setSceneActive", [](SceneLoader*, std::string name, bool active) {
             SceneLoader::setSceneActive(name, active);
+        },
+        "setSceneHidden", [](SceneLoader*, std::string name, bool hidden) {
+            SceneLoader::setSceneHidden(name, hidden);
         },
         "unloadScene", [](SceneLoader*, std::string name) {
             SceneLoader::UnloadScene(name);
@@ -688,6 +712,7 @@ inline void LUAIntegration(sol::state &lua)
         "ProjectileEnemy", Config::ProjectileEnemy,
         "Health",          Config::Health,
         "Weapon",          Config::Weapon,
+        "StaticWorld",     Config::StaticWorld,
         "AllFilter",       Config::AllFilter
     );
 

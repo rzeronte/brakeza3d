@@ -136,6 +136,29 @@ void ComponentCollisions::CheckCollisionsForAll() const
             brkObjectB->ResolveCollision(cIB);
         }
     }
+
+    // Ghost objects don't generate manifolds — iterate their overlapping pairs directly
+    for (auto &object : Brakeza::get()->getSceneObjects()) {
+        if (object->isRemoved() || !object->isEnabled() || !object->isCollisionsEnabled()) continue;
+        if (object->getCollisionMode() != GHOST) continue;
+
+        auto *ghost = object->getGhostObject();
+        if (!ghost) continue;
+
+        int numOverlapping = ghost->getNumOverlappingObjects();
+        for (int i = 0; i < numOverlapping; i++) {
+            btCollisionObject *other = ghost->getOverlappingObject(i);
+            if (!other || !other->getUserPointer()) continue;
+
+            auto *brkOther = static_cast<Collider *>(other->getUserPointer());
+
+            auto cIGhost = CollisionInfo(brkOther,  ghost->getUserIndex(), ghost->getUserIndex2());
+            auto cIOther = CollisionInfo(object, other->getUserIndex(), other->getUserIndex2());
+
+            object->ResolveCollision(cIGhost);
+            brkOther->ResolveCollision(cIOther);
+        }
+    }
 }
 
 btDiscreteDynamicsWorld *ComponentCollisions::getDynamicsWorld() const
@@ -207,7 +230,7 @@ void ComponentCollisions::DrawDebugCache() const
 void ComponentCollisions::setEnableDebugMode(bool value) const
 {
     if (value) {
-        dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe);
+        dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe | PhysicsDebugDraw::DBG_DrawContactPoints);
         LOG_MESSAGE("[Collisions] Physics Debug mode ON");
         return;
     }

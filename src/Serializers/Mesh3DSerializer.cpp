@@ -103,6 +103,12 @@ void Mesh3DSerializer::ApplyCollider(Mesh3D *m, cJSON* json)
             if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic") != nullptr) {
                 m->setColliderStatic(cJSON_GetObjectItemCaseSensitive(colliderJSON, "colliderStatic")->valueint);
             }
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionGroup") != nullptr) {
+                m->collisionGroup = cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionGroup")->valueint;
+            }
+            if (cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionMask") != nullptr) {
+                m->collisionMask = cJSON_GetObjectItemCaseSensitive(colliderJSON, "collisionMask")->valueint;
+            }
 
             switch (mode) {
                 case GHOST:

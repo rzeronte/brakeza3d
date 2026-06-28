@@ -64,6 +64,7 @@ protected:
     std::string name;
 
     std::vector<ScriptLUA*> scripts;
+    std::vector<ScriptLUA*> pendingScripts;
     std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
 
@@ -81,6 +82,7 @@ public:
     void LookAt(Object3D *o);
     void LookAt(const Vertex3D &target);
     void AttachScript(ScriptLUA *script);
+    void AttachAndInitScript(ScriptLUA *script);
     void RunScripts();
     void onUpdateScripts();
     void ReloadScriptsEnvironment();

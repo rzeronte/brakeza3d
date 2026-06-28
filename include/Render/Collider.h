@@ -34,6 +34,7 @@ protected:
     ~Collider() = default;
 
     bool collisionsEnabled;
+    bool debugDraw = true;
 
     CollisionMode collisionMode;
 
@@ -43,6 +44,8 @@ protected:
     // Body
     btRigidBody *body;
     bool colliderStatic;
+    int collisionGroup;
+    int collisionMask;
     float mass;
     float friction;
     float linearDamping;
@@ -61,6 +64,11 @@ public:
 
     Collider();
 
+    void setCollisionGroupMask(int group, int mask) { collisionGroup = group; collisionMask = mask; }
+    [[nodiscard]] int getCollisionGroup() const { return collisionGroup; }
+    [[nodiscard]] int getCollisionMask() const { return collisionMask; }
+    void setDebugDraw(bool value);
+    [[nodiscard]] bool isDebugDraw() const { return debugDraw; }
     void setCollisionsEnabled(bool value);
     void setCollisionMode(CollisionMode collisionMode);
     void setCollisionShape(CollisionShape collisionShape);
@@ -96,6 +104,7 @@ public:
     void setScalingCollider(Vertex3D v);
     void moveCollider(Vertex3D v);
     void setSimpleShapeSize(const Vertex3D &simple_shape_size);
+    void resetColliderRotation();
     void setBody(btRigidBody* b) { body = b; }
     virtual void ResolveCollision(CollisionInfo o);
     virtual void Integrate();
