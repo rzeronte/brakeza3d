@@ -43,6 +43,7 @@ These shortcuts only work when an object is selected in the scene.
 | S | Scale mode |
 | X | Delete selected object |
 | ESC | Deselect object |
+| HOME | Frame camera on selected object |
 
 ---
 
