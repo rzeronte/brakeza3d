@@ -7,6 +7,7 @@
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
 #include "../../include/Cache/AnimationDataCache.h"
+#include "../../include/Cache/SceneCache.h"
 
 Mesh3DAnimation::Mesh3DAnimation()
 {
@@ -194,15 +195,22 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     if (cached) {
         LOG_MESSAGE("[AssimpLoadAnimation] Cache HIT for '%s'", filename.c_str());
 
-        scene = importer.ReadFile(
-            filename,
-            aiProcess_Triangulate |
-            aiProcess_SortByPType |
-            aiProcess_GenSmoothNormals |
-            aiProcess_FlipUVs
-        );
+        sharedImporter = sceneCache.get(filename);
+        if (!sharedImporter) {
+            // SceneCache expirado (todas las instancias previas destruidas): recargar
+            sharedImporter = std::make_shared<Assimp::Importer>();
+            sharedImporter->ReadFile(
+                filename,
+                aiProcess_Triangulate |
+                aiProcess_SortByPType |
+                aiProcess_GenSmoothNormals |
+                aiProcess_FlipUVs
+            );
+            sceneCache.store(filename, sharedImporter);
+        }
+        scene = sharedImporter->GetScene();
         if (!scene) {
-            LOG_MESSAGE("[AssimpLoadAnimation] ERROR loading '%s': %s", filename.c_str(), importer.GetErrorString());
+            LOG_MESSAGE("[AssimpLoadAnimation] ERROR getting scene from SceneCache for '%s'", filename.c_str());
             return false;
         }
 
@@ -249,7 +257,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     LOG_MESSAGE("[AssimpLoadAnimation] Cache MISS, loading '%s'...", filename.c_str());
 
-    scene = importer.ReadFile(
+    sharedImporter = std::make_shared<Assimp::Importer>();
+    scene = sharedImporter->ReadFile(
         filename,
         aiProcess_Triangulate |
         aiProcess_SortByPType |
@@ -258,9 +267,11 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     );
 
     if (!scene) {
-        LOG_MESSAGE("[AssimpLoadAnimation] ERROR loading '%s': %s", filename.c_str(), importer.GetErrorString());
+        LOG_MESSAGE("[AssimpLoadAnimation] ERROR loading '%s': %s", filename.c_str(), sharedImporter->GetErrorString());
         return false;
     }
+
+    sceneCache.store(filename, sharedImporter);
 
     std::vector<MaterialEntryData> materialEntries;
     AssimpInitMaterials(scene, &materialEntries);

@@ -1,0 +1,3868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brakeza RTS Editor</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #1a1a2e; color: #e0e0e0; height: 100vh; display: flex; flex-direction: column; }
+
+  /* TOP BAR */
+  #topbar { background: #16213e; border-bottom: 2px solid #0f3460; padding: 8px 16px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  #topbar h1 { font-size: 16px; color: #e94560; font-weight: 700; margin-right: 16px; }
+  .tb-btn { background: #0f3460; border: 1px solid #e94560; color: #e0e0e0; padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+  .tb-btn:hover { background: #e94560; color: #fff; }
+  .tb-btn.green { border-color: #2ecc71; }
+  .tb-btn.green:hover { background: #2ecc71; color: #111; }
+  #project-name { font-size: 12px; color: #888; margin-left: auto; }
+
+  /* LAYOUT */
+  #layout { display: flex; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR */
+  #sidebar { width: 220px; background: #16213e; border-right: 1px solid #0f3460; display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-section { border-bottom: 1px solid #0f3460; }
+  .sidebar-header { padding: 8px 12px; font-size: 11px; font-weight: 700; color: #e94560; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
+  .sidebar-header:hover { background: #0f3460; }
+  .sidebar-add { background: none; border: none; color: #2ecc71; font-size: 18px; cursor: pointer; line-height: 1; padding: 0 2px; }
+  .sidebar-item { padding: 7px 16px; font-size: 13px; cursor: pointer; border-left: 3px solid transparent; display: flex; align-items: center; gap: 6px; }
+  .sidebar-item:hover { background: #0f3460; }
+  .sidebar-item.active { border-left-color: #e94560; background: #0f3460; color: #fff; }
+  .sidebar-item .badge { font-size: 10px; background: #e94560; color: #fff; border-radius: 10px; padding: 1px 6px; margin-left: auto; }
+  .sidebar-item .badge.green { background: #2ecc71; color: #111; }
+
+  /* MAIN PANEL */
+  #main { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* TABS */
+  #tabs { display: flex; background: #16213e; border-bottom: 1px solid #0f3460; flex-shrink: 0; }
+  .tab { padding: 8px 20px; font-size: 13px; cursor: pointer; border-bottom: 2px solid transparent; color: #888; }
+  .tab.active { color: #e0e0e0; border-bottom-color: #e94560; }
+  .tab:hover { color: #e0e0e0; }
+
+  /* CONTENT */
+  #content { flex: 1; overflow-y: auto; padding: 20px; }
+
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 900px; }
+  .form-grid.wide { grid-template-columns: 1fr; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .field input, .field select, .field textarea { background: #0f3460; border: 1px solid #1a4a8a; color: #e0e0e0; padding: 7px 10px; border-radius: 4px; font-size: 13px; font-family: inherit; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #e94560; }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .field select option { background: #0f3460; }
+
+  /* SECTIONS */
+  .section { margin-top: 24px; max-width: 900px; }
+  .section-title { font-size: 13px; font-weight: 700; color: #e94560; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
+  .section-title button { font-size: 11px; background: #0f3460; border: 1px solid #e94560; color: #e0e0e0; padding: 2px 10px; border-radius: 3px; cursor: pointer; }
+  .section-title button:hover { background: #e94560; }
+
+  /* CARDS */
+  .card { background: #0f3460; border: 1px solid #1a4a8a; border-radius: 6px; padding: 14px; margin-bottom: 10px; position: relative; }
+  .card-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .card-row .field { flex: 1; min-width: 100px; }
+  .card-del { position: absolute; top: 8px; right: 8px; background: none; border: none; color: #e94560; font-size: 18px; cursor: pointer; line-height: 1; }
+  .card-del:hover { color: #ff6b6b; }
+
+  /* REWARD ROW */
+  .reward-row { display: flex; gap: 10px; }
+  .reward-row .field { flex: 1; }
+
+  /* DIALOGUE CANVAS */
+  #dialogue-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  #dialogue-toolbar { background: #16213e; border-bottom: 1px solid #0f3460; padding: 8px 16px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; font-size: 13px; }
+  #dialogue-canvas-wrap { flex: 1; overflow: hidden; position: relative; cursor: grab; }
+  #dialogue-canvas-wrap.grabbing { cursor: grabbing; }
+  #dialogue-canvas { position: absolute; top: 0; left: 0; }
+
+  /* NODES */
+  .dnode { position: absolute; width: 260px; background: #16213e; border: 2px solid #1a4a8a; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); user-select: none; }
+  .dnode.selected { border-color: #e94560; }
+  .dnode.root-node { border-color: #f39c12; }
+  .dnode.terminal-node { border-color: #444; opacity: 0.85; }
+  .dnode.quest-node { border-color: #2ecc71; }
+  .dnode.condition-node { border-color: #3498db; }
+  .dnode-header { background: #0f3460; padding: 8px 12px; border-radius: 6px 6px 0 0; display: flex; justify-content: space-between; align-items: center; cursor: move; }
+  .dnode-header .node-id { font-size: 11px; color: #e94560; font-weight: 700; }
+  .dnode-header .node-del { background: none; border: none; color: #888; cursor: pointer; font-size: 14px; }
+  .dnode-header .node-del:hover { color: #e94560; }
+  .dnode-body { padding: 10px 12px; }
+  .dnode-text { font-size: 12px; color: #ccc; line-height: 1.4; max-height: 60px; overflow: hidden; text-overflow: ellipsis; }
+  .dnode-options { margin-top: 8px; }
+  .dnode-option { font-size: 11px; background: #0f3460; border-radius: 3px; padding: 3px 8px; margin-top: 4px; cursor: pointer; display: flex; justify-content: space-between; color: #aaa; }
+  .dnode-option:hover { background: #1a4a8a; color: #fff; }
+  .dnode-option .opt-arrow { color: #e94560; }
+  .dnode-option .opt-back { color: #666; background: #1a1a2e; border: 1px solid #333; border-radius: 3px; padding: 0 4px; font-size: 10px; }
+  .dnode-option .opt-tag { font-size: 9px; color: #f39c12; }
+  .dnode-add-opt { font-size: 11px; color: #2ecc71; background: none; border: 1px dashed #2ecc71; border-radius: 3px; padding: 3px 8px; margin-top: 6px; cursor: pointer; width: 100%; }
+  .dnode-add-opt:hover { background: #2ecc71; color: #111; }
+  .dnode-edit-btn { font-size: 10px; color: #888; background: none; border: 1px solid #1a4a8a; border-radius: 3px; padding: 2px 8px; margin-top: 6px; cursor: pointer; width: 100%; }
+  .dnode-edit-btn:hover { border-color: #e94560; color: #e94560; }
+
+  /* SVG LINES */
+  #svg-lines { position: absolute; top: 0; left: 0; pointer-events: none; overflow: visible; }
+
+  /* MODAL */
+  #modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
+  #modal-overlay.open { display: flex; }
+  #modal { background: #16213e; border: 1px solid #0f3460; border-radius: 8px; padding: 24px; min-width: 480px; max-width: 640px; max-height: 85vh; overflow-y: auto; position: relative; }
+  #modal h2 { font-size: 15px; color: #e94560; margin-bottom: 16px; }
+  .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  .btn { padding: 7px 18px; border-radius: 4px; font-size: 13px; cursor: pointer; border: none; }
+  .btn-primary { background: #e94560; color: #fff; }
+  .btn-primary:hover { background: #c0392b; }
+  .btn-secondary { background: #0f3460; color: #e0e0e0; border: 1px solid #1a4a8a; }
+  .btn-secondary:hover { background: #1a4a8a; }
+
+  /* OPTION EDITOR */
+  .opt-card { background: #0a2540; border: 1px solid #1a4a8a; border-radius: 5px; padding: 10px; margin-bottom: 8px; position: relative; }
+  .opt-card .card-del { top: 6px; right: 6px; }
+  .opt-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+
+  /* SEARCH */
+  #sidebar-search { padding: 8px; border-bottom: 1px solid #0f3460; }
+  #sidebar-search input { width: 100%; background: #0a1628; border: 1px solid #1a4a8a; color: #e0e0e0; padding: 5px 8px 5px 26px; border-radius: 4px; font-size: 12px; }
+  #sidebar-search input:focus { outline: none; border-color: #e94560; }
+  #sidebar-search { position: relative; }
+  #sidebar-search .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #555; font-size: 12px; pointer-events: none; }
+  .search-hit em { color: #e94560; font-style: normal; font-weight: 700; }
+  .search-section-label { padding: 4px 12px; font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+  #search-results { overflow-y: auto; flex: 1; }
+
+  /* MINIMAP PREVIEW */
+  #minimap-wrap { position:relative; display:inline-block; margin-top:8px; cursor:crosshair; }
+  #minimap-wrap canvas { display:block; border-radius:4px; border:1px solid #1a4a8a; }
+  .mm-marker { position:absolute; transform:translate(-50%,-50%); pointer-events:none; font-size:18px; filter:drop-shadow(0 0 3px #000); }
+  .mm-marker.draggable { pointer-events:all; cursor:grab; }
+  .mm-marker.draggable:active { cursor:grabbing; }
+  #minimap-coords { font-size:11px; color:#888; margin-top:6px; }
+  #minimap-coords b { color:#e0e0e0; }
+
+  /* AVATAR PICKER */
+  .avatar-row { display: flex; gap: 12px; align-items: flex-start; }
+  .avatar-preview { width: 72px; height: 72px; background: #0a1628; border: 2px solid #1a4a8a; border-radius: 6px; object-fit: contain; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #555; font-size: 10px; text-align: center; }
+  .avatar-preview img { width: 100%; height: 100%; object-fit: contain; border-radius: 4px; }
+  .avatar-inputs { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+  .avatar-path-row { display: flex; gap: 6px; }
+  .avatar-path-row input { flex: 1; }
+  .avatar-browse { background: #0f3460; border: 1px solid #1a4a8a; color: #e0e0e0; padding: 7px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; white-space: nowrap; }
+  .avatar-browse:hover { border-color: #e94560; color: #e94560; }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; color: #555; padding: 60px 20px; font-size: 14px; }
+  .empty .big { font-size: 48px; margin-bottom: 12px; }
+
+  /* TOAST */
+  #toast { position: fixed; bottom: 20px; right: 20px; background: #2ecc71; color: #111; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 9999; }
+  #toast.show { opacity: 1; }
+  #toast.error { background: #e94560; color: #fff; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0f3460; }
+  ::-webkit-scrollbar-thumb { background: #e94560; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>⚔ Brakeza RTS Editor</h1>
+  <button class="tb-btn" onclick="openFolder()">📂 Open Project Folder</button>
+  <button class="tb-btn" onclick="goHome()" title="Back to overview">🏠 Overview</button>
+  <button class="tb-btn green" onclick="saveAll()">💾 Save All</button>
+  <button class="tb-btn" onclick="exportCurrent()">⬇ Export Current</button>
+  <button class="tb-btn" onclick="openPrefixManager()" style="margin-left:4px">🔢 Prefixes</button>
+  <button class="tb-btn" onclick="openHelp()" style="margin-left:4px">❓ Help</button>
+  <span id="project-name">No project loaded</span>
+</div>
+
+<div id="layout">
+  <div id="sidebar">
+    <div id="sidebar-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search quests, NPCs, dialogue…" oninput="onSearch(this.value)">
+    </div>
+    <div id="search-results" style="display:none; overflow-y:auto; flex:1;"></div>
+    <div id="sidebar-normal" style="display:flex; flex-direction:column; overflow-y:auto; flex:1;">
+      <div class="sidebar-section">
+        <div class="sidebar-header">
+          📜 Quests
+          <button class="sidebar-add" onclick="event.stopPropagation(); newQuest()">＋</button>
+        </div>
+        <div id="quests-list"></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-header">
+          🧙 NPCs / Dialogues
+          <button class="sidebar-add" onclick="event.stopPropagation(); newNPC()">＋</button>
+        </div>
+        <div id="scene-filter-wrap" style="padding:6px 10px;border-bottom:1px solid #0f3460;display:none">
+          <select id="scene-filter-select" onchange="onSceneFilterChange(this.value)" style="width:100%;background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;padding:4px 6px;border-radius:4px;font-size:11px">
+            <option value="">All scenes</option>
+          </select>
+        </div>
+        <div id="npcs-list"></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-header">
+          🔬 Tech Tree
+          <button class="sidebar-add" onclick="event.stopPropagation(); addTechNode()">＋</button>
+        </div>
+        <div id="techtree-list"></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-header">🏠 Interiors</div>
+        <div id="interiors-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="tabs" style="display:none">
+      <div class="tab active" onclick="switchTab('form')" id="tab-form">Properties</div>
+      <div class="tab" onclick="switchTab('dialogue')" id="tab-dialogue" style="display:none">Dialogue Tree</div>
+      <div class="tab" onclick="switchTab('techtree')" id="tab-techtree" style="display:none">Tree View</div>
+      <div class="tab" onclick="switchTab('json')" id="tab-json">JSON Preview</div>
+    </div>
+    <div id="content">
+      <div class="empty"><div class="big">📁</div>Open a project folder or create a quest / NPC</div>
+    </div>
+  </div>
+</div>
+
+<!-- DIALOGUE CANVAS (hidden until needed) -->
+<div id="dialogue-wrap" style="display:none">
+  <div id="dialogue-toolbar">
+    <button class="tb-btn" onclick="addDialogueNode()">＋ Add Node</button>
+    <button class="tb-btn" onclick="autoLayout()">⟳ Auto Layout</button>
+    <button class="tb-btn" onclick="zoomToFit()">⤢ Fit</button>
+    <span style="color:#888; font-size:12px; margin-left:8px;">Drag nodes • Click option → jump to node • Scroll to zoom</span>
+    <span id="dl-npc-name" style="margin-left:auto; color:#e94560; font-weight:700;"></span>
+  </div>
+  <div id="dialogue-canvas-wrap">
+    <div id="dialogue-canvas">
+      <svg id="svg-lines"></svg>
+    </div>
+  </div>
+</div>
+
+<!-- PREFIX MANAGER MODAL -->
+<div id="prefix-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1001;align-items:center;justify-content:center">
+  <div style="background:#16213e;border:1px solid #0f3460;border-radius:8px;padding:24px;min-width:560px;max-width:720px;max-height:85vh;overflow-y:auto;position:relative">
+    <h2 style="font-size:15px;color:#e94560;margin-bottom:6px">🔢 Quest Prefix Manager</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:16px">Assign a numeric prefix to each quest chain. Al aplicar se renombran los IDs en todos los ficheros (quests + diálogos de NPCs).</p>
+    <div id="prefix-chains"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+      <button class="btn btn-secondary" onclick="closePrefixManager()">Cancelar</button>
+      <button class="btn btn-primary" onclick="applyPrefixes()">✅ Aplicar todo</button>
+    </div>
+  </div>
+</div>
+
+<!-- NODE EDIT MODAL -->
+<div id="modal-overlay">
+  <div id="modal">
+    <h2 id="modal-title">Edit Node</h2>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNodeModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────────────
+const state = {
+  dirHandle: null,
+  quests: {},       // id → { data, fileHandle }
+  npcs: {},         // npcKey → { data, fileHandle, folderName }
+  questIndex: { data: { quests: [] }, fileHandle: null },
+  techTree: { data: { nodes: [] }, fileHandle: null },
+  interiors: { data: {}, fileHandle: null },
+  interiorAvatarBlobs: {},  // key → blob URL
+  activeItem: null, // { type: 'quest'|'npc'|'tech'|'interior', key }
+  activeTab: 'form',
+  dirty: new Set(),
+  avatarBlobs: {},  // npcKey → blob URL
+  sceneNPCs: {},    // dialogueFilePath → { objectName, position }
+  sceneNames: [],   // list of scene .json filenames
+  currentScene: '', // active scene filter ('' = all)
+  pendingPlacement: { x: 4096, z: 4096 }, // canvas click position for add-to-scene
+  minimapView: { zoom: 1, viewX: 0, viewZ: 0 }, // zoom/pan state for the NPC minimap
+};
+
+// Dialogue canvas state
+const dlg = {
+  nodes: {},        // id → { x, y, data }
+  panX: 0, panY: 0,
+  scale: 1,
+  dragging: null,
+  panning: false,
+  panStart: null,
+  editingNodeId: null,
+  npcKey: null,
+};
+
+// ─── FILE SYSTEM ─────────────────────────────────────────────────────────────
+async function openFolder() {
+  try {
+    const dh = await window.showDirectoryPicker({ mode: 'readwrite' });
+    state.dirHandle = dh;
+    document.getElementById('project-name').textContent = dh.name;
+    await loadProject(dh);
+  } catch(e) { if (e.name !== 'AbortError') toast('Error opening folder: ' + e.message, true); }
+}
+
+async function loadProject(dh) {
+  state.quests = {};
+  state.npcs = {};
+
+  // Try to find quests/index.json by walking
+  try {
+    const qDir = await getNestedDir(dh, ['assets','scripts','RTS','quests']);
+    if (qDir) {
+      const idxHandle = await qDir.getFileHandle('index.json').catch(()=>null);
+      if (idxHandle) {
+        const idx = JSON.parse(await readHandle(idxHandle));
+        state.questIndex = { data: idx, fileHandle: idxHandle, dirHandle: qDir };
+        for (const path of idx.quests) {
+          const fname = path.split('/').pop();
+          const fh = await qDir.getFileHandle(fname).catch(()=>null);
+          if (fh) {
+            const data = JSON.parse(await readHandle(fh));
+            state.quests[data.id] = { data, fileHandle: fh };
+          }
+        }
+      }
+    }
+  } catch(e) { console.warn('quests load', e); }
+
+  // Try to find NPCs
+  try {
+    const npcDir = await getNestedDir(dh, ['assets','scripts','RTS','NPCs']);
+    if (npcDir) await loadNPCsFromDir(npcDir);
+  } catch(e) { console.warn('npcs load', e); }
+
+  // Try to scan scene for placed NPCs
+  await loadSceneNPCs(dh);
+
+  // Try to load tech tree
+  try {
+    const rtsDir = await getNestedDir(dh, ['assets','scripts','RTS']);
+    if (rtsDir) {
+      const ttFH = await rtsDir.getFileHandle('techtree_data.json').catch(() => null);
+      if (ttFH) {
+        state.techTree.data = JSON.parse(await readHandle(ttFH));
+        state.techTree.fileHandle = ttFH;
+      }
+      const intFH = await rtsDir.getFileHandle('buildings_interiors.json').catch(() => null);
+      if (intFH) {
+        state.interiors.data = JSON.parse(await readHandle(intFH));
+        state.interiors.fileHandle = intFH;
+      }
+    }
+  } catch(e) { console.warn('techtree load', e); }
+
+  renderSidebar();
+  showEmpty();
+  toast('Project loaded');
+}
+
+async function loadSceneNPCs(dh) {
+  state.sceneNPCs = {};
+  state.sceneNames = [];
+  try {
+    const scenesDir = await getNestedDir(dh, ['assets','scenes','RTS']);
+    if (!scenesDir) return;
+    for await (const [name, entry] of scenesDir.entries()) {
+      if (entry.kind !== 'file' || !name.endsWith('.json')) continue;
+      state.sceneNames.push(name);
+      const text = await readHandle(entry);
+      const scene = JSON.parse(text);
+      for (const obj of (scene.objects || [])) {
+        for (const script of (obj.scripts || [])) {
+          for (const t of (script.types || [])) {
+            if (t.name === 'dialogueFile' && t.value) {
+              // Normalize path: strip leading ../
+              const normalized = t.value.replace(/\\/g, '/').replace(/^(\.\.\/)+/, '');
+              state.sceneNPCs[normalized] = {
+                objectName: obj.name,
+                scene: name,
+                position: obj.position || null,
+                model: obj.model || null
+              };
+            }
+          }
+        }
+      }
+    }
+  } catch(e) { console.warn('scene NPC scan', e); }
+
+  // Populate sidebar scene filter
+  state.sceneNames.sort();
+  state.currentScene = state.sceneNames.length === 1 ? state.sceneNames[0] : '';
+  const wrap = document.getElementById('scene-filter-wrap');
+  const sel  = document.getElementById('scene-filter-select');
+  if (wrap && sel && state.sceneNames.length > 0) {
+    sel.innerHTML = '<option value="">All scenes</option>' +
+      state.sceneNames.map(s => `<option value="${s}"${s===state.currentScene?' selected':''}>${s}</option>`).join('');
+    wrap.style.display = '';
+  }
+}
+
+function onSceneFilterChange(sceneName) {
+  state.currentScene = sceneName;
+  renderSidebar();
+  // If an NPC form is open, refresh it to update ✅/❌ and minimap
+  if (state.activeItem?.type === 'npc') {
+    renderNPCForm(state.activeItem.key);
+    requestAnimationFrame(() => {
+      initMinimapPreview(state.activeItem.key);
+      initAddToScenePreview(state.activeItem.key);
+    });
+  }
+}
+
+async function loadNPCsFromDir(dir) {
+  for await (const [name, entry] of dir.entries()) {
+    if (entry.kind === 'directory') {
+      const dlgHandle = await entry.getFileHandle('dialogue.json').catch(()=>null);
+      if (dlgHandle) {
+        const data = JSON.parse(await readHandle(dlgHandle));
+        state.npcs[name] = { data, fileHandle: dlgHandle, folderName: name, dirHandle: entry };
+        // Try to preload avatar blob if path is inside the project
+        if (data.avatar && state.dirHandle) {
+          loadAvatarBlob(name, data.avatar).catch(()=>{});
+        }
+      }
+    }
+  }
+}
+
+async function loadAvatarBlob(npcKey, avatarPath) {
+  if (!state.dirHandle || !avatarPath) return;
+  // Normalize: strip leading ../ segments (engine paths are relative to the build dir,
+  // one level above the project root, so '../assets/...' → 'assets/...')
+  let normalized = avatarPath.replace(/\\/g, '/');
+  normalized = normalized.replace(/^(\.\.\/)+/, '');
+  normalized = normalized.replace(/^\//, '');
+  const parts = normalized.split('/').filter(Boolean);
+  if (parts.length === 0) return;
+  try {
+    let cur = state.dirHandle;
+    for (let i = 0; i < parts.length - 1; i++) {
+      cur = await cur.getDirectoryHandle(parts[i]);
+    }
+    const fh = await cur.getFileHandle(parts[parts.length - 1]);
+    const file = await fh.getFile();
+    if (state.avatarBlobs[npcKey]) URL.revokeObjectURL(state.avatarBlobs[npcKey]);
+    state.avatarBlobs[npcKey] = URL.createObjectURL(file);
+  } catch(e) { /* avatar file not found in project, silently ignore */ }
+}
+
+async function getNestedDir(root, parts) {
+  let cur = root;
+  for (const p of parts) {
+    cur = await cur.getDirectoryHandle(p).catch(()=>null);
+    if (!cur) return null;
+  }
+  return cur;
+}
+
+async function readHandle(fh) {
+  const file = await fh.getFile();
+  return file.text();
+}
+
+async function writeHandle(fh, data) {
+  const w = await fh.createWritable();
+  await w.write(JSON.stringify(data, null, 2));
+  await w.close();
+}
+
+async function saveAll() {
+  // Run validation first — collect warnings but don't block save
+  const warnings = validateAll();
+  if (warnings.length > 0) {
+    showValidationWarnings(warnings, async () => await doSave());
+    return;
+  }
+  await doSave();
+}
+
+function validateAll() {
+  const warnings = [];
+  const questIds = new Set(Object.keys(state.quests));
+
+  // Validate quests
+  for (const [id, q] of Object.entries(state.quests)) {
+    const d = q.data;
+    if (!d.title) warnings.push({ type: 'quest', key: id, msg: `Quest "${id}" has no title` });
+    for (const prereq of (d.prereqs || [])) {
+      if (prereq && !questIds.has(prereq)) warnings.push({ type: 'quest', key: id, msg: `Quest "${id}": prereq "${prereq}" does not exist` });
+    }
+    if (d.next_quest && !questIds.has(d.next_quest)) warnings.push({ type: 'quest', key: id, msg: `Quest "${id}": next_quest "${d.next_quest}" does not exist` });
+  }
+
+  // Validate NPC dialogues
+  for (const [key, n] of Object.entries(state.npcs)) {
+    const nodes = n.data.nodes || [];
+    const nodeIds = new Set(nodes.map(nd => nd.id));
+    const referenced = new Set();
+    for (const nd of nodes) {
+      for (const opt of (nd.options || [])) {
+        if (opt.next) referenced.add(opt.next);
+        if (opt.next && !nodeIds.has(opt.next)) {
+          warnings.push({ type: 'npc', key, msg: `NPC "${n.data.npc}": option "${opt.text?.substring(0,30)}" → "${opt.next}" (node not found)` });
+        }
+      }
+    }
+    // Orphan nodes (not referenced from anywhere, excluding root)
+    for (const nd of nodes) {
+      if (nd.id !== 'root' && !referenced.has(nd.id)) {
+        warnings.push({ type: 'npc', key, msg: `NPC "${n.data.npc}": node "${nd.id}" is unreachable (no option points to it)` });
+      }
+    }
+  }
+  return warnings;
+}
+
+function showValidationWarnings(warnings, onContinue) {
+  document.getElementById('modal-title').textContent = '⚠ Validation Warnings';
+  document.getElementById('modal-body').innerHTML = `
+    <p style="color:#f39c12;margin-bottom:12px">Found ${warnings.length} issue(s). You can still save — these are warnings, not errors.</p>
+    <div style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto">
+      ${warnings.map(w => `
+        <div style="background:#1a1a2e;border-left:3px solid ${w.type==='quest'?'#f39c12':'#3498db'};padding:6px 10px;border-radius:0 4px 4px 0;font-size:12px;color:#ccc">
+          <span style="color:${w.type==='quest'?'#f39c12':'#3498db'};font-weight:700">${w.type==='quest'?'📜':'🧙'} ${w.key}</span><br>${w.msg}
+        </div>`).join('')}
+    </div>
+  `;
+  const footer = document.querySelector('#modal .modal-footer');
+  footer.style.display = 'flex';
+  footer.innerHTML = `
+    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    <button class="btn btn-primary" id="val-save-btn">💾 Save anyway</button>
+  `;
+  document.getElementById('val-save-btn').onclick = () => { closeModal(); onContinue(); };
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+async function doSave() {
+  let saved = 0;
+  const failed = [];
+
+  for (const key of state.dirty) {
+    try {
+      if (key === '__index__') {
+        if (state.questIndex.fileHandle) { await writeHandle(state.questIndex.fileHandle, state.questIndex.data); saved++; }
+      } else if (state.quests[key]) {
+        const q = state.quests[key];
+        if (!q.fileHandle) q.fileHandle = await resolveQuestFileHandle(key);
+        if (!q.fileHandle) { failed.push(key); continue; }
+        await writeHandle(q.fileHandle, q.data); saved++;
+      } else if (state.npcs[key]) {
+        const n = state.npcs[key];
+        if (!n.fileHandle) n.fileHandle = await resolveNPCFileHandle(key);
+        if (!n.fileHandle) { failed.push(key); continue; }
+        await writeHandle(n.fileHandle, n.data); saved++;
+      } else if (key === '__techtree__') {
+        if (!state.techTree.fileHandle) { failed.push(key); continue; }
+        await writeHandle(state.techTree.fileHandle, state.techTree.data); saved++;
+      } else if (key === '__interiors__') {
+        if (!state.interiors.fileHandle) { failed.push(key); continue; }
+        await writeHandle(state.interiors.fileHandle, state.interiors.data); saved++;
+      }
+    } catch(e) { failed.push(key); console.error('Save error', key, e); }
+  }
+
+  for (const key of failed) state.dirty.delete(key);
+  state.dirty.clear();
+  renderSidebar();
+
+  if (failed.length > 0) toast(`Saved ${saved}, failed: ${failed.join(', ')}`, true);
+  else toast(saved > 0 ? `Saved ${saved} file(s)` : 'Nothing to save');
+}
+
+async function resolveQuestFileHandle(id) {
+  if (!state.dirHandle) {
+    toast(`No project open — cannot save quest "${id}". Use Export instead.`, true);
+    return null;
+  }
+  try {
+    const qDir = await getNestedDir(state.dirHandle, ['assets','scripts','RTS','quests']);
+    if (!qDir) { toast('Cannot find quests folder in project', true); return null; }
+    const fh = await qDir.getFileHandle(id + '.json', { create: true });
+    // Add to index if not already there
+    const path = `../assets/scripts/RTS/quests/${id}.json`;
+    if (!state.questIndex.data.quests.includes(path)) {
+      state.questIndex.data.quests.push(path);
+      if (state.questIndex.fileHandle) await writeHandle(state.questIndex.fileHandle, state.questIndex.data);
+    }
+    return fh;
+  } catch(e) { toast('Error creating quest file: ' + e.message, true); return null; }
+}
+
+async function resolveNPCFileHandle(key) {
+  if (!state.dirHandle) {
+    toast(`No project open — cannot save NPC "${key}". Use Export instead.`, true);
+    return null;
+  }
+  try {
+    const npcDir = await getNestedDir(state.dirHandle, ['assets','scripts','RTS','NPCs']);
+    if (!npcDir) { toast('Cannot find NPCs folder in project', true); return null; }
+    const folderName = state.npcs[key].folderName || key;
+    const folder = await npcDir.getDirectoryHandle(folderName, { create: true });
+    state.npcs[key].dirHandle = folder;
+    return await folder.getFileHandle('dialogue.json', { create: true });
+  } catch(e) { toast('Error creating NPC file: ' + e.message, true); return null; }
+}
+
+async function exportCurrent() {
+  if (!state.activeItem) return toast('Nothing selected', true);
+  const { type, key } = state.activeItem;
+  let data, name;
+  if (type === 'quest') { data = state.quests[key].data; name = key + '.json'; }
+  else { data = state.npcs[key].data; name = 'dialogue.json'; }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
+}
+
+// ─── NEW ITEMS ────────────────────────────────────────────────────────────────
+async function newQuest() {
+  const id = prompt('Quest ID (filename without .json):', 'quest_new');
+  if (!id || !id.trim()) return;
+  const qid = id.trim();
+  if (state.quests[qid]) return toast('A quest with that ID already exists', true);
+
+  const data = { id: qid, title: 'New Quest', description: '', chain: 'main', prereqs: [], objectives: [], reward: { gold: 0, wood: 0, stone: 0, food: 0 }, next_quest: '' };
+  let fileHandle = null;
+
+  if (state.dirHandle) {
+    try {
+      const qDir = await getNestedDir(state.dirHandle, ['assets','scripts','RTS','quests']);
+      if (qDir) {
+        fileHandle = await qDir.getFileHandle(qid + '.json', { create: true });
+        await writeHandle(fileHandle, data);
+        const path = `../assets/scripts/RTS/quests/${qid}.json`;
+        if (!state.questIndex.data.quests.includes(path)) {
+          state.questIndex.data.quests.push(path);
+          if (state.questIndex.fileHandle) await writeHandle(state.questIndex.fileHandle, state.questIndex.data);
+        }
+        toast(`Created quests/${qid}.json`);
+      }
+    } catch(e) { toast('Error creating quest file: ' + e.message, true); }
+  }
+
+  state.quests[qid] = { data, fileHandle };
+  state.dirty.add(qid);
+  renderSidebar();
+  selectItem('quest', qid);
+}
+
+async function newNPC() {
+  const folderName = prompt('NPC folder name (will be created inside NPCs/):', 'new_npc');
+  if (!folderName || !folderName.trim()) return;
+  const key = folderName.trim();
+
+  if (state.npcs[key]) return toast('An NPC with that folder name already exists', true);
+
+  const data = { npc: key, avatar: '', nodes: [{ id: 'root', text: 'Hello traveller.', options: [] }] };
+  let fileHandle = null;
+  let npcFolderHandle = null;
+
+  if (state.dirHandle) {
+    try {
+      const npcDir = await getNestedDir(state.dirHandle, ['assets','scripts','RTS','NPCs']);
+      if (!npcDir) return toast('Could not find assets/scripts/RTS/NPCs in project', true);
+      npcFolderHandle = await npcDir.getDirectoryHandle(key, { create: true });
+      fileHandle = await npcFolderHandle.getFileHandle('dialogue.json', { create: true });
+      await writeHandle(fileHandle, data);
+      toast(`Created NPCs/${key}/dialogue.json`);
+    } catch(e) { toast('Error creating files: ' + e.message, true); return; }
+  }
+
+  state.npcs[key] = { data, fileHandle, folderName: key, dirHandle: npcFolderHandle };
+  renderSidebar();
+  selectItem('npc', key);
+}
+
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+function renderSidebar() {
+  const ql = document.getElementById('quests-list');
+  ql.innerHTML = '';
+  if (Object.keys(state.quests).length === 0) {
+    ql.innerHTML = '<div style="padding:8px 16px; font-size:12px; color:#555;">No quests</div>';
+  }
+  for (const [id, q] of Object.entries(state.quests)) {
+    const div = document.createElement('div');
+    div.className = 'sidebar-item' + (state.activeItem?.key === id ? ' active' : '');
+    const isDirty = state.dirty.has(id);
+    div.innerHTML = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${q.data.title || id}</span>${isDirty ? '<span class="badge">●</span>' : ''}`;
+    div.onclick = () => selectItem('quest', id);
+    ql.appendChild(div);
+  }
+
+  const nl = document.getElementById('npcs-list');
+  nl.innerHTML = '';
+  if (Object.keys(state.npcs).length === 0) {
+    nl.innerHTML = '<div style="padding:8px 16px; font-size:12px; color:#555;">No NPCs</div>';
+  }
+  for (const [key, n] of Object.entries(state.npcs)) {
+    const div = document.createElement('div');
+    div.className = 'sidebar-item' + (state.activeItem?.key === key ? ' active' : '');
+    const isDirty = state.dirty.has(key);
+    const npcExpectedPath = `assets/scripts/RTS/NPCs/${n.folderName || key}/dialogue.json`;
+    const entry = state.sceneNPCs[npcExpectedPath];
+    const npcInScene = !!entry && (!state.currentScene || entry.scene === state.currentScene);
+    div.innerHTML = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">🧙 ${n.data.npc || key}</span><span title="${npcInScene ? 'Present in scene' : 'Not in any scene'}" style="font-size:12px;margin-left:2px">${npcInScene ? '✅' : '❌'}</span>${isDirty ? '<span class="badge" style="margin-left:4px">●</span>' : ''}`;
+    div.onclick = () => selectItem('npc', key);
+    nl.appendChild(div);
+  }
+
+  const tl = document.getElementById('techtree-list');
+  if (tl) {
+    const ttNodes = state.techTree.data?.nodes || [];
+    const ttDirty = state.dirty.has('__techtree__');
+    tl.innerHTML = ttNodes.length === 0
+      ? '<div style="padding:8px 16px;font-size:12px;color:#555;">No tech nodes</div>'
+      : ttNodes.map(n => {
+          const active = state.activeItem?.type === 'tech' && state.activeItem?.key === n.id;
+          return `<div class="sidebar-item${active ? ' active' : ''}" onclick="selectItem('tech','${n.id}')">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">🔬 ${esc(n.name)}</span>
+            ${ttDirty && active ? '<span class="badge">●</span>' : ''}
+          </div>`;
+        }).join('');
+  }
+
+  const il = document.getElementById('interiors-list');
+  if (il) {
+    const entries = Object.entries(state.interiors.data || {});
+    const isDirty = state.dirty.has('__interiors__');
+    il.innerHTML = entries.length === 0
+      ? '<div style="padding:8px 16px;font-size:12px;color:#555;">No interiors</div>'
+      : entries.map(([key]) => {
+          const active = state.activeItem?.type === 'interior' && state.activeItem?.key === key;
+          return `<div class="sidebar-item${active ? ' active' : ''}" onclick="selectItem('interior','${key}')">
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">🏠 ${key}</span>
+            ${isDirty && active ? '<span class="badge">●</span>' : ''}
+          </div>`;
+        }).join('');
+  }
+}
+
+function toggleSection(id) { /* collapsible — optional */ }
+
+// ─── SELECTION ────────────────────────────────────────────────────────────────
+function selectItem(type, key) {
+  state.activeItem = { type, key };
+  // Clear search and return to normal sidebar
+  const input = document.getElementById('search-input');
+  if (input && input.value) {
+    input.value = '';
+    onSearch('');
+  }
+  renderSidebar();
+  showTabs(type);
+  switchTab('form');
+}
+
+function showTabs(type) {
+  const tabs = document.getElementById('tabs');
+  tabs.style.display = 'flex';
+  document.getElementById('tab-dialogue').style.display = type === 'npc' ? '' : 'none';
+  document.getElementById('tab-techtree').style.display = type === 'tech' ? '' : 'none';
+}
+
+function switchTab(tab) {
+  state.activeTab = tab;
+  ['form','dialogue','techtree','json'].forEach(t => {
+    const el = document.getElementById('tab-' + t);
+    if (el) el.classList.toggle('active', t === tab);
+  });
+
+  const content = document.getElementById('content');
+  const dlgWrap = document.getElementById('dialogue-wrap');
+
+  if (tab === 'dialogue') {
+    content.style.display = 'none';
+    dlgWrap.style.display = 'flex';
+    dlgWrap.style.flex = '1';
+    document.getElementById('main').appendChild(dlgWrap);
+    renderDialogueCanvas();
+  } else {
+    dlgWrap.style.display = 'none';
+    content.style.display = '';
+    if (tab === 'form') renderForm();
+    else if (tab === 'techtree') renderTechTreeCanvas();
+    else renderJsonPreview();
+  }
+}
+
+function goHome() {
+  state.activeItem = null;
+  showEmpty();
+  renderSidebar();
+}
+
+function showEmpty() {
+  document.getElementById('tabs').style.display = 'none';
+  if (!state.dirHandle) {
+    document.getElementById('content').innerHTML = '<div class="empty"><div class="big">📁</div>Open a project folder to get started</div>';
+    return;
+  }
+  const npcCount   = Object.keys(state.npcs).length;
+  const questCount = Object.keys(state.quests).length;
+  const techCount  = state.techTree.data?.nodes?.length || 0;
+  const placedNPCs = Object.values(state.sceneNPCs).filter(e => e.position);
+  const content = document.getElementById('content');
+  content.innerHTML = `
+  <div style="padding:0;height:100%;display:flex;flex-direction:column">
+    <div style="padding:16px 20px 12px;display:flex;gap:20px;flex-shrink:0;flex-wrap:wrap">
+      <div style="background:#0f3460;border:1px solid #1a4a8a;border-radius:6px;padding:10px 20px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#e94560">${questCount}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">Quests</div>
+      </div>
+      <div style="background:#0f3460;border:1px solid #1a4a8a;border-radius:6px;padding:10px 20px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#e94560">${npcCount}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">NPCs</div>
+      </div>
+      <div style="background:#0f3460;border:1px solid #1a4a8a;border-radius:6px;padding:10px 20px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#2ecc71">${placedNPCs.length}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">Placed in scene</div>
+      </div>
+      <div style="background:#0f3460;border:1px solid #1a4a8a;border-radius:6px;padding:10px 20px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:#3498db">${techCount}</div>
+        <div style="font-size:11px;color:#888;margin-top:2px">Tech nodes</div>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+        <button id="home-save-btn" onclick="homeCommitAll()" style="display:none;background:#e94560;border:none;color:#fff;padding:4px 12px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:700">📍 Update Positions</button>
+        <div style="width:1px;height:20px;background:#1a4a8a;margin:0 4px"></div>
+        <button onclick="homeZoom(2)"  style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:16px">＋</button>
+        <span id="home-zoom-label" style="font-size:11px;color:#888;min-width:28px;text-align:center">1x</span>
+        <button onclick="homeZoom(0.5)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:16px">－</button>
+        <button onclick="homeResetView()" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:26px;height:26px;border-radius:4px;cursor:pointer;font-size:13px">⌂</button>
+        <span style="font-size:10px;color:#444;margin-left:4px">Scroll · drag NPC to move · click to open</span>
+      </div>
+    </div>
+    <div style="flex:1;position:relative;overflow:hidden">
+      <canvas id="home-canvas" style="display:block;width:100%;height:100%;cursor:crosshair"></canvas>
+    </div>
+  </div>`;
+
+  const canvas = document.getElementById('home-canvas');
+  requestAnimationFrame(() => initHomeMap(canvas));
+}
+
+const homeView = { zoom: 1, viewX: 0, viewZ: 0 };
+
+function homeZoom(factor) {
+  const canvas = document.getElementById('home-canvas');
+  if (!canvas) return;
+  const cx = 0.5, cz = 0.5;
+  const vs = WORLD_SIZE / homeView.zoom;
+  const pivotX = homeView.viewX + cx * vs;
+  const pivotZ = homeView.viewZ + cz * vs;
+  homeView.zoom = Math.max(1, Math.min(64, homeView.zoom * factor));
+  const newVS = WORLD_SIZE / homeView.zoom;
+  homeView.viewX = pivotX - cx * newVS;
+  homeView.viewZ = pivotZ - cz * newVS;
+  homeClampView();
+  if (canvas._redraw) canvas._redraw();
+  const lbl = document.getElementById('home-zoom-label');
+  if (lbl) lbl.textContent = homeView.zoom + 'x';
+}
+
+function homeResetView() {
+  homeView.zoom = 1; homeView.viewX = 0; homeView.viewZ = 0;
+  const canvas = document.getElementById('home-canvas');
+  if (canvas?._redraw) canvas._redraw();
+  const lbl = document.getElementById('home-zoom-label');
+  if (lbl) lbl.textContent = '1x';
+}
+
+function homeClampView() {
+  const vs = WORLD_SIZE / homeView.zoom;
+  homeView.viewX = Math.max(0, Math.min(WORLD_SIZE - vs, homeView.viewX));
+  homeView.viewZ = Math.max(0, Math.min(WORLD_SIZE - vs, homeView.viewZ));
+}
+
+async function initHomeMap(canvas) {
+  if (!canvas) return;
+  const W = canvas.offsetWidth  || 800;
+  const H = canvas.offsetHeight || 500;
+  canvas.width  = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const img = await loadMinimapImage();
+
+  // Compute draw area preserving image aspect ratio (contain, centered)
+  const imgAspect = img ? img.naturalWidth / img.naturalHeight : 1;
+  let da; // { x, y, w, h } — the rectangle on canvas where the image is drawn
+  const computeDrawArea = () => {
+    if (W / H > imgAspect) {
+      const dh = H, dw = H * imgAspect;
+      da = { x: (W - dw) / 2, y: 0, w: dw, h: dh };
+    } else {
+      const dw = W, dh = W / imgAspect;
+      da = { x: 0, y: (H - dh) / 2, w: dw, h: dh };
+    }
+  };
+  computeDrawArea();
+
+  // World ↔ screen using draw area (not full canvas)
+  const toScreen = (wx, wz) => {
+    const vs = WORLD_SIZE / homeView.zoom;
+    return {
+      x: da.x + ((wx - homeView.viewX) / vs) * da.w,
+      y: da.y + ((wz - homeView.viewZ) / vs) * da.h,
+    };
+  };
+
+  // Normalised position within draw area (0-1) from canvas pixel
+  const canvasToNorm = (cx, cy) => ({
+    nx: (cx - da.x) / da.w,
+    ny: (cy - da.y) / da.h,
+  });
+
+  const redraw = () => {
+    ctx.clearRect(0, 0, W, H);
+    // Background outside image area
+    ctx.fillStyle = '#0a1628';
+    ctx.fillRect(0, 0, W, H);
+
+    if (img) {
+      const { zoom, viewX, viewZ } = homeView;
+      const srcX = (viewX / WORLD_SIZE) * img.naturalWidth;
+      const srcY = (viewZ / WORLD_SIZE) * img.naturalHeight;
+      ctx.drawImage(img, srcX, srcY, img.naturalWidth / zoom, img.naturalHeight / zoom,
+                    da.x, da.y, da.w, da.h);
+    }
+
+    // Draw all placed NPCs
+    for (const [dialoguePath, entry] of Object.entries(state.sceneNPCs)) {
+      if (!entry.position) continue;
+      const p = toScreen(entry.position.x, entry.position.z);
+      if (p.x < da.x - 20 || p.x > da.x + da.w + 20 || p.y < da.y - 20 || p.y > da.y + da.h + 20) continue;
+
+      const npcKey = Object.keys(state.npcs).find(k => {
+        const fn = state.npcs[k].folderName || k;
+        return dialoguePath === `assets/scripts/RTS/NPCs/${fn}/dialogue.json`;
+      });
+      const npcName = npcKey ? (state.npcs[npcKey].data.npc || npcKey) : entry.objectName;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+      ctx.fillStyle = '#e94560';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px Segoe UI, sans-serif';
+      ctx.shadowColor = '#000';
+      ctx.shadowBlur = 3;
+      ctx.fillText(npcName, p.x + 10, p.y + 4);
+      ctx.shadowBlur = 0;
+    }
+
+    const lbl = document.getElementById('home-zoom-label');
+    if (lbl) lbl.textContent = homeView.zoom + 'x';
+  };
+
+  canvas._redraw = redraw;
+  redraw();
+
+  // Dirty positions pending commit { dialoguePath → {x, z} }
+  const homeDirty = {};
+  const updateSaveBtn = () => {
+    const btn = document.getElementById('home-save-btn');
+    if (!btn) return;
+    const n = Object.keys(homeDirty).length;
+    btn.style.display = n > 0 ? '' : 'none';
+    btn.textContent = `📍 Update Positions${n > 1 ? ` (${n})` : ''}`;
+  };
+  canvas._commitAll = async () => {
+    for (const [path, pos] of Object.entries(homeDirty)) {
+      const npcKey = Object.keys(state.npcs).find(k => {
+        const fn = state.npcs[k].folderName || k;
+        return path === `assets/scripts/RTS/NPCs/${fn}/dialogue.json`;
+      });
+      if (npcKey) await commitNPCPosition(npcKey, pos.x, pos.z);
+      delete homeDirty[path];
+    }
+    updateSaveBtn();
+  };
+
+  // Hit-test
+  const npcAt = (mx, my) => {
+    for (const [dialoguePath, entry] of Object.entries(state.sceneNPCs)) {
+      if (!entry.position) continue;
+      const p = toScreen(entry.position.x, entry.position.z);
+      if (Math.hypot(mx - p.x, my - p.y) <= 10) return { dialoguePath, entry };
+    }
+    return null;
+  };
+
+  // Interaction state
+  let mode = 'idle'; // 'idle' | 'pan' | 'drag-npc'
+  let moved = false;
+  let panStart = {}, panViewStart = {};
+  let dragEntry = null, dragPath = null, dragWorldStart = {}, dragCanvasStart = {};
+
+  canvas.onmousedown = (e) => {
+    if (e.button !== 0) return;
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+    const hit = npcAt(mx, my);
+    moved = false;
+    if (hit) {
+      mode = 'drag-npc';
+      dragEntry = hit.entry;
+      dragPath  = hit.dialoguePath;
+      dragWorldStart = { x: hit.entry.position.x, z: hit.entry.position.z };
+      dragCanvasStart = { x: e.clientX, y: e.clientY };
+      canvas.style.cursor = 'grabbing';
+    } else {
+      mode = 'pan';
+      panStart = { x: e.clientX, y: e.clientY };
+      panViewStart = { x: homeView.viewX, z: homeView.viewZ };
+      canvas.style.cursor = 'grabbing';
+    }
+  };
+
+  canvas.onmousemove = (e) => {
+    const r = canvas.getBoundingClientRect();
+    const mx = e.clientX - r.left, my = e.clientY - r.top;
+
+    if (mode === 'idle') {
+      canvas.style.cursor = npcAt(mx, my) ? 'grab' : (homeView.zoom > 1 ? 'grab' : 'crosshair');
+      return;
+    }
+    if (mode === 'pan') {
+      const dx = e.clientX - panStart.x, dy = e.clientY - panStart.y;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) moved = true;
+      const vs = WORLD_SIZE / homeView.zoom;
+      homeView.viewX = panViewStart.x - (dx / da.w) * vs;
+      homeView.viewZ = panViewStart.z - (dy / da.h) * vs;
+      homeClampView(); redraw();
+      return;
+    }
+    if (mode === 'drag-npc') {
+      moved = true;
+      const dx = e.clientX - dragCanvasStart.x, dy = e.clientY - dragCanvasStart.y;
+      const vs = WORLD_SIZE / homeView.zoom;
+      const nx = Math.max(0, Math.min(WORLD_SIZE, Math.round(dragWorldStart.x + (dx / da.w) * vs)));
+      const nz = Math.max(0, Math.min(WORLD_SIZE, Math.round(dragWorldStart.z + (dy / da.h) * vs)));
+      dragEntry.position.x = nx;
+      dragEntry.position.z = nz;
+      homeDirty[dragPath] = { x: nx, z: nz };
+      updateSaveBtn();
+      redraw();
+    }
+  };
+
+  const stopInteraction = () => {
+    mode = 'idle';
+    canvas.style.cursor = homeView.zoom > 1 ? 'grab' : 'crosshair';
+  };
+  canvas.onmouseup   = stopInteraction;
+  canvas.onmouseleave = stopInteraction;
+
+  // Click → open NPC (only if no drag happened)
+  canvas.onclick = (e) => {
+    if (moved) { moved = false; return; }
+    const r = canvas.getBoundingClientRect();
+    const hit = npcAt(e.clientX - r.left, e.clientY - r.top);
+    if (!hit) return;
+    const npcKey = Object.keys(state.npcs).find(k => {
+      const fn = state.npcs[k].folderName || k;
+      return hit.dialoguePath === `assets/scripts/RTS/NPCs/${fn}/dialogue.json`;
+    });
+    if (npcKey) selectItem('npc', npcKey);
+  };
+
+  // Wheel zoom
+  canvas.onwheel = (e) => {
+    e.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    const { nx, ny } = canvasToNorm(e.clientX - r.left, e.clientY - r.top);
+    const vs = WORLD_SIZE / homeView.zoom;
+    const pivotX = homeView.viewX + nx * vs, pivotZ = homeView.viewZ + ny * vs;
+    homeView.zoom = Math.max(1, Math.min(64, homeView.zoom * (e.deltaY < 0 ? 2 : 0.5)));
+    const newVS = WORLD_SIZE / homeView.zoom;
+    homeView.viewX = pivotX - nx * newVS;
+    homeView.viewZ = pivotZ - ny * newVS;
+    homeClampView(); redraw();
+  };
+}
+
+async function homeCommitAll() {
+  const canvas = document.getElementById('home-canvas');
+  if (canvas?._commitAll) await canvas._commitAll();
+}
+
+// ─── QUEST FORM ───────────────────────────────────────────────────────────────
+function renderForm() {
+  if (!state.activeItem) return;
+  const { type, key } = state.activeItem;
+  if (type === 'quest') renderQuestForm(key);
+  else if (type === 'tech') renderTechForm(key);
+  else if (type === 'interior') {
+    renderInteriorForm(key);
+    requestAnimationFrame(() => {
+      initInteriorMinimap(key);
+      initInteriorCityMap(key);
+    });
+  } else {
+    renderNPCForm(key);
+    requestAnimationFrame(() => {
+      initMinimapPreview(key);
+      initAddToScenePreview(key);
+    });
+  }
+}
+
+function renderQuestForm(id) {
+  const q = state.quests[id].data;
+  const content = document.getElementById('content');
+  content.innerHTML = `
+  <div class="form-grid">
+    <div class="field"><label>ID</label><input id="q-id" value="${esc(q.id)}" onchange="updateQuest('id',this.value,'${id}')"></div>
+    <div class="field"><label>Title</label><input id="q-title" value="${esc(q.title)}" oninput="updateQuest('title',this.value,'${id}')"></div>
+    <div class="field"><label>Chain</label><input value="${esc(q.chain||'main')}" oninput="updateQuest('chain',this.value,'${id}')"></div>
+    <div class="field"><label>Next Quest ID</label><input value="${esc(q.next_quest||'')}" oninput="updateQuest('next_quest',this.value,'${id}')"></div>
+  </div>
+  <div class="form-grid wide" style="margin-top:12px">
+    <div class="field"><label>Description</label><textarea oninput="updateQuest('description',this.value,'${id}')">${esc(q.description)}</textarea></div>
+    <div class="field"><label>Prereqs (comma separated IDs)</label><input value="${esc((q.prereqs||[]).join(', '))}" oninput="updateQuest('prereqs',this.value,'${id}',true)"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🎯 Objectives <button onclick="addObjective('${id}')">+ Add</button></div>
+    <div id="objectives-list">${renderObjectiveCards(q, id)}</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🏆 Reward</div>
+    <div class="reward-row">
+      ${['gold','wood','stone','food'].map(r => `
+        <div class="field"><label>${r}</label><input type="number" min="0" value="${q.reward?.[r]||0}" oninput="updateReward('${r}',this.value,'${id}')"></div>
+      `).join('')}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Quest Relations</div>
+    ${renderQuestRelations(id)}
+  </div>
+
+  <div class="section">
+    <div class="section-title">🧙 NPCs Involved</div>
+    ${renderQuestNPCLinks(id)}
+  </div>
+
+  <div style="margin-top:24px;display:flex;gap:8px">
+    <button class="btn btn-primary" onclick="saveAll()">💾 Save</button>
+    <button class="btn btn-secondary" style="border-color:#e94560;color:#e94560" onclick="deleteQuest('${id}')">🗑 Delete Quest</button>
+  </div>
+  `;
+}
+
+function questCard(qid, role, roleColor) {
+  const q = state.quests[qid];
+  const title = q ? q.data.title : qid;
+  const exists = !!q;
+  return `<div class="card" style="display:flex;align-items:center;gap:12px;cursor:${exists ? 'pointer' : 'default'};opacity:${exists ? '1' : '0.5'}"
+    ${exists ? `onclick="selectItem('quest','${qid}')"` : ''}>
+    <div style="width:8px;height:8px;border-radius:50%;background:${roleColor};flex-shrink:0"></div>
+    <div style="flex:1">
+      <div style="font-size:11px;color:${roleColor};font-weight:700;text-transform:uppercase;letter-spacing:.5px">${role}</div>
+      <div style="font-size:13px;color:#e0e0e0;margin-top:2px">${esc(title)}</div>
+      <div style="font-size:11px;color:#555">${esc(qid)}</div>
+    </div>
+    ${exists ? `<span style="color:#555;font-size:12px">→</span>` : `<span style="color:#e94560;font-size:11px">⚠ no existe</span>`}
+  </div>`;
+}
+
+function renderQuestRelations(id) {
+  const q = state.quests[id].data;
+  const parts = [];
+
+  // Prereqs this quest depends on
+  for (const pre of (q.prereqs || [])) {
+    if (pre) parts.push(questCard(pre, 'Requiere', '#f39c12'));
+  }
+
+  // Quests that list this quest as prereq (reverse)
+  for (const [otherId, other] of Object.entries(state.quests)) {
+    if (otherId === id) continue;
+    if ((other.data.prereqs || []).includes(id)) {
+      parts.push(questCard(otherId, 'Desbloquea', '#2ecc71'));
+    }
+  }
+
+  // Previous in chain (any quest whose next_quest === id)
+  for (const [otherId, other] of Object.entries(state.quests)) {
+    if (otherId === id) continue;
+    if (other.data.next_quest === id) {
+      parts.push(questCard(otherId, 'Anterior en cadena', '#3498db'));
+    }
+  }
+
+  // Next in chain
+  if (q.next_quest) {
+    parts.push(questCard(q.next_quest, 'Siguiente en cadena', '#3498db'));
+  }
+
+  return parts.length ? parts.join('') : `<div style="color:#555;font-size:13px">Esta quest no tiene relaciones con otras.</div>`;
+}
+
+function renderQuestNPCLinks(questId) {
+  const results = [];
+  for (const [npcKey, npcEntry] of Object.entries(state.npcs)) {
+    const roles = new Set();
+    for (const node of (npcEntry.data.nodes || [])) {
+      for (const opt of (node.options || [])) {
+        if (opt.quest_id === questId) {
+          if (opt.quest_action === 'accept') roles.add('accept');
+          if (opt.quest_action === 'complete') roles.add('complete');
+        }
+        if (opt.hide_if_quest_active === questId || opt.hide_if_quest_done === questId ||
+            opt.show_if_quest_active === questId || opt.show_if_quest_done === questId) {
+          roles.add('condition');
+        }
+      }
+    }
+    if (roles.size > 0) results.push({ npcKey, npc: npcEntry.data, roles });
+  }
+
+  if (results.length === 0) return `<div style="color:#555;font-size:13px">No NPC references this quest.</div>`;
+
+  const roleLabel = { accept: { text: 'Accept', color: '#2ecc71' }, complete: { text: 'Complete', color: '#3498db' }, condition: { text: 'Condition', color: '#f39c12' } };
+
+  return results.map(({ npcKey, npc, roles }) => {
+    const clickable = !!state.npcs[npcKey];
+    const badges = [...roles].map(r => `<span style="font-size:10px;background:${roleLabel[r].color};color:#111;border-radius:3px;padding:1px 6px;font-weight:700">${roleLabel[r].text}</span>`).join(' ');
+    return `<div class="card" style="display:flex;align-items:center;gap:12px;cursor:${clickable ? 'pointer' : 'default'}" ${clickable ? `onclick="selectItem('npc','${npcKey}')"` : ''}>
+      <span style="font-size:22px">🧙</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:#e0e0e0">${esc(npc.npc)}</div>
+        <div style="margin-top:4px;display:flex;gap:4px;flex-wrap:wrap">${badges}</div>
+      </div>
+      ${clickable ? `<span style="color:#555;font-size:12px">→</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderObjectiveCards(q, qid) {
+  return (q.objectives||[]).map((obj, i) => `
+  <div class="card" id="obj-card-${i}">
+    <button class="card-del" onclick="removeObjective('${qid}',${i})">×</button>
+    <div class="card-row">
+      <div class="field"><label>ID</label><input value="${esc(obj.id)}" oninput="updateObjective('${qid}',${i},'id',this.value)"></div>
+      <div class="field"><label>Type</label>
+        <select onchange="updateObjective('${qid}',${i},'type',this.value); renderForm()">
+          ${['resource_min','building_acquired','unit_count','flag'].map(t => `<option${obj.type===t?' selected':''}>${t}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field"><label>Label</label><input value="${esc(obj.label)}" oninput="updateObjective('${qid}',${i},'label',this.value)"></div>
+    </div>
+    <div class="card-row" style="margin-top:8px">
+      ${objTypeFields(obj, qid, i)}
+    </div>
+  </div>`).join('');
+}
+
+function objTypeFields(obj, qid, i) {
+  const upd = (k,v) => `oninput="updateObjective('${qid}',${i},'${k}',this.value)"`;
+  if (obj.type === 'resource_min') return `
+    <div class="field"><label>Resource</label><select ${upd('resource','')}>${['gold','wood','stone','food'].map(r=>`<option${obj.resource===r?' selected':''}>${r}</option>`).join('')}</select></div>
+    <div class="field"><label>Amount</label><input type="number" min="0" value="${obj.amount||0}" ${upd('amount','')}></div>`;
+  if (obj.type === 'building_acquired') return `
+    <div class="field"><label>Building</label><input value="${esc(obj.building||'')}" ${upd('building','')}></div>
+    <div class="field"><label>Count</label><input type="number" min="1" value="${obj.count||1}" ${upd('count','')}></div>`;
+  if (obj.type === 'unit_count') return `
+    <div class="field"><label>Unit Type</label><input value="${esc(obj.unit_type||'')}" ${upd('unit_type','')}></div>
+    <div class="field"><label>Count</label><input type="number" min="1" value="${obj.count||1}" ${upd('count','')}></div>`;
+  if (obj.type === 'flag') return `
+    <div class="field"><label>Flag Name</label><input value="${esc(obj.flag||'')}" ${upd('flag','')}></div>`;
+  return '';
+}
+
+function updateQuest(field, value, id, isArray) {
+  const q = state.quests[id].data;
+  if (isArray) q[field] = value.split(',').map(s=>s.trim()).filter(Boolean);
+  else q[field] = value;
+  state.dirty.add(id);
+  renderSidebar();
+}
+
+function updateReward(res, val, id) {
+  state.quests[id].data.reward[res] = parseInt(val)||0;
+  state.dirty.add(id);
+}
+
+function updateObjective(qid, i, field, value) {
+  const obj = state.quests[qid].data.objectives[i];
+  if (field === 'amount' || field === 'count') obj[field] = parseInt(value)||0;
+  else obj[field] = value;
+  state.dirty.add(qid);
+}
+
+function addObjective(qid) {
+  state.quests[qid].data.objectives.push({ id: 'obj_' + Date.now(), type: 'resource_min', resource: 'gold', amount: 0, label: '' });
+  state.dirty.add(qid);
+  renderForm();
+}
+
+function removeObjective(qid, i) {
+  state.quests[qid].data.objectives.splice(i, 1);
+  state.dirty.add(qid);
+  renderForm();
+}
+
+function deleteQuest(id) {
+  if (!confirm(`Delete quest "${state.quests[id].data.title}"?`)) return;
+  delete state.quests[id];
+  state.dirty.delete(id);
+  state.activeItem = null;
+  renderSidebar();
+  showEmpty();
+}
+
+// ─── PREFIX MANAGER ──────────────────────────────────────────────────────────
+function buildQuestChains() {
+  const allIds = Object.keys(state.quests);
+  const pointedTo = new Set(allIds.map(id => state.quests[id].data.next_quest).filter(Boolean));
+  const roots = allIds.filter(id => !pointedTo.has(id));
+
+  return roots.map(rootId => {
+    const chain = [];
+    let cur = rootId;
+    const visited = new Set();
+    while (cur && state.quests[cur] && !visited.has(cur)) {
+      chain.push(cur);
+      visited.add(cur);
+      cur = state.quests[cur].data.next_quest || null;
+    }
+    return chain;
+  }).sort((a, b) => a[0].localeCompare(b[0]));
+}
+
+function currentPrefixOf(id) {
+  const m = id.match(/^(\d+)_/);
+  return m ? m[1] : '';
+}
+
+function openPrefixManager() {
+  const chains = buildQuestChains();
+  const wrap = document.getElementById('prefix-chains');
+  wrap.innerHTML = chains.map((chain, ci) => {
+    const existingPrefix = currentPrefixOf(chain[0]);
+    const chainHtml = chain.map(id => {
+      const q = state.quests[id].data;
+      return `<span style="background:#0f3460;border:1px solid #1a4a8a;border-radius:4px;padding:3px 8px;font-size:12px;color:#e0e0e0" title="${esc(q.title)}">${esc(id)}</span>`;
+    }).join('<span style="color:#555;font-size:14px;margin:0 4px">→</span>');
+
+    const chainLabel = chain.length > 1 ? `Cadena (${chain.length})` : `Quest suelta`;
+    return `
+    <div style="background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:12px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <span style="font-size:11px;color:#888;min-width:90px">${chainLabel}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <label style="font-size:11px;color:#888">Prefijo:</label>
+          <input id="prefix-input-${ci}" type="text" value="${esc(existingPrefix)}" placeholder="01"
+            style="width:52px;background:#16213e;border:1px solid #e94560;color:#e0e0e0;padding:4px 8px;border-radius:4px;font-size:13px;font-weight:700;text-align:center"
+            oninput="previewPrefixChain(${ci})">
+        </div>
+      </div>
+      <div id="prefix-preview-${ci}" style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">${chainHtml}</div>
+    </div>`;
+  }).join('') || `<div style="color:#555;font-size:13px">No hay quests cargadas.</div>`;
+
+  // Store chains for later use
+  document.getElementById('prefix-chains').dataset.chains = JSON.stringify(chains);
+  document.getElementById('prefix-overlay').style.display = 'flex';
+}
+
+function previewPrefixChain(ci) {
+  const chains = JSON.parse(document.getElementById('prefix-chains').dataset.chains);
+  const chain = chains[ci];
+  const prefix = document.getElementById(`prefix-input-${ci}`).value.trim();
+  const preview = document.getElementById(`prefix-preview-${ci}`);
+
+  preview.innerHTML = chain.map(id => {
+    const newId = prefix ? `${prefix}_${stripPrefix(id)}` : stripPrefix(id);
+    const changed = newId !== id;
+    return `<span style="background:#0f3460;border:1px solid ${changed ? '#e94560' : '#1a4a8a'};border-radius:4px;padding:3px 8px;font-size:12px;color:${changed ? '#e94560' : '#e0e0e0'}">${esc(newId)}</span>`;
+  }).join('<span style="color:#555;font-size:14px;margin:0 4px">→</span>');
+}
+
+function stripPrefix(id) {
+  return id.replace(/^\d+_/, '');
+}
+
+function renameQuestId(oldId, newId) {
+  if (oldId === newId) return;
+  const entry = state.quests[oldId];
+  entry.data.id = newId;
+  state.quests[newId] = entry;
+  delete state.quests[oldId];
+  state.dirty.add(newId);
+  state.dirty.delete(oldId);
+
+  // Update all references in other quests
+  for (const q of Object.values(state.quests)) {
+    if (q.data.next_quest === oldId) { q.data.next_quest = newId; state.dirty.add(q.data.id); }
+    if (q.data.prereqs) {
+      const idx = q.data.prereqs.indexOf(oldId);
+      if (idx !== -1) { q.data.prereqs[idx] = newId; state.dirty.add(q.data.id); }
+    }
+  }
+
+  // Update all NPC dialogue references
+  const npcRefFields = ['quest_id', 'hide_if_quest_active', 'hide_if_quest_done', 'show_if_quest_active', 'show_if_quest_done'];
+  for (const [npcKey, npcEntry] of Object.entries(state.npcs)) {
+    let touched = false;
+    for (const node of (npcEntry.data.nodes || [])) {
+      for (const opt of (node.options || [])) {
+        for (const f of npcRefFields) {
+          if (opt[f] === oldId) { opt[f] = newId; touched = true; }
+        }
+      }
+    }
+    if (touched) state.dirty.add(npcKey);
+  }
+
+  // Fix activeItem if it pointed to old id
+  if (state.activeItem?.type === 'quest' && state.activeItem.key === oldId) {
+    state.activeItem.key = newId;
+  }
+}
+
+function applyPrefixes() {
+  const chains = JSON.parse(document.getElementById('prefix-chains').dataset.chains);
+  let renamed = 0;
+
+  // Build full rename map first (avoid mid-loop collision)
+  const renameMap = []; // [oldId, newId]
+  for (let ci = 0; ci < chains.length; ci++) {
+    const chain = chains[ci];
+    const prefix = document.getElementById(`prefix-input-${ci}`).value.trim();
+    for (const oldId of chain) {
+      const newId = prefix ? `${prefix}_${stripPrefix(oldId)}` : stripPrefix(oldId);
+      if (newId !== oldId) renameMap.push([oldId, newId]);
+    }
+  }
+
+  // Apply renames
+  for (const [oldId, newId] of renameMap) {
+    // oldId might have already been renamed in a previous step — find current key
+    const currentKey = Object.keys(state.quests).find(k => state.quests[k].data.id === oldId || k === oldId);
+    if (currentKey) { renameQuestId(currentKey, newId); renamed++; }
+  }
+
+  closePrefixManager();
+  renderSidebar();
+  renderForm();
+  toast(renamed > 0 ? `${renamed} quest${renamed > 1 ? 's' : ''} renombradas — guarda para persistir` : 'Sin cambios');
+}
+
+function closePrefixManager() {
+  document.getElementById('prefix-overlay').style.display = 'none';
+}
+
+// ─── TECH TREE ───────────────────────────────────────────────────────────────
+function techNodes() { return state.techTree.data?.nodes || []; }
+function techNodeById(id) { return techNodes().find(n => n.id === id); }
+
+function addTechNode() {
+  if (!state.techTree.data) state.techTree.data = { nodes: [] };
+  const newId = 'tech_' + Date.now();
+  state.techTree.data.nodes.push({ id: newId, name: 'New Tech', cost: 100, reqBldg: '', reqTechs: [], effect: '', children: [] });
+  state.dirty.add('__techtree__');
+  renderSidebar();
+  selectItem('tech', newId);
+}
+
+function deleteTechNode(id) {
+  if (!confirm(`Delete tech "${techNodeById(id)?.name}"?`)) return;
+  state.techTree.data.nodes = state.techTree.data.nodes.filter(n => n.id !== id);
+  // Remove references from other nodes
+  for (const n of state.techTree.data.nodes) {
+    n.children = (n.children || []).filter(c => c !== id);
+    n.reqTechs = (n.reqTechs || []).filter(r => r !== id);
+  }
+  state.dirty.add('__techtree__');
+  state.activeItem = null;
+  renderSidebar();
+  showEmpty();
+}
+
+function updateTechField(id, field, value) {
+  const node = techNodeById(id);
+  if (!node) return;
+  if (field === 'cost') node[field] = parseInt(value) || 0;
+  else node[field] = value;
+  state.dirty.add('__techtree__');
+}
+
+function updateTechId(oldId, newId) {
+  newId = newId.trim();
+  if (!newId || newId === oldId) return;
+  if (techNodeById(newId)) { toast('ID already exists', true); return; }
+  const node = techNodeById(oldId);
+  if (!node) return;
+  node.id = newId;
+  // Update references
+  for (const n of state.techTree.data.nodes) {
+    n.children = (n.children || []).map(c => c === oldId ? newId : c);
+    n.reqTechs = (n.reqTechs || []).map(r => r === oldId ? newId : r);
+  }
+  state.dirty.add('__techtree__');
+  state.activeItem.key = newId;
+  renderSidebar();
+  renderForm();
+}
+
+function techArrayAdd(nodeId, field, value) {
+  value = value.trim();
+  if (!value) return;
+  const node = techNodeById(nodeId);
+  if (!node) return;
+  if (!(node[field] || []).includes(value)) {
+    node[field] = [...(node[field] || []), value];
+    state.dirty.add('__techtree__');
+    renderForm();
+  }
+}
+
+function techArrayRemove(nodeId, field, value) {
+  const node = techNodeById(nodeId);
+  if (!node) return;
+  node[field] = (node[field] || []).filter(v => v !== value);
+  state.dirty.add('__techtree__');
+  renderForm();
+}
+
+function renderTechForm(id) {
+  const node = techNodeById(id);
+  if (!node) return showEmpty();
+  const content = document.getElementById('content');
+
+  const allIds = techNodes().map(n => n.id).filter(nid => nid !== id);
+
+  const chipList = (field, items) => items.map(v => {
+    const exists = !!techNodeById(v);
+    return `<span style="display:inline-flex;align-items:center;gap:4px;background:#0f3460;border:1px solid ${exists ? '#1a4a8a' : '#e94560'};border-radius:12px;padding:2px 10px;font-size:12px;cursor:${exists ? 'pointer' : 'default'}" ${exists ? `onclick="selectItem('tech','${v}')"` : ''} title="${exists ? 'Click to open' : 'Node not found'}">
+      ${esc(v)}${!exists ? ' ⚠' : ''}
+      <button onclick="event.stopPropagation();techArrayRemove('${id}','${field}','${v}')" style="background:none;border:none;color:#888;cursor:pointer;font-size:14px;line-height:1;padding:0 0 0 4px">×</button>
+    </span>`;
+  }).join('');
+
+  const addSelect = (field, label) => `
+    <div style="display:flex;gap:6px;align-items:center;margin-top:6px">
+      <select id="add-${field}-select" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;padding:4px 8px;border-radius:4px;font-size:12px">
+        <option value="">— add ${label} —</option>
+        ${allIds.filter(nid => !(node[field]||[]).includes(nid)).map(nid => `<option value="${esc(nid)}">${esc(nid)}</option>`).join('')}
+      </select>
+      <button class="btn btn-secondary" style="padding:4px 10px;font-size:12px" onclick="techArrayAdd('${id}','${field}',document.getElementById('add-${field}-select').value)">Add</button>
+    </div>`;
+
+  content.innerHTML = `
+  <div class="form-grid">
+    <div class="field"><label>ID</label><input value="${esc(node.id)}" onchange="updateTechId('${id}',this.value)"></div>
+    <div class="field"><label>Name</label><input value="${esc(node.name)}" oninput="updateTechField('${id}','name',this.value)"></div>
+    <div class="field"><label>Cost (gold)</label><input type="number" min="0" value="${node.cost||0}" oninput="updateTechField('${id}','cost',this.value)"></div>
+    <div class="field"><label>Required Building</label><input value="${esc(node.reqBldg||'')}" oninput="updateTechField('${id}','reqBldg',this.value)" placeholder="e.g. barracks"></div>
+  </div>
+  <div class="form-grid wide" style="margin-top:12px">
+    <div class="field"><label>Effect</label><input value="${esc(node.effect||'')}" oninput="updateTechField('${id}','effect',this.value)" placeholder="e.g. unitDamage+25%"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">⬆ Required Techs</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">${chipList('reqTechs', node.reqTechs||[]) || '<span style="color:#555;font-size:13px">None</span>'}</div>
+    ${addSelect('reqTechs','prereq')}
+  </div>
+
+  <div class="section">
+    <div class="section-title">⬇ Unlocks (children)</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">${chipList('children', node.children||[]) || '<span style="color:#555;font-size:13px">None</span>'}</div>
+    ${addSelect('children','child')}
+  </div>
+
+  <div class="section">
+    <div class="section-title">🔗 Referenced by</div>
+    ${renderTechBackrefs(id)}
+  </div>
+
+  <div style="margin-top:24px;display:flex;gap:8px">
+    <button class="btn btn-primary" onclick="saveAll()">💾 Save</button>
+    <button class="btn btn-secondary" style="padding:6px 12px;font-size:13px" onclick="switchTab('techtree')">🌳 Tree View</button>
+    <button class="btn btn-secondary" style="border-color:#e94560;color:#e94560" onclick="deleteTechNode('${id}')">🗑 Delete</button>
+  </div>`;
+}
+
+function renderTechBackrefs(id) {
+  const refs = techNodes().filter(n => (n.children||[]).includes(id)).map(n => n.id);
+  if (!refs.length) return `<span style="color:#555;font-size:13px">No other tech points to this node.</span>`;
+  return refs.map(rid => {
+    const rn = techNodeById(rid);
+    return `<div class="card" style="display:flex;align-items:center;gap:10px;cursor:pointer" onclick="selectItem('tech','${rid}')">
+      <span style="font-size:18px">🔬</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700">${esc(rn?.name||rid)}</div><div style="font-size:11px;color:#555">${esc(rid)}</div></div>
+      <span style="color:#555;font-size:12px">→</span>
+    </div>`;
+  }).join('');
+}
+
+function renderTechTreeCanvas() {
+  const nodes = techNodes();
+  if (!nodes.length) {
+    document.getElementById('content').innerHTML = '<div class="empty"><div class="big">🔬</div>No tech nodes yet — add one from the sidebar.</div>';
+    return;
+  }
+
+  // BFS layered layout
+  const childrenOf = {};
+  const parentCount = {};
+  for (const n of nodes) { childrenOf[n.id] = n.children || []; parentCount[n.id] = 0; }
+  for (const n of nodes) for (const c of (n.children||[])) { if (parentCount[c] !== undefined) parentCount[c]++; }
+  const roots = nodes.map(n => n.id).filter(id => parentCount[id] === 0);
+
+  const level = {};
+  const queue = roots.map(r => ({ id: r, lvl: 0 }));
+  while (queue.length) {
+    const { id, lvl } = queue.shift();
+    if (level[id] !== undefined && level[id] >= lvl) continue;
+    level[id] = lvl;
+    for (const c of (childrenOf[id]||[])) queue.push({ id: c, lvl: lvl + 1 });
+  }
+  // Nodes without level (isolated / circular)
+  for (const n of nodes) if (level[n.id] === undefined) level[n.id] = 0;
+
+  const byLevel = {};
+  for (const n of nodes) { const l = level[n.id]; (byLevel[l] = byLevel[l]||[]).push(n.id); }
+
+  const NW = 200, NH = 80, HGAP = 60, VGAP = 20, XOFF = 30, YOFF = 30;
+  const pos = {};
+  for (const [lvl, ids] of Object.entries(byLevel)) {
+    ids.forEach((id, i) => { pos[id] = { x: XOFF + lvl * (NW + HGAP), y: YOFF + i * (NH + VGAP) }; });
+  }
+
+  const totalW = Math.max(...Object.values(pos).map(p => p.x)) + NW + XOFF;
+  const totalH = Math.max(...Object.values(pos).map(p => p.y)) + NH + YOFF;
+
+  const activeId = state.activeItem?.type === 'tech' ? state.activeItem.key : null;
+
+  // SVG arrows
+  let arrows = '';
+  for (const n of nodes) {
+    const from = pos[n.id];
+    if (!from) continue;
+    for (const c of (n.children||[])) {
+      const to = pos[c];
+      if (!to) continue;
+      const x1 = from.x + NW, y1 = from.y + NH/2;
+      const x2 = to.x,       y2 = to.y + NH/2;
+      const mx = (x1 + x2) / 2;
+      arrows += `<path d="M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}" stroke="#1a4a8a" stroke-width="2" fill="none" marker-end="url(#arr)"/>`;
+    }
+  }
+
+  // SVG nodes
+  let rects = '';
+  for (const n of nodes) {
+    const p = pos[n.id];
+    if (!p) continue;
+    const isActive = n.id === activeId;
+    const isRoot = (parentCount[n.id]||0) === 0;
+    const isLeaf = !(n.children||[]).length;
+    const col = isActive ? '#e94560' : isRoot ? '#f39c12' : isLeaf ? '#555' : '#1a4a8a';
+    rects += `<g onclick="selectItem('tech','${n.id}')" style="cursor:pointer">
+      <rect x="${p.x}" y="${p.y}" width="${NW}" height="${NH}" rx="6" fill="#16213e" stroke="${col}" stroke-width="${isActive?2.5:1.5}"/>
+      <text x="${p.x+NW/2}" y="${p.y+22}" text-anchor="middle" fill="${isActive?'#e94560':'#e0e0e0'}" font-size="13" font-weight="700" font-family="Segoe UI,sans-serif">${esc(n.name)}</text>
+      <text x="${p.x+NW/2}" y="${p.y+40}" text-anchor="middle" fill="#888" font-size="11" font-family="Segoe UI,sans-serif">${esc(n.id)}</text>
+      <text x="${p.x+NW/2}" y="${p.y+58}" text-anchor="middle" fill="#f39c12" font-size="11" font-family="Segoe UI,sans-serif">💰 ${n.cost||0}${n.reqBldg ? '  🏠 '+n.reqBldg : ''}</text>
+      <text x="${p.x+NW/2}" y="${p.y+72}" text-anchor="middle" fill="#2ecc71" font-size="10" font-family="Segoe UI,sans-serif">${esc(n.effect||'')}</text>
+    </g>`;
+  }
+
+  document.getElementById('content').innerHTML = `
+  <div style="overflow:auto;width:100%;height:100%">
+    <svg width="${totalW}" height="${totalH}" style="display:block">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#1a4a8a"/>
+        </marker>
+      </defs>
+      ${arrows}
+      ${rects}
+    </svg>
+  </div>`;
+}
+
+// ─── NPC FORM ─────────────────────────────────────────────────────────────────
+function npcQuestRefs(npcData) {
+  // Collect all quest IDs referenced anywhere in the dialogue
+  const refs = {}; // questId → Set of roles ('accept','complete','condition')
+  for (const node of (npcData.nodes || [])) {
+    for (const opt of (node.options || [])) {
+      const qid = opt.quest_id;
+      if (qid) {
+        if (!refs[qid]) refs[qid] = new Set();
+        if (opt.quest_action) refs[qid].add(opt.quest_action);
+      }
+      for (const cond of ['hide_if_quest_active','hide_if_quest_done','show_if_quest_active','show_if_quest_done']) {
+        if (opt[cond]) {
+          if (!refs[opt[cond]]) refs[opt[cond]] = new Set();
+          refs[opt[cond]].add('condition');
+        }
+      }
+    }
+  }
+  return refs;
+}
+
+function renderNPCQuestLinks(npcData) {
+  const refs = npcQuestRefs(npcData);
+  const ids = Object.keys(refs);
+  if (!ids.length) return `<div style="font-size:12px;color:#555;padding:4px 0">No quests referenced in this dialogue.</div>`;
+
+  return ids.map(qid => {
+    const quest = state.quests[qid];
+    const title = quest ? esc(quest.data.title || qid) : `<span style="color:#e94560">${esc(qid)} ⚠ not found</span>`;
+    const roles = [...refs[qid]];
+    const roleTags = roles.map(r => {
+      if (r === 'accept')    return `<span style="background:#1a4a1a;color:#2ecc71;border-radius:3px;padding:1px 6px;font-size:10px">accept</span>`;
+      if (r === 'complete')  return `<span style="background:#1a3a1a;color:#27ae60;border-radius:3px;padding:1px 6px;font-size:10px">complete</span>`;
+      if (r === 'condition') return `<span style="background:#1a2a3a;color:#3498db;border-radius:3px;padding:1px 6px;font-size:10px">condition</span>`;
+      return '';
+    }).join(' ');
+    const chain = quest ? `<span style="color:#555;font-size:10px">${esc(quest.data.chain || '')}</span>` : '';
+    const clickable = !!quest;
+    return `
+    <div onclick="${clickable ? `selectItem('quest','${esc(qid)}')` : ''}" style="display:flex;align-items:center;gap:8px;background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:7px 12px;margin-bottom:6px;cursor:${clickable ? 'pointer' : 'default'};font-size:12px" ${clickable ? `onmouseenter="this.style.borderColor='#e94560'" onmouseleave="this.style.borderColor='#1a4a8a'"` : ''}>
+      <span style="font-size:16px">📜</span>
+      <div style="flex:1">
+        <div style="font-weight:700;color:#ccc">${title} ${chain}</div>
+        <div style="margin-top:3px;display:flex;gap:4px;flex-wrap:wrap">${roleTags}</div>
+      </div>
+      ${clickable ? `<span style="color:#555;font-size:11px">→</span>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderNPCForm(key) {
+  const n = state.npcs[key].data;
+  const content = document.getElementById('content');
+  const blobUrl = state.avatarBlobs[key] || '';
+  const avatarPath = n.avatar || '';
+
+  // Scene presence check — respects current scene filter
+  const npcFolder = state.npcs[key].folderName || key;
+  const expectedPath = `assets/scripts/RTS/NPCs/${npcFolder}/dialogue.json`;
+  const sceneEntry = state.sceneNPCs[expectedPath];
+  const inScene = !!sceneEntry && (!state.currentScene || sceneEntry.scene === state.currentScene);
+
+  // ── Scene badge (compact strip, no map here) ──────────────────────────────
+  const sceneBadge = inScene
+    ? `<div style="display:flex;align-items:center;gap:8px;background:#0a2a1a;border:1px solid #2ecc71;border-radius:6px;padding:8px 14px;font-size:13px">
+        <span style="font-size:18px">✅</span>
+        <div>
+          <div style="color:#2ecc71;font-weight:700">Present in scene</div>
+          <div style="color:#888;font-size:11px;margin-top:2px">
+            <b style="color:#ccc">${esc(sceneEntry.objectName)}</b> · ${esc(sceneEntry.scene)}
+            ${sceneEntry.position ? ` · (${sceneEntry.position.x}, ${sceneEntry.position.y}, ${sceneEntry.position.z})` : ''}
+          </div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button class="btn btn-primary" style="padding:4px 10px;font-size:12px" onclick="applyMinimapPosition('${key}')">📍 Update</button>
+          <button class="btn btn-secondary" style="border-color:#e94560;color:#e94560;padding:4px 10px;font-size:12px" onclick="removeNPCFromScene('${key}')">🗑 Remove</button>
+        </div>
+       </div>`
+    : `<div style="display:flex;align-items:center;gap:8px;background:#2a0a0a;border:1px solid #e94560;border-radius:6px;padding:8px 14px;font-size:13px">
+        <span style="font-size:18px">❌</span>
+        <div>
+          <div style="color:#e94560;font-weight:700">Not in any scene</div>
+          <div style="color:#888;font-size:11px;margin-top:2px">Use the map to place this NPC.</div>
+        </div>
+       </div>`;
+
+  // ── Right column: map panel ───────────────────────────────────────────────
+  const mapPanel = inScene
+    ? `<div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+          🗺 Scene Map
+          <button onclick="mmSetZoom(2)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:14px;line-height:1">＋</button>
+          <span id="mm-zoom-label" style="font-size:11px;color:#888;min-width:24px;text-align:center">1x</span>
+          <button onclick="mmSetZoom(0.5)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:14px;line-height:1">－</button>
+          <button onclick="mmResetView()" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:12px;line-height:1">⌂</button>
+          <span style="font-size:10px;color:#444">Scroll · drag · click/drag 📍</span>
+        </div>
+        <div id="minimap-wrap" style="position:relative;display:inline-block">
+          <canvas id="minimap-canvas" width="320" height="320" style="display:block;border-radius:4px;border:1px solid #1a4a8a"></canvas>
+          <div class="mm-marker draggable" id="mm-marker" title="Drag to reposition">📍</div>
+        </div>
+        <div id="minimap-coords" style="font-size:11px;color:#888;margin-top:6px">
+          Position: <b id="mm-x" style="color:#e0e0e0">${sceneEntry.position?.x ?? 0}</b>,
+          <b id="mm-y" style="color:#e0e0e0">${sceneEntry.position?.y ?? 0}</b>,
+          <b id="mm-z" style="color:#e0e0e0">${sceneEntry.position?.z ?? 0}</b>
+        </div>
+      </div>`
+    : `<div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px">🗺 Place in Scene</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <label style="font-size:12px;color:#888;white-space:nowrap">Scene:</label>
+          <select id="place-scene-select" style="background:#16213e;border:1px solid #0f3460;color:#e0e0e0;padding:4px 8px;border-radius:4px;font-size:12px;flex:1">
+            ${state.sceneNames.map(s => `<option value="${esc(s)}">${esc(s)}</option>`).join('')}
+          </select>
+        </div>
+        <div id="minimap-wrap-add" style="position:relative;display:inline-block;cursor:crosshair">
+          <canvas id="minimap-canvas-add" width="320" height="320" style="display:block;border-radius:4px;border:1px solid #4a1a1a"></canvas>
+          <div id="mm-marker-add" style="display:none;position:absolute;transform:translate(-50%,-50%);pointer-events:none;font-size:18px;filter:drop-shadow(0 0 3px #000)">📍</div>
+        </div>
+        <div id="minimap-coords-add" style="font-size:11px;color:#888;margin-top:6px">
+          Position: <b id="mm-ax" style="color:#e0e0e0">512</b>, <b id="mm-az" style="color:#e0e0e0">512</b>
+        </div>
+        <button class="btn btn-primary" style="margin-top:10px;width:100%" onclick="confirmAddNPCToScene('${key}')">➕ Place NPC in Scene</button>
+      </div>`;
+
+  content.innerHTML = `
+  <div style="display:flex;gap:24px;align-items:flex-start">
+
+    <!-- LEFT: form fields -->
+    <div style="flex:1;min-width:0">
+      <div class="form-grid wide">
+        <div class="field"><label>NPC Name</label><input value="${esc(n.npc)}" oninput="updateNPC('npc',this.value,'${key}')"></div>
+        <div class="field"><label>Observations</label><textarea rows="4" oninput="updateNPC('observations',this.value,'${key}')" placeholder="Notas, trasfondo, comportamiento esperado…">${esc(n.observations || '')}</textarea></div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🗺 Scene Presence</div>
+        ${sceneBadge}
+      </div>
+
+      <div class="section">
+        <div class="section-title">📜 Quests Involved</div>
+        ${renderNPCQuestLinks(n)}
+      </div>
+
+      <div class="section">
+        <div class="section-title">🖼 Appearance</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div style="background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:12px">
+            <div style="font-size:10px;color:#e94560;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;font-weight:700">🖼 Avatar <span style="color:#444;font-weight:400">· dialogue.json</span></div>
+            <div class="avatar-row">
+              <div class="avatar-preview" id="avatar-preview-box">
+                ${blobUrl ? `<img id="avatar-img" src="${blobUrl}" alt="avatar">` : `<span>No<br>image</span>`}
+              </div>
+              <div class="avatar-inputs">
+                <div class="avatar-path-row">
+                  <input id="avatar-path-input" value="${esc(avatarPath)}" oninput="updateNPC('avatar',this.value,'${key}')" placeholder="assets/textures/...">
+                  <button class="avatar-browse" onclick="browseAvatar('${key}')">📂 Browse</button>
+                </div>
+                <div style="font-size:11px;color:#555">Imagen mostrada en el HUD de diálogo.</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:#0a1628;border:1px solid ${inScene ? '#1a4a8a' : '#2a2a2a'};border-radius:6px;padding:12px;${!inScene ? 'opacity:.5' : ''}">
+            <div style="font-size:10px;color:#e94560;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;font-weight:700">🗿 3D Model <span style="color:#444;font-weight:400">· scene JSON${!inScene ? ' · coloca el NPC primero' : ''}</span></div>
+            <div class="avatar-row">
+              <div class="avatar-preview" style="font-size:26px;display:flex;align-items:center;justify-content:center;background:#0a1628;border:2px solid #1a4a8a;border-radius:6px">🗿</div>
+              <div class="avatar-inputs">
+                <div class="avatar-path-row">
+                  <input id="model-path-input" value="${esc(inScene ? (sceneEntry.model || '') : '')}" readonly style="color:#aaa;cursor:default" placeholder="${inScene ? '(none)' : '—'}" ${!inScene ? 'disabled' : ''}>
+                  <button class="avatar-browse" onclick="browseModel('${key}')" ${!inScene ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>📂 Browse</button>
+                </div>
+                <div style="font-size:11px;color:#555">Fichero FBX usado en la escena.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">💬 Nodes <button onclick="switchTab('dialogue')">Open Visual Editor</button></div>
+        <div style="color:#888;font-size:13px;margin-top:4px">${n.nodes?.length||0} nodes defined. Use the Dialogue Tree tab to edit visually.</div>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+          ${(n.nodes||[]).map(node=>`
+            <div style="background:#0f3460;border:1px solid #1a4a8a;border-radius:4px;padding:6px 12px;font-size:12px;cursor:pointer" onclick="switchTab('dialogue')">${node.id}${node.id==='root'?' ⭐':''}</div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="margin-top:24px;display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="saveAll()">💾 Save</button>
+        <button class="btn btn-secondary" style="border-color:#e94560;color:#e94560" onclick="deleteNPC('${key}')">🗑 Delete NPC</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: map panel (always visible) -->
+    <div style="flex-shrink:0">
+      ${mapPanel}
+    </div>
+
+  </div>`;
+}
+
+async function browseAvatar(npcKey) {
+  try {
+    const [fileHandle] = await window.showOpenFilePicker({
+      types: [{ description: 'Images', accept: { 'image/*': ['.png','.jpg','.jpeg','.webp','.bmp'] } }],
+      multiple: false
+    });
+
+    const file = await fileHandle.getFile();
+
+    // Blob URL for preview
+    if (state.avatarBlobs[npcKey]) URL.revokeObjectURL(state.avatarBlobs[npcKey]);
+    state.avatarBlobs[npcKey] = URL.createObjectURL(file);
+
+    // Compute project-relative path using dirHandle.resolve()
+    let finalPath = file.name;
+    if (state.dirHandle) {
+      const parts = await state.dirHandle.resolve(fileHandle);
+      if (parts) {
+        // parts = ['assets','textures','RTS','UI','avatar.png']
+        finalPath = '../' + parts.join('/');
+      }
+    }
+
+    state.npcs[npcKey].data.avatar = finalPath;
+    state.dirty.add(npcKey);
+    renderNPCForm(npcKey);
+  } catch(e) {
+    if (e.name !== 'AbortError') toast('Error picking image: ' + e.message, true);
+  }
+}
+
+async function browseModel(npcKey) {
+  try {
+    const [fileHandle] = await window.showOpenFilePicker({
+      types: [{ description: '3D Models', accept: { 'application/octet-stream': ['.fbx'] } }],
+      multiple: false
+    });
+
+    let finalPath = fileHandle.name;
+    if (state.dirHandle) {
+      const parts = await state.dirHandle.resolve(fileHandle);
+      if (parts) finalPath = '../' + parts.join('/');
+    }
+
+    await applyModelToScene(npcKey, finalPath);
+  } catch(e) {
+    if (e.name !== 'AbortError') toast('Error picking model: ' + e.message, true);
+  }
+}
+
+async function applyModelToScene(npcKey, modelPath) {
+  if (!state.dirHandle) return toast('No project open', true);
+  const folderName = state.npcs[npcKey]?.folderName || npcKey;
+  const dialoguePath = `assets/scripts/RTS/NPCs/${folderName}/dialogue.json`;
+  const sceneEntry = state.sceneNPCs[dialoguePath];
+  if (!sceneEntry) return toast('NPC not found in scene', true);
+
+  const targetScene = state.currentScene || sceneEntry.scene;
+  try {
+    const scenesDir = await getNestedDir(state.dirHandle, ['assets','scenes']);
+    if (!scenesDir) return toast('Cannot find assets/scenes', true);
+    const fh = await scenesDir.getFileHandle(targetScene).catch(() => null);
+    if (!fh) return toast(`Scene ${targetScene} not found`, true);
+    const sceneData = JSON.parse(await readHandle(fh));
+    let patched = false;
+    for (const obj of (sceneData.objects || [])) {
+      if (obj.name === sceneEntry.objectName) {
+        obj.model = modelPath;
+        sceneEntry.model = modelPath;
+        patched = true;
+        break;
+      }
+    }
+    if (patched) {
+      await writeHandle(fh, sceneData);
+      toast(`Model updated to ${modelPath.split('/').pop()}`);
+      renderNPCForm(npcKey);
+      requestAnimationFrame(() => { initMinimapPreview(npcKey); initAddToScenePreview(npcKey); });
+    } else {
+      toast('Object not found in scene', true);
+    }
+  } catch(e) { toast('Error updating model: ' + e.message, true); }
+}
+
+function updateNPC(field, value, key) {
+  state.npcs[key].data[field] = value;
+  state.dirty.add(key);
+  renderSidebar();
+}
+
+function deleteNPC(key) {
+  if (!confirm(`Delete NPC "${state.npcs[key].data.npc}"?`)) return;
+  delete state.npcs[key];
+  state.dirty.delete(key);
+  state.activeItem = null;
+  renderSidebar();
+  showEmpty();
+}
+
+// ─── JSON PREVIEW ─────────────────────────────────────────────────────────────
+function renderJsonPreview() {
+  if (!state.activeItem) return;
+  const { type, key } = state.activeItem;
+  const data = type === 'quest' ? state.quests[key].data
+             : type === 'tech'  ? state.techTree.data
+             : state.npcs[key].data;
+  document.getElementById('content').innerHTML = `
+    <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+      <button class="btn btn-secondary" onclick="copyJson()">📋 Copy</button>
+    </div>
+    <pre id="json-preview" style="background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:16px;font-size:12px;color:#a8d8ea;overflow:auto;max-height:calc(100vh - 200px)">${esc(JSON.stringify(data,null,2))}</pre>
+  `;
+}
+
+function copyJson() {
+  const pre = document.getElementById('json-preview');
+  navigator.clipboard.writeText(pre.textContent);
+  toast('Copied to clipboard');
+}
+
+// ─── DIALOGUE CANVAS ──────────────────────────────────────────────────────────
+function renderDialogueCanvas() {
+  if (!state.activeItem || state.activeItem.type !== 'npc') return;
+  const key = state.activeItem.key;
+  dlg.npcKey = key;
+  const npcData = state.npcs[key].data;
+  document.getElementById('dl-npc-name').textContent = npcData.npc;
+
+  // Init positions if not set
+  dlg.nodes = {};
+  npcData.nodes.forEach((node, i) => {
+    dlg.nodes[node.id] = {
+      x: dlg.nodes[node.id]?.x ?? 40 + (i % 4) * 300,
+      y: dlg.nodes[node.id]?.y ?? 40 + Math.floor(i / 4) * 220,
+      data: node
+    };
+  });
+
+  renderCanvas();
+  setupCanvasEvents();
+}
+
+function renderCanvas() {
+  const canvas = document.getElementById('dialogue-canvas');
+  canvas.innerHTML = '<svg id="svg-lines" style="position:absolute;top:0;left:0;pointer-events:none;overflow:visible"></svg>';
+  canvas.style.transform = `translate(${dlg.panX}px,${dlg.panY}px) scale(${dlg.scale})`;
+  canvas.style.transformOrigin = '0 0';
+
+  // Render nodes
+  for (const [id, n] of Object.entries(dlg.nodes)) {
+    const el = createNodeEl(id, n);
+    canvas.appendChild(el);
+  }
+
+  // Draw lines after DOM settles
+  requestAnimationFrame(drawLines);
+}
+
+function createNodeEl(id, n) {
+  const node = n.data;
+  const div = document.createElement('div');
+  const isTerminal = !node.options || node.options.length === 0;
+  const hasQuest = (node.options||[]).some(o => o.quest_action);
+  const hasCond  = (node.options||[]).some(o => o.hide_if_quest_done || o.hide_if_quest_active || o.show_if_quest_active || o.show_if_quest_done);
+  const nodeClass = id === 'root' ? 'root-node' : isTerminal ? 'terminal-node' : hasQuest ? 'quest-node' : hasCond ? 'condition-node' : '';
+  div.className = 'dnode' + (nodeClass ? ' ' + nodeClass : '');
+  div.id = 'dnode-' + id;
+  div.style.left = n.x + 'px';
+  div.style.top = n.y + 'px';
+
+  // Count how many options across all nodes point to this node
+  let inDegree = 0;
+  for (const other of Object.values(dlg.nodes)) {
+    for (const opt of (other.data.options || [])) {
+      if (opt.next === id) inDegree++;
+    }
+  }
+  const inBadge = inDegree > 0 ? `<span title="${inDegree} option(s) lead here" style="font-size:10px;background:#1a4a8a;color:#7ab;border-radius:3px;padding:0 4px;margin-left:4px">← ${inDegree}</span>` : '';
+
+  const optHtml = (node.options||[]).map((opt, oi) => {
+    const tags = [];
+    if (opt.quest_action) tags.push(opt.quest_action === 'accept' ? '✅' : '🏁');
+    if (opt.hide_if_quest_done || opt.hide_if_quest_active) tags.push('👁');
+    if (opt.show_if_quest_active || opt.show_if_quest_done) tags.push('🔒');
+    const target = opt.next ? dlg.nodes[opt.next] : null;
+    const isBack = target && target.x < n.x - 40;
+    const missingNext = opt.next && !dlg.nodes[opt.next];
+    const indicator = !opt.next
+      ? `<button onclick="event.stopPropagation();createNodeFromOption('${id}',${oi})" style="font-size:10px;background:none;border:1px dashed #2ecc71;color:#2ecc71;border-radius:3px;padding:0 5px;cursor:pointer" title="Create new node">+ node</button>`
+      : missingNext
+        ? `<span style="color:#e94560;font-size:10px" title="Node '${opt.next}' does not exist">⚠ ${opt.next}</span>`
+        : isBack
+          ? `<span class="opt-back" title="Returns to ${opt.next}">↩ ${opt.next}</span>`
+          : `<span class="opt-arrow">→ ${opt.next}</span>`;
+    return `<div class="dnode-option" onclick="jumpToNode('${opt.next}')">
+      <span>${esc(opt.text.substring(0,35))}${opt.text.length>35?'…':''}</span>
+      <span>${tags.join('')} ${indicator}</span>
+    </div>`;
+  }).join('');
+
+  div.innerHTML = `
+    <div class="dnode-header" onmousedown="startNodeDrag(event,'${id}')">
+      <span class="node-id">${id}${id==='root'?' ⭐':''}${inBadge}</span>
+      <button class="node-del" onclick="deleteDialogueNode('${id}')">×</button>
+    </div>
+    <div class="dnode-body">
+      <div class="dnode-text">${esc(node.text?.substring(0,120)||'')}</div>
+      <div class="dnode-options">${optHtml}</div>
+      <button class="dnode-add-opt" onclick="addOptionToNode('${id}')">＋ option</button>
+      <button class="dnode-edit-btn" onclick="openNodeModal('${id}')">✏ Edit node</button>
+    </div>
+  `;
+  return div;
+}
+
+function drawLines() {
+  const svg = document.getElementById('svg-lines');
+  if (!svg) return;
+  svg.innerHTML = '';
+
+  // Arrow marker — two variants: red (forward) and grey (back-edge)
+  const defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
+  const mkFwd = makeMarker('arr-fwd', '#e94560');
+  defs.appendChild(mkFwd);
+  svg.appendChild(defs);
+
+  for (const [fromId, n] of Object.entries(dlg.nodes)) {
+    if (!document.getElementById('dnode-' + fromId)) continue;
+    const seen = new Set(); // deduplicate: one arrow per unique (from, to) pair per node
+    for (const opt of (n.data.options || [])) {
+      if (!opt.next || !dlg.nodes[opt.next] || seen.has(opt.next)) continue;
+      seen.add(opt.next);
+      if (!document.getElementById('dnode-' + opt.next)) continue;
+
+      const tn = dlg.nodes[opt.next];
+      const fx = n.x + 260, fy = n.y + 50;
+      const tx = tn.x,      ty = tn.y + 50;
+
+      // Back-edge: omit arrow, shown as ↩ badge on the option instead
+      if (tx < fx - 40) continue;
+
+      const cx = (fx + tx) / 2;
+      const line = document.createElementNS('http://www.w3.org/2000/svg','path');
+      line.setAttribute('d', `M${fx},${fy} C${cx},${fy} ${cx},${ty} ${tx},${ty}`);
+      line.setAttribute('stroke', '#e94560');
+      line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('fill', 'none');
+      line.setAttribute('opacity', '0.5');
+      line.setAttribute('marker-end', 'url(#arr-fwd)');
+      svg.appendChild(line);
+    }
+  }
+}
+
+function makeMarker(id, color) {
+  const marker = document.createElementNS('http://www.w3.org/2000/svg','marker');
+  marker.setAttribute('id', id);
+  marker.setAttribute('markerWidth','8'); marker.setAttribute('markerHeight','8');
+  marker.setAttribute('refX','6');       marker.setAttribute('refY','3');
+  marker.setAttribute('orient','auto');
+  const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+  p.setAttribute('d','M0,0 L0,6 L8,3 z');
+  p.setAttribute('fill', color);
+  marker.appendChild(p);
+  return marker;
+}
+
+function jumpToNode(id) {
+  if (!id || !dlg.nodes[id]) return;
+  const n = dlg.nodes[id];
+  const wrap = document.getElementById('dialogue-canvas-wrap');
+  const cx = wrap.clientWidth / 2;
+  const cy = wrap.clientHeight / 2;
+  dlg.panX = cx - n.x * dlg.scale - 130 * dlg.scale;
+  dlg.panY = cy - n.y * dlg.scale - 80 * dlg.scale;
+  document.getElementById('dialogue-canvas').style.transform = `translate(${dlg.panX}px,${dlg.panY}px) scale(${dlg.scale})`;
+  // Highlight
+  document.querySelectorAll('.dnode').forEach(el => el.classList.remove('selected'));
+  const el = document.getElementById('dnode-' + id);
+  if (el) el.classList.add('selected');
+}
+
+function setupCanvasEvents() {
+  const wrap = document.getElementById('dialogue-canvas-wrap');
+  wrap.onmousedown = (e) => {
+    if (e.target === wrap || e.target.id === 'dialogue-canvas' || e.target.id === 'svg-lines') {
+      dlg.panning = true;
+      dlg.panStart = { x: e.clientX - dlg.panX, y: e.clientY - dlg.panY };
+      wrap.classList.add('grabbing');
+    }
+  };
+  wrap.onmousemove = (e) => {
+    if (dlg.panning) {
+      dlg.panX = e.clientX - dlg.panStart.x;
+      dlg.panY = e.clientY - dlg.panStart.y;
+      document.getElementById('dialogue-canvas').style.transform = `translate(${dlg.panX}px,${dlg.panY}px) scale(${dlg.scale})`;
+    }
+    if (dlg.dragging) {
+      const n = dlg.nodes[dlg.dragging.id];
+      n.x = (e.clientX - dlg.dragging.ox - dlg.panX) / dlg.scale;
+      n.y = (e.clientY - dlg.dragging.oy - dlg.panY) / dlg.scale;
+      const el = document.getElementById('dnode-' + dlg.dragging.id);
+      if (el) { el.style.left = n.x + 'px'; el.style.top = n.y + 'px'; }
+      drawLines();
+    }
+  };
+  wrap.onmouseup = () => {
+    dlg.panning = false;
+    dlg.dragging = null;
+    wrap.classList.remove('grabbing');
+  };
+  wrap.onwheel = (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.9 : 1.1;
+    dlg.scale = Math.max(0.3, Math.min(2, dlg.scale * delta));
+    document.getElementById('dialogue-canvas').style.transform = `translate(${dlg.panX}px,${dlg.panY}px) scale(${dlg.scale})`;
+  };
+}
+
+function startNodeDrag(e, id) {
+  e.stopPropagation();
+  const n = dlg.nodes[id];
+  dlg.dragging = { id, ox: e.clientX - n.x * dlg.scale - dlg.panX, oy: e.clientY - n.y * dlg.scale - dlg.panY };
+}
+
+function addDialogueNode() {
+  const id = 'node_' + Date.now();
+  const nodeData = { id, text: 'New node text.', options: [] };
+  dlg.nodes[id] = { x: 100 - dlg.panX / dlg.scale, y: 100 - dlg.panY / dlg.scale, data: nodeData };
+  syncNodesToNPC();
+  renderCanvas();
+}
+
+function deleteDialogueNode(id) {
+  if (id === 'root') return toast('Cannot delete root node', true);
+  if (!confirm('Delete node "' + id + '"?')) return;
+  delete dlg.nodes[id];
+  // Remove references
+  for (const n of Object.values(dlg.nodes)) {
+    (n.data.options||[]).forEach(opt => { if (opt.next === id) opt.next = ''; });
+  }
+  syncNodesToNPC();
+  renderCanvas();
+}
+
+function addOptionToNode(nodeId) {
+  dlg.nodes[nodeId].data.options = dlg.nodes[nodeId].data.options || [];
+  dlg.nodes[nodeId].data.options.push({ text: 'New option', next: '' });
+  syncNodesToNPC();
+  openNodeModal(nodeId);
+}
+
+function createNodeFromOption(fromId, optIndex) {
+  const newId = 'node_' + Date.now().toString(36);
+  const nodeData = { id: newId, text: 'New node text.', options: [] };
+  // Place new node to the right of the source
+  const src = dlg.nodes[fromId];
+  dlg.nodes[newId] = { x: src.x + 340, y: src.y + optIndex * 60, data: nodeData };
+  // Wire the option
+  dlg.nodes[fromId].data.options[optIndex].next = newId;
+  syncNodesToNPC();
+  renderCanvas();
+  // Open edit modal for the new node
+  requestAnimationFrame(() => openNodeModal(newId));
+}
+
+function autoLayout() {
+  const nodes = dlg.nodes;
+  const ids = Object.keys(nodes);
+  if (!ids.length) return;
+
+  // 1. Collect all edges
+  const allEdges = {};
+  ids.forEach(id => { allEdges[id] = []; });
+  for (const id of ids) {
+    for (const opt of (nodes[id].data.options || [])) {
+      const nxt = opt.next;
+      if (nxt && nodes[nxt] && !allEdges[id].includes(nxt)) allEdges[id].push(nxt);
+    }
+  }
+
+  // 2. DFS to classify edges — back-edges (to nodes on current stack) are skipped
+  //    so cycles don't corrupt the level assignment
+  const startId = ids.includes('root') ? 'root' : ids[0];
+  const visited = new Set(), inStack = new Set();
+  const fwd = {}; // forward/tree/cross edges only (no back-edges)
+  ids.forEach(id => { fwd[id] = []; });
+
+  const dfs = (id) => {
+    visited.add(id); inStack.add(id);
+    for (const child of allEdges[id]) {
+      if (inStack.has(child)) continue; // back-edge → skip
+      if (!fwd[id].includes(child)) fwd[id].push(child);
+      if (!visited.has(child)) dfs(child);
+    }
+    inStack.delete(id);
+  };
+  dfs(startId);
+  for (const id of ids) if (!visited.has(id)) dfs(id); // disconnected nodes
+
+  // 3. Longest-path level assignment over forward edges only
+  const level = { [startId]: 0 };
+  const queue = [startId];
+  while (queue.length) {
+    const cur = queue.shift();
+    for (const child of fwd[cur]) {
+      const proposed = level[cur] + 1;
+      if (level[child] === undefined || level[child] < proposed) {
+        level[child] = proposed;
+        queue.push(child);
+      }
+    }
+  }
+  let maxLvl = 0;
+  for (const id of ids) if ((level[id] ?? 0) > maxLvl) maxLvl = level[id];
+  for (const id of ids) if (level[id] === undefined) level[id] = ++maxLvl;
+
+  // 4. Group into columns
+  const byLevel = {};
+  for (const id of ids) (byLevel[level[id]] = byLevel[level[id]] || []).push(id);
+  const levels = Object.keys(byLevel).map(Number).sort((a, b) => a - b);
+
+  // 5. Build parent map from forward edges
+  const fwdParents = {};
+  ids.forEach(id => { fwdParents[id] = []; });
+  for (const id of ids) for (const child of fwd[id]) if (!fwdParents[child].includes(id)) fwdParents[child].push(id);
+
+  // 6. Barycenter heuristic — 3 passes (L→R, R→L, L→R)
+  const order = {};
+  (byLevel[levels[0]] || []).forEach((id, i) => { order[id] = i; });
+
+  const avgPos = (arr) => arr.length ? arr.reduce((s, p) => s + (order[p] ?? 0), 0) / arr.length : null;
+
+  const sweepFwd = () => {
+    for (const l of levels.slice(1)) {
+      const g = byLevel[l];
+      g.sort((a, b) => {
+        const pa = fwdParents[a].filter(p => level[p] < l);
+        const pb = fwdParents[b].filter(p => level[p] < l);
+        return (avgPos(pa) ?? order[a] ?? 0) - (avgPos(pb) ?? order[b] ?? 0);
+      });
+      g.forEach((id, i) => { order[id] = i; });
+    }
+  };
+
+  const sweepBwd = () => {
+    for (const l of [...levels].reverse().slice(1)) {
+      const g = byLevel[l];
+      g.sort((a, b) => {
+        const ca = fwd[a].filter(c => level[c] > l);
+        const cb = fwd[b].filter(c => level[c] > l);
+        return (avgPos(ca) ?? order[a] ?? 0) - (avgPos(cb) ?? order[b] ?? 0);
+      });
+      g.forEach((id, i) => { order[id] = i; });
+    }
+  };
+
+  sweepFwd(); sweepBwd(); sweepFwd();
+
+  // 7. Assign pixel positions — variable height per node, fixed column pitch
+  const NODE_W = 260, COL_GAP = 80, X_OFF = 40, Y_OFF = 40, ROW_GAP = 24;
+  const estH = (id) => {
+    const opts = (nodes[id].data.options || []).length;
+    return 46 + 68 + opts * 26 + 52; // header + text + options + buttons
+  };
+
+  // Stack nodes within each column using their real heights
+  for (const l of levels) {
+    const group = byLevel[l]; // already sorted by barycenter
+    let y = Y_OFF;
+    for (const id of group) {
+      nodes[id].x = X_OFF + l * (NODE_W + COL_GAP);
+      nodes[id].y = y;
+      y += estH(id) + ROW_GAP;
+    }
+  }
+
+  renderCanvas();
+}
+
+function zoomToFit() {
+  const ids = Object.keys(dlg.nodes);
+  if (!ids.length) return;
+  const wrap = document.getElementById('dialogue-canvas-wrap');
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+  const NODE_W = 260;
+  const pad = 60;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (const id of ids) {
+    const n = dlg.nodes[id];
+    // Estimate real node height: header + text + options + buttons
+    const optCount = (n.data.options || []).length;
+    const nodeH = 46 + 70 + optCount * 26 + 52;
+    minX = Math.min(minX, n.x);
+    minY = Math.min(minY, n.y);
+    maxX = Math.max(maxX, n.x + NODE_W);
+    maxY = Math.max(maxY, n.y + nodeH);
+  }
+  const scaleX = (W - pad * 2) / (maxX - minX);
+  const scaleY = (H - pad * 2) / (maxY - minY);
+  dlg.scale = Math.min(scaleX, scaleY, 1);
+  // Center the fitted content in the viewport
+  const fittedW = (maxX - minX) * dlg.scale;
+  const fittedH = (maxY - minY) * dlg.scale;
+  dlg.panX = (W - fittedW) / 2 - minX * dlg.scale;
+  dlg.panY = (H - fittedH) / 2 - minY * dlg.scale;
+  renderCanvas();
+}
+
+function syncNodesToNPC() {
+  if (!dlg.npcKey || !state.npcs[dlg.npcKey]) return;
+  state.npcs[dlg.npcKey].data.nodes = Object.values(dlg.nodes).map(n => n.data);
+  state.dirty.add(dlg.npcKey);
+  renderSidebar();
+}
+
+// ─── NODE MODAL ───────────────────────────────────────────────────────────────
+function openNodeModal(id) {
+  dlg.editingNodeId = id;
+  const n = dlg.nodes[id].data;
+  const questIds = Object.keys(state.quests);
+  const questOpts = ['', ...questIds].map(q => `<option value="${q}">${q||'(none)'}</option>`).join('');
+
+  let html = `
+  <div class="field"><label>Node ID</label><input id="mn-id" value="${esc(n.id)}" ${id==='root'?'disabled':''}></div>
+  <div class="field" style="margin-top:10px"><label>Text</label><textarea id="mn-text" style="min-height:90px">${esc(n.text||'')}</textarea></div>
+  <div class="section-title" style="margin-top:16px">Options</div>
+  <div id="mn-options">
+  ${(n.options||[]).map((opt, i) => `
+    <div class="opt-card">
+      <button class="card-del" onclick="removeModalOption(${i})">×</button>
+      <div class="field"><label>Option Text</label><input class="opt-text" data-i="${i}" value="${esc(opt.text||'')}"></div>
+      <div class="opt-fields">
+        <div class="field"><label>Next Node</label><input class="opt-next" data-i="${i}" value="${esc(opt.next||'')}"></div>
+        <div class="field"><label>Quest Action</label>
+          <select class="opt-qa" data-i="${i}">
+            <option value=""${!opt.quest_action?' selected':''}>none</option>
+            <option value="accept"${opt.quest_action==='accept'?' selected':''}>accept</option>
+            <option value="complete"${opt.quest_action==='complete'?' selected':''}>complete</option>
+          </select>
+        </div>
+        <div class="field"><label>Quest ID</label>
+          <select class="opt-qid" data-i="${i}">${questOpts}</select>
+        </div>
+        <div class="field"><label>Hide if quest done</label><input class="opt-hd" data-i="${i}" value="${esc(opt.hide_if_quest_done||'')}"></div>
+        <div class="field"><label>Hide if quest active</label><input class="opt-ha" data-i="${i}" value="${esc(opt.hide_if_quest_active||'')}"></div>
+        <div class="field"><label>Show if quest active</label><input class="opt-sa" data-i="${i}" value="${esc(opt.show_if_quest_active||'')}"></div>
+        <div class="field"><label>Show if quest done</label><input class="opt-sd" data-i="${i}" value="${esc(opt.show_if_quest_done||'')}"></div>
+      </div>
+    </div>
+  `).join('')}
+  </div>
+  <button class="btn btn-secondary" style="margin-top:8px;width:100%" onclick="addModalOption()">＋ Add Option</button>
+  `;
+
+  // Set quest selects after render
+  document.getElementById('modal-title').textContent = 'Edit Node: ' + id;
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+
+  // Set select values (can't do inline easily with options)
+  n.options?.forEach((opt, i) => {
+    const qidSel = document.querySelector(`.opt-qid[data-i="${i}"]`);
+    if (qidSel) qidSel.value = opt.quest_id || '';
+  });
+}
+
+function removeModalOption(i) {
+  const n = dlg.nodes[dlg.editingNodeId].data;
+  n.options.splice(i, 1);
+  syncNodesToNPC();
+  openNodeModal(dlg.editingNodeId);
+}
+
+function addModalOption() {
+  const n = dlg.nodes[dlg.editingNodeId].data;
+  n.options = n.options || [];
+  n.options.push({ text: '', next: '' });
+  syncNodesToNPC();
+  openNodeModal(dlg.editingNodeId);
+}
+
+function saveNodeModal() {
+  const id = dlg.editingNodeId;
+  const n = dlg.nodes[id].data;
+  const newId = document.getElementById('mn-id').value.trim();
+  n.text = document.getElementById('mn-text').value;
+
+  // Collect options
+  const cards = document.querySelectorAll('.opt-card');
+  n.options = Array.from(cards).map((card, i) => {
+    const opt = {};
+    const getText = sel => card.querySelector(sel)?.value?.trim() || '';
+    opt.text = getText('.opt-text');
+    const next = getText('.opt-next'); if (next) opt.next = next;
+    const qa = getText('.opt-qa'); if (qa) { opt.quest_action = qa; }
+    const qid = getText('.opt-qid'); if (qid) opt.quest_id = qid;
+    const hd = getText('.opt-hd'); if (hd) opt.hide_if_quest_done = hd;
+    const ha = getText('.opt-ha'); if (ha) opt.hide_if_quest_active = ha;
+    const sa = getText('.opt-sa'); if (sa) opt.show_if_quest_active = sa;
+    const sd = getText('.opt-sd'); if (sd) opt.show_if_quest_done = sd;
+    return opt;
+  });
+
+  // Rename node if ID changed
+  if (newId && newId !== id && !dlg.nodes[newId]) {
+    dlg.nodes[newId] = { ...dlg.nodes[id], data: { ...n, id: newId } };
+    delete dlg.nodes[id];
+    // Update references
+    for (const nn of Object.values(dlg.nodes)) {
+      (nn.data.options||[]).forEach(opt => { if (opt.next === id) opt.next = newId; });
+    }
+    dlg.editingNodeId = newId;
+  } else {
+    n.id = id;
+  }
+
+  syncNodesToNPC();
+  closeModal();
+  renderCanvas();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  const footer = document.querySelector('#modal .modal-footer');
+  footer.style.display = '';
+  // Restore default footer buttons in case they were replaced (e.g. by validation modal)
+  if (!footer.querySelector('[onclick="saveNodeModal()"]')) {
+    footer.innerHTML = `
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveNodeModal()">Save</button>
+    `;
+  }
+}
+document.getElementById('modal-overlay').onclick = (e) => { if (e.target.id === 'modal-overlay') closeModal(); };
+
+// ─── MINIMAP PREVIEW ─────────────────────────────────────────────────────────
+const WORLD_SIZE = 1024; // matches RTSUtils.WORLD_SIZE ~991.84, scene coords 0-1024
+// ─── INTERIOR EDITOR ──────────────────────────────────────────────────────────
+
+function renderInteriorForm(key) {
+  const interior = state.interiors.data[key];
+  if (!interior) return;
+  const pf       = interior.pathfinding    || {};
+  const sp       = interior.spawnEntry     || { x: 0, z: 0 };
+  const ep       = interior.exitPoint      || { x: 0, z: 0 };
+  const cp       = interior.cityEntryPoint || { x: 0, z: 0 };
+  const avatarPath    = interior.avatar    || '';
+  const avatarBlobUrl = state.interiorAvatarBlobs[key] || '';
+  const minimapImagePath = interior.minimapImage || '';
+  const content = document.getElementById('content');
+  content.innerHTML = `
+  <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+    <div style="flex:1;min-width:260px">
+      <div class="form-grid wide">
+        <div class="field"><label>Scene name</label>
+          <input value="${esc(key)}" readonly style="color:#888;cursor:default">
+        </div>
+        <div class="field"><label>Object name (clickable mesh)</label>
+          <input value="${esc(interior.objectName||'')}" oninput="updateInterior('${key}','objectName',this.value)">
+        </div>
+        <div class="field"><label>Minimap image</label>
+          <div style="display:flex;gap:6px">
+            <input id="int-mm-img-${key}" value="${esc(minimapImagePath)}" oninput="updateInterior('${key}','minimapImage',this.value)" placeholder="../assets/images/rts/..." style="flex:1">
+            <button class="avatar-browse" onclick="browseInteriorMinimapImage('${key}')">📂</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🖼 Avatar</div>
+        <div class="avatar-row">
+          <div class="avatar-preview" id="int-avatar-preview-${key}">
+            ${avatarBlobUrl ? `<img src="${avatarBlobUrl}" alt="avatar">` : `<span>No<br>image</span>`}
+          </div>
+          <div class="avatar-inputs">
+            <div class="avatar-path-row">
+              <input id="int-avatar-path-${key}" value="${esc(avatarPath)}" oninput="updateInterior('${key}','avatar',this.value)" placeholder="../assets/textures/RTS/UI/...">
+              <button class="avatar-browse" onclick="browseInteriorAvatar('${key}')">📂 Browse</button>
+            </div>
+            <div style="font-size:11px;color:#555">Imagen mostrada en el HUD cuando las unidades están dentro.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🚪 Points · <span style="font-size:11px;font-weight:400;color:#888">drag markers on the map</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div style="background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:10px">
+            <div style="font-size:11px;color:#2ecc71;font-weight:700;margin-bottom:8px">🚪 Spawn Entry — where units appear on enter</div>
+            <div style="display:flex;gap:8px">
+              <div class="field" style="flex:1"><label>World X</label>
+                <input id="int-sx-${key}" type="number" step="0.1" value="${sp.x}" oninput="updateInteriorSpawn('${key}','x',this.value)">
+              </div>
+              <div class="field" style="flex:1"><label>World Z</label>
+                <input id="int-sz-${key}" type="number" step="0.1" value="${sp.z}" oninput="updateInteriorSpawn('${key}','z',this.value)">
+              </div>
+            </div>
+          </div>
+          <div style="background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:10px">
+            <div style="font-size:11px;color:#e94560;font-weight:700;margin-bottom:8px">🔙 Exit Point — where units walk to on exit</div>
+            <div style="display:flex;gap:8px">
+              <div class="field" style="flex:1"><label>World X</label>
+                <input id="int-ex-${key}" type="number" step="0.1" value="${ep.x}" oninput="updateInteriorExit('${key}','x',this.value)">
+              </div>
+              <div class="field" style="flex:1"><label>World Z</label>
+                <input id="int-ez-${key}" type="number" step="0.1" value="${ep.z}" oninput="updateInteriorExit('${key}','z',this.value)">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#555;margin-top:6px">Grid: ${pf.gridSize||'?'}×${pf.gridSize||'?'} · World [${pf.worldMinX||0}, ${(pf.worldMinX||0)+(pf.worldSize||0)}] × [${pf.worldMinZ||0}, ${(pf.worldMinZ||0)+(pf.worldSize||0)}]</div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🗺 Pathfinding</div>
+        <div class="form-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="field"><label>Grid size</label><input type="number" value="${pf.gridSize||64}" oninput="updateInteriorPF('${key}','gridSize',+this.value)"></div>
+          <div class="field"><label>World min X</label><input type="number" step="0.1" value="${pf.worldMinX||0}" oninput="updateInteriorPF('${key}','worldMinX',+this.value)"></div>
+          <div class="field"><label>World min Z</label><input type="number" step="0.1" value="${pf.worldMinZ||0}" oninput="updateInteriorPF('${key}','worldMinZ',+this.value)"></div>
+          <div class="field"><label>World size</label><input type="number" step="0.1" value="${pf.worldSize||100}" oninput="updateInteriorPF('${key}','worldSize',+this.value)"></div>
+          <div class="field"><label>Grid Y</label><input type="number" step="0.01" value="${pf.gridY||0}" oninput="updateInteriorPF('${key}','gridY',+this.value)"></div>
+          <div class="field"><label>Units image</label><input value="${esc(pf.unitsImage||'')}" oninput="updateInteriorPF('${key}','unitsImage',this.value)"></div>
+        </div>
+        <div style="display:flex;gap:20px;margin-top:8px">
+          <label style="font-size:12px;color:#aaa;display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" ${pf.flipZ?'checked':''} onchange="updateInteriorPF('${key}','flipZ',this.checked)"> flipZ
+          </label>
+          <label style="font-size:12px;color:#aaa;display:flex;align-items:center;gap:6px;cursor:pointer">
+            <input type="checkbox" ${pf.flipX?'checked':''} onchange="updateInteriorPF('${key}','flipX',this.checked)"> flipX
+          </label>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">🏙 City Entry Point</div>
+        <div style="background:#0a1628;border:1px solid #1a4a8a;border-radius:6px;padding:10px">
+          <div style="font-size:11px;color:#3498db;font-weight:700;margin-bottom:8px">📍 Exterior door — world coords where units walk before entering</div>
+          <div style="display:flex;gap:8px">
+            <div class="field" style="flex:1"><label>World X</label>
+              <input id="int-cx-${key}" type="number" step="0.1" value="${cp.x}" oninput="updateInteriorCityEntry('${key}','x',this.value)">
+            </div>
+            <div class="field" style="flex:1"><label>World Z</label>
+              <input id="int-cz-${key}" type="number" step="0.1" value="${cp.z}" oninput="updateInteriorCityEntry('${key}','z',this.value)">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="saveAll()">💾 Save</button>
+      </div>
+    </div>
+
+    <div style="flex-shrink:0;display:flex;flex-direction:column;gap:16px">
+
+      <!-- Interior map: spawnEntry + exitPoint -->
+      <div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+          🏠 Interior map
+          <button onclick="intMmZoom('${key}',2)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:14px;line-height:1">＋</button>
+          <span id="int-mm-zoom-${key}" style="font-size:11px;color:#888;min-width:24px;text-align:center">1x</span>
+          <button onclick="intMmZoom('${key}',0.5)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:14px;line-height:1">－</button>
+          <button onclick="intMmReset('${key}')" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:12px;line-height:1">⌂</button>
+          <span style="font-size:10px;color:#444">click=spawn · drag 🚪🔙</span>
+        </div>
+        <div style="position:relative;display:inline-block">
+          <canvas id="int-mm-canvas-${key}" width="300" height="300" style="display:block;border-radius:4px;border:1px solid #1a4a8a;cursor:crosshair"></canvas>
+          <div class="mm-marker draggable" id="int-mm-marker-${key}" title="Drag to set spawn entry">🚪</div>
+          <div class="mm-marker draggable" id="int-mm-exit-${key}"   title="Drag to set exit point">🔙</div>
+        </div>
+        <div style="font-size:10px;color:#555;margin-top:4px">🚪 spawn entry &nbsp;·&nbsp; 🔙 exit point</div>
+      </div>
+
+      <!-- City map: cityEntryPoint -->
+      <div>
+        <div style="font-size:11px;color:#888;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+          🏙 City map
+          <button onclick="intCityZoom('${key}',2)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:14px;line-height:1">＋</button>
+          <span id="int-city-zoom-${key}" style="font-size:11px;color:#888;min-width:24px;text-align:center">1x</span>
+          <button onclick="intCityZoom('${key}',0.5)" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:14px;line-height:1">－</button>
+          <button onclick="intCityReset('${key}')" style="background:#0f3460;border:1px solid #1a4a8a;color:#e0e0e0;width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:12px;line-height:1">⌂</button>
+          <span style="font-size:10px;color:#444">click / drag 📍</span>
+        </div>
+        <div style="position:relative;display:inline-block">
+          <canvas id="int-city-canvas-${key}" width="300" height="300" style="display:block;border-radius:4px;border:1px solid #3498db;cursor:crosshair"></canvas>
+          <div class="mm-marker draggable" id="int-city-marker-${key}" title="Drag to set city entry point">📍</div>
+        </div>
+        <div style="font-size:10px;color:#555;margin-top:4px">📍 city entry point (exterior)</div>
+      </div>
+
+    </div>
+  </div>`;
+}
+
+function updateInterior(key, field, value) {
+  if (!state.interiors.data[key]) return;
+  state.interiors.data[key][field] = value;
+  state.dirty.add('__interiors__');
+  renderSidebar();
+}
+
+function updateInteriorSpawn(key, axis, value) {
+  if (!state.interiors.data[key]) return;
+  if (!state.interiors.data[key].spawnEntry) state.interiors.data[key].spawnEntry = { x: 0, z: 0 };
+  state.interiors.data[key].spawnEntry[axis] = parseFloat(value) || 0;
+  state.dirty.add('__interiors__');
+  // Refresh marker position on canvas
+  const canvas = document.getElementById('int-mm-canvas-' + key);
+  if (canvas?._imRedraw) canvas._imRedraw();
+}
+
+function updateInteriorExit(key, axis, value) {
+  if (!state.interiors.data[key]) return;
+  if (!state.interiors.data[key].exitPoint) state.interiors.data[key].exitPoint = { x: 0, z: 0 };
+  state.interiors.data[key].exitPoint[axis] = parseFloat(value) || 0;
+  state.dirty.add('__interiors__');
+  const canvas = document.getElementById('int-mm-canvas-' + key);
+  if (canvas?._imRedraw) canvas._imRedraw();
+}
+
+function updateInteriorCityEntry(key, axis, value) {
+  if (!state.interiors.data[key]) return;
+  if (!state.interiors.data[key].cityEntryPoint) state.interiors.data[key].cityEntryPoint = { x: 0, z: 0 };
+  state.interiors.data[key].cityEntryPoint[axis] = parseFloat(value) || 0;
+  state.dirty.add('__interiors__');
+  const canvas = document.getElementById('int-city-canvas-' + key);
+  if (canvas?._cityRedraw) canvas._cityRedraw();
+}
+
+const _interiorCityViews = {}; // key → { zoom, viewX, viewZ }
+
+function intCityGetView(key) {
+  if (!_interiorCityViews[key]) _interiorCityViews[key] = { zoom: 1, viewX: 0, viewZ: 0 };
+  return _interiorCityViews[key];
+}
+
+function intCityZoom(key, factor) {
+  const canvas = document.getElementById('int-city-canvas-' + key);
+  if (!canvas?._cityRedraw) return;
+  const v = intCityGetView(key);
+  const vs = WORLD_SIZE / v.zoom;
+  const pivX = v.viewX + 0.5 * vs, pivZ = v.viewZ + 0.5 * vs;
+  v.zoom = Math.max(1, Math.min(64, v.zoom * factor));
+  const nVS = WORLD_SIZE / v.zoom;
+  v.viewX = pivX - 0.5 * nVS; v.viewZ = pivZ - 0.5 * nVS;
+  intCityClamp(key);
+  canvas._cityRedraw();
+  const zl = document.getElementById('int-city-zoom-' + key);
+  if (zl) zl.textContent = v.zoom + 'x';
+}
+
+function intCityReset(key) {
+  _interiorCityViews[key] = { zoom: 1, viewX: 0, viewZ: 0 };
+  const canvas = document.getElementById('int-city-canvas-' + key);
+  if (canvas?._cityRedraw) canvas._cityRedraw();
+  const zl = document.getElementById('int-city-zoom-' + key);
+  if (zl) zl.textContent = '1x';
+}
+
+function intCityClamp(key) {
+  const v = intCityGetView(key);
+  const vs = WORLD_SIZE / v.zoom;
+  v.viewX = Math.max(0, Math.min(WORLD_SIZE - vs, v.viewX));
+  v.viewZ = Math.max(0, Math.min(WORLD_SIZE - vs, v.viewZ));
+}
+
+async function initInteriorCityMap(key) {
+  const canvas = document.getElementById('int-city-canvas-' + key);
+  const marker = document.getElementById('int-city-marker-' + key);
+  if (!canvas || !marker) return;
+
+  const interior = state.interiors.data[key];
+  const SIZE = canvas.width;
+  const ctx  = canvas.getContext('2d');
+  const v    = intCityGetView(key);
+
+  const img = await loadMinimapImage(); // reuse city top-down image
+
+  const cpData = interior.cityEntryPoint || { x: 0, z: 0 };
+  const pos = { x: cpData.x, z: cpData.z };
+
+  const commitPos = () => {
+    const ix = document.getElementById('int-cx-' + key);
+    const iz = document.getElementById('int-cz-' + key);
+    if (ix) ix.value = pos.x.toFixed(2);
+    if (iz) iz.value = pos.z.toFixed(2);
+    if (!interior.cityEntryPoint) interior.cityEntryPoint = {};
+    interior.cityEntryPoint.x = pos.x; interior.cityEntryPoint.z = pos.z;
+    state.dirty.add('__interiors__'); renderSidebar();
+  };
+
+  const toScreen = (wx, wz) => {
+    const vs = WORLD_SIZE / v.zoom;
+    return { x: ((wx - v.viewX) / vs) * SIZE, y: ((wz - v.viewZ) / vs) * SIZE };
+  };
+
+  const toWorld = (sx, sy) => {
+    const vs = WORLD_SIZE / v.zoom;
+    return {
+      x: Math.max(0, Math.min(WORLD_SIZE, v.viewX + (sx / SIZE) * vs)),
+      z: Math.max(0, Math.min(WORLD_SIZE, v.viewZ + (sy / SIZE) * vs))
+    };
+  };
+
+  const updateMarker = () => {
+    const p = toScreen(pos.x, pos.z);
+    const inView = p.x >= 0 && p.x <= SIZE && p.y >= 0 && p.y <= SIZE;
+    marker.style.display = inView ? '' : 'none';
+    marker.style.left = p.x + 'px';
+    marker.style.top  = p.y + 'px';
+  };
+
+  const redraw = () => {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    if (img) {
+      const vs   = WORLD_SIZE / v.zoom;
+      const srcX = (v.viewX / WORLD_SIZE) * img.naturalWidth;
+      const srcY = (v.viewZ / WORLD_SIZE) * img.naturalHeight;
+      const srcW = img.naturalWidth  / v.zoom;
+      const srcH = img.naturalHeight / v.zoom;
+      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, SIZE, SIZE);
+    } else {
+      ctx.fillStyle = '#0a1628'; ctx.fillRect(0, 0, SIZE, SIZE);
+      ctx.fillStyle = '#333'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('No city image', SIZE / 2, SIZE / 2);
+      ctx.textAlign = 'left';
+    }
+    const zl = document.getElementById('int-city-zoom-' + key);
+    if (zl) zl.textContent = v.zoom + 'x';
+    updateMarker();
+  };
+
+  canvas._cityRedraw = redraw;
+
+  // Auto-center view on the current point when first opening
+  const vs0 = WORLD_SIZE / v.zoom;
+  v.viewX = Math.max(0, Math.min(WORLD_SIZE - vs0, pos.x - vs0 / 2));
+  v.viewZ = Math.max(0, Math.min(WORLD_SIZE - vs0, pos.z - vs0 / 2));
+
+  redraw();
+
+  // ── Pan ───────────────────────────────────────────────────────────────────
+  let panning = false, panMoved = false, panStart = {}, panViewStart = {};
+  canvas.onmousedown = (e) => {
+    if (e.button !== 0 || e.target === marker) return;
+    panning = true; panMoved = false;
+    panStart = { x: e.clientX, y: e.clientY };
+    panViewStart = { x: v.viewX, z: v.viewZ };
+    canvas.style.cursor = 'grabbing';
+  };
+  canvas.onmousemove = (e) => {
+    if (!panning) return;
+    const dx = e.clientX - panStart.x, dy = e.clientY - panStart.y;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) panMoved = true;
+    const vs = WORLD_SIZE / v.zoom;
+    v.viewX = panViewStart.x - dx / SIZE * vs;
+    v.viewZ = panViewStart.z - dy / SIZE * vs;
+    intCityClamp(key); redraw();
+  };
+  const stopPan = () => { panning = false; canvas.style.cursor = v.zoom > 1 ? 'grab' : 'crosshair'; };
+  canvas.onmouseup    = stopPan;
+  canvas.onmouseleave = stopPan;
+
+  // ── Wheel zoom ────────────────────────────────────────────────────────────
+  canvas.onwheel = (e) => {
+    e.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / SIZE, my = (e.clientY - r.top) / SIZE;
+    const vs = WORLD_SIZE / v.zoom;
+    const pivX = v.viewX + mx * vs, pivZ = v.viewZ + my * vs;
+    v.zoom = Math.max(1, Math.min(64, v.zoom * (e.deltaY < 0 ? 2 : 0.5)));
+    const nVS = WORLD_SIZE / v.zoom;
+    v.viewX = pivX - mx * nVS; v.viewZ = pivZ - my * nVS;
+    intCityClamp(key);
+    canvas.style.cursor = v.zoom > 1 ? 'grab' : 'crosshair';
+    redraw();
+  };
+
+  // ── Click to place ────────────────────────────────────────────────────────
+  canvas.onclick = (e) => {
+    if (panMoved) { panMoved = false; return; }
+    const r = canvas.getBoundingClientRect();
+    const w = toWorld(e.clientX - r.left, e.clientY - r.top);
+    pos.x = w.x; pos.z = w.z;
+    commitPos(); redraw();
+  };
+
+  // ── Marker drag ───────────────────────────────────────────────────────────
+  let dragging = false, ds = {}, dps = {};
+  marker.onmousedown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    dragging = true;
+    ds = { x: e.clientX, y: e.clientY };
+    dps = { x: pos.x, z: pos.z };
+    document.onmousemove = (ev) => {
+      if (!dragging) return;
+      const vs = WORLD_SIZE / v.zoom;
+      pos.x = Math.max(0, Math.min(WORLD_SIZE, dps.x + (ev.clientX - ds.x) / SIZE * vs));
+      pos.z = Math.max(0, Math.min(WORLD_SIZE, dps.z + (ev.clientY - ds.y) / SIZE * vs));
+      commitPos(); updateMarker();
+    };
+    document.onmouseup = () => {
+      if (!dragging) return;
+      dragging = false;
+      document.onmousemove = null; document.onmouseup = null;
+    };
+  };
+}
+
+function updateInteriorPF(key, field, value) {
+  if (!state.interiors.data[key]) return;
+  if (!state.interiors.data[key].pathfinding) state.interiors.data[key].pathfinding = {};
+  state.interiors.data[key].pathfinding[field] = value;
+  state.dirty.add('__interiors__');
+}
+
+const _interiorMmViews = {}; // key → { zoom, viewX, viewZ }
+
+function intMmGetView(key) {
+  if (!_interiorMmViews[key]) _interiorMmViews[key] = { zoom: 1, viewX: 0, viewZ: 0 };
+  return _interiorMmViews[key];
+}
+
+function intMmZoom(key, factor) {
+  const canvas = document.getElementById('int-mm-canvas-' + key);
+  if (!canvas?._imRedraw) return;
+  const pf = state.interiors.data[key]?.pathfinding || {};
+  const WS = pf.worldSize || 100;
+  const v = intMmGetView(key);
+  const cx = 0.5, cz = 0.5;
+  const vs = WS / v.zoom;
+  const pivX = v.viewX + cx * vs, pivZ = v.viewZ + cz * vs;
+  v.zoom = Math.max(1, Math.min(64, v.zoom * factor));
+  const nVS = WS / v.zoom;
+  v.viewX = pivX - cx * nVS; v.viewZ = pivZ - cz * nVS;
+  intMmClamp(key);
+  canvas._imRedraw();
+  document.getElementById('int-mm-zoom-' + key).textContent = v.zoom + 'x';
+}
+
+function intMmReset(key) {
+  _interiorMmViews[key] = { zoom: 1, viewX: 0, viewZ: 0 };
+  const canvas = document.getElementById('int-mm-canvas-' + key);
+  if (canvas?._imRedraw) canvas._imRedraw();
+  const zl = document.getElementById('int-mm-zoom-' + key);
+  if (zl) zl.textContent = '1x';
+}
+
+function intMmClamp(key) {
+  const pf = state.interiors.data[key]?.pathfinding || {};
+  const WS = pf.worldSize || 100;
+  const v = intMmGetView(key);
+  const vs = WS / v.zoom;
+  v.viewX = Math.max(0, Math.min(WS - vs, v.viewX));
+  v.viewZ = Math.max(0, Math.min(WS - vs, v.viewZ));
+}
+
+function intMmToScreen(lx, lz, SIZE, v, WS) {
+  const vs = WS / v.zoom;
+  return { x: ((lx - v.viewX) / vs) * SIZE, y: ((lz - v.viewZ) / vs) * SIZE };
+}
+
+function intMmToLocal(sx, sy, SIZE, v, WS) {
+  const vs = WS / v.zoom;
+  return {
+    x: Math.max(0, Math.min(WS, v.viewX + (sx / SIZE) * vs)),
+    z: Math.max(0, Math.min(WS, v.viewZ + (sy / SIZE) * vs))
+  };
+}
+
+let _interiorImgCache = {}; // key → { img, blobUrl }
+
+async function loadInteriorMinimapImage(key) {
+  if (_interiorImgCache[key]?.img) return _interiorImgCache[key].img;
+  const mmPath = state.interiors.data[key]?.minimapImage || '';
+  if (!mmPath || !state.dirHandle) return null;
+  // Strip leading ../ to get a project-relative path
+  const relPath = mmPath.replace(/^(\.\.\/)/, '');
+  try {
+    const fh = await getNestedHandle(state.dirHandle, relPath);
+    if (!fh) return null;
+    const file = await fh.getFile();
+    if (_interiorImgCache[key]?.blobUrl) URL.revokeObjectURL(_interiorImgCache[key].blobUrl);
+    const blobUrl = URL.createObjectURL(file);
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { _interiorImgCache[key] = { img, blobUrl }; resolve(img); };
+      img.onerror = () => resolve(null);
+      img.src = blobUrl;
+    });
+  } catch(e) { return null; }
+}
+
+async function browseInteriorAvatar(key) {
+  try {
+    const [fileHandle] = await window.showOpenFilePicker({
+      types: [{ description: 'Images', accept: { 'image/*': ['.png','.jpg','.jpeg','.webp','.bmp'] } }],
+      multiple: false
+    });
+    const file = await fileHandle.getFile();
+
+    if (state.interiorAvatarBlobs[key]) URL.revokeObjectURL(state.interiorAvatarBlobs[key]);
+    state.interiorAvatarBlobs[key] = URL.createObjectURL(file);
+
+    let finalPath = file.name;
+    if (state.dirHandle) {
+      const parts = await state.dirHandle.resolve(fileHandle);
+      if (parts) finalPath = '../' + parts.join('/');
+    }
+
+    state.interiors.data[key].avatar = finalPath;
+    state.dirty.add('__interiors__');
+
+    // Update preview and input in place without full re-render
+    const preview = document.getElementById('int-avatar-preview-' + key);
+    if (preview) preview.innerHTML = `<img src="${state.interiorAvatarBlobs[key]}" alt="avatar">`;
+    const input = document.getElementById('int-avatar-path-' + key);
+    if (input) input.value = finalPath;
+    renderSidebar();
+  } catch(e) {
+    if (e.name !== 'AbortError') toast('Error picking image: ' + e.message, true);
+  }
+}
+
+async function browseInteriorMinimapImage(key) {
+  try {
+    const [fh] = await window.showOpenFilePicker({
+      types: [{ description: 'Images', accept: { 'image/*': ['.png','.jpg','.jpeg','.webp','.bmp'] } }],
+      multiple: false
+    });
+    const file = await fh.getFile();
+    // Clear cache for this key so it reloads
+    if (_interiorImgCache[key]?.blobUrl) URL.revokeObjectURL(_interiorImgCache[key].blobUrl);
+    delete _interiorImgCache[key];
+
+    // Build project-relative path by checking if the file is inside the project
+    let path = file.name;
+    const blobUrl = URL.createObjectURL(file);
+    // Try to reconstruct path from handle (not always possible) — use raw filename with prefix
+    // Store with ../ prefix so Lua can use it directly
+    path = '../assets/images/rts/' + file.name;
+
+    const input = document.getElementById('int-mm-img-' + key);
+    if (input) input.value = path;
+    updateInterior(key, 'minimapImage', path);
+
+    // Preload image for canvas
+    _interiorImgCache[key] = { blobUrl };
+    const img = new Image();
+    img.onload = () => {
+      _interiorImgCache[key].img = img;
+      const canvas = document.getElementById('int-mm-canvas-' + key);
+      if (canvas?._imRedraw) canvas._imRedraw();
+    };
+    img.src = blobUrl;
+  } catch(e) { if (e.name !== 'AbortError') toast('Error browsing image: ' + e.message, true); }
+}
+
+async function initInteriorMinimap(key) {
+  const canvas  = document.getElementById('int-mm-canvas-' + key);
+  const marker  = document.getElementById('int-mm-marker-' + key);
+  const exitMkr = document.getElementById('int-mm-exit-' + key);
+  if (!canvas || !marker || !exitMkr) return;
+
+  const interior = state.interiors.data[key];
+  const pf = interior?.pathfinding || {};
+  const WS   = pf.worldSize || 100;
+  const minX = pf.worldMinX || 0;
+  const minZ = pf.worldMinZ || 0;
+  const SIZE = canvas.width;
+  const ctx  = canvas.getContext('2d');
+  const v    = intMmGetView(key);
+
+  const img = await loadInteriorMinimapImage(key);
+
+  // Both points in local coords (relative to worldMin)
+  const spData = interior.spawnEntry || { x: minX, z: minZ };
+  const epData = interior.exitPoint  || { x: minX, z: minZ };
+  const spPos = { x: spData.x - minX, z: spData.z - minZ };
+  const epPos = { x: epData.x - minX, z: epData.z - minZ };
+
+  const clamp = (p) => {
+    p.x = Math.max(0, Math.min(WS, p.x));
+    p.z = Math.max(0, Math.min(WS, p.z));
+  };
+
+  const commitSpawn = () => {
+    const wx = spPos.x + minX, wz = spPos.z + minZ;
+    const ix = document.getElementById('int-sx-' + key);
+    const iz = document.getElementById('int-sz-' + key);
+    if (ix) ix.value = wx.toFixed(2);
+    if (iz) iz.value = wz.toFixed(2);
+    if (!interior.spawnEntry) interior.spawnEntry = {};
+    interior.spawnEntry.x = wx; interior.spawnEntry.z = wz;
+    state.dirty.add('__interiors__'); renderSidebar();
+  };
+
+  const commitExit = () => {
+    const wx = epPos.x + minX, wz = epPos.z + minZ;
+    const ix = document.getElementById('int-ex-' + key);
+    const iz = document.getElementById('int-ez-' + key);
+    if (ix) ix.value = wx.toFixed(2);
+    if (iz) iz.value = wz.toFixed(2);
+    if (!interior.exitPoint) interior.exitPoint = {};
+    interior.exitPoint.x = wx; interior.exitPoint.z = wz;
+    state.dirty.add('__interiors__'); renderSidebar();
+  };
+
+  const positionMarker = (el, lx, lz) => {
+    const p = intMmToScreen(lx, lz, SIZE, v, WS);
+    const inView = p.x >= 0 && p.x <= SIZE && p.y >= 0 && p.y <= SIZE;
+    el.style.display = inView ? '' : 'none';
+    el.style.left = p.x + 'px';
+    el.style.top  = p.y + 'px';
+  };
+
+  const updateMarkers = () => {
+    positionMarker(marker,  spPos.x, spPos.z);
+    positionMarker(exitMkr, epPos.x, epPos.z);
+  };
+
+  const redraw = () => {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    if (img) {
+      const vs   = WS / v.zoom;
+      const srcX = (v.viewX / WS) * img.naturalWidth;
+      const srcY = (v.viewZ / WS) * img.naturalHeight;
+      const srcW = img.naturalWidth  / v.zoom;
+      const srcH = img.naturalHeight / v.zoom;
+      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, SIZE, SIZE);
+    } else {
+      ctx.fillStyle = '#0a1628'; ctx.fillRect(0, 0, SIZE, SIZE);
+      ctx.fillStyle = '#333'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('No minimap image', SIZE / 2, SIZE / 2);
+      ctx.textAlign = 'left';
+    }
+    const zl = document.getElementById('int-mm-zoom-' + key);
+    if (zl) zl.textContent = v.zoom + 'x';
+    updateMarkers();
+  };
+
+  canvas._imRedraw = redraw;
+  redraw();
+
+  // ── Pan (ignore clicks on either marker) ─────────────────────────────────
+  let panning = false, panMoved = false, panStart = {}, panViewStart = {};
+  canvas.onmousedown = (e) => {
+    if (e.button !== 0 || e.target === marker || e.target === exitMkr) return;
+    panning = true; panMoved = false;
+    panStart = { x: e.clientX, y: e.clientY };
+    panViewStart = { x: v.viewX, z: v.viewZ };
+    canvas.style.cursor = 'grabbing';
+  };
+  canvas.onmousemove = (e) => {
+    if (!panning) return;
+    const dx = e.clientX - panStart.x, dy = e.clientY - panStart.y;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) panMoved = true;
+    const vs = WS / v.zoom;
+    v.viewX = panViewStart.x - dx / SIZE * vs;
+    v.viewZ = panViewStart.z - dy / SIZE * vs;
+    intMmClamp(key); redraw();
+  };
+  const stopPan = () => { panning = false; canvas.style.cursor = v.zoom > 1 ? 'grab' : 'crosshair'; };
+  canvas.onmouseup   = stopPan;
+  canvas.onmouseleave = stopPan;
+
+  // ── Wheel zoom ────────────────────────────────────────────────────────────
+  canvas.onwheel = (e) => {
+    e.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / SIZE, my = (e.clientY - r.top) / SIZE;
+    const vs = WS / v.zoom;
+    const pivX = v.viewX + mx * vs, pivZ = v.viewZ + my * vs;
+    v.zoom = Math.max(1, Math.min(64, v.zoom * (e.deltaY < 0 ? 2 : 0.5)));
+    const nVS = WS / v.zoom;
+    v.viewX = pivX - mx * nVS; v.viewZ = pivZ - my * nVS;
+    intMmClamp(key);
+    canvas.style.cursor = v.zoom > 1 ? 'grab' : 'crosshair';
+    redraw();
+  };
+
+  // ── Click-to-place (moves spawn entry) ───────────────────────────────────
+  canvas.onclick = (e) => {
+    if (panMoved) { panMoved = false; return; }
+    const r = canvas.getBoundingClientRect();
+    const lc = intMmToLocal(e.clientX - r.left, e.clientY - r.top, SIZE, v, WS);
+    spPos.x = lc.x; spPos.z = lc.z;
+    clamp(spPos); commitSpawn(); redraw();
+  };
+
+  // ── Generic marker drag factory ───────────────────────────────────────────
+  const makeDraggable = (el, pos, onCommit) => {
+    let dragging = false, ds = {}, dps = {};
+    el.onmousedown = (e) => {
+      e.preventDefault(); e.stopPropagation();
+      dragging = true;
+      ds = { x: e.clientX, y: e.clientY };
+      dps = { x: pos.x, z: pos.z };
+      document.onmousemove = (ev) => {
+        if (!dragging) return;
+        const vs = WS / v.zoom;
+        pos.x = Math.max(0, Math.min(WS, dps.x + (ev.clientX - ds.x) / SIZE * vs));
+        pos.z = Math.max(0, Math.min(WS, dps.z + (ev.clientY - ds.y) / SIZE * vs));
+        onCommit(); positionMarker(el, pos.x, pos.z);
+      };
+      document.onmouseup = () => {
+        if (!dragging) return;
+        dragging = false;
+        document.onmousemove = null; document.onmouseup = null;
+      };
+    };
+  };
+
+  makeDraggable(marker,  spPos, commitSpawn);
+  makeDraggable(exitMkr, epPos, commitExit);
+}
+
+let minimapImg = null;      // cached HTMLImageElement
+let minimapBlobUrl = null;  // blob URL for the minimap image
+
+async function loadMinimapImage() {
+  if (minimapImg) return minimapImg;
+  if (!state.dirHandle) return null;
+  try {
+    const fh = await getNestedHandle(state.dirHandle, 'assets/textures/RTS/CIUDAD_RENDER_TOP_DOWN_PALETTE_2048.png');
+    if (!fh) return null;
+    const file = await fh.getFile();
+    if (minimapBlobUrl) URL.revokeObjectURL(minimapBlobUrl);
+    minimapBlobUrl = URL.createObjectURL(file);
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => { minimapImg = img; resolve(img); };
+      img.onerror = () => resolve(null);
+      img.src = minimapBlobUrl;
+    });
+  } catch(e) { return null; }
+}
+
+async function getNestedHandle(root, path) {
+  const parts = path.replace(/\\/g, '/').split('/').filter(Boolean);
+  let cur = root;
+  for (let i = 0; i < parts.length - 1; i++) {
+    cur = await cur.getDirectoryHandle(parts[i]).catch(() => null);
+    if (!cur) return null;
+  }
+  return cur.getFileHandle(parts[parts.length - 1]).catch(() => null);
+}
+
+function worldToCanvas(wx, wz, canvasSize) {
+  return {
+    x: (wx / WORLD_SIZE) * canvasSize,
+    y: (wz / WORLD_SIZE) * canvasSize
+  };
+}
+
+function canvasToWorld(cx, cy, canvasSize) {
+  return {
+    x: Math.round((cx / canvasSize) * WORLD_SIZE),
+    z: Math.round((cy / canvasSize) * WORLD_SIZE)
+  };
+}
+
+// Zoom-aware transforms for the main NPC minimap
+function mmWorldToScreen(wx, wz, size) {
+  const { zoom, viewX, viewZ } = state.minimapView;
+  const vs = WORLD_SIZE / zoom;
+  return { x: ((wx - viewX) / vs) * size, y: ((wz - viewZ) / vs) * size };
+}
+function mmScreenToWorld(sx, sy, size) {
+  const { zoom, viewX, viewZ } = state.minimapView;
+  const vs = WORLD_SIZE / zoom;
+  return {
+    x: Math.max(0, Math.min(WORLD_SIZE, Math.round(viewX + (sx / size) * vs))),
+    z: Math.max(0, Math.min(WORLD_SIZE, Math.round(viewZ + (sy / size) * vs)))
+  };
+}
+function mmClampView() {
+  const vs = WORLD_SIZE / state.minimapView.zoom;
+  state.minimapView.viewX = Math.max(0, Math.min(WORLD_SIZE - vs, state.minimapView.viewX));
+  state.minimapView.viewZ = Math.max(0, Math.min(WORLD_SIZE - vs, state.minimapView.viewZ));
+}
+function mmSetZoom(factor) {
+  const canvas = document.getElementById('minimap-canvas');
+  if (!canvas) return;
+  const cx = 0.5, cz = 0.5; // pivot at canvas center
+  const vs = WORLD_SIZE / state.minimapView.zoom;
+  const pivotX = state.minimapView.viewX + cx * vs;
+  const pivotZ = state.minimapView.viewZ + cz * vs;
+  state.minimapView.zoom = Math.max(1, Math.min(64, state.minimapView.zoom * factor));
+  const newVS = WORLD_SIZE / state.minimapView.zoom;
+  state.minimapView.viewX = pivotX - cx * newVS;
+  state.minimapView.viewZ = pivotZ - cz * newVS;
+  mmClampView();
+  if (canvas._mmRedraw) canvas._mmRedraw();
+}
+function mmResetView() {
+  state.minimapView = { zoom: 1, viewX: 0, viewZ: 0 };
+  const canvas = document.getElementById('minimap-canvas');
+  if (canvas?._mmRedraw) canvas._mmRedraw();
+}
+
+async function initMinimapPreview(npcKey) {
+  const canvas = document.getElementById('minimap-canvas');
+  const marker = document.getElementById('mm-marker');
+  if (!canvas || !marker) return;
+
+  const SIZE = canvas.width;
+  const ctx = canvas.getContext('2d');
+  const selectedScene = state.currentScene || null;
+
+  const folderName = state.npcs[npcKey]?.folderName || npcKey;
+  const dialoguePath = `assets/scripts/RTS/NPCs/${folderName}/dialogue.json`;
+  const npcEntry = state.sceneNPCs[dialoguePath];
+  if (!npcEntry?.position) return;
+
+  const img = await loadMinimapImage();
+
+  // Reset zoom/pan every time we open a new NPC
+  state.minimapView = { zoom: 1, viewX: 0, viewZ: 0 };
+
+  // Mutable world position of this NPC
+  const inSelectedScene = !selectedScene || npcEntry.scene === selectedScene;
+  const worldPos = inSelectedScene
+    ? { x: npcEntry.position.x, z: npcEntry.position.z }
+    : { x: Math.round(WORLD_SIZE / 2), z: Math.round(WORLD_SIZE / 2) };
+
+  const updateCoords = () => {
+    const xl = document.getElementById('mm-x');
+    const zl = document.getElementById('mm-z');
+    if (xl) xl.textContent = worldPos.x;
+    if (zl) zl.textContent = worldPos.z;
+  };
+
+  const updateMarker = () => {
+    const p = mmWorldToScreen(worldPos.x, worldPos.z, SIZE);
+    const inView = p.x >= 0 && p.x <= SIZE && p.y >= 0 && p.y <= SIZE;
+    marker.style.display = inView ? '' : 'none';
+    marker.style.left = p.x + 'px';
+    marker.style.top  = p.y + 'px';
+  };
+
+  const redraw = () => {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    if (img) {
+      const { zoom, viewX, viewZ } = state.minimapView;
+      const srcX = (viewX / WORLD_SIZE) * img.naturalWidth;
+      const srcY = (viewZ / WORLD_SIZE) * img.naturalHeight;
+      const srcW = img.naturalWidth  / zoom;
+      const srcH = img.naturalHeight / zoom;
+      ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, SIZE, SIZE);
+    } else {
+      ctx.fillStyle = '#0a1628'; ctx.fillRect(0, 0, SIZE, SIZE);
+    }
+    // Other NPCs in the selected scene
+    for (const [, entry] of Object.entries(state.sceneNPCs)) {
+      if (!entry.position || entry.objectName === npcEntry.objectName) continue;
+      if (selectedScene && entry.scene !== selectedScene) continue;
+      const p = mmWorldToScreen(entry.position.x, entry.position.z, SIZE);
+      if (p.x < -10 || p.x > SIZE + 10 || p.y < -10 || p.y > SIZE + 10) continue;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(180,180,180,0.85)';
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '9px sans-serif';
+      ctx.fillText(entry.objectName, p.x + 6, p.y + 3);
+    }
+    // Zoom label
+    const zl = document.getElementById('mm-zoom-label');
+    if (zl) zl.textContent = `${state.minimapView.zoom}x`;
+    updateMarker();
+  };
+
+  // Attach redraw to canvas for external callers (mmSetZoom, mmResetView)
+  canvas._mmRedraw = redraw;
+
+  redraw();
+  updateCoords();
+
+  // ── Pan (drag canvas background) ──────────────────────────────────────────
+  let panning = false, panMoved = false, panStart = {}, panViewStart = {};
+  canvas.onmousedown = (e) => {
+    if (e.button !== 0 || e.target === marker) return;
+    panning = true;
+    panMoved = false;
+    panStart = { x: e.clientX, y: e.clientY };
+    panViewStart = { x: state.minimapView.viewX, z: state.minimapView.viewZ };
+    canvas.style.cursor = 'grabbing';
+  };
+  canvas.onmousemove = (e) => {
+    if (!panning) return;
+    const dx = e.clientX - panStart.x, dy = e.clientY - panStart.y;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) panMoved = true;
+    const vs = WORLD_SIZE / state.minimapView.zoom;
+    state.minimapView.viewX = panViewStart.x - dx / SIZE * vs;
+    state.minimapView.viewZ = panViewStart.z - dy / SIZE * vs;
+    mmClampView();
+    redraw();
+  };
+  const stopPan = () => {
+    panning = false;
+    canvas.style.cursor = state.minimapView.zoom > 1 ? 'grab' : 'crosshair';
+  };
+  canvas.onmouseup = stopPan;
+  canvas.onmouseleave = stopPan;
+
+  // ── Wheel zoom (centered on cursor) ───────────────────────────────────────
+  canvas.onwheel = (e) => {
+    e.preventDefault();
+    const r = canvas.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / SIZE;
+    const my = (e.clientY - r.top)  / SIZE;
+    const vs = WORLD_SIZE / state.minimapView.zoom;
+    const pivotX = state.minimapView.viewX + mx * vs;
+    const pivotZ = state.minimapView.viewZ + my * vs;
+    const factor = e.deltaY < 0 ? 2 : 0.5;
+    state.minimapView.zoom = Math.max(1, Math.min(64, state.minimapView.zoom * factor));
+    const newVS = WORLD_SIZE / state.minimapView.zoom;
+    state.minimapView.viewX = pivotX - mx * newVS;
+    state.minimapView.viewZ = pivotZ - my * newVS;
+    mmClampView();
+    canvas.style.cursor = state.minimapView.zoom > 1 ? 'grab' : 'crosshair';
+    redraw();
+  };
+
+  // ── Click to place (solo si no fue un pan) ────────────────────────────────
+  canvas.onclick = (e) => {
+    if (panMoved) { panMoved = false; return; }
+    const r = canvas.getBoundingClientRect();
+    const w = mmScreenToWorld(e.clientX - r.left, e.clientY - r.top, SIZE);
+    worldPos.x = w.x; worldPos.z = w.z;
+    updateCoords(); redraw();
+    commitNPCPosition(npcKey, worldPos.x, worldPos.z);
+  };
+
+  // ── Marker drag ───────────────────────────────────────────────────────────
+  let dragging = false, dragStart = {}, dragWorldStart = {};
+  marker.onmousedown = (e) => {
+    e.preventDefault(); e.stopPropagation();
+    dragging = true;
+    dragStart = { x: e.clientX, y: e.clientY };
+    dragWorldStart = { x: worldPos.x, z: worldPos.z };
+    document.onmousemove = (ev) => {
+      if (!dragging) return;
+      const vs = WORLD_SIZE / state.minimapView.zoom;
+      worldPos.x = Math.max(0, Math.min(WORLD_SIZE, Math.round(dragWorldStart.x + (ev.clientX - dragStart.x) / SIZE * vs)));
+      worldPos.z = Math.max(0, Math.min(WORLD_SIZE, Math.round(dragWorldStart.z + (ev.clientY - dragStart.y) / SIZE * vs)));
+      updateCoords(); updateMarker();
+    };
+    document.onmouseup = () => {
+      if (!dragging) return;
+      dragging = false;
+      document.onmousemove = null;
+      document.onmouseup = null;
+      commitNPCPosition(npcKey, worldPos.x, worldPos.z);
+    };
+  };
+}
+
+async function commitNPCPosition(npcKey, worldX, worldZ) {
+  if (!state.dirHandle) return;
+  const folderName = state.npcs[npcKey]?.folderName || npcKey;
+  const dialoguePath = `assets/scripts/RTS/NPCs/${folderName}/dialogue.json`;
+  const sceneEntry = state.sceneNPCs[dialoguePath];
+  if (!sceneEntry) return;
+
+  const targetScene = state.currentScene || sceneEntry.scene;
+
+  try {
+    const scenesDir = await getNestedDir(state.dirHandle, ['assets','scenes']);
+    if (!scenesDir) return;
+    const sceneFH = await scenesDir.getFileHandle(targetScene).catch(() => null);
+    if (!sceneFH) return;
+    const sceneData = JSON.parse(await readHandle(sceneFH));
+    let patched = false;
+    for (const obj of (sceneData.objects || [])) {
+      if (obj.name === sceneEntry.objectName) {
+        obj.position = { x: worldX, y: obj.position?.y ?? 0, z: worldZ };
+        sceneEntry.position = obj.position;
+        patched = true;
+        break;
+      }
+    }
+    if (patched) {
+      await writeHandle(sceneFH, sceneData);
+      const elX = document.getElementById('mm-x'); if (elX) elX.textContent = worldX;
+      const elZ = document.getElementById('mm-z'); if (elZ) elZ.textContent = worldZ;
+      toast(`${sceneEntry.objectName} moved to (${worldX}, ${worldZ})`);
+    }
+  } catch(e) { toast('Error updating scene: ' + e.message, true); }
+}
+
+async function applyMinimapPosition(npcKey) {
+  const x = parseFloat(document.getElementById('mm-x')?.textContent);
+  const z = parseFloat(document.getElementById('mm-z')?.textContent);
+  if (isNaN(x) || isNaN(z)) return toast('No position set — drag the marker first', true);
+  await commitNPCPosition(npcKey, x, z);
+}
+
+async function removeNPCFromScene(npcKey) {
+  if (!state.dirHandle) return toast('No project open', true);
+  const folderName = state.npcs[npcKey]?.folderName || npcKey;
+  const dialoguePath = `assets/scripts/RTS/NPCs/${folderName}/dialogue.json`;
+  const sceneEntry = state.sceneNPCs[dialoguePath];
+  if (!sceneEntry) return;
+
+  const targetScene = state.currentScene || sceneEntry.scene;
+  const confirmed = confirm(`Remove "${sceneEntry.objectName}" from ${targetScene}?`);
+  if (!confirmed) return;
+
+  try {
+    const scenesDir = await getNestedDir(state.dirHandle, ['assets','scenes']);
+    if (!scenesDir) return toast('Cannot find assets/scenes', true);
+    const fh = await scenesDir.getFileHandle(targetScene).catch(() => null);
+    if (!fh) return toast(`Scene ${sceneEntry.scene} not found`, true);
+    const sceneData = JSON.parse(await readHandle(fh));
+    const before = (sceneData.objects || []).length;
+    sceneData.objects = (sceneData.objects || []).filter(o => o.name !== sceneEntry.objectName);
+    if (sceneData.objects.length < before) {
+      await writeHandle(fh, sceneData);
+      delete state.sceneNPCs[dialoguePath];
+      toast(`${sceneEntry.objectName} removed from ${sceneEntry.scene}`);
+      renderForm();
+    }
+  } catch(e) { toast('Error: ' + e.message, true); }
+}
+
+// ─── ADD NPC TO SCENE ────────────────────────────────────────────────────────
+async function initAddToScenePreview(npcKey) {
+  const canvas = document.getElementById('minimap-canvas-add');
+  const marker = document.getElementById('mm-marker-add');
+  if (!canvas || !marker) return;
+
+  const SIZE = canvas.width;
+  const ctx = canvas.getContext('2d');
+
+  // Draw minimap background + existing NPC dots
+  const img = await loadMinimapImage();
+  ctx.clearRect(0, 0, SIZE, SIZE);
+  if (img) ctx.drawImage(img, 0, 0, SIZE, SIZE);
+  else { ctx.fillStyle = '#0a1628'; ctx.fillRect(0, 0, SIZE, SIZE); }
+
+  for (const [, entry] of Object.entries(state.sceneNPCs)) {
+    if (!entry.position) continue;
+    const p = worldToCanvas(entry.position.x, entry.position.z, SIZE);
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(46,204,113,0.8)';
+    ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.font = '9px sans-serif';
+    ctx.fillText(entry.objectName, p.x + 5, p.y + 3);
+  }
+
+  // Reset pending placement to centre
+  state.pendingPlacement = { x: 512, z: 512 };
+
+  canvas.onclick = (e) => {
+    const r = canvas.getBoundingClientRect();
+    const cx = e.clientX - r.left;
+    const cy = e.clientY - r.top;
+    const w = canvasToWorld(cx, cy, SIZE);
+    state.pendingPlacement = { x: w.x, z: w.z };
+    marker.style.left = cx + 'px';
+    marker.style.top  = cy + 'px';
+    marker.style.display = '';
+    const ax = document.getElementById('mm-ax');
+    const az = document.getElementById('mm-az');
+    if (ax) ax.textContent = w.x;
+    if (az) az.textContent = w.z;
+  };
+}
+
+async function confirmAddNPCToScene(npcKey) {
+  if (!state.dirHandle) return toast('No project open', true);
+  const sel = document.getElementById('place-scene-select');
+  const sceneName = sel ? sel.value : state.sceneNames[0];
+  if (!sceneName) return toast('No scene selected', true);
+
+  const folderName = state.npcs[npcKey]?.folderName || npcKey;
+  const npcData = state.npcs[npcKey]?.data;
+  const { x, z } = state.pendingPlacement;
+
+  const newObj = {
+    name: folderName,
+    scale: 1, alpha: 1, enabled: true, selectable: true,
+    position: { x, y: 0, z },
+    rotation: { x: 0, y: 0, z: 0 },
+    renderSettings: {
+      blend: true, culling: true, depthTest: true,
+      writeDepth: true, shadowMap: true,
+      blend_function_src: 771, blend_function_dst: 771
+    },
+    isCollisionsEnabled: false,
+    scripts: [{
+      codeFile: '../assets/scripts/RTS/NPCs/NPCController.lua',
+      typesFile: '../assets/scripts/RTS/NPCs/NPCController.json',
+      name: 'NPCController',
+      type: 'Object',
+      types: [
+        { name: 'dialogueFile', type: 'string', value: `../assets/scripts/RTS/NPCs/${folderName}/dialogue.json` },
+        { name: 'npcName',      type: 'string', value: npcData?.npc || folderName }
+      ]
+    }],
+    model: '../assets/animations/RTS/male.fbx',
+    enableLights: true,
+    shaders: [],
+    type: 3,
+    animationSpeed: 1,
+    indexCurrentAnimation: 0,
+    bonesColliders: [],
+    boneColliderEnabled: false
+  };
+
+  try {
+    const scenesDir = await getNestedDir(state.dirHandle, ['assets','scenes']);
+    if (!scenesDir) return toast('Cannot find assets/scenes', true);
+    const fh = await scenesDir.getFileHandle(sceneName).catch(() => null);
+    if (!fh) return toast(`Scene ${sceneName} not found`, true);
+    const sceneData = JSON.parse(await readHandle(fh));
+    if (!sceneData.objects) sceneData.objects = [];
+    sceneData.objects.push(newObj);
+    await writeHandle(fh, sceneData);
+
+    // Update in-memory sceneNPCs so the form re-renders as ✅
+    const dialoguePath = `assets/scripts/RTS/NPCs/${folderName}/dialogue.json`;
+    state.sceneNPCs[dialoguePath] = { objectName: folderName, scene: sceneName, position: { x, y: 0, z } };
+
+    toast(`${folderName} added to ${sceneName}`);
+    renderForm(); // refresh — will now show ✅ + drag minimap
+  } catch(e) { toast('Error: ' + e.message, true); }
+}
+
+// ─── SEARCH ──────────────────────────────────────────────────────────────────
+function onSearch(q) {
+  const normal = document.getElementById('sidebar-normal');
+  const results = document.getElementById('search-results');
+  q = q.trim().toLowerCase();
+
+  if (!q) {
+    results.style.display = 'none';
+    normal.style.display = 'flex';
+    return;
+  }
+
+  normal.style.display = 'none';
+  results.style.display = 'block';
+
+  const hits = [];
+
+  // Search quests
+  for (const [id, q_] of Object.entries(state.quests)) {
+    const d = q_.data;
+    const matches = [];
+    if (match(d.id, q)) matches.push({ field: 'id', excerpt: d.id });
+    if (match(d.title, q)) matches.push({ field: 'title', excerpt: d.title });
+    if (match(d.description, q)) matches.push({ field: 'desc', excerpt: excerpt(d.description, q) });
+    (d.objectives||[]).forEach(o => {
+      if (match(o.label, q)) matches.push({ field: 'objective', excerpt: o.label });
+    });
+    if (matches.length) hits.push({ type: 'quest', key: id, label: d.title || id, matches });
+  }
+
+  // Search NPCs
+  for (const [key, n] of Object.entries(state.npcs)) {
+    const d = n.data;
+    const matches = [];
+    if (match(d.npc, q)) matches.push({ field: 'name', excerpt: d.npc });
+    (d.nodes||[]).forEach(node => {
+      if (match(node.text, q)) matches.push({ field: `node:${node.id}`, excerpt: excerpt(node.text, q) });
+      (node.options||[]).forEach(opt => {
+        if (match(opt.text, q)) matches.push({ field: `opt:${node.id}`, excerpt: excerpt(opt.text, q) });
+      });
+    });
+    if (matches.length) hits.push({ type: 'npc', key, label: d.npc || key, matches });
+  }
+
+  if (!hits.length) {
+    results.innerHTML = `<div style="padding:16px;color:#555;font-size:13px;text-align:center">No results for "<em style="color:#e94560">${esc(q)}</em>"</div>`;
+    return;
+  }
+
+  results.innerHTML = hits.map(h => `
+    <div class="sidebar-item${state.activeItem?.key === h.key ? ' active' : ''}" onclick="selectItem('${h.type}','${h.key}')">
+      <div style="flex:1;min-width:0">
+        <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px">${h.type === 'quest' ? '📜' : '🧙'} ${highlight(h.label, q)}</div>
+        ${h.matches.slice(0,2).map(m => `<div style="font-size:11px;color:#777;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px">${esc(m.field)}: ${highlight(m.excerpt, q)}</div>`).join('')}
+        ${h.matches.length > 2 ? `<div style="font-size:10px;color:#555">+${h.matches.length-2} more</div>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function match(text, q) { return text && text.toLowerCase().includes(q); }
+
+function excerpt(text, q) {
+  if (!text) return '';
+  const i = text.toLowerCase().indexOf(q);
+  if (i < 0) return text.substring(0, 40);
+  const start = Math.max(0, i - 15);
+  return (start > 0 ? '…' : '') + text.substring(start, i + q.length + 25) + (i + q.length + 25 < text.length ? '…' : '');
+}
+
+function highlight(text, q) {
+  if (!text || !q) return esc(text || '');
+  const i = text.toLowerCase().indexOf(q.toLowerCase());
+  if (i < 0) return esc(text);
+  return esc(text.substring(0, i)) + `<em style="color:#e94560;font-style:normal;font-weight:700">${esc(text.substring(i, i+q.length))}</em>` + esc(text.substring(i+q.length));
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let toastTimer;
+function toast(msg, isError) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = '', 2500);
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
+// ─── HELP ─────────────────────────────────────────────────────────────────────
+function openHelp() {
+  document.getElementById('modal-title').textContent = '❓ Help — Brakeza RTS Editor';
+  document.getElementById('modal-body').innerHTML = `
+  <div style="font-size:13px;line-height:1.7;color:#ccc">
+
+    <div style="color:#e94560;font-weight:700;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px">Getting Started</div>
+    <p>Click <b>📂 Open Project Folder</b> and select the root of the Brakeza project (<code>brakeza3d/</code>). The tool will automatically find all quests and NPC dialogues.</p>
+
+    <hr style="border:none;border-top:1px solid #1a4a8a;margin:12px 0">
+    <div style="color:#e94560;font-weight:700;margin-bottom:8px;font-size:12px;text-transform:uppercase;letter-spacing:.5px">📁 Required File Structure</div>
+    <p style="margin-bottom:8px">Open the <b>project root</b> (the folder that contains <code>assets/</code>). The tool navigates from there:</p>
+    <pre style="background:#0a1628;border:1px solid #1a4a8a;border-radius:4px;padding:12px;font-size:11px;line-height:1.6;overflow-x:auto;color:#aad4ff">&lt;project root&gt;/                    ← folder you open with 📂
+│
+├── assets/
+│   ├── scripts/
+│   │   └── RTS/
+│   │       ├── quests/
+│   │       │   ├── index.json      ← REQUIRED — list of quest files
+│   │       │   └── *.json          ← one file per quest
+│   │       │
+│   │       └── NPCs/
+│   │           ├── NPCController.lua    ← referenced by scene objects
+│   │           ├── NPCController.json
+│   │           └── &lt;npc_name&gt;/    ← one folder per NPC
+│   │               └── dialogue.json
+│   │
+│   ├── scenes/
+│   │   └── *.json                  ← engine scenes (all are scanned)
+│   │
+│   ├── textures/RTS/UI/
+│   │   └── *.png                   ← avatars (optional, for preview)
+│   │
+│   └── textures/RTS/
+│       └── CIUDAD_RENDER_TOP_DOWN_PALETTE_2048.png  ← minimap background (optional)</pre>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:8px">
+      <tr><td style="padding:3px 8px 3px 0;color:#2ecc71;white-space:nowrap;vertical-align:top"><b>Minimum required</b></td><td><code>assets/scripts/RTS/quests/index.json</code> — can be empty <code>{"quests":[]}</code></td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap;vertical-align:top"><b>For NPCs</b></td><td><code>assets/scripts/RTS/NPCs/</code> folder with at least one NPC subfolder</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap;vertical-align:top"><b>For scene presence</b></td><td><code>assets/scenes/*.json</code> — tool scans them to detect which NPCs are placed</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap;vertical-align:top"><b>Optional</b></td><td><code>assets/textures/RTS/CIUDAD_RENDER_TOP_DOWN_PALETTE_2048.png</code> — if missing the position canvas appears black but works normally</td></tr>
+    </table>
+
+    <hr style="border:none;border-top:1px solid #1a4a8a;margin:12px 0">
+    <div style="color:#e94560;font-weight:700;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px">📜 Quests</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#e94560;white-space:nowrap;vertical-align:top"><b>ID</b></td><td>Unique identifier used in Lua (<code>quest_intro</code>, <code>quest_army</code>…). Also becomes the filename.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#e94560;white-space:nowrap;vertical-align:top"><b>Title</b></td><td>Displayed in the HUD quest panel during gameplay.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#e94560;white-space:nowrap;vertical-align:top"><b>Chain</b></td><td>Logical group for quests (<code>main</code>, <code>side</code>…). Informational only.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#e94560;white-space:nowrap;vertical-align:top"><b>Prereqs</b></td><td>Comma-separated quest IDs that must be completed before this one can be accepted.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#e94560;white-space:nowrap;vertical-align:top"><b>Next Quest</b></td><td>Quest ID to auto-accept when this quest is completed. Leave empty to end the chain.</td></tr>
+    </table>
+
+    <div style="color:#f39c12;font-weight:700;margin:10px 0 4px;font-size:11px;text-transform:uppercase">Objective Types</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>resource_min</b></td><td>Player must have at least N of gold / wood / stone / food.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>building_acquired</b></td><td>Player must own at least N buildings of the given type (e.g. <code>barracks</code>).</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>unit_count</b></td><td>Player must have at least N active units of the given type (<code>unit</code>, <code>worker</code>, <code>vehicle</code>).</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>flag</b></td><td>A Lua script must set a named flag to true (custom scripted objectives).</td></tr>
+    </table>
+
+    <hr style="border:none;border-top:1px solid #1a4a8a;margin:12px 0">
+    <div style="color:#e94560;font-weight:700;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px">🧙 NPC Dialogues</div>
+    <p style="margin-bottom:8px">Each NPC has a folder under <code>assets/scripts/RTS/NPCs/&lt;name&gt;/</code> containing a <code>dialogue.json</code>. The dialogue is a graph of <b>nodes</b> connected by <b>options</b>.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#2ecc71;white-space:nowrap;vertical-align:top"><b>Node ID</b></td><td>Unique name for this dialogue step. <code>root</code> is always the entry point (marked ⭐).</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#2ecc71;white-space:nowrap;vertical-align:top"><b>Text</b></td><td>What the NPC says when this node is reached.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#2ecc71;white-space:nowrap;vertical-align:top"><b>Options</b></td><td>Player response choices. Each option has a <b>Next Node</b> target. Leave empty for a terminal node (closes dialogue).</td></tr>
+    </table>
+
+    <div style="color:#f39c12;font-weight:700;margin:10px 0 4px;font-size:11px;text-transform:uppercase">Option Conditions (show/hide based on quest state)</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>hide_if_quest_done</b></td><td>Option is hidden if the given quest is already completed.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>hide_if_quest_active</b></td><td>Option is hidden while the quest is in progress.</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>show_if_quest_active</b></td><td>Option is only shown while the quest is active (e.g. "I have completed your task").</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>show_if_quest_done</b></td><td>Option only appears after the quest is done (e.g. post-completion dialogue).</td></tr>
+    </table>
+
+    <div style="color:#f39c12;font-weight:700;margin:10px 0 4px;font-size:11px;text-transform:uppercase">Quest Actions on Options</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>accept</b></td><td>Selecting this option starts the quest (adds it to active list).</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#f39c12;white-space:nowrap"><b>complete</b></td><td>Selecting this option marks the quest as done and gives the reward.</td></tr>
+    </table>
+
+    <hr style="border:none;border-top:1px solid #1a4a8a;margin:12px 0">
+    <div style="color:#e94560;font-weight:700;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px">Dialogue Visual Editor</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap">Drag node header</td><td>Move node on canvas</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap">Click option → node</td><td>Jump camera to the target node</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap">Scroll wheel</td><td>Zoom in / out</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap">Drag canvas background</td><td>Pan the view</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap">✏ Edit node</td><td>Open full editor for text and all option fields</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap">⟳ Auto Layout</td><td>Reset node positions to a grid</td></tr>
+    </table>
+
+    <hr style="border:none;border-top:1px solid #1a4a8a;margin:12px 0">
+    <div style="color:#e94560;font-weight:700;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:.5px">Keyboard Shortcuts</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap"><b>Ctrl+S</b></td><td>Save all pending changes to disk</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap"><b>Ctrl+F</b></td><td>Focus search bar</td></tr>
+      <tr><td style="padding:3px 8px 3px 0;color:#888;white-space:nowrap"><b>Escape</b></td><td>Close modal / clear search</td></tr>
+    </table>
+
+    <hr style="border:none;border-top:1px solid #1a4a8a;margin:12px 0">
+    <div style="color:#555;font-size:11px">⚠ Requires Chrome or Edge (File System Access API). Firefox not supported.<br>Changes are only written to disk when you press <b>Ctrl+S</b> or <b>💾 Save All</b>.</div>
+  </div>
+  `;
+  document.querySelector('#modal .modal-footer').style.display = 'none';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveAll(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'f') { e.preventDefault(); document.getElementById('search-input')?.focus(); }
+  if (e.key === 'Escape') {
+    closeModal();
+    const input = document.getElementById('search-input');
+    if (input && input.value) { input.value = ''; onSearch(''); input.blur(); }
+  }
+});
+</script>
+</body>
+</html>

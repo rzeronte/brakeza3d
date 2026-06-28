@@ -570,16 +570,19 @@ void Mesh3D::makeGhostBody(btDiscreteDynamicsWorld *world, int collisionGroup, i
             a = btVector3(modelTriangle->A.x, modelTriangle->A.y, modelTriangle->A.z);
             b = btVector3(modelTriangle->B.x, modelTriangle->B.y, modelTriangle->B.z);
             c = btVector3(modelTriangle->C.x, modelTriangle->C.y, modelTriangle->C.z);
-            convexHullShape->addPoint(a);
-            convexHullShape->addPoint(b);
-            convexHullShape->addPoint(c);
+            convexHullShape->addPoint(a, false);
+            convexHullShape->addPoint(b, false);
+            convexHullShape->addPoint(c, false);
         }
     }
+    convexHullShape->recalcLocalAabb();
+
     ghostObject = new btPairCachingGhostObject();
     ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(getModelMatrix()));
     ghostObject->setCollisionShape(convexHullShape);
     ghostObject->setUserPointer(this);
     ghostObject->setUserIndex(Config::CollisionSource::OBJECT_COLLIDER);
+    ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 }
@@ -599,16 +602,16 @@ void Mesh3D::SetupGhostCollider(CollisionShape modeShape)
             getModelMatrix(),
             simpleShapeSize,
             Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
+            collisionGroup,
+            collisionMask
         );
     }
 
     if (getCollisionShape() == TRIANGLE_MESH_SHAPE) {
         makeGhostBody(
             Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-            btBroadphaseProxy::DefaultFilter,
-            btBroadphaseProxy::DefaultFilter
+            collisionGroup,
+            collisionMask
         );
     }
 }
@@ -814,22 +817,23 @@ void Mesh3D::UpdateBoundingBox()
 btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) const
 {
     auto *triangleMesh = new btTriangleMesh();
+    float objScale = getScale();
 
     for (auto &m: meshes) {
         for (auto & modelTriangle : m.modelTriangles) {
-            btVector3 a = modelTriangle->A.toBullet();
-            btVector3 b = modelTriangle->B.toBullet();
-            btVector3 c = modelTriangle->C.toBullet();
+            btVector3 a = modelTriangle->A.toBullet() * objScale;
+            btVector3 b = modelTriangle->B.toBullet() * objScale;
+            btVector3 c = modelTriangle->C.toBullet() * objScale;
             triangleMesh->addTriangle(a, b, c, false);
         }
     }
 
-    auto s = new btBvhTriangleMeshShape(triangleMesh, true, true);
+    auto *shape = new btBvhTriangleMeshShape(triangleMesh, true, true);
     if (mass > 0) {
-        s->calculateLocalInertia(mass, inertia);
+        shape->calculateLocalInertia(mass, inertia);
     }
 
-    return s;
+    return shape;
 }
 
 btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)

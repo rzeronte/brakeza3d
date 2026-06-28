@@ -11,6 +11,8 @@
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/Components/Components.h"
 
+bool GUIAddonObjects3D::hideEmptyGroups = true;
+
 bool GUIAddonObjects3D::exist(const std::string &pattern1, const std::string &pattern2)
 {
     std::string nameUpper = pattern1;
@@ -73,6 +75,23 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
             [o]() {
                 Components::get()->Render()->setSelectedObject(o);
                 Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_SHADERS)->isOpen = true;            }
+        );
+    }
+
+    // Collider
+    if (o->isCollisionsEnabled()) {
+        CollisionMode mode = o->getCollisionMode();
+        GUIType::Sheet collIcon = (mode == GHOST) ? IconGUI::COLLIDER_GHOST
+                                : (mode == BODY)  ? IconGUI::COLLIDER_BODY
+                                                  : IconGUI::COLLIDER_KINEMATIC;
+        std::string collLabel = (mode == GHOST) ? "Ghost" : (mode == BODY) ? "Body" : "Kinematic";
+        config.actionItems.emplace_back(
+            FileSystemGUI::Icon(collIcon),
+            collLabel,
+            [o]() {
+                Components::get()->Render()->setSelectedObject(o);
+                Brakeza::get()->GUI()->getWindowStatus(GUIType::OBJECT_PROPS)->isOpen = true;
+            }
         );
     }
 
@@ -141,6 +160,8 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
                 }
             }
         }
+
+        if (count == 0 && hideEmptyGroups) continue;
 
         // ============================================================
         // CATEGORÍA con CustomTreeNode - CON BULLETS
@@ -255,6 +276,11 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
         ImGui::TableNextRow();
 
         ImGui::TableSetColumnIndex(0);
+        GUI::DrawButton("Hide empty groups", IconGUI::OBJECTS_VIEWER_EMPTY_GROUPS, GUIType::Sizes::ICON_SIZE_MENUS,
+            hideEmptyGroups, [&] {
+            hideEmptyGroups = !hideEmptyGroups;
+        });
+        ImGui::SameLine();
         GUI::DrawButton("List mode", IconGUI::OBJECTS_VIEWER_LIST, GUIType::Sizes::ICON_SIZE_MENUS,
             type == GUIType::ViewerObjectsMode::LIST, [&] {
             gui->setObjectsViewerMode(GUIType::ViewerObjectsMode::LIST);

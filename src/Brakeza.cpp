@@ -1,6 +1,8 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include "../imgui/imgui.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
+#include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../cxxxopts/cxxxopts.h"
 #include "../include/Brakeza.h"
 #include "../include/Components/Components.h"
@@ -126,6 +128,15 @@ void Brakeza::MainLoop()
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("PreUpdate");
         PreUpdateComponents();                                               // PreUpdate for componentes
         CaptureInputEvents(event);                                        // Capture keyboard/mouse status
+
+        if (Config::get()->ENABLE_IMGUI) {
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplSDL2_NewFrame();
+            ImGui::NewFrame();
+            Components::get()->Render()->DrawSelectionRectFill();
+            Brakeza::get()->GUI()->DrawGUI();
+        }
+
         Components::get()->Window()->ClearOGLFrameBuffers();                 // Clean video framebuffers
 
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("OnUpdate+ObjectShaders");

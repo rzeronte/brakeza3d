@@ -214,6 +214,22 @@ btTransform Tools::GLMMatrixToBulletTransform(const glm::mat4& glmMatrix)
     return bulletTransform;
 }
 
+btTransform Tools::GLMMatrixToBulletTransformNoScale(const glm::mat4& glmMatrix)
+{
+    glm::vec3 col0 = glm::normalize(glm::vec3(glmMatrix[0]));
+    glm::vec3 col1 = glm::normalize(glm::vec3(glmMatrix[1]));
+    glm::vec3 col2 = glm::normalize(glm::vec3(glmMatrix[2]));
+    btMatrix3x3 bulletRotationMatrix(
+        col0[0], col1[0], col2[0],
+        col0[1], col1[1], col2[1],
+        col0[2], col1[2], col2[2]
+    );
+    btTransform bulletTransform;
+    bulletTransform.setBasis(bulletRotationMatrix);
+    bulletTransform.setOrigin(btVector3(glmMatrix[3][0], glmMatrix[3][1], glmMatrix[3][2]));
+    return bulletTransform;
+}
+
 std::string Tools::getExtensionFromFilename(const std::string& filename)
 {
     size_t dotPosition = filename.find_last_of(".");

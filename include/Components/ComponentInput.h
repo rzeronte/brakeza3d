@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "Component.h"
+#include "imgui.h"
 
 class ComponentInput : public Component
 {
@@ -66,6 +67,8 @@ class ComponentInput : public Component
     bool keyUpEvent = false;
     bool keyDownEvent = false;
     bool leftClickConsumedByUI = false;
+    bool wantCaptureKeyboard = false;
+    bool wantCaptureMouse = false;
 
 public:
     ComponentInput() = default;
@@ -93,8 +96,8 @@ public:
 
     void UpdateKeyboardStates(SDL_Event *event);
     void HandleGUIShortCuts(SDL_Event *event) const;
-    float getMouseMotionXRel() const { return mouseMotionXRel; }
-    float getMouseMotionYRel() const { return mouseMotionYRel; }
+    float getMouseMotionXRel() const { return wantCaptureMouse ? 0 : mouseMotionXRel; }
+    float getMouseMotionYRel() const { return wantCaptureMouse ? 0 : mouseMotionYRel; }
     Uint8 getControllerPadUp() const                                { return controllerPadUp; }
     Uint8 getControllerPadDown() const                              { return controllerPadDown; }
     Uint8 getControllerPadLeft() const                              { return controllerPadLeft; }
@@ -122,23 +125,23 @@ public:
     [[nodiscard]] int getRelativeRendererMouseX() const             { return relativeRendererMouseX; }
     [[nodiscard]] int getRawMouseX() const                          { return rawMouseX; }
     [[nodiscard]] int getRawMouseY() const                          { return rawMouseY; }
-    [[nodiscard]] bool isMouseMotion() const                        { return mouseMotion;}
-    [[nodiscard]] bool isKeyEventDown() const                       { return keyDownEvent; }
-    [[nodiscard]] bool isKeyEventUp() const                         { return keyUpEvent; }
+    [[nodiscard]] bool isMouseMotion() const                        { return mouseMotion && !wantCaptureMouse; }
+    [[nodiscard]] bool isKeyEventDown() const                       { return keyDownEvent && !wantCaptureKeyboard; }
+    [[nodiscard]] bool isKeyEventUp() const                         { return keyUpEvent && !wantCaptureKeyboard; }
     [[nodiscard]] bool isLeftMouseButtonPressed() const             { return mouseLeftButton; }
     [[nodiscard]] bool isRightMouseButtonPressed() const            { return mouseRightButton; }
     [[nodiscard]] bool isMiddleMouseButtonPressed() const           { return mouseMiddleButton; }
     [[nodiscard]] bool isClickLeft() const                          { return mouseLeftButton; }
     [[nodiscard]] bool isClickRight() const                         { return mouseRightButton; }
     [[nodiscard]] bool isClickRightUp() const                       { return mouseRightButtonUp; }
-    [[nodiscard]] int getMouseWheelY() const                        { return mouseWheelY; }
+    [[nodiscard]] int getMouseWheelY() const                        { return wantCaptureMouse ? 0 : mouseWheelY; }
     [[nodiscard]] bool isKeyboardEnabled() const                    { return keyboardEnabled; }
     [[nodiscard]] bool isMouseEnabled() const                       { return mouseEnabled; }
     [[nodiscard]] bool isPadEnabled() const                         { return padEnabled; }
-    bool isMouseButtonUp() const                                    { return mouseButtonUp; }
-    bool isMouseButtonDown() const                                  { return mouseButtonDown; }
-    bool isDrag() const                                             { return drag; }
-    bool isRightDrag() const                                        { return rightDrag; }
+    bool isMouseButtonUp() const                                    { return mouseButtonUp && !wantCaptureMouse; }
+    bool isMouseButtonDown() const                                  { return mouseButtonDown && !wantCaptureMouse; }
+    bool isDrag() const                                             { return drag && !wantCaptureMouse; }
+    bool isRightDrag() const                                        { return rightDrag && !wantCaptureMouse; }
     bool isGameControllerAvailable() const                          { return gameController != nullptr; }
 
     [[nodiscard]] bool isAnyControllerButtonPressed() const;

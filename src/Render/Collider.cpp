@@ -15,6 +15,8 @@ Collider::Collider()
     ghostObject(nullptr),
     body(nullptr),
     colliderStatic(false),
+    collisionGroup(btBroadphaseProxy::DefaultFilter),
+    collisionMask(btBroadphaseProxy::AllFilter),
     mass(0),
     friction(1),
     linearDamping(1),
@@ -136,7 +138,7 @@ void Collider::makeSimpleGhostBody(
     ghostObject->setCollisionFlags(btCollisionObject::CF_NO_CONTACT_RESPONSE);
     world->addCollisionObject(ghostObject, collisionGroup, collisionMask);
 
-    ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransform(modelMatrix));
+    ghostObject->setWorldTransform(Tools::GLMMatrixToBulletTransformNoScale(modelMatrix));
 }
 
 btPairCachingGhostObject *Collider::getGhostObject() const
@@ -241,8 +243,8 @@ void Collider::setupKinematicCollider()
         kinematicCapsuleSize.x,
         kinematicCapsuleSize.y,
         Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-        Config::collisionGroups::AllFilter,
-        Config::collisionGroups::AllFilter
+        collisionGroup,
+        collisionMask
     );
 }
 
@@ -258,8 +260,8 @@ void Collider::SetupRigidBodyCollider(CollisionShape shapeMode)
     MakeSimpleRigidBody(
         mass,
         Brakeza::get()->getComponentsManager()->Collisions()->getDynamicsWorld(),
-        Config::collisionGroups::AllFilter,
-        Config::collisionGroups::AllFilter
+        collisionGroup,
+        collisionMask
     );
 }
 
@@ -530,4 +532,33 @@ void Collider::moveCollider(Vertex3D v)
 void Collider::setSimpleShapeSize(const Vertex3D &simple_shape_size)
 {
     simpleShapeSize = simple_shape_size;
+}
+
+void Collider::resetColliderRotation()
+{
+    auto resetRot = [](btCollisionObject* co) {
+        if (!co) return;
+        btTransform t = co->getWorldTransform();
+        t.setRotation(btQuaternion::getIdentity());
+        co->setWorldTransform(t);
+    };
+    resetRot(ghostObject);
+    resetRot(body);
+    resetRot(kinematicBody);
+}
+
+void Collider::setDebugDraw(bool value)
+{
+    debugDraw = value;
+    const int flag = btCollisionObject::CF_DISABLE_VISUALIZE_OBJECT;
+
+    auto applyFlag = [&](btCollisionObject* co) {
+        if (!co) return;
+        int flags = co->getCollisionFlags();
+        co->setCollisionFlags(value ? (flags & ~flag) : (flags | flag));
+    };
+
+    applyFlag(ghostObject);
+    applyFlag(body);
+    applyFlag(kinematicBody);
 }

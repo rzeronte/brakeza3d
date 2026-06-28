@@ -883,6 +883,10 @@
 			"name":	"SCENE_UNLOAD",
 			"x":	13,
 			"y":	10
+		}, {
+			"name":	"OBJECTS_VIEWER_EMPTY_GROUPS",
+			"x":	1,
+			"y":	30
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

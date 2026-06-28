@@ -16,6 +16,9 @@ void ComponentInput::preUpdate()
 {
     Component::preUpdate();
 
+    wantCaptureKeyboard = ImGui::GetIO().WantCaptureKeyboard;
+    wantCaptureMouse    = ImGui::GetIO().WantCaptureMouse;
+
     ResetKeyboardMapping();
     ResetMouseMapping();
 
@@ -319,6 +322,20 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
 
         if (event->type == SDL_KEYDOWN &&
             event->key.repeat == 0 &&
+            event->key.keysym.scancode == SDL_SCANCODE_HOME)
+        {
+            auto* sel = Components::get()->Render()->getSelectedObject();
+            if (sel != nullptr) {
+                const float FOCUS_DISTANCE = 15.0f;
+                auto* camera = Components::get()->Camera()->getCamera();
+                Vertex3D target = sel->getPosition();
+                camera->setPosition(target + Vertex3D(0.0f, FOCUS_DISTANCE * 0.5f, FOCUS_DISTANCE));
+                camera->LookAt(target);
+            }
+        }
+
+        if (event->type == SDL_KEYDOWN &&
+            event->key.repeat == 0 &&
             event->key.keysym.scancode == SDL_SCANCODE_RETURN &&
             (event->key.keysym.mod & KMOD_ALT))
         {
@@ -360,7 +377,7 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
 
 bool ComponentInput::isCharPressed(const char *character) const
 {
-    if (character == nullptr) return false;
+    if (character == nullptr || wantCaptureKeyboard) return false;
 
     SDL_Scancode keyCode = SDL_GetScancodeFromName(character);
 
@@ -371,7 +388,7 @@ bool ComponentInput::isCharPressed(const char *character) const
 
 bool ComponentInput::isCharFirstEventDown(const char *character)
 {
-    if (character == nullptr)
+    if (character == nullptr || wantCaptureKeyboard)
         return false;
 
     SDL_Keycode keyCode = SDL_GetKeyFromScancode(SDL_GetScancodeFromName(character));

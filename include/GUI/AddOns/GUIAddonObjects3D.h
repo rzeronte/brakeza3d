@@ -64,6 +64,8 @@ public:
      */
     static bool exist(const std::string &pattern1, const std::string &pattern2);
 
+    static bool hideEmptyGroups;
+
     // ========================================================================
     // FUNCIONES LEGACY (ya no se usan con CustomTreeNode, pero las dejo)
     // ========================================================================

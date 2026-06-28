@@ -35,6 +35,7 @@ public:
     static Color MixColor(Color color1, Color color2, float color2Intensity);
     static Uint32 getSurfacePixel(SDL_Surface *surface, int x, int y);
     static btTransform GLMMatrixToBulletTransform(const glm::mat4& glmMatrix);
+    static btTransform GLMMatrixToBulletTransformNoScale(const glm::mat4& glmMatrix);
     static Vertex3D screenToWorld(float x, float y, float width, float height, const glm::mat4 &projection, const glm::mat4 &view);
     static glm::mat4 aiMat4toGLMMat4(const aiMatrix4x4t<ai_real> &from);
     static std::string getExtensionFromFilename(const std::string &filename);

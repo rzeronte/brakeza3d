@@ -59,6 +59,7 @@ static void GetSystemMemoryMB(uint64_t &outTotal, uint64_t &outFree)
 #include "../Cache/ModelDataCache.h"
 #include "../Cache/AnimationDataCache.h"
 #include "../Cache/ScriptDataCache.h"
+#include "../Cache/SceneCache.h"
 
 Profiler *Profiler::instance = nullptr;
 
@@ -452,6 +453,13 @@ void Profiler::DrawCachesTable() const
         ImGui::TableNextColumn(); ImGui::Text("%zu", scriptDataCache.getHits());
         ImGui::TableNextColumn(); ImGui::Text("%zu", scriptDataCache.getMisses());
         ImGui::TableNextColumn(); ImGui::Text("");
+
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn(); ImGui::Text("  Scenes (Assimp)");
+        ImGui::TableNextColumn(); ImGui::Text("%zu", sceneCache.size());
+        ImGui::TableNextColumn(); ImGui::Text("-");
+        ImGui::TableNextColumn(); ImGui::Text("-");
+        ImGui::TableNextColumn(); ImGui::Text("shared importers alive");
 
         ImGui::EndTable();
     }
@@ -1271,6 +1279,12 @@ void Profiler::DrawWinProfiler()
         ImGui::Spacing();
     }
 
+    if (Section("  Colliders", ImVec4(0.15f, 0.55f, 0.25f, 1.0f))) {
+        ImGui::Spacing();
+        DrawCollidersTable();
+        ImGui::Spacing();
+    }
+
     if (Section("  OpenGL Status", ImVec4(0.40f, 0.14f, 0.14f, 1.0f))) {
         ImGui::Spacing();
         DrawOpenGLStatus();
@@ -1641,6 +1655,208 @@ void Profiler::DrawPostProcessingChain()
 
         ImGui::PopID();
     }
+}
+
+void Profiler::DrawCollidersTable()
+{
+    auto* collisions = Components::get()->Collisions();
+    if (!collisions || !collisions->isEnabled()) {
+        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Collision system disabled");
+        return;
+    }
+
+    auto* world = collisions->getDynamicsWorld();
+    if (!world) {
+        ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "Dynamics world not available");
+        return;
+    }
+
+    // ── Aggregate stats ─────────────────────────────────────────────────────
+    int total = 0, ghost = 0, body = 0, kinematic = 0;
+    int simple = 0, capsule = 0, trimesh = 0;
+    int groupCounts[7] = {0};
+
+    for (auto& obj : Brakeza::get()->getSceneObjects()) {
+        if (obj->isRemoved() || !obj->isEnabled() || !obj->isCollisionsEnabled()) continue;
+
+        total++;
+        switch (obj->getCollisionMode()) {
+            case GHOST: ghost++; break;
+            case BODY: body++; break;
+            case KINEMATIC: kinematic++; break;
+            default: break;
+        }
+        switch (obj->getCollisionShape()) {
+            case SIMPLE_SHAPE: simple++; break;
+            case CAPSULE_SHAPE: capsule++; break;
+            case TRIANGLE_MESH_SHAPE: trimesh++; break;
+            default: break;
+        }
+        int g = obj->getCollisionGroup();
+        if (g & Config::Player)          groupCounts[0]++;
+        if (g & Config::Enemy)           groupCounts[1]++;
+        if (g & Config::Projectile)      groupCounts[2]++;
+        if (g & Config::ProjectileEnemy) groupCounts[3]++;
+        if (g & Config::Health)          groupCounts[4]++;
+        if (g & Config::Weapon)          groupCounts[5]++;
+        if (g & Config::StaticWorld)     groupCounts[6]++;
+    }
+
+    int numManifolds = world->getDispatcher()->getNumManifolds();
+
+    ImGui::Text("Total %d", total); ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.2f,0.8f,0.2f,1), "  Ghost %d", ghost); ImGui::SameLine();
+    ImGui::TextColored(ImVec4(0.2f,0.5f,1.0f,1), "  Body %d", body); ImGui::SameLine();
+    ImGui::TextColored(ImVec4(1.0f,0.8f,0.2f,1), "  Kinematic %d", kinematic); ImGui::SameLine();
+    if (numManifolds > 0)
+        ImGui::TextColored(ImVec4(1,0.6f,0,1), "  | Manifolds %d", numManifolds);
+    else
+        ImGui::TextDisabled("  | Manifolds %d", numManifolds);
+
+    ImGui::Spacing();
+
+    const char* groupLabels[] = {"Player", "Enemy", "Proj", "ProjEnemy", "Health", "Weapon", "StaticWorld"};
+    ImGui::Text("Groups: ");
+    ImGui::SameLine();
+    for (int i = 0; i < 7; i++) {
+        if (groupCounts[i] > 0) {
+            ImGui::TextColored(ImVec4(0.7f,0.9f,0.7f,1), "%s:%d  ", groupLabels[i], groupCounts[i]);
+            ImGui::SameLine();
+        }
+    }
+    ImGui::TextDisabled("Shapes: Simple %d  Capsule %d  TriMesh %d", simple, capsule, trimesh);
+
+    ImGui::Spacing();
+    ImGui::Separator();
+    ImGui::Spacing();
+
+    // ── Per-object table ────────────────────────────────────────────────────
+    if (ImGui::BeginTable("colliders_table", 8,
+        ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_Sortable))
+    {
+        ImGui::TableSetupColumn("Name",     ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("Type",     ImGuiTableColumnFlags_WidthFixed, 70);
+        ImGui::TableSetupColumn("Mode",     ImGuiTableColumnFlags_WidthFixed, 65);
+        ImGui::TableSetupColumn("Shape",    ImGuiTableColumnFlags_WidthFixed, 55);
+        ImGui::TableSetupColumn("Group",    ImGuiTableColumnFlags_WidthFixed, 90);
+        ImGui::TableSetupColumn("Mask",     ImGuiTableColumnFlags_WidthFixed, 90);
+        ImGui::TableSetupColumn("Enabled",  ImGuiTableColumnFlags_WidthFixed, 45);
+        ImGui::TableSetupColumn("Overlaps", ImGuiTableColumnFlags_WidthFixed, 50);
+        ImGui::TableHeadersRow();
+
+        for (auto& obj : Brakeza::get()->getSceneObjects()) {
+            if (obj->isRemoved() || !obj->isEnabled() || !obj->isCollisionsEnabled()) continue;
+
+            ImGui::TableNextRow();
+
+            // Name
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("%s", obj->getName().c_str());
+
+            // Type
+            ImGui::TableSetColumnIndex(1);
+            switch (obj->getTypeObject()) {
+                case ObjectType::Mesh3D:           ImGui::Text("Mesh3D"); break;
+                case ObjectType::Mesh3DAnimation:  ImGui::Text("Animated"); break;
+                case ObjectType::LightPoint:       ImGui::Text("LightPt"); break;
+                case ObjectType::LightSpot:        ImGui::Text("LightSp"); break;
+                case ObjectType::ParticleEmitter:  ImGui::Text("Particles"); break;
+                case ObjectType::Image3D:          ImGui::Text("Img3D"); break;
+                case ObjectType::Image2D:          ImGui::Text("Img2D"); break;
+                case ObjectType::Swarm:            ImGui::Text("Swarm"); break;
+                default:                           ImGui::Text("Object3D"); break;
+            }
+
+            // Mode
+            ImGui::TableSetColumnIndex(2);
+            switch (obj->getCollisionMode()) {
+                case GHOST:     ImGui::TextColored(ImVec4(0.2f,0.8f,0.2f,1), "Ghost"); break;
+                case BODY:      ImGui::TextColored(ImVec4(0.2f,0.5f,1.0f,1), "Body"); break;
+                case KINEMATIC: ImGui::TextColored(ImVec4(1.0f,0.8f,0.2f,1), "Kinematic"); break;
+                default:        ImGui::TextDisabled("None"); break;
+            }
+
+            // Shape
+            ImGui::TableSetColumnIndex(3);
+            switch (obj->getCollisionShape()) {
+                case SIMPLE_SHAPE:        ImGui::Text("Simple"); break;
+                case CAPSULE_SHAPE:       ImGui::Text("Capsule"); break;
+                case TRIANGLE_MESH_SHAPE: ImGui::Text("TriMesh"); break;
+                default:                  ImGui::TextDisabled("—"); break;
+            }
+
+            // Group bits
+            ImGui::TableSetColumnIndex(4);
+            {
+                int cg = obj->getCollisionGroup();
+                std::string g;
+                if (cg == -1) { g = "All"; }
+                else {
+                    if (cg & Config::Player)          g += "P ";
+                    if (cg & Config::Enemy)           g += "E ";
+                    if (cg & Config::Projectile)      g += "Proj ";
+                    if (cg & Config::ProjectileEnemy) g += "ProjE ";
+                    if (cg & Config::Health)          g += "Health ";
+                    if (cg & Config::Weapon)          g += "Weapon ";
+                    if (cg & Config::StaticWorld)     g += "StaticW ";
+                    if (g.empty()) g = std::to_string(cg);
+                }
+                ImGui::Text("%s", g.c_str());
+            }
+
+            // Mask bits
+            ImGui::TableSetColumnIndex(5);
+            {
+                int cm = obj->getCollisionMask();
+                std::string m;
+                if (cm == -1) { m = "All"; }
+                else {
+                    if (cm & Config::Player)          m += "P ";
+                    if (cm & Config::Enemy)           m += "E ";
+                    if (cm & Config::Projectile)      m += "Proj ";
+                    if (cm & Config::ProjectileEnemy) m += "ProjE ";
+                    if (cm & Config::Health)          m += "Health ";
+                    if (cm & Config::Weapon)          m += "Weapon ";
+                    if (cm & Config::StaticWorld)     m += "StaticW ";
+                    if (m.empty()) m = std::to_string(cm);
+                }
+                ImGui::Text("%s", m.c_str());
+            }
+
+            // Enabled
+            ImGui::TableSetColumnIndex(6);
+            if (obj->isCollisionsEnabled())
+                ImGui::TextColored(ImVec4(0,1,0,1), "Y");
+            else
+                ImGui::TextColored(ImVec4(1,0,0,1), "N");
+
+            // Overlaps
+            ImGui::TableSetColumnIndex(7);
+            if (obj->getCollisionMode() == GHOST && obj->getGhostObject()) {
+                int n = obj->getGhostObject()->getNumOverlappingObjects();
+                if (n > 0)
+                    ImGui::TextColored(ImVec4(1,0.8f,0,1), "%d", n);
+                else
+                    ImGui::Text("%d", n);
+            } else {
+                ImGui::TextDisabled("—");
+            }
+
+            if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+                Components::get()->Render()->setSelectedObject(obj);
+            }
+        }
+        ImGui::EndTable();
+    }
+
+    ImGui::Spacing();
+
+    if (ImGui::Button("Toggle Bullet Debug Wireframe")) {
+        Config::get()->BULLET_DEBUG_MODE = !Config::get()->BULLET_DEBUG_MODE;
+        collisions->setEnableDebugMode(Config::get()->BULLET_DEBUG_MODE);
+    }
+    ImGui::SameLine();
+    ImGui::TextDisabled(Config::get()->BULLET_DEBUG_MODE ? "(ON)" : "(OFF)");
 }
 
 void Profiler::InitMeasure(MeasuresMap &map, const std::string &label)

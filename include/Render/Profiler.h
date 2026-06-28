@@ -62,6 +62,7 @@ public:
     void DrawPostProcessingChain();
     void DrawFrameBuffers();
     void DrawOpenGLStatus();
+    void DrawCollidersTable();
     [[nodiscard]] bool isEnabled() const;
     [[nodiscard]] bool isScriptDetailEnabled() const;
     void setScriptDetailEnabled(bool v);
