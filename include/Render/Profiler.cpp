@@ -613,8 +613,9 @@ void Profiler::DrawPlotComponent(Component *c, float height)
     UpdateHistory(measureUpdate);
     UpdateHistory(measurePost);
 
-    float sizeH = height;;
-    if (ImGui::BeginTable("ComponentPlots", 3, ImGuiTableFlags_SizingStretchSame )) {
+    float sizeH = height;
+    std::string tableId = "ComponentPlots##" + c->getLabel();
+    if (ImGui::BeginTable(tableId.c_str(), 3, ImGuiTableFlags_SizingStretchSame)) {
         ImGui::TableNextRow();
         // --------------------------------------------
         // Columna 0: Plot PRE (rojo)
@@ -623,7 +624,7 @@ void Profiler::DrawPlotComponent(Component *c, float height)
         ImGui::PushStyleColor(ImGuiCol_PlotLines, ImVec4(1.0f, 0.2f, 0.2f, 1.0f));
         ImGui::PlotLines("",
                          measurePre.frameTimeHistory.data(),
-                         measurePre.frameTimeHistory.size(),
+                         (int)measurePre.frameTimeHistory.size(),
                          0,
                          nullptr,
                          0.0f,
@@ -632,13 +633,13 @@ void Profiler::DrawPlotComponent(Component *c, float height)
         ImGui::PopStyleColor();
 
         // --------------------------------------------
-        // Columna 2: Plot UPDATE (verde)
+        // Columna 1: Plot UPDATE (verde)
         // --------------------------------------------
         ImGui::TableSetColumnIndex(1);
         ImGui::PushStyleColor(ImGuiCol_PlotLines, ImVec4(0.2f, 1.0f, 0.2f, 1.0f));
         ImGui::PlotLines("",
                          measureUpdate.frameTimeHistory.data(),
-                         measureUpdate.frameTimeHistory.size(),
+                         (int)measureUpdate.frameTimeHistory.size(),
                          0,
                          nullptr,
                          0.0f,
@@ -647,21 +648,22 @@ void Profiler::DrawPlotComponent(Component *c, float height)
         ImGui::PopStyleColor();
 
         // --------------------------------------------
-        // Columna 3: Plot POST (azul)
+        // Columna 2: Plot POST (azul)
         // --------------------------------------------
         ImGui::TableSetColumnIndex(2);
         ImGui::PushStyleColor(ImGuiCol_PlotLines, ImVec4(0.2f, 0.5f, 1.0f, 1.0f));
         ImGui::PlotLines("",
                          measurePost.frameTimeHistory.data(),
-                         measurePost.frameTimeHistory.size(),
+                         (int)measurePost.frameTimeHistory.size(),
                          0,
                          nullptr,
                          0.0f,
                          5.0f,
                          ImVec2(-1, sizeH));
         ImGui::PopStyleColor();
+
+        ImGui::EndTable();
     }
-    ImGui::EndTable();
 }
 
 void Profiler::DrawPlotFrameTime(Measure &measure)
@@ -677,7 +679,6 @@ void Profiler::DrawPlotFrameTime(Measure &measure)
     ImGui::SameLine();
     ImGui::TextDisabled("  %.3f ms/frame", avg);
 
-    UpdateHistory(measure);
     ImGui::PushStyleColor(ImGuiCol_PlotLines,       ImVec4(0.3f, 0.7f, 1.0f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_PlotLinesHovered,ImVec4(0.5f, 0.9f, 1.0f, 1.0f));
     ImGui::PushStyleColor(ImGuiCol_FrameBg,         ImVec4(0.08f, 0.08f, 0.12f, 1.0f));
@@ -860,11 +861,11 @@ void Profiler::DrawOpenGLStatus()
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("FBO binds");
-        ImGui::TableSetColumnIndex(1); ImGui::Text("%d", fboChanges);
+        ImGui::TableSetColumnIndex(1); ImGui::Text("%d", lastFboChanges);
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Program binds");
-        ImGui::TableSetColumnIndex(1); ImGui::Text("%d", programChanges);
+        ImGui::TableSetColumnIndex(1); ImGui::Text("%d", lastProgramChanges);
 
         ImGui::EndTable();
     }
@@ -1870,8 +1871,12 @@ void Profiler::ResetTotalFrameTime()
 {
     measureFrameTime.startTime = Ticks();
     measureFrameTime.endTime = 0;
-    measureFrameTime.diffTime = 0;
-    fboChanges = 0;
+    // diffTime keeps the previous frame's value so the GUI (drawn early in the frame)
+    // can display accurate timing before EndTotalFrameTime() runs.
+    // Same pattern for switch counters: snapshot before reset so DrawOpenGLStatus reads last frame's data.
+    lastFboChanges     = fboChanges;
+    lastProgramChanges = programChanges;
+    fboChanges     = 0;
     programChanges = 0;
 }
 
@@ -1882,7 +1887,7 @@ void Profiler::EndTotalFrameTime()
 {
     measureFrameTime.endTime = Ticks();
     measureFrameTime.diffTime = measureFrameTime.endTime - measureFrameTime.startTime;
-
+    UpdateHistory(measureFrameTime);
 }
 
 MeasuresMap& Profiler::getComponentMeasures()

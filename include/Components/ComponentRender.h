@@ -35,6 +35,7 @@
 #include "../OpenGL/ShaderOGLGroundDecal.h"
 #include "../OpenGL/ShaderOGLAxisQuad.h"
 #include "../OpenGL/ShaderOGLRect.h"
+#include "../OpenGL/ShaderOGLCircle2D.h"
 #include "../OpenGL/ShaderOGLRenderDeferred.h"
 #include "../OpenGL/Quad/ShaderOGLLightPass.h"
 #include "../OpenGL/ShaderOGLShadowPass.h"
@@ -70,6 +71,7 @@ struct Shaders {
     ShaderOGLRect                *shaderOGLRect           = nullptr;
     ShaderOGLComputeParticles    *shaderComputeParticles  = nullptr;
     ShaderOGLGPUParticles        *shaderGPUParticles      = nullptr;
+    ShaderOGLCircle2D            *shaderCircle2D          = nullptr;
 };
 
 class ComponentRender : public Component
@@ -149,6 +151,7 @@ public:
     void DrawLine2D(int x1, int y1, int x2, int y2, const Color &c, float weight) const;
     void DrawFilledRect(int x, int y, int w, int h, const Color &c) const;
     void DrawImage2D(const std::string &path, int x, int y, int w, int h);
+    void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb);
     void DrawImage2DFromImage(Image *img, int x, int y, int w, int h) const;
     void drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundCircleToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
@@ -161,6 +164,8 @@ public:
     void drawAxisQuad(Object3D* obj, float r, float g, float b, float a, float halfSize, ShaderOGLAxisQuad::Axis axis = ShaderOGLAxisQuad::AXIS_Y) const;
     void drawAxisQuadAt(const Vertex3D& pos, float r, float g, float b, float a, float halfSize, ShaderOGLAxisQuad::Axis axis = ShaderOGLAxisQuad::AXIS_Y) const;
     void DrawCircle3D(Vertex3D center, float radius, float r, float g, float b, float a) const;
+    void DrawCircle2D(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive = false) const;
+    void DrawCircle2DToFB(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive, const std::string &fb) const;
     void setLastFrameBufferUsed(GLuint value);
     void setLastProgramUsed(GLuint value);
     void ChangeOpenGLFramebuffer(GLuint);

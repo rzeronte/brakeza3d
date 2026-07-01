@@ -154,6 +154,7 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
         // Contar objetos
         int count = 0;
         for (const auto &o : objects) {
+            if (o->isRemoved()) continue;
             if (o->getTypeObject() == type.type) {
                 if (filter.empty() || exist(o->getName(), filter)) {
                     count++;

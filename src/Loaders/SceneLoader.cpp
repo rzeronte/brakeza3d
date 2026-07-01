@@ -138,6 +138,16 @@ void SceneLoader::setSceneActive(const std::string& name, bool active)
     scene->setActive(active);
 }
 
+void SceneLoader::setSceneHidden(const std::string& name, bool hidden)
+{
+    auto *scene = Components::get()->Scripting()->getSceneByName(name);
+    if (scene == nullptr) {
+        LOG_ERROR("[SceneLoader] setSceneHidden: scene '%s' not found", name.c_str());
+        return;
+    }
+    scene->setHidden(hidden);
+}
+
 void SceneLoader::ReloadScene(const std::string& name)
 {
     auto *scene = Components::get()->Scripting()->getSceneByName(name);

@@ -3,6 +3,7 @@
 //
 
 #include "../../include/Loaders/ProjectLoader.h"
+#include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
@@ -13,6 +14,24 @@
 void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 {
     auto scripting = Components::get()->Scripting();
+
+    auto contentFile = Tools::ReadFile(filename);
+    auto contentJSON = cJSON_Parse(contentFile);
+
+    // thread pools — resize antes de ClearWorld, pools aún sin tareas nuevas
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "thread_pools") != nullptr) {
+        auto poolsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "thread_pools");
+        auto resizePool = [](ThreadPool &pool, cJSON *j) {
+            if (!j) return;
+            cJSON *item = cJSON_GetObjectItemCaseSensitive(j, "num_threads");
+            if (item && cJSON_IsNumber(item) && (size_t)item->valueint != pool.getNumThreads()) {
+                pool.resize((size_t)item->valueint);
+            }
+        };
+        resizePool(Brakeza::get()->PoolCompute(), cJSON_GetObjectItemCaseSensitive(poolsJSON, "compute"));
+        resizePool(Brakeza::get()->PoolImages(),  cJSON_GetObjectItemCaseSensitive(poolsJSON, "images"));
+    }
+
     if (scripting->getCurrentScene() != nullptr) {
         SceneLoader::ClearWorld();
     }
@@ -22,9 +41,6 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 
     Components::get()->Scripting()->setCurrentProject(nullptr);
     Components::get()->Scripting()->setCurrentScene(nullptr);
-
-    auto contentFile = Tools::ReadFile(filename);
-    auto contentJSON = cJSON_Parse(contentFile);
 
     LOG_MESSAGE("[ProjectLoader] Loading project file '%s'...", filename.c_str());
 
@@ -80,6 +96,34 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
         Mix_VolumeMusic((int) Config::get()->SOUND_VOLUME_MUSIC);
     }
 
+    // thread pools
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "thread_pools") != nullptr) {
+        auto poolsJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "thread_pools");
+
+        auto applyPool = [](ThreadPool &pool, cJSON *j, const char *poolName) {
+            if (!j) return;
+            auto read = [&](const char *key, size_t current) -> size_t {
+                cJSON *item = cJSON_GetObjectItemCaseSensitive(j, key);
+                return (item && cJSON_IsNumber(item)) ? (size_t)item->valueint : current;
+            };
+            pool.setMaxConcurrentTasks(read("max_concurrent_tasks",      pool.getMaxConcurrentTasks()));
+            pool.setMaxCallbacksPerFrame(read("max_callbacks_per_frame", pool.getMaxCallbacksPerFrame()));
+            pool.setMaxEnqueuedTasks(read("max_enqueued_tasks",          pool.getMaxEnqueuedTasks()));
+            pool.setMaxEnqueuedCallbacks(read("max_enqueued_callbacks",  pool.getMaxEnqueuedCallbacks()));
+            LOG_WARNING("[ProjectLoader] ThreadPool '%s' => threads=%zu | concurrent=%zu | callbacks/frame=%zu | enqueued tasks=%zu | enqueued callbacks=%zu",
+                poolName,
+                pool.getNumThreads(),
+                pool.getMaxConcurrentTasks(),
+                pool.getMaxCallbacksPerFrame(),
+                pool.getMaxEnqueuedTasks(),
+                pool.getMaxEnqueuedCallbacks()
+            );
+        };
+
+        applyPool(Brakeza::get()->PoolCompute(), cJSON_GetObjectItemCaseSensitive(poolsJSON, "compute"), "compute");
+        applyPool(Brakeza::get()->PoolImages(),  cJSON_GetObjectItemCaseSensitive(poolsJSON, "images"),  "images");
+    }
+
     Components::get()->Scripting()->setCurrentProject(new Project(filename));
     FileSystemGUI::autoExpandProject = true;
 }
@@ -127,6 +171,21 @@ void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
     cJSON_AddNumberToObject(resolutionJSON, "height", window->getHeightRender());
     cJSON_AddItemToObject(root, "resolution", resolutionJSON);
 
+    // thread pools
+    auto serializePool = [](const ThreadPool &p) -> cJSON* {
+        cJSON *j = cJSON_CreateObject();
+        cJSON_AddNumberToObject(j, "num_threads",             (int)p.getNumThreads());
+        cJSON_AddNumberToObject(j, "max_concurrent_tasks",    (int)p.getMaxConcurrentTasks());
+        cJSON_AddNumberToObject(j, "max_callbacks_per_frame", (int)p.getMaxCallbacksPerFrame());
+        cJSON_AddNumberToObject(j, "max_enqueued_tasks",      (int)p.getMaxEnqueuedTasks());
+        cJSON_AddNumberToObject(j, "max_enqueued_callbacks",  (int)p.getMaxEnqueuedCallbacks());
+        return j;
+    };
+    cJSON *threadPoolsJSON = cJSON_CreateObject();
+    cJSON_AddItemToObject(threadPoolsJSON, "compute", serializePool(Brakeza::get()->PoolCompute()));
+    cJSON_AddItemToObject(threadPoolsJSON, "images",  serializePool(Brakeza::get()->PoolImages()));
+    cJSON_AddItemToObject(root, "thread_pools", threadPoolsJSON);
+
     Tools::WriteToFile(filename, cJSON_Print(root));
 }
 
@@ -151,9 +210,17 @@ void ProjectLoader::CloseCurrentProject()
     LOG_MESSAGE("[ProjectLoader] Closing current project...");
 
     auto scripting = Components::get()->Scripting();
+
     if (scripting->getCurrentScene() != nullptr) {
         SceneLoader::ClearWorld();
     }
+
+    scripting->StopLUAScripts();
+    auto projectScripts = scripting->getProjectScripts();
+    for (auto *s : projectScripts) {
+        scripting->RemoveProjectScript(s);
+    }
+
     scripting->setCurrentProject(nullptr);
     FileSystemGUI::autoExpandProject = false;
 }

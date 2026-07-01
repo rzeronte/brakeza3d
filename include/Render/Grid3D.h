@@ -39,7 +39,7 @@ public:
     void setTravel(int x1, int y1, int z1, int x2, int y2, int z2);
     std::vector<CubeGrid3D> MakeTravelCubesGrid();
     std::vector<CubeGrid3D> computePath(int gx1, int gz1, int gx2, int gz2);
-    void fillGrid3DFromImage(const std::string& imagePath, int threshold = 128);
+    void fillGrid3DFromImage(const std::string& imagePath, int threshold = 128, bool flipZ = false, bool flipX = false);
     void drawDebug(Color color = Color::green());
     CubeGrid3D *getCubeFromPosition(int x, int y, int z);
     bool isCellWalkable(int x, int z) const;
@@ -51,6 +51,7 @@ public:
     [[nodiscard]] int getNumberCubesY() const;
     [[nodiscard]] int getNumberCubesZ() const;
     [[nodiscard]] const std::vector<CubeGrid3D> &getBoxes() const;
+    [[nodiscard]] const AABB3D &getBounds() const;
 };
 
 

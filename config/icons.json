@@ -887,6 +887,10 @@
 			"name":	"OBJECTS_VIEWER_EMPTY_GROUPS",
 			"x":	1,
 			"y":	30
+		}, {
+			"name":	"TOOLBAR_CLEAR_CACHE",
+			"x":	2,
+			"y":	32
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

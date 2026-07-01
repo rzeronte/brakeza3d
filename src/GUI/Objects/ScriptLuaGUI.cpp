@@ -15,6 +15,17 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 {
     ImGui::Spacing();
 
+    int tps = o->getTicksPerSecond();
+    ImGui::SetNextItemWidth(100);
+    if (ImGui::InputInt("Ticks/sec##tps_props", &tps)) {
+        o->setTicksPerSecond(tps);
+    }
+    ImGui::SameLine();
+    if (tps <= 0)
+        ImGui::TextDisabled("(every frame)");
+    else
+        ImGui::TextDisabled("(%.0f ms/tick)", 1000.0f / static_cast<float>(tps));
+
     ImGui::SeparatorText("Script variables values");
 
     static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp |
@@ -52,13 +63,29 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
 
 ScriptMetaInfo ScriptLuaGUI::ExtractScriptMetainfo(const std::string& pathFile)
 {
-    auto json = cJSON_Parse(Tools::ReadFile(pathFile));
+    ScriptMetaInfo meta;
 
-    return {
-        cJSON_GetObjectItemCaseSensitive(json, "name")->valuestring,
-        cJSON_GetObjectItemCaseSensitive(json, "codeFile")->valuestring,
-        cJSON_GetObjectItemCaseSensitive(json, "typesFile")->valuestring
-    };
+    auto json = cJSON_Parse(Tools::ReadFile(pathFile));
+    if (!json) {
+        LOG_ERROR("[ScriptLuaGUI] Cannot parse script JSON: %s", pathFile.c_str());
+        return meta;
+    }
+
+    auto* nameItem      = cJSON_GetObjectItemCaseSensitive(json, "name");
+    auto* codeFileItem  = cJSON_GetObjectItemCaseSensitive(json, "codeFile");
+    auto* typesFileItem = cJSON_GetObjectItemCaseSensitive(json, "typesFile");
+
+    if (nameItem)      meta.name      = nameItem->valuestring;
+    if (codeFileItem)  meta.codeFile  = codeFileItem->valuestring;
+    if (typesFileItem) meta.typesFile = typesFileItem->valuestring;
+
+    cJSON *tpsJSON = cJSON_GetObjectItemCaseSensitive(json, "ticks_per_second");
+    if (tpsJSON && cJSON_IsNumber(tpsJSON)) {
+        meta.ticksPerSecond = tpsJSON->valueint;
+    }
+
+    cJSON_Delete(json);
+    return meta;
 }
 
 void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
@@ -127,16 +154,16 @@ void ScriptLuaGUI::DrawWinObjectScripts()
         lockItem.size = GUIType::Sizes::ICONS_BROWSERS;
         config.actionItems.push_back(lockItem);
 
-        // Reload
-        CustomImGui::TreeActionItem editItem(
-            FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
-            "Reload script object",
-            [currentScript]() {
-                currentScript->Reload();
-            }
-        );
-        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
-        config.actionItems.push_back(editItem);
+        // TODO: reload individual deshabilitado — diferir al inicio del frame para evitar crash mid-update
+        // CustomImGui::TreeActionItem editItem(
+        //     FileSystemGUI::Icon(IconGUI::LUA_RELOAD),
+        //     "Reload script environment",
+        //     [o, currentScript]() {
+        //         o->ReloadScriptEnvironment(currentScript);
+        //     }
+        // );
+        // editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        // config.actionItems.push_back(editItem);
 
         // Remove
         CustomImGui::TreeActionItem removeItem(
@@ -221,10 +248,27 @@ void ScriptLuaGUI::DrawScriptConfig(EditableOpenScriptFile &file)
 {
     DrawScriptConfigHeader(file);
     DrawScriptConfigEditName(file);
+    DrawScriptConfigTicksPerSecond(file);
     DrawScriptConfigVarCreator(file);
     DrawScriptConfigVarsTable(file);
     ImGui::Separator();
     DrawScriptConfigActionButtons(file);
+}
+
+void ScriptLuaGUI::DrawScriptConfigTicksPerSecond(EditableOpenScriptFile &file)
+{
+    ImGui::Separator();
+    auto script = file.getScript();
+    int tps = script->getTicksPerSecond();
+    ImGui::SetNextItemWidth(100);
+    if (ImGui::InputInt("Ticks/sec##tps", &tps)) {
+        script->setTicksPerSecond(tps);
+    }
+    ImGui::SameLine();
+    if (tps <= 0)
+        ImGui::TextDisabled("(every frame)");
+    else
+        ImGui::TextDisabled("(%.0f ms/tick)", 1000.0f / static_cast<float>(tps));
 }
 
 int ScriptLuaGUI::getNumAllowedVars(Object3D* o)

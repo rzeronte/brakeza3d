@@ -26,6 +26,7 @@ public:
     static void MenuSound();
     static void MenuLogging();
     static void MenuLayout();
+    static void MenuInterface();
 
     static void MenuWindow(GUIManager *gui);
     static void AboutMeModal();

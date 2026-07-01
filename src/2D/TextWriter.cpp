@@ -436,6 +436,7 @@ void TextWriter::flushTextBatch()
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 
     for (const auto& bt : batchQueue) {
+        shader->setVec4("tintColor", glm::vec4(bt.color.r, bt.color.g, bt.color.b, bt.color.a));
         drawTextAtlasImmediate(bt.x, bt.y, bt.text.c_str(), bt.scale, rx, ry);
     }
 

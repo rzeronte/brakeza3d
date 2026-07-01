@@ -107,6 +107,24 @@ void ComponentScripting::ReloadLUAScripts()
     ReloadScriptGlobals();
 }
 
+void ComponentScripting::ReloadScriptEnvironment(const std::string &name)
+{
+    auto it = scriptsByName.find(name);
+    if (it == scriptsByName.end()) {
+        LOG_ERROR("[Scripting] ReloadScriptEnvironment: script '%s' not found", name.c_str());
+        return;
+    }
+
+    ScriptLUA *script = it->second;
+    LOG_MESSAGE("[Scripting] ReloadScriptEnvironment: reloading '%s'", name.c_str());
+
+    script->RunGlobal("onEnd");
+    script->ReloadScriptCode();
+    script->setGlobalLoaded(false);
+    script->ReloadGlobals();
+    script->RunGlobal("onStart");
+}
+
 void ComponentScripting::AddProjectScene(const std::string &value)
 {
     LOG_MESSAGE("[Scripting] Adding scene '%s' to Project...", value.c_str());

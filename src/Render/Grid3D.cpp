@@ -150,6 +150,10 @@ int Grid3D::getNumberCubesZ() const {
     return numberCubesZ;
 }
 
+const AABB3D &Grid3D::getBounds() const {
+    return bounds;
+}
+
 const std::vector<CubeGrid3D> &Grid3D::getBoxes() const {
     return boxes;
 }
@@ -334,7 +338,7 @@ std::vector<CubeGrid3D> Grid3D::computePath(int gx1, int gz1, int gx2, int gz2)
     return output;
 }
 
-void Grid3D::fillGrid3DFromImage(const std::string& imagePath, int threshold)
+void Grid3D::fillGrid3DFromImage(const std::string& imagePath, int threshold, bool flipZ, bool flipX)
 {
     SDL_Surface* raw = IMG_Load(imagePath.c_str());
     if (!raw) {
@@ -371,9 +375,10 @@ void Grid3D::fillGrid3DFromImage(const std::string& imagePath, int threshold)
     for (int x = 0; x < numberCubesX; x++) {
         for (int z = 0; z < numberCubesZ; z++) {
 
-            // 🎯 muestreo centrado más estable
             float u = (x + 0.5f) / (float)numberCubesX;
             float v = (z + 0.5f) / (float)numberCubesZ;
+            if (flipX) u = 1.0f - u;
+            if (flipZ) v = 1.0f - v;
 
             int px = std::clamp((int)(u * imgW), 0, imgW - 1);
             int pz = std::clamp((int)(v * imgH), 0, imgH - 1);

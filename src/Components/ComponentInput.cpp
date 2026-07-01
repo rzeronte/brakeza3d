@@ -320,6 +320,11 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::BROWSER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::BROWSER)->isOpen;
         }
 
+        bool ctrlHeld = keyboard[SDL_SCANCODE_LCTRL] || keyboard[SDL_SCANCODE_RCTRL];
+        if (ctrlHeld && keyboard[SDL_SCANCODE_P]) {
+            Config::get()->ENABLE_POST_PROCESSING_CHAIN = !Config::get()->ENABLE_POST_PROCESSING_CHAIN;
+        }
+
         if (event->type == SDL_KEYDOWN &&
             event->key.repeat == 0 &&
             event->key.keysym.scancode == SDL_SCANCODE_HOME)

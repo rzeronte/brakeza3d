@@ -176,6 +176,10 @@ void Object3D::LookAt(const Vertex3D &target)
 
 void Object3D::AttachScript(ScriptLUA *script)
 {
+    if (!script) {
+        LOG_ERROR("[Object3D] AttachScript: null script pointer");
+        return;
+    }
     if (script->getType() != SCRIPT_OBJECT) {
         LOG_ERROR("[Object3D] Error: Cannot attach Global script to Object3D. Only Object scripts are allowed.");
         delete script;
@@ -229,6 +233,16 @@ void Object3D::ReloadScriptsCode() const
     for (auto &script : scripts) {
         script->ReloadScriptCode();
     }
+}
+
+void Object3D::ReloadScriptEnvironment(ScriptLUA *script)
+{
+    if (!luaEnvironment.valid()) return;
+
+    script->RunEnvironment(luaEnvironment, "onEnd", std::nullopt);
+    script->ReloadScriptCode();
+    script->ReloadEnvironment(luaEnvironment);
+    script->RunEnvironment(luaEnvironment, "onStart", std::nullopt);
 }
 
 void Object3D::RemoveScript(const ScriptLUA *script)
@@ -585,4 +599,7 @@ Object3D::~Object3D()
     if (isCollisionsEnabled()) {
         RemoveCollisionObject();
     }
+
+    auto *scene = getScene();
+    if (scene) scene->removeObject(this);
 }

@@ -40,6 +40,12 @@ public:
                 }
 
                 auto *script = new ScriptLUA(name, codeFile, typesFile, dataTypes);
+
+                cJSON *tpsJSON = cJSON_GetObjectItemCaseSensitive(currentScript, "ticks_per_second");
+                if (tpsJSON && cJSON_IsNumber(tpsJSON)) {
+                    script->setTicksPerSecond(tpsJSON->valueint);
+                }
+
                 script->setScene(scene);
                 Components::get()->Scripting()->AddSceneLUAScript(script);
             }

@@ -379,6 +379,7 @@ namespace GUIType
     X(TOOLBAR_SHOW_AVATARS, 0, 0) \
     X(SCENE_UNLOAD, 0, 0) \
     X(OBJECTS_VIEWER_EMPTY_GROUPS, 0, 0) \
+    X(TOOLBAR_CLEAR_CACHE, 0, 0) \
 
 // IconObject is declared in GUITypes.h (no ImGui dependency)
 

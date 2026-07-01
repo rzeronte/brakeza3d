@@ -67,6 +67,7 @@ struct ScriptMetaInfo {
     std::string name;
     std::string codeFile;
     std::string typesFile;
+    int ticksPerSecond = 0;
 };
 
 class Scene;
@@ -77,8 +78,11 @@ class ScriptLUA
     bool globalLoaded = false;
     sol::environment globalEnvironment;
     std::unordered_map<std::string, sol::protected_function> globalFuncCache;
+    int ticksPerSecond = 0;
+    mutable float tickAccumulator = 0.0f;
 
     void ensureGlobalEnvironment();
+    [[nodiscard]] bool ShouldTick() const;
 
 public:
     std::string content;
@@ -105,7 +109,7 @@ public:
     void ReloadScriptCode();
     void getCode(const std::string &script);
     void InitEnvironment(sol::environment &environment);
-    void Reload();
+
     void UpdateScriptCodeWith(const std::string &content) const;
     void ReloadGlobals();
     void DrawImGuiProperties();
@@ -131,8 +135,10 @@ public:
     void setDataTypesFromJSON(const cJSON *typesJSON);
 
     void setType(ScriptType value);
-    [[nodiscard]] Scene* getScene() const   { return scene; }
-    void setScene(Scene* s)                 { scene = s; }
+    [[nodiscard]] Scene* getScene() const          { return scene; }
+    void setScene(Scene* s)                        { scene = s; }
+    [[nodiscard]] int getTicksPerSecond() const    { return ticksPerSecond; }
+    void setTicksPerSecond(int tps)                { ticksPerSecond = (tps < 0 ? 0 : tps); tickAccumulator = 0.0f; }
 
     friend class ScriptLuaGUI;
 };

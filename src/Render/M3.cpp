@@ -232,40 +232,37 @@ M3 M3::getFromVectors(const Vertex3D &ZAxis, const Vertex3D &YAxis)
 }
 
 
+// Columns of M3 are the local axes expressed in world space (standard convention).
+// After fixing toGLMMat3, the visual rotation matches M3's math, so X/Y/Z must
+// return columns (not rows) to give correct world-space local axis directions.
 Vertex3D M3::X() const
 {
-    return Vertex3D(m[0], m[1], m[2]);
+    return Vertex3D(m[0], m[3], m[6]);
 }
 
 Vertex3D M3::Y() const
 {
-    return Vertex3D(m[3], m[4], m[5]);
+    return Vertex3D(m[1], m[4], m[7]);
 }
 
 Vertex3D M3::Z() const
 {
-    return Vertex3D(m[6], m[7], m[8]);
+    return Vertex3D(m[2], m[5], m[8]);
 }
 
 void M3::setX(float x, float y, float z)
 {
-    m[0] = x;
-    m[1] = y;
-    m[2] = z;
+    m[0] = x; m[3] = y; m[6] = z;
 }
 
 void M3::setY(float x, float y, float z)
 {
-    m[3] = x;
-    m[4] = y;
-    m[5] = z;
+    m[1] = x; m[4] = y; m[7] = z;
 }
 
 void M3::setZ(float x, float y, float z)
 {
-    m[6] = x;
-    m[7] = y;
-    m[8] = z;
+    m[2] = x; m[5] = y; m[8] = z;
 }
 
 M3 M3::interpolateLinear(const M3& m1, const M3& m2, float t)
@@ -287,7 +284,9 @@ btMatrix3x3 M3::toBulletMat3() const
 
 glm::mat3 M3::toGLMMat3() const
 {
-    return glm::mat3(m[0], m[1], m[2], m[3], m[4], m[5], m[6], m[7], m[8]);
+    // M3 is row-major; GLM is column-major. Pass data transposed so GLM
+    // columns equal M3 rows, producing the correct visual rotation.
+    return glm::mat3(m[0], m[3], m[6], m[1], m[4], m[7], m[2], m[5], m[8]);
 }
 
 M3 M3::fromMat3GLM(const glm::mat3& glmMatrix)
