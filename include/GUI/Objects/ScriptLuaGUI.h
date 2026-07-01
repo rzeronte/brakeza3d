@@ -23,6 +23,7 @@ public:
     static void DrawScriptConfigVarCreator(EditableOpenScriptFile &file);
     static void DrawScriptConfigVarsTable(EditableOpenScriptFile &file);
     static void DrawScriptConfigActionButtons(EditableOpenScriptFile &file);
+    static void DrawScriptConfigTicksPerSecond(EditableOpenScriptFile &file);
     static void DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, bool showIcon, ScriptLUA* script = nullptr);
     static void DrawWinObjectVars(GUIManager *gui);
     static void DrawWinGlobalVars(GUIManager *gui);

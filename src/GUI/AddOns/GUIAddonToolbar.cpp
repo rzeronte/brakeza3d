@@ -7,6 +7,10 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/Config.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Cache/ImageCache.h"
+#include "../../../include/Cache/ModelDataCache.h"
+#include "../../../include/Cache/AnimationDataCache.h"
+#include "../../../include/Cache/ScriptDataCache.h"
 
 void GUIAddonToolbar::Draw()
 {
@@ -215,6 +219,18 @@ void GUIAddonToolbar::Helpers()
             Brakeza::get()->GUI()->getResourcesHub()->performLogout();
        });
     }
+    VerticalSeparator();
+    ImGui::SameLine();
+    GUI::DrawButton("Clear engine cache", IconGUI::TOOLBAR_CLEAR_CACHE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
+        imageCache.resetStats();
+        modelDataCache.resetStats();
+        animationDataCache.resetStats();
+        scriptDataCache.resetStats();
+        imageCache.clear();
+        modelDataCache.clear();
+        animationDataCache.clear();
+        scriptDataCache.clear();
+    });
 }
 
 void GUIAddonToolbar::RenderTriangleModes()

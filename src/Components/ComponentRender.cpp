@@ -109,6 +109,7 @@ void ComponentRender::RegisterShaders()
     shaders.shaderOGLRect      = new ShaderOGLRect();
     shaders.shaderComputeParticles = new ShaderOGLComputeParticles();
     shaders.shaderGPUParticles     = new ShaderOGLGPUParticles();
+    shaders.shaderCircle2D         = new ShaderOGLCircle2D();
 
     std::vector<ShaderBaseOpenGL*> allShaders;
         allShaders.push_back(shaders.shaderOGLRender);
@@ -134,6 +135,7 @@ void ComponentRender::RegisterShaders()
         allShaders.push_back(shaders.shaderOGLRect);
         allShaders.push_back(shaders.shaderComputeParticles);
         allShaders.push_back(shaders.shaderGPUParticles);
+        allShaders.push_back(shaders.shaderCircle2D);
 
     for (auto &s : allShaders) {
         s->PrepareSync();
@@ -701,6 +703,27 @@ void ComponentRender::DrawFilledRect(int x, int y, int w, int h, const Color &c)
     );
 }
 
+void ComponentRender::DrawCircle2D(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive) const
+{
+    auto *win = Components::get()->Window();
+    const int rw = win->getWidthRender();
+    const int rh = win->getHeightRender();
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+    const int px = (int)((x - size / 2) * rx);
+    const int py = (int)((y - size / 2) * ry);
+    const int ps = (int)(size * rx);
+    shaders.shaderCircle2D->renderCircle2D(
+        px, py, ps, ps,
+        rw, rh,
+        Color(r, g, b, a),
+        numWaves, speed, thickness,
+        additive,
+        win->getForegroundFramebuffer()
+    );
+}
+
+
 void ComponentRender::DrawImage2D(const std::string &path, int x, int y, int w, int h)
 {
     Image* img = imageCache.getOrLoad(path);
@@ -753,6 +776,47 @@ static GLuint resolveFB(const std::string& fb)
     if (fb == "ui")         return win->getUIFramebuffer();
     if (fb == "global")     return win->getGlobalFramebuffer();
     return win->getForegroundFramebuffer();
+}
+
+void ComponentRender::DrawCircle2DToFB(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive, const std::string &fb) const
+{
+    auto *win = Components::get()->Window();
+    const int rw = win->getWidthRender();
+    const int rh = win->getHeightRender();
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+    const int px = (int)((x - size / 2) * rx);
+    const int py = (int)((y - size / 2) * ry);
+    const int ps = (int)(size * rx);
+    shaders.shaderCircle2D->renderCircle2D(
+        px, py, ps, ps,
+        rw, rh,
+        Color(r, g, b, a),
+        numWaves, speed, thickness,
+        additive,
+        resolveFB(fb)
+    );
+}
+
+void ComponentRender::DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb)
+{
+    Image* img = imageCache.getOrLoad(path);
+    if (!img || !img->isLoaded()) return;
+
+    auto *win = Components::get()->Window();
+    const int rw = win->getWidthRender();
+    const int rh = win->getHeightRender();
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+    shaders.shaderOGLImage->renderTexture(
+        img->getOGLTextureID(),
+        (int)(x * rx), (int)(y * ry),
+        (int)(w * rx), (int)(h * ry),
+        rw, rh,
+        1.0f,
+        false,
+        resolveFB(fb)
+    );
 }
 
 void ComponentRender::drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius) const

@@ -5,39 +5,29 @@ out vec4 pixelColor;
 
 uniform sampler2D image;
 uniform vec3 lineColor;
-uniform float borderThickness;   // Ajusta según la resolución de tu imagen
+uniform float borderThickness;
 
-const float edgeThreshold = 0.6;      // Ajusta según la intensidad del borde que quieres detectar
+const float edgeThresholdSq = 0.36; // 0.6 * 0.6 — squared to avoid sqrt
 
 void main() {
-        float sobelX[9] = float[](
-                -1, 0, 1,
-                -2, 0, 2,
-                -1, 0, 1
-        );
-        float sobelY[9] = float[](
-                -1, -2, -1,
-                0, 0, 0,
-                1, 2, 1
-        );
+    vec2 step = vec2(borderThickness * 0.001);
 
-        float edgeX = 0.0;
-        float edgeY = 0.0;
+    // Luminancia de los 8 vecinos (centro omitido: coef=0 en Sobel)
+    float tl = dot(texture(image, texCoord + vec2(-1,-1) * step).rgb, vec3(0.333));
+    float tc = dot(texture(image, texCoord + vec2( 0,-1) * step).rgb, vec3(0.333));
+    float tr = dot(texture(image, texCoord + vec2( 1,-1) * step).rgb, vec3(0.333));
+    float ml = dot(texture(image, texCoord + vec2(-1, 0) * step).rgb, vec3(0.333));
+    float mr = dot(texture(image, texCoord + vec2( 1, 0) * step).rgb, vec3(0.333));
+    float bl = dot(texture(image, texCoord + vec2(-1, 1) * step).rgb, vec3(0.333));
+    float bc = dot(texture(image, texCoord + vec2( 0, 1) * step).rgb, vec3(0.333));
+    float br = dot(texture(image, texCoord + vec2( 1, 1) * step).rgb, vec3(0.333));
 
-        for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                        vec3 samp = texture(image, texCoord + vec2(j, i) * borderThickness * 0.001f).rgb;
-                        int index = (i + 1) * 3 + (j + 1);
-                        edgeX += dot(samp, vec3(sobelX[index]));
-                        edgeY += dot(samp, vec3(sobelY[index]));
-                }
-        }
+    float edgeX = -tl - 2.0*ml - bl + tr + 2.0*mr + br;
+    float edgeY = -tl - 2.0*tc - tr + bl + 2.0*bc + br;
 
-        float edge = length(vec2(edgeX, edgeY));
-
-        if (edge > edgeThreshold) {
-                pixelColor = vec4(lineColor, 1.0); // Borde rojo
-        } else {
-                discard; //pixelColor = vec4(texture(image, texCoord).rgb, 1.0);
-        }
+    if (edgeX*edgeX + edgeY*edgeY > edgeThresholdSq) {
+        pixelColor = vec4(lineColor, 1.0);
+    } else {
+        discard;
+    }
 }

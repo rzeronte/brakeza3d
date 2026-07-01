@@ -45,6 +45,7 @@ ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeFile, const
     }
     getCode(scriptFilename);
     setDataTypesFromJSON(types);
+    ProcessFileTypes();
 }
 
 void ScriptLUA::getCode(const std::string &script)
@@ -87,9 +88,22 @@ void ScriptLUA::InitEnvironment(sol::environment &environment)
     }
 }
 
+bool ScriptLUA::ShouldTick() const
+{
+    if (ticksPerSecond <= 0) return true;
+    tickAccumulator += Brakeza::get()->getDeltaTime();
+    const float interval = 1.0f / static_cast<float>(ticksPerSecond);
+    if (tickAccumulator >= interval) {
+        tickAccumulator -= interval;
+        return true;
+    }
+    return false;
+}
+
 void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
 {
     if (paused) return;
+    if (func != "onStart" && !ShouldTick()) return;
 
     if (!environment.valid()) {
         LOG_ERROR("[ScriptLUA] Environment is INVALID for script '%s'", scriptFilename.c_str());
@@ -142,6 +156,7 @@ void ScriptLUA::ensureGlobalEnvironment()
 void ScriptLUA::RunGlobal(const std::string& func)
 {
     if (paused) return;
+    if (func != "onStart" && !ShouldTick()) return;
     sol::state &lua = Components::get()->Scripting()->getLua();
 
     ensureGlobalEnvironment();
@@ -336,6 +351,11 @@ void ScriptLUA::ProcessFileTypes()
         type = (strcmp(typeJSON->valuestring, "Global") == 0) ? SCRIPT_GLOBAL : SCRIPT_OBJECT;
     }
 
+    cJSON *tpsJSON = cJSON_GetObjectItemCaseSensitive(root, "ticks_per_second");
+    if (tpsJSON && cJSON_IsNumber(tpsJSON)) {
+        setTicksPerSecond(tpsJSON->valueint);
+    }
+
     cJSON_Delete(root);
 }
 
@@ -356,11 +376,6 @@ void ScriptLUA::setDataTypesFromJSON(const cJSON *typesJSON)
     }
 }
 
-void ScriptLUA::Reload()
-{
-    getCode(scriptFilename);
-    ProcessFileTypes();
-}
 
 std::string ScriptLUA::dataTypesFileFor(std::string basicString)
 {
@@ -455,6 +470,7 @@ cJSON *ScriptLUA::getTypesJSON() const
     cJSON_AddStringToObject(scriptJSON, "typesFile", fileTypes.c_str());
     cJSON_AddStringToObject(scriptJSON, "name", getName().c_str());
     cJSON_AddStringToObject(scriptJSON, "type", type == SCRIPT_GLOBAL ? "Global" : "Object");
+    cJSON_AddNumberToObject(scriptJSON, "ticks_per_second", ticksPerSecond);
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : getDataTypes()) {

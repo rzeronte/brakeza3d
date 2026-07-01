@@ -5,6 +5,10 @@
 #include "../../../include/GUI/AddOns/GUIAddonMenu.h"
 
 #include "crude_json.h"
+#include "../../../include/Cache/ImageCache.h"
+#include "../../../include/Cache/ModelDataCache.h"
+#include "../../../include/Cache/AnimationDataCache.h"
+#include "../../../include/Cache/ScriptDataCache.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
@@ -86,6 +90,19 @@ void GUIAddonMenu::MenuScriptControls()
     ImGui::SameLine();
     if (ImGui::MenuItem("Clean (not scene objects)", "F4")) {
         SceneLoader::ClearWorld();
+    }
+    ImGui::Separator();
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::TOOLBAR_CLEAR_CACHE), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::MenuItem("Clear engine cache")) {
+        imageCache.resetStats();
+        modelDataCache.resetStats();
+        animationDataCache.resetStats();
+        scriptDataCache.resetStats();
+        imageCache.clear();
+        modelDataCache.clear();
+        animationDataCache.clear();
+        scriptDataCache.clear();
     }
 }
 
@@ -211,7 +228,7 @@ void GUIAddonMenu::MenuVideo()
 
     ImGui::SeparatorText("Post-processing");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_DOF), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable Post-Processing Chain", nullptr, &Config::get()->ENABLE_POST_PROCESSING_CHAIN);
+    ImGui::MenuItem("Enable Post-Processing Chain", "Ctrl+P", &Config::get()->ENABLE_POST_PROCESSING_CHAIN);
     //ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_DOF), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     //ImGui::MenuItem("Enable DOF", nullptr, &Config::get()->ENABLE_DOF_BLUR);
     //if (Config::get()->ENABLE_DOF_BLUR) {
@@ -234,87 +251,6 @@ void GUIAddonMenu::MenuVideo()
         ImGui::DragScalar("Sort objects interval (ms)", ImGuiDataType_Float, &Config::get()->SORT_OBJECTS_INTERVAL_MS, 5.0f, &sortMin, &sortMax, "%.0f ms");
     }
 
-    ImGui::SeparatorText("Avatars");
-    ImGui::MenuItem("Show Avatars", nullptr, &Config::get()->SHOW_AVATARS);
-    if (Config::get()->SHOW_AVATARS && ImGui::BeginMenu("Avatar Types...")) {
-        ImGui::Image(FileSystemGUI::Icon(IconObject::OBJECT_3D),              GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Object3D",             nullptr, &Config::get()->SHOW_AVATAR_OBJECT3D);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D),                GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Mesh3D",               nullptr, &Config::get()->SHOW_AVATAR_MESH3D);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D_ANIMATION),      GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Mesh3D Animation",     nullptr, &Config::get()->SHOW_AVATAR_MESH3D_ANIMATION);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT),            GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Light Point",          nullptr, &Config::get()->SHOW_AVATAR_LIGHT_POINT);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_SPOT),             GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Light Spot",           nullptr, &Config::get()->SHOW_AVATAR_LIGHT_SPOT);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER),       GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Particle Emitter",     nullptr, &Config::get()->SHOW_AVATAR_PARTICLE_EMITTER);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D),               GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Image3D",              nullptr, &Config::get()->SHOW_AVATAR_IMAGE3D);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION),     GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Image3D Animation",    nullptr, &Config::get()->SHOW_AVATAR_IMAGE3D_ANIMATION);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_360), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Image3D Anim 360",     nullptr, &Config::get()->SHOW_AVATAR_IMAGE3D_ANIMATION360);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D),               GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Image2D",              nullptr, &Config::get()->SHOW_AVATAR_IMAGE2D);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D_ANIMATION),     GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Image2D Animation",    nullptr, &Config::get()->SHOW_AVATAR_IMAGE2D_ANIMATION);
-        ImGui::Image(FileSystemGUI::Icon(IconObject::SWARM),                  GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Swarm",                nullptr, &Config::get()->SHOW_AVATAR_SWARM);
-        ImGui::EndMenu();
-    }
-
-    ImGui::SeparatorText("Screen helpers");
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHADER_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Draw Grid", nullptr, &setup->ENABLE_GRID_BACKGROUND);
-    if (setup->ENABLE_GRID_BACKGROUND) {
-        auto shaderGrid = Components::get()->Render()->getShaders()->shaderOGLGrid;
-        const float sizeMin = 0; const float sizeMax = 100; const float sizeSens = 0.1;
-        const float alphaMin = 0; const float alphaMax = 1; const float alphaSens = 0.01;
-        ImGui::DragScalar("Size grid", ImGuiDataType_Float, &shaderGrid->gridSize, sizeSens, &sizeMin, &sizeMax, "%f", 1.0f);
-        ImGui::DragScalar("Alpha grid", ImGuiDataType_Float, &shaderGrid->opacity, alphaSens, &alphaMin, &alphaMax, "%f", 1.0f);
-        auto p = shaderGrid->color;
-        ImVec4 vecColor = {p.r, p.g, p.b, 1};
-        if (ImGui::ColorEdit4("Grid Color##", reinterpret_cast<float *>(&vecColor), ImGuiColorEditFlags_NoOptions)) {
-            shaderGrid->color = {vecColor.x, vecColor.y, vecColor.z};
-        }
-        const float fadeMin = 0.0f; const float fadeMax = 500.0f; const float fadeSens = 1.0f;
-        ImGui::DragScalar("Fade start", ImGuiDataType_Float, &shaderGrid->fadeStart, fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
-        ImGui::DragScalar("Fade end",   ImGuiDataType_Float, &shaderGrid->fadeEnd,   fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
-        ImGui::Separator();
-    }
-
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_OBJECT_AXIS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Draw axis objects", nullptr, &setup->RENDER_OBJECTS_AXIS);
-    if (setup->RENDER_OBJECTS_AXIS) {
-        const float sizeAxisMin = 0;
-        const float sizeAxisMax = 1;
-        const float sizeAxisSens = 0.01;
-        ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
-    }
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_AABB), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Draw Mesh3D AABB", nullptr, &setup->DRAW_MESH3D_AABB);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_OCTREE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Draw Mesh3D octree", nullptr, &setup->DRAW_MESH3D_OCTREE);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Draw Mesh3D grid", nullptr, &setup->DRAW_MESH3D_GRID);
-    if (setup->DRAW_MESH3D_GRID) {
-        ImGui::Separator();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Draw Test Passed Cells", nullptr, &setup->DRAW_MESH3D_TEST_PASSED);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Draw Not Test Passed Cells", nullptr, &setup->DRAW_MESH3D_TEST_NOT_PASSED);
-        ImGui::Separator();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Draw A* Travel", nullptr, &setup->DRAW_MESH3D_GRID_ASTAR);
-    }
-    ImGui::Separator();
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_PICKING_COLORS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Picking colors", nullptr, &setup->TRIANGLE_MODE_PICKING_COLORS);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_FPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Show FPS", nullptr, &setup->DRAW_FPS_RENDER);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHOW_BONES), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Draw bones", nullptr, &setup->DRAW_ANIMATION_BONES);
     ImGui::SeparatorText("Tools");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_TAKE_SCREENSHOT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Screenshot", nullptr, false)) {
@@ -357,11 +293,6 @@ void GUIAddonMenu::MenuColliders()
         Components::get()->Collisions()->setGravity(setup->gravity);
     }
 
-    ImGui::SeparatorText("Screen helpers");
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEBUG_MODE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    if (ImGui::MenuItem("Draw debug mode", nullptr, &setup->BULLET_DEBUG_MODE)) {
-        Components::get()->Collisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
-    }
 }
 
 void GUIAddonMenu::MenuIllumination()
@@ -413,24 +344,6 @@ void GUIAddonMenu::MenuIllumination()
         ImGui::Separator();
         ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SUN_SHADOWS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Enable Sun shadows", nullptr, &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
-    }
-    ImGui::SeparatorText("Screen helpers");
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_SHADOW_MAPPING_DEBUG), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Shadow Mapping debug mode", nullptr, &setup->SHADOW_MAPPING_DEBUG);
-    if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::MenuItem("Show Depth Map", nullptr, &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
-    }
-
-    if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
-        auto s = Components::get()->Render()->getShaderOGLDepthMap();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
-        ImGui::Separator();
     }
 }
 
@@ -563,14 +476,6 @@ void GUIAddonMenu::MenuLayout()
 {
     auto setup = Config::get();
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_GUI), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable/Disable GUI (F5)", nullptr, &setup->ENABLE_IMGUI);
-    ImGui::Separator();
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_TOOLBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Show toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_STATUSBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Show StatusBar", nullptr, &setup->ENABLE_IMGUI_STATUSBAR);
-
     ImGui::SeparatorText("Layout modes");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEFAULT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Default", "F6")) {
@@ -694,6 +599,123 @@ void GUIAddonMenu::DrawItemsToLoad(
         if (ImGui::MenuItem(file.c_str())) {
             cb(fullPath);
         }
+    }
+}
+
+void GUIAddonMenu::MenuInterface()
+{
+    auto setup = Config::get();
+
+    ImGui::SeparatorText("Editor UI");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_GUI), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Enable/Disable GUI (F5)", nullptr, &setup->ENABLE_IMGUI);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_TOOLBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Show Toolbar", nullptr, &setup->ENABLE_IMGUI_TOOLBAR);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_ENABLE_STATUSBAR), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Show StatusBar", nullptr, &setup->ENABLE_IMGUI_STATUSBAR);
+
+    ImGui::SeparatorText("Scene Helpers");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHADER_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Draw Grid", nullptr, &setup->ENABLE_GRID_BACKGROUND);
+    if (setup->ENABLE_GRID_BACKGROUND) {
+        auto shaderGrid = Components::get()->Render()->getShaders()->shaderOGLGrid;
+        const float sizeMin = 0; const float sizeMax = 100; const float sizeSens = 0.1;
+        const float alphaMin = 0; const float alphaMax = 1; const float alphaSens = 0.01;
+        ImGui::DragScalar("Size grid", ImGuiDataType_Float, &shaderGrid->gridSize, sizeSens, &sizeMin, &sizeMax, "%f", 1.0f);
+        ImGui::DragScalar("Alpha grid", ImGuiDataType_Float, &shaderGrid->opacity, alphaSens, &alphaMin, &alphaMax, "%f", 1.0f);
+        auto p = shaderGrid->color;
+        ImVec4 vecColor = {p.r, p.g, p.b, 1};
+        if (ImGui::ColorEdit4("Grid Color##", reinterpret_cast<float *>(&vecColor), ImGuiColorEditFlags_NoOptions)) {
+            shaderGrid->color = {vecColor.x, vecColor.y, vecColor.z};
+        }
+        const float fadeMin = 0.0f; const float fadeMax = 500.0f; const float fadeSens = 1.0f;
+        ImGui::DragScalar("Fade start", ImGuiDataType_Float, &shaderGrid->fadeStart, fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
+        ImGui::DragScalar("Fade end",   ImGuiDataType_Float, &shaderGrid->fadeEnd,   fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
+        ImGui::Separator();
+    }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_OBJECT_AXIS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Draw axis objects", nullptr, &setup->RENDER_OBJECTS_AXIS);
+    if (setup->RENDER_OBJECTS_AXIS) {
+        const float sizeAxisMin = 0; const float sizeAxisMax = 1; const float sizeAxisSens = 0.01;
+        ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
+    }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_FPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Show FPS", nullptr, &setup->DRAW_FPS_RENDER);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_PICKING_COLORS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Picking colors", nullptr, &setup->TRIANGLE_MODE_PICKING_COLORS);
+
+    ImGui::SeparatorText("Mesh Debug");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_AABB), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Draw Mesh3D AABB", nullptr, &setup->DRAW_MESH3D_AABB);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_OCTREE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Draw Mesh3D Octree", nullptr, &setup->DRAW_MESH3D_OCTREE);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Draw Mesh3D Grid", nullptr, &setup->DRAW_MESH3D_GRID);
+    if (setup->DRAW_MESH3D_GRID) {
+        ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Draw Test Passed Cells", nullptr, &setup->DRAW_MESH3D_TEST_PASSED);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Draw Not Test Passed Cells", nullptr, &setup->DRAW_MESH3D_TEST_NOT_PASSED);
+        ImGui::Separator();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_GRID), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Draw A* Travel", nullptr, &setup->DRAW_MESH3D_GRID_ASTAR);
+    }
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_SHOW_BONES), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Draw Animation Bones", nullptr, &setup->DRAW_ANIMATION_BONES);
+
+    ImGui::SeparatorText("Physics Debug");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_DEBUG_MODE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    if (ImGui::MenuItem("Draw Physics Colliders", nullptr, &setup->BULLET_DEBUG_MODE)) {
+        Components::get()->Collisions()->setEnableDebugMode(setup->BULLET_DEBUG_MODE);
+    }
+
+    ImGui::SeparatorText("Shading Debug");
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_SHADOW_MAPPING_DEBUG), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Shadow Mapping debug mode", nullptr, &setup->SHADOW_MAPPING_DEBUG);
+    if (setup->ENABLE_LIGHTS && setup->TRIANGLE_MODE_TEXTURIZED) {
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Show Depth Map", nullptr, &setup->ENABLE_TRIANGLE_MODE_DEPTHMAP);
+    }
+    if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
+        auto s = Components::get()->Render()->getShaderOGLDepthMap();
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
+        ImGui::Separator();
+    }
+
+    ImGui::SeparatorText("Avatars");
+    ImGui::MenuItem("Show Avatars", nullptr, &setup->SHOW_AVATARS);
+    if (setup->SHOW_AVATARS && ImGui::BeginMenu("Avatar Types...")) {
+        ImGui::Image(FileSystemGUI::Icon(IconObject::OBJECT_3D),              GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Object3D",             nullptr, &setup->SHOW_AVATAR_OBJECT3D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D),                GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Mesh3D",               nullptr, &setup->SHOW_AVATAR_MESH3D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D_ANIMATION),      GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Mesh3D Animation",     nullptr, &setup->SHOW_AVATAR_MESH3D_ANIMATION);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT),            GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Light Point",          nullptr, &setup->SHOW_AVATAR_LIGHT_POINT);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_SPOT),             GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Light Spot",           nullptr, &setup->SHOW_AVATAR_LIGHT_SPOT);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER),       GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Particle Emitter",     nullptr, &setup->SHOW_AVATAR_PARTICLE_EMITTER);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D),               GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image3D",              nullptr, &setup->SHOW_AVATAR_IMAGE3D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION),     GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image3D Animation",    nullptr, &setup->SHOW_AVATAR_IMAGE3D_ANIMATION);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_360), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image3D Anim 360",     nullptr, &setup->SHOW_AVATAR_IMAGE3D_ANIMATION360);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D),               GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image2D",              nullptr, &setup->SHOW_AVATAR_IMAGE2D);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D_ANIMATION),     GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Image2D Animation",    nullptr, &setup->SHOW_AVATAR_IMAGE2D_ANIMATION);
+        ImGui::Image(FileSystemGUI::Icon(IconObject::SWARM),                  GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Swarm",                nullptr, &setup->SHOW_AVATAR_SWARM);
+        ImGui::EndMenu();
     }
 }
 

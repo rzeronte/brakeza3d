@@ -34,15 +34,18 @@ public:
             return;
         }
 
-        const float WORLD_SIZE  = 991.84f;
-        const int   GRID_SIZE   = 256;
-        const float WORLD_MIN_X = 16.08f;
-        const float WORLD_MIN_Z = 16.08f;
+        const auto& b     = grid->getBounds();
+        const float minX  = b.min.x;
+        const float minZ  = b.min.z;
+        const float sizeX = b.max.x - b.min.x;
+        const float sizeZ = b.max.z - b.min.z;
+        const int   gridX = grid->getNumberCubesX();
+        const int   gridZ = grid->getNumberCubesZ();
 
         std::string parts;
         for (const auto& cube : cubes) {
-            float wx = (cube.posX + 0.5f) / GRID_SIZE * WORLD_SIZE + WORLD_MIN_X;
-            float wz = (cube.posZ + 0.5f) / GRID_SIZE * WORLD_SIZE + WORLD_MIN_Z;
+            float wx = (cube.posX + 0.5f) / gridX * sizeX + minX;
+            float wz = (cube.posZ + 0.5f) / gridZ * sizeZ + minZ;
             char buf[64];
             snprintf(buf, sizeof(buf), "%.3f,%.3f", wx, wz);
             if (!parts.empty()) parts += ';';

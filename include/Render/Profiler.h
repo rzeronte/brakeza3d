@@ -38,6 +38,8 @@ class Profiler
 
     int fboChanges = 0;
     int programChanges = 0;
+    int lastFboChanges = 0;
+    int lastProgramChanges = 0;
     bool countFboSwitches     = false;
     bool countProgramSwitches = false;
 

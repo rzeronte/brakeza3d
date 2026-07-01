@@ -167,7 +167,7 @@ float LightSpot::getOuterCutOff() const
 
 glm::vec4 LightSpot::getDirection() const
 {
-    return ( getRotation().getTranspose() * Vertex3D(0, 0, 1)).toGLM4();
+    return (getRotation() * Vertex3D(0, 0, 1)).toGLM4();
 }
 
 GUIType::Sheet LightSpot::getIcon()

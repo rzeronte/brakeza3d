@@ -220,6 +220,7 @@ add_executable(Brakeza3D
         src/OpenGL/ShaderOGLGroundDecal.cpp include/OpenGL/ShaderOGLGroundDecal.h
         src/OpenGL/ShaderOGLAxisQuad.cpp include/OpenGL/ShaderOGLAxisQuad.h
         src/OpenGL/ShaderOGLRect.cpp include/OpenGL/ShaderOGLRect.h
+        src/OpenGL/ShaderOGLCircle2D.cpp include/OpenGL/ShaderOGLCircle2D.h
         src/OpenGL/Code/ShaderOGLCustomCodeMesh3D.cpp include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h
         src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h
         src/OpenGL/Quad/ShaderOGLDepthMap.cpp include/OpenGL/Quad/ShaderOGLDepthMap.h

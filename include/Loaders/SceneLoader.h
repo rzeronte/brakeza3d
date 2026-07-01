@@ -38,6 +38,7 @@ public:
     );
 
     static void setSceneActive(const std::string& name, bool active);
+    static void setSceneHidden(const std::string& name, bool hidden);
     static void UnloadScene(const std::string& name);
     static void ReloadScene(const std::string& name);
 

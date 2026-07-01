@@ -54,6 +54,8 @@ struct CustomTreeNodeConfig {
     bool* p_checked = nullptr;  // Puntero al estado del checkbox (true/false)
     float indentSpacing = 20.0f;
     ImVec4 textColor = ImVec4(0, 0, 0, 0);  // (0,0,0,0) means "default color"
+    std::string badgeText;
+    ImVec4 badgeColor = ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
     std::function<void()> onDoubleClick = nullptr;
     bool* forceOpenPtr = nullptr;  // Puntero opcional para controlar apertura
 
@@ -357,6 +359,18 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     );
 
     window->DrawList->PopClipRect();
+
+    if (!config.badgeText.empty()) {
+        float label_w = ImGui::CalcTextSize(display_label.c_str()).x;
+        float badge_x = x_offset + label_w + 6.0f;
+        if (badge_x + ImGui::CalcTextSize(config.badgeText.c_str()).x < x_offset + text_max_width) {
+            window->DrawList->AddText(
+                ImVec2(badge_x, pos_start.y + text_base_offset_y),
+                ImGui::GetColorU32(config.badgeColor),
+                config.badgeText.c_str()
+            );
+        }
+    }
 
     // --------------------------------------------------
     // Drag & drop (misma zona clickable)

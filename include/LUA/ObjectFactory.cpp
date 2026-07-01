@@ -234,7 +234,16 @@ Projectile* ObjectFactory::CreateProjectile(const std::string &file, const Verte
 
 ScriptLUA * ObjectFactory::CreateScriptLUA(const std::string &pathFile)
 {
+    if (!Tools::FileExists(pathFile.c_str())) {
+        LOG_ERROR("[ObjectFactory] Script JSON not found: %s", pathFile.c_str());
+        return nullptr;
+    }
+
     auto meta = ScriptLuaGUI::ExtractScriptMetainfo(pathFile);
+    if (meta.name.empty() || meta.codeFile.empty()) {
+        LOG_ERROR("[ObjectFactory] Invalid script meta in: %s", pathFile.c_str());
+        return nullptr;
+    }
 
     return new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
 }

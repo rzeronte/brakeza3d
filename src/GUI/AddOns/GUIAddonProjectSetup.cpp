@@ -140,8 +140,9 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
         auto *loadedScene = loadedScenes[si];
         ImGui::PushID(si);
 
-        std::string sceneLabel = "Scene: " + Tools::removeSubstring(loadedScene->getFilePath(), Config::get()->ASSETS_FOLDER);
+        std::string sceneLabel = Tools::removeSubstring(loadedScene->getFilePath(), Config::get()->ASSETS_FOLDER);
         if (!loadedScene->isActive()) sceneLabel += "  [inactive]";
+        if (loadedScene->isHidden())  sceneLabel += "  [hidden]";
 
         CustomImGui::CustomTreeNodeConfig sceneConfig(sceneLabel.c_str());
         sceneConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
@@ -172,6 +173,13 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
             }
         );
 
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(loadedScene->isHidden() ? IconGUI::WIN_OBJECT_AUTOHIDE_OFF : IconGUI::WIN_OBJECT_AUTOHIDE_ON),
+            loadedScene->isHidden() ? "Show scene" : "Hide scene",
+            [loadedScene]() {
+                loadedScene->setHidden(!loadedScene->isHidden());
+            }
+        );
         sceneConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::SCENE_UNLOAD),
             "Unload scene",
@@ -347,7 +355,7 @@ void GUIAddonProjectSetup::DrawSceneScriptsNode()
     auto scripting = Components::get()->Scripting();
     auto scripts = scripting->getSceneScripts();
 
-    std::string label = "Scene scripts";
+    std::string label = "Scene Scripts loaded";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
     config.iconSize = ImVec2(18, 18);
@@ -396,7 +404,7 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
     auto render = Components::get()->Render();
     auto shaders = render->getSceneShaders();
 
-    std::string label = "Scene shaders";
+    std::string label = "Scene Shaders loaded";
 
     CustomImGui::CustomTreeNodeConfig config(label.c_str());
     config.iconSize = ImVec2(18, 18);
@@ -611,11 +619,12 @@ void GUIAddonProjectSetup::DrawProjectScripts()
             [currentScript]() { currentScript->setPaused(!currentScript->isPaused()); }
         );
 
-        scriptConfig.actionItems.emplace_back(
-            FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
-            "Reload project script",
-            [currentScript]() { currentScript->Reload(); }
-        );
+        // TODO: reload individual deshabilitado — diferir al inicio del frame para evitar crash mid-update
+        // scriptConfig.actionItems.emplace_back(
+        //     FileSystemGUI::Icon(IconGUI::LUA_RELOAD),
+        //     "Reload script environment",
+        //     [scripting, currentScript]() { scripting->ReloadScriptEnvironment(currentScript->getName()); }
+        // );
 
         scriptConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
@@ -660,8 +669,7 @@ void GUIAddonProjectSetup::DrawSceneScripts()
         // Evaluar estados ANTES de crear el config
         bool isPaused = currentScript->isPaused();
         auto *scriptScene = currentScript->getScene();
-        std::string sceneSuffix = scriptScene ? std::string("  [") + scriptScene->getName() + "]" : "";
-        std::string scriptName = currentScript->getName() + sceneSuffix;
+        std::string scriptName = currentScript->getName();
 
         // Configurar CustomTreeNode para cada script
         CustomImGui::CustomTreeNodeConfig scriptConfig(scriptName.c_str());
@@ -670,6 +678,10 @@ void GUIAddonProjectSetup::DrawSceneScripts()
         scriptConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
         scriptConfig.iconSize = ImVec2(18, 18);
         scriptConfig.defaultOpen = false;
+        if (scriptScene) {
+            scriptConfig.badgeText = "[" + scriptScene->getName() + "]";
+            scriptConfig.badgeColor = ImVec4(0.4f, 0.85f, 0.6f, 1.0f);
+        }
 
         // Botones de acción - captura SOLO el puntero, no evalúes estados dinámicos aquí
         scriptConfig.actionItems.emplace_back(
@@ -684,11 +696,12 @@ void GUIAddonProjectSetup::DrawSceneScripts()
             [currentScript]() { ScriptLuaGUI::LoadScriptDialog(currentScript->getTypesFile()); }
         );
 
-        scriptConfig.actionItems.emplace_back(
-            FileSystemGUI::Icon(IconGUI::SCRIPT_RELOAD),
-            "Reload scene script",
-            [currentScript]() { currentScript->Reload(); }
-        );
+        // TODO: reload individual deshabilitado — diferir al inicio del frame para evitar crash mid-update
+        // scriptConfig.actionItems.emplace_back(
+        //     FileSystemGUI::Icon(IconGUI::LUA_RELOAD),
+        //     "Reload script environment",
+        //     [scripting, currentScript]() { scripting->ReloadScriptEnvironment(currentScript->getName()); }
+        // );
 
         scriptConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::LUA_REMOVE),
@@ -762,8 +775,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         // Evaluar estados ANTES de crear el config
         bool isEnabled = currentShader->isEnabled();
         auto *shaderScene = currentShader->getScene();
-        std::string sceneSuffix = shaderScene ? std::string("  [") + shaderScene->getName() + "]" : "";
-        std::string shaderLabel = currentShader->getLabel() + sceneSuffix;
+        std::string shaderLabel = currentShader->getLabel();
 
         // Configurar CustomTreeNode para cada shader
         CustomImGui::CustomTreeNodeConfig shaderConfig(shaderLabel.c_str());
@@ -772,6 +784,10 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
         shaderConfig.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
         shaderConfig.iconSize = ImVec2(18, 18);
         shaderConfig.defaultOpen = false;
+        if (shaderScene) {
+            shaderConfig.badgeText = "[" + shaderScene->getName() + "]";
+            shaderConfig.badgeColor = ImVec4(0.4f, 0.85f, 0.6f, 1.0f);
+        }
 
         bool isNodeShader = currentShader->getType() == SHADER_NODE_OBJECT || currentShader->getType() == SHADER_NODE_POSTPROCESSING;
 

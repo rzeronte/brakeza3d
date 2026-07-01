@@ -87,6 +87,7 @@ public:
     void onUpdateScripts();
     void ReloadScriptsEnvironment();
     void ReloadScriptsCode() const;
+    void ReloadScriptEnvironment(ScriptLUA *script);
     void RemoveScript(const ScriptLUA *script);
     void RunStartScripts();
     void setParent(Object3D *object);
@@ -118,8 +119,8 @@ public:
     Vertex3D& positionPointer()                                         { return position; }
     Vertex3D &getPosition()                                             { return position; }
     [[nodiscard]] const Vertex3D &getPosition() const                   { return position; }
-    sol::object getLocalScriptVar(const char *varName)                  { return luaEnvironment[varName]; }
-    void setLocalScriptVar(const char *varName, sol::object value)      { luaEnvironment[varName] = value; }
+    sol::object getLocalScriptVar(const char *varName)                  { if (!luaEnvironment.valid()) return sol::lua_nil; return luaEnvironment[varName]; }
+    void setLocalScriptVar(const char *varName, sol::object value)      { if (luaEnvironment.valid()) luaEnvironment[varName] = value; }
     [[nodiscard]] virtual ObjectType getTypeObject() const              { return ObjectType::Object3D; }
     [[nodiscard]] unsigned int getId() const                            { return id; }
     [[nodiscard]] float &getAlpha()                                     { return alpha; }

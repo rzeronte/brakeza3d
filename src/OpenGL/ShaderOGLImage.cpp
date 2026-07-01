@@ -88,6 +88,7 @@ void ShaderOGLImage::renderTexture(
     glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
     glUniform1fv(alphaUniform, 1, &alpha);
     glUniform1i(inverseUniform, inverse);
+    setVec4("tintColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
 
     setTextureUniform(textureUniform, textureId, 0);
 

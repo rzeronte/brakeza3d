@@ -36,6 +36,7 @@ public:
     void PlayLUAScripts();
     void StopLUAScripts();
     void ReloadLUAScripts();
+    void ReloadScriptEnvironment(const std::string &name);
     void AddSceneLUAScript(ScriptLUA *script);
     void AddProjectScene(const std::string &);
     void AddProjectLUAScript(ScriptLUA *script);
