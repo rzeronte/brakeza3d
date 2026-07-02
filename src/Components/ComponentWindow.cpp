@@ -94,6 +94,13 @@ void ComponentWindow::InitWindow()
         exit(-1);
     }
 
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,   24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
+    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
+
     window = SDL_CreateWindow(
         SETUP->ENGINE_TITLE.c_str(),
         SDL_WINDOWPOS_UNDEFINED,
@@ -106,22 +113,10 @@ void ComponentWindow::InitWindow()
     context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, context);
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
 
     LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1 );
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1 );
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8 );
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 8);
-
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 3 );
-    SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 
     if (window == nullptr) {
         LOG_ERROR("Window could not be created! SDL_Error: %s", SDL_GetError());
@@ -274,7 +269,7 @@ void ComponentWindow::CreateFramebuffers()
 
 void ComponentWindow::ResetFramebuffer()
 {
-    LOG_WARNING("[Render] ResetFramebuffer()...");
+    LOG_SUCCESS("[Render] Reset Main Framebuffers...");
 
     glDeleteFramebuffers(1, &openGLBuffers.globalFBO);
     glDeleteTextures(1, &openGLBuffers.globalTexture);
@@ -574,7 +569,7 @@ void ComponentWindow::CreateGBuffer()
 
 void ComponentWindow::ResizeGBuffer()
 {
-    LOG_WARNING("[Window] Resizing GBuffer...");
+    LOG_MESSAGE("[Window] Resizing GBuffer...");
     CreateGBuffer();
     CreatePickingColorBuffer();
 }
@@ -770,7 +765,7 @@ void ComponentWindow::setWindowSize(int w, int h)
 
 void ComponentWindow::setRendererSize(int w, int h)
 {
-    LOG_WARNING("[Window] Set Renderer size to %dx%d", w, h);
+    LOG_SUCCESS("[Window] Set Renderer size to %dx%d", w, h);
     widthRender = w;
     heightRender = h;
     customRenderResolution = true;

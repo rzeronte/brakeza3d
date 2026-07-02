@@ -84,6 +84,9 @@ ScriptMetaInfo ScriptLuaGUI::ExtractScriptMetainfo(const std::string& pathFile)
         meta.ticksPerSecond = tpsJSON->valueint;
     }
 
+    auto* infoItem = cJSON_GetObjectItemCaseSensitive(json, "information");
+    if (infoItem && infoItem->valuestring) meta.information = infoItem->valuestring;
+
     cJSON_Delete(json);
     return meta;
 }
@@ -95,13 +98,10 @@ void ScriptLuaGUI::LoadScriptDialog(const std::string& pathFile)
     std::string uniqueId = "file:" + pathFile;
 
     if (!GUI->isEditableFileAlreadyOpen(uniqueId)) {
+        auto* script = new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
+        script->information = meta.information;
         GUI->OpenEditableFile(
-            new EditableOpenScriptFile(
-                uniqueId,
-                meta.name,
-                meta.codeFile,
-                new ScriptLUA(meta.name, meta.codeFile, meta.typesFile)
-            )
+            new EditableOpenScriptFile(uniqueId, meta.name, meta.codeFile, script)
         );
     }
     GUI->setIndexCodeEditorTab(uniqueId);
@@ -248,11 +248,25 @@ void ScriptLuaGUI::DrawScriptConfig(EditableOpenScriptFile &file)
 {
     DrawScriptConfigHeader(file);
     DrawScriptConfigEditName(file);
+    DrawScriptConfigInformation(file);
     DrawScriptConfigTicksPerSecond(file);
     DrawScriptConfigVarCreator(file);
     DrawScriptConfigVarsTable(file);
     ImGui::Separator();
     DrawScriptConfigActionButtons(file);
+}
+
+void ScriptLuaGUI::DrawScriptConfigInformation(EditableOpenScriptFile &file)
+{
+    ImGui::Separator();
+    auto script = file.getScript();
+    static char infoBuf[1024];
+    strncpy(infoBuf, script->information.c_str(), sizeof(infoBuf) - 1);
+    infoBuf[sizeof(infoBuf) - 1] = '\0';
+    ImGui::TextDisabled("Description");
+    if (ImGui::InputTextMultiline("##info", infoBuf, IM_ARRAYSIZE(infoBuf), ImVec2(-FLT_MIN, 60))) {
+        script->information = infoBuf;
+    }
 }
 
 void ScriptLuaGUI::DrawScriptConfigTicksPerSecond(EditableOpenScriptFile &file)

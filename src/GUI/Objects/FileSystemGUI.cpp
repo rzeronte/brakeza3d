@@ -4,11 +4,14 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Objects/ShadersGUI.h"
 #include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/GUI/Objects/UIManagerGUI.h"
+#include "../../../include/Misc/cJSON.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Loaders/ProjectLoader.h"
@@ -21,6 +24,7 @@ bool FileSystemGUI::openPopUpCreateProject = false;
 bool FileSystemGUI::openPopupCreateScene = false;
 bool FileSystemGUI::openPopupCreateShader = false;
 bool FileSystemGUI::openPopupCreateScript = false;
+bool FileSystemGUI::openPopupCreateWidget = false;
 bool FileSystemGUI::autoExpandProject = false;
 bool FileSystemGUI::autoExpandScene = false;
 
@@ -32,6 +36,7 @@ void FileSystemGUI::DrawMainBrowser()
     auto &scenesBrowser = GUI->getBrowserScenes();
     auto &scriptsBrowser = GUI->getBrowserScripts();
     auto &shadersBrowser = GUI->getBrowserShaders();
+    auto &widgetsBrowser = GUI->getBrowserWidgets();
 
     if (ImGui::BeginTable("BrowseTable", 2,
         ImGuiTableFlags_SizingStretchSame |
@@ -69,8 +74,9 @@ void FileSystemGUI::DrawMainBrowser()
         float width1 = iconWidth + framePadding;
         float width2 = iconWidth + framePadding;
         float width3 = iconWidth + framePadding;
+        float width4 = iconWidth + framePadding;
 
-        float totalWidth = width1 + width2 + width3 + (spacing * 2);
+        float totalWidth = width1 + width2 + width3 + width4 + (spacing * 3);
 
         // Obtener el ancho de la columna actual
         float columnWidth = ImGui::GetContentRegionAvail().x;
@@ -93,6 +99,11 @@ void FileSystemGUI::DrawMainBrowser()
         GUI::DrawButton("Browse Shaders", IconGUI::SHADER_FILE, GUIType::Sizes::ICONS_BROWSERS,
             type == GUIType::BROWSE_SHADERS, [] { type = GUIType::BROWSE_SHADERS; });
 
+        ImGui::SameLine();
+
+        GUI::DrawButton("Browse Widgets", IconGUI::WIN_UI_MANAGER, GUIType::Sizes::ICONS_BROWSERS,
+            type == GUIType::BROWSE_WIDGETS, [] { type = GUIType::BROWSE_WIDGETS; });
+
         ImGui::EndTable();
     }
     ImGui::Separator();
@@ -111,6 +122,10 @@ void FileSystemGUI::DrawMainBrowser()
 
     if (type == GUIType::BROWSE_SHADERS) {
         DrawShaderFiles(shadersBrowser);
+    }
+
+    if (type == GUIType::BROWSE_WIDGETS) {
+        DrawWidgetFiles(widgetsBrowser);
     }
 }
 
@@ -967,5 +982,126 @@ void FileSystemGUI::DrawScriptFiles(GUIType::BrowserCache &browser)
     ImGui::Separator();
     GUI::ImageButtonNormal(IconGUI::SCRIPT_FILE, "Create script", [&] {
         openPopupCreateScript = true;
+    });
+}
+
+// ---------------------------------------------------------------------------
+// Widgets
+
+void FileSystemGUI::DrawWidgetsTable(GUIType::BrowserCache &browser)
+{
+    auto files = browser.folderFiles;
+
+    if (files.empty()) {
+        ImGui::Spacing();
+        Drawable::WarningMessage("Empty directory");
+        return;
+    }
+
+    std::sort(files.begin(), files.end());
+
+    for (int i = 0; i < (int)files.size(); i++) {
+        auto file = files[i];
+        auto fullPath = browser.currentFolder + file;
+        std::string widgetName = Tools::getFilenameWithoutExtension(file);
+
+        std::string name = std::to_string(i + 1) + ") " + file;
+        CustomImGui::CustomTreeNodeConfig config(name.c_str());
+
+        config.leftIcon = Icon(IconGUI::WIN_UI_MANAGER);
+        config.iconSize = GUIType::Sizes::ICONS_BROWSERS;
+        config.isLeaf = true;
+        config.itemPadding = 1.5f;
+        config.itemMargin = 6.0f;
+
+        CustomImGui::TreeActionItem editItem(
+            Icon(IconGUI::SHADER_EDIT),
+            "Edit Widget",
+            [widgetName]() {
+                auto* guiMgr = Brakeza::get()->GUI();
+                guiMgr->getWindowStatus(GUIType::UI_MANAGER)->isOpen = true;
+                UIManagerGUI::setSelectedWidget(widgetName);
+            }
+        );
+        editItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(editItem);
+
+        CustomImGui::TreeActionItem removeItem(
+            Icon(IconGUI::SCRIPT_REMOVE),
+            "Delete widget",
+            [&browser, fullPath]() {
+                std::filesystem::remove(fullPath);
+                auto* render = Components::get()->Render();
+                if (render->getUIManager()) render->getUIManager()->reloadWidgets();
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, browser.ext);
+            },
+            "Delete Widget",
+            "This will permanently delete the widget file. Are you sure?"
+        );
+        removeItem.size = GUIType::Sizes::ICONS_BROWSERS;
+        config.actionItems.push_back(removeItem);
+
+        CustomImGui::CustomTreeNode(config);
+    }
+}
+
+void FileSystemGUI::DrawWidgetCreatorDialog(GUIType::BrowserCache &browser, std::string &title)
+{
+    if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        static char localVarName[256] = "";
+        ImGui::SetNextItemWidth(150);
+        ImGui::InputText("Widget name##wname", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+        ImGui::Separator();
+
+        GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
+            localVarName[0] = '\0';
+            ImGui::CloseCurrentPopup();
+        });
+
+        float buttonWidth = GUIType::Sizes::ICONS_BROWSERS.x + ImGui::GetStyle().FramePadding.x * 2;
+        float spacing = 150.0f - buttonWidth * 2;
+        ImGui::SameLine(0, spacing);
+        GUI::ImageButtonNormal(IconGUI::CREATE_FILE, "Create", [&] {
+            if (localVarName[0] != '\0') {
+                std::string path = browser.currentFolder + localVarName + ".json";
+                cJSON* root = cJSON_CreateObject();
+                cJSON_AddNumberToObject(root, "gap", 4);
+                cJSON_AddItemToObject(root, "elements", cJSON_CreateArray());
+                char* txt = cJSON_Print(root);
+                FILE* f = fopen(path.c_str(), "w");
+                if (f) { fputs(txt, f); fclose(f); }
+                free(txt);
+                cJSON_Delete(root);
+                auto* render = Components::get()->Render();
+                if (render->getUIManager()) render->getUIManager()->reloadWidgets();
+                browser.folderFiles = Tools::getFolderFiles(browser.currentFolder, browser.ext);
+                ImGui::CloseCurrentPopup();
+                localVarName[0] = '\0';
+            }
+        });
+        ImGui::EndPopup();
+    }
+}
+
+void FileSystemGUI::DrawWidgetFiles(GUIType::BrowserCache &browser)
+{
+    static std::string modalId = "Create Widget##widgetcreate";
+
+    if (openPopupCreateWidget) {
+        ImGui::OpenPopup(modalId.c_str());
+        openPopupCreateWidget = false;
+    }
+
+    DrawWidgetCreatorDialog(browser, modalId);
+
+    ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
+    ImGui::SameLine();
+    ImGui::Text("%s", Tools::removeSubstring(browser.currentFolder, Config::get()->ASSETS_FOLDER).c_str());
+
+    ImGui::Separator();
+    DrawWidgetsTable(browser);
+    ImGui::Separator();
+    GUI::ImageButtonNormal(IconGUI::WIN_UI_MANAGER, "Create Widget", [&] {
+        openPopupCreateWidget = true;
     });
 }

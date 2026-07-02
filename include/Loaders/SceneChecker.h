@@ -24,6 +24,7 @@ struct SceneCheckerScript
     std::string name;
     std::string typesFile;
     std::string codeFile;
+    std::string information;
 };
 
 struct SceneCheckerObjectInfo {

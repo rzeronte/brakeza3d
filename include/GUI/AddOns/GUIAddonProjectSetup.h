@@ -9,8 +9,6 @@ public:
     static void DrawProjectScenesNode();
     static void DrawSceneScriptsNode();
     static void DrawSceneShadersNode();
-    static void DrawSceneRenderSettingsNode();
-
     static void DrawProjectSettings();
     static void DrawProjectScripts();
     static void DrawProjectScenes();
