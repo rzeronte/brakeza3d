@@ -13,6 +13,7 @@ This section covers all the keyboard and mouse shortcuts available in the Brakez
 | F3 | Clear Scene (remove all objects) |
 | F4 | Clean Scene |
 | F5 | Toggle ImGui visibility |
+| Ctrl + P | Toggle Post-Processing Chain |
 | F6 | Switch to DEFAULT layout |
 | F7 | Switch to CODING layout |
 | F8 | Switch to DESIGN layout |

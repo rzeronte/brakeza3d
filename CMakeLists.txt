@@ -112,6 +112,7 @@ add_executable(Brakeza3D
         src/Components/ComponentInput.cpp include/Components/ComponentInput.h
         src/Components/ComponentRender.cpp include/Components/ComponentRender.h
         src/Render/SelectionManager.cpp include/Render/SelectionManager.h
+        src/Render/UI/UIManager.cpp include/Render/UI/UIManager.h
         src/Components/ComponentScripting.cpp include/Components/ComponentScripting.h
         src/Components/Components.cpp include/Components/Components.h
         src/Components/ComponentSound.cpp include/Components/ComponentSound.h
@@ -369,6 +370,7 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIAddonResourceHub.h
         src/GUI/AddOns/GUIAddonResourceHub.cpp
         src/GUI/Objects/ThreadGUI.cpp include/GUI/Objects/ThreadGUI.h
+        src/GUI/Objects/UIManagerGUI.cpp include/GUI/Objects/UIManagerGUI.h
         src/GUI/Objects/StatusBarGUI.cpp include/GUI/Objects/StatusBarGUI.h
         include/Loaders/Scene.h
         include/Loaders/Project.h

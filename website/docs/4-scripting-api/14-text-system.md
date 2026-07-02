@@ -159,6 +159,122 @@ This method requires a TTF_Font pointer. For changing fonts, it's recommended to
 
 ---
 
+## Glyph Atlas Methods
+---
+
+The glyph atlas renders text using a pre-built texture atlas instead of creating a GL texture per call. It is significantly faster than the TTF methods and is the recommended system for any HUD or in-game UI that draws text every frame.
+
+The engine's shared TextWriter (obtained via `Components:Render():getTextWriter()`) already has the atlas built. You do not need to create or load anything extra.
+
+:::note
+Atlas text uses the engine's built-in bitmap font. For custom TTF fonts, use the `writeTextTTF*` methods instead.
+:::
+
+### writeTextAtlas
+
+Draws text at a pixel position using the glyph atlas.
+
+```lua
+tw:writeTextAtlas(x, y, text, color, scale)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `x` | `int` | X position in pixels |
+| `y` | `int` | Y position in pixels |
+| `text` | `string` | Text to render |
+| `color` | `Color` | RGBA color |
+| `scale` | `float` | Size multiplier (1.0 = normal, 0.5 = half) |
+
+```lua
+local tw = Components:Render():getTextWriter()
+tw:writeTextAtlas(10, 50, "Gold: " .. gold, Color.new(1, 0.85, 0.2, 1), 0.7)
+```
+
+---
+
+### writeTextAtlasCache
+
+Same as `writeTextAtlas` but redirects output into the active TextCache FBO when called inside a `beginTextCache / endTextCache` block. Use this instead of `writeTextAtlas` when building cached overlays.
+
+```lua
+tw:writeTextAtlasCache(x, y, text, color, scale)
+```
+
+Behaves identically to `writeTextAtlas` outside of a cache block. Inside a cache block, coordinates are cache-local (0, 0 = top-left of the cache).
+
+---
+
+### writeTextAtlasMiddleScreen
+
+Draws text centered on screen both horizontally and vertically.
+
+```lua
+tw:writeTextAtlasMiddleScreen(text, color, scale)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `text` | `string` | Text to render |
+| `color` | `Color` | RGBA color |
+| `scale` | `float` | Size multiplier |
+
+---
+
+### writeTextAtlasCenterHorizontal
+
+Draws text centered horizontally at a given Y position.
+
+```lua
+tw:writeTextAtlasCenterHorizontal(y, text, color, scale)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `y` | `int` | Y position in pixels |
+| `text` | `string` | Text to render |
+| `color` | `Color` | RGBA color |
+| `scale` | `float` | Size multiplier |
+
+```lua
+tw:writeTextAtlasCenterHorizontal(20, "PRESS SPACE TO CONTINUE", Color.new(1,1,1,1), 0.6)
+```
+
+---
+
+### flushTextBatch
+
+The atlas renderer batches draw calls internally. Call `flushTextBatch` once per frame after all atlas text calls to submit the batch to the GPU.
+
+```lua
+tw:flushTextBatch()
+```
+
+:::warning
+If you forget `flushTextBatch`, atlas text will not appear on screen. Call it once at the end of your `postUpdate()` after all `writeTextAtlas*` calls.
+:::
+
+### Full example — HUD with atlas text
+
+```lua
+local tw
+
+function onStart()
+    tw = Components:Render():getTextWriter()
+end
+
+function postUpdate()
+    local gold = tonumber(Components:Scripting():getGlobalScriptVar("ResourceManager", "gold")) or 0
+
+    tw:writeTextAtlas(10, 10, "Gold: " .. gold,  Color.new(1, 0.85, 0.2, 1), 0.65)
+    tw:writeTextAtlas(10, 30, "FPS: "  .. Components:Render():getFps(), Color.new(0.6, 0.6, 0.6, 1), 0.55)
+
+    tw:flushTextBatch()
+end
+```
+
+---
+
 ## TextCache System
 ---
 
@@ -435,3 +551,8 @@ end
 | `beginTextCache(name, w, h)` | Start recording text into a named off-screen FBO |
 | `endTextCache()` | Stop recording and restore screen framebuffer |
 | `drawTextCache(name, x, y)` | Blit a cached text FBO to the screen |
+| `writeTextAtlas(x, y, text, color, scale)` | Fast atlas text at pixel position |
+| `writeTextAtlasCache(x, y, text, color, scale)` | Atlas text, cache-aware (use inside begin/endTextCache) |
+| `writeTextAtlasMiddleScreen(text, color, scale)` | Atlas text centered on screen |
+| `writeTextAtlasCenterHorizontal(y, text, color, scale)` | Atlas text centered horizontally |
+| `flushTextBatch()` | Submit the atlas batch to the GPU (call once per frame after all atlas writes) |

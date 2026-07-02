@@ -70,3 +70,12 @@ void Logging::Warning(const char *warning, ...)
     OutputVa(prefixed.c_str(), false, args);
     va_end(args);
 }
+
+void Logging::Success(const char *message, ...)
+{
+    std::string prefixed = std::string("[Success] " + std::string(message));
+    va_list args;
+    va_start(args, message);
+    OutputVa(prefixed.c_str(), false, args);
+    va_end(args);
+}

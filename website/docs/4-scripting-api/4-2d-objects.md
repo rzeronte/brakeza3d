@@ -81,7 +81,7 @@ function onUpdate()
     if done then return end
     if overlay ~= nil and overlay:isVideoFinished() then
         overlay:stopVideo()
-        Brakeza:removeObject(overlay)
+        overlay:setRemoved(true)
         overlay = nil
         done = true
     end

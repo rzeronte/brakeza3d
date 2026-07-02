@@ -39,6 +39,7 @@ public:
 
         Components::get()->Scripting()->setCurrentScene(nullptr);
         Components::get()->Render()->setSelectedObject(nullptr);
+        Components::get()->Render()->clearEngineCache();
 
         SceneLoader::isClearing = false;
         LOG_MESSAGE("[ThreadJobClearScene] Process END");

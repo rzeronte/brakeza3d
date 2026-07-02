@@ -343,6 +343,70 @@ void TextWriter::writeTextAtlasCache(int x, int y, const char *text, const Color
     batchQueue.push_back({x, y, text, c, scale});
 }
 
+int TextWriter::measureTextWidthAtlas(const char *text, float scale)
+{
+    if (!glyphAtlas || !glyphAtlas->isBuilt()) return 0;
+
+    int len = (int)strlen(text);
+    float cursorX = 0;
+    float maxRight = 0;
+
+    for (int i = 0; i < len; i++) {
+        char ch = text[i];
+
+        if (ch == ' ') {
+            const GlyphInfo& space = glyphAtlas->getGlyphInfo(' ');
+            cursorX += space.advance * scale;
+            float right = cursorX;
+            if (right > maxRight) maxRight = right;
+            continue;
+        }
+
+        const GlyphInfo& g = glyphAtlas->getGlyphInfo(ch);
+        if (!g.valid) {
+            cursorX += glyphAtlas->getGlyphInfo(' ').advance * scale;
+            continue;
+        }
+
+        float right = cursorX + (g.bearingX + g.width) * scale;
+        if (right > maxRight) maxRight = right;
+
+        cursorX += g.advance * scale;
+    }
+
+    return (int)maxRight;
+}
+
+void TextWriter::writeTextAtlasMiddleScreen(const char *text, const Color &c, float scale)
+{
+    if (!glyphAtlas || !glyphAtlas->isBuilt()) return;
+
+    int textWidth = measureTextWidthAtlas(text, scale);
+
+    auto *win = Components::get()->Window();
+    const int totalW = win->getWidth();
+    const int totalH = win->getHeight();
+
+    int xPosition = (totalW / 2) - textWidth / 2;
+    int yPosition = totalH / 2;
+
+    writeTextAtlas(xPosition, yPosition, text, c, scale);
+}
+
+void TextWriter::writeTextAtlasCenterHorizontal(int y, const char *text, const Color &c, float scale)
+{
+    if (!glyphAtlas || !glyphAtlas->isBuilt()) return;
+
+    int textWidth = measureTextWidthAtlas(text, scale);
+
+    auto *win = Components::get()->Window();
+    const int totalW = win->getWidth();
+
+    int xPosition = (totalW / 2) - textWidth / 2;
+
+    writeTextAtlas(xPosition, y, text, c, scale);
+}
+
 const std::vector<float>& TextWriter::getOrBuildGlyphVerts(const char *text, float scale)
 {
     std::string key = std::string(text) + "@" + std::to_string(scale);

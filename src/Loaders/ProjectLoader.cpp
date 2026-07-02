@@ -110,7 +110,7 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
             pool.setMaxCallbacksPerFrame(read("max_callbacks_per_frame", pool.getMaxCallbacksPerFrame()));
             pool.setMaxEnqueuedTasks(read("max_enqueued_tasks",          pool.getMaxEnqueuedTasks()));
             pool.setMaxEnqueuedCallbacks(read("max_enqueued_callbacks",  pool.getMaxEnqueuedCallbacks()));
-            LOG_WARNING("[ProjectLoader] ThreadPool '%s' => threads=%zu | concurrent=%zu | callbacks/frame=%zu | enqueued tasks=%zu | enqueued callbacks=%zu",
+            LOG_SUCCESS("[ProjectLoader] ThreadPool '%s' => threads=%zu | concurrent=%zu | callbacks/frame=%zu | enqueued tasks=%zu | enqueued callbacks=%zu",
                 poolName,
                 pool.getNumThreads(),
                 pool.getMaxConcurrentTasks(),

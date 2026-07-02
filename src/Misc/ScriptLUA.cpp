@@ -471,6 +471,8 @@ cJSON *ScriptLUA::getTypesJSON() const
     cJSON_AddStringToObject(scriptJSON, "name", getName().c_str());
     cJSON_AddStringToObject(scriptJSON, "type", type == SCRIPT_GLOBAL ? "Global" : "Object");
     cJSON_AddNumberToObject(scriptJSON, "ticks_per_second", ticksPerSecond);
+    if (!information.empty())
+        cJSON_AddStringToObject(scriptJSON, "information", information.c_str());
 
     cJSON *typesArray = cJSON_CreateArray();
     for (auto dataType : getDataTypes()) {

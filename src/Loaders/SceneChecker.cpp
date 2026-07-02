@@ -57,7 +57,8 @@ SceneCheckerScript SceneChecker::ParseScriptFromJSON(cJSON* scriptJSON) const
     return {
         GetStringFromJSON(scriptJSON, "name"),
         GetStringFromJSON(scriptJSON, "typesFile"),
-        GetStringFromJSON(scriptJSON, "codeFile")
+        GetStringFromJSON(scriptJSON, "codeFile"),
+        GetStringFromJSON(scriptJSON, "information")
     };
 }
 
@@ -337,6 +338,12 @@ void SceneChecker::DrawScriptsTable() const
             ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
             ImGui::SameLine();
             ImGui::Text("%s", script.name.c_str());
+            if (!script.information.empty() && ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("%s", script.information.c_str());
+            }
+            if (!script.information.empty()) {
+                ImGui::TextDisabled("  %s", script.information.c_str());
+            }
 
             ImGui::TableSetColumnIndex(1);
             DrawFileStatus(script.typesFile);
@@ -352,7 +359,10 @@ void SceneChecker::DrawObjectScriptsTable(const SceneCheckerObjectInfo &o) const
         bool fileExists = Tools::FileExists(script.typesFile.c_str());
         ImGui::Image(FileSystemGUI::Icon(fileExists ? IconGUI::SCRIPT_FILE : IconGUI::FILE_BROKEN), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
         if (ImGui::IsItemHovered()) {
-            ImGui::SetTooltip("%s", script.typesFile.c_str());
+            if (!script.information.empty())
+                ImGui::SetTooltip("%s\n%s", script.name.c_str(), script.information.c_str());
+            else
+                ImGui::SetTooltip("%s", script.typesFile.c_str());
         }
         ImGui::SameLine();
     }

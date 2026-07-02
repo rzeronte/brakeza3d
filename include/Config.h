@@ -49,6 +49,7 @@ public:
     std::string PROJECTS_FOLDER       = ASSETS_FOLDER + "projects/";
     std::string SCENES_FOLDER         = ASSETS_FOLDER + "scenes/";
     std::string CUSTOM_SHADERS_FOLDER = ASSETS_FOLDER + "shaders/";
+    std::string UI_WIDGETS_FOLDER     = ASSETS_FOLDER + "ui/";
     std::string SCREENSHOTS_FOLDER    = ASSETS_FOLDER + "screenshots/";
     std::string DOWNLOADS_FOLDER      = ASSETS_FOLDER + "downloads/";
     std::string DEFAULT_SOUNDS_FILE   = "sounds.json";
@@ -110,7 +111,7 @@ public:
     bool ENABLE_IMGUI_TOOLBAR = true;
     bool ENABLE_IMGUI_STATUSBAR = true;
     float STATUS_BAR_HEIGHT = 29.0f;
-    float TOOL_BAR_HEIGHT = 50.0f;
+    float TOOL_BAR_HEIGHT = 45.0f;
     bool ENABLE_GRID_BACKGROUND = true;
 
     // Render options

@@ -85,6 +85,87 @@ end
 ...
 ```
 
+## Retrieving Grid3D and Octree
+
+Use `getGrid3D()` and `getOctree()` to get the data structures attached to a mesh after they have been built.
+
+```lua
+local grid   = mesh:getGrid3D()   -- returns the Grid3D, or nil if not built
+local octree = mesh:getOctree()   -- returns the Octree, or nil if not built
+```
+
+---
+
+## Filling Grid3D from an Image
+
+Instead of filling the grid from mesh geometry, you can paint walkability directly from a PNG image. Black pixels (below `threshold`) become obstacles; everything else is walkable.
+
+```lua
+grid:fillGrid3DFromImage(path, threshold)
+grid:fillGrid3DFromImage(path, threshold, flipZ, flipX)
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `path` | `string` | — | Path to a PNG image |
+| `threshold` | `int` | 128 | Pixels with brightness below this are obstacles |
+| `flipZ` | `bool` | false | Flip the image along the Z axis |
+| `flipX` | `bool` | false | Flip the image along the X axis |
+
+```lua
+mesh:BuildGrid3D(512, 1, 512)
+mesh:getGrid3D():fillGrid3DFromImage("../assets/nav/walkable.png", 128)
+```
+
+---
+
+## Querying Walkability
+
+### isCellWalkable
+
+Returns whether a grid cell at grid indices `(x, z)` is walkable (i.e. not blocked by geometry or image data).
+
+```lua
+local walkable = grid:isCellWalkable(gx, gz)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `gx` | `int` | Grid column index |
+| `gz` | `int` | Grid row index |
+
+### snapToWalkable
+
+Given a grid position that may be blocked, finds the nearest walkable cell within `maxRadius` cells (spiral search).
+
+```lua
+local nx, nz = grid:snapToWalkable(gx, gz, maxRadius)
+```
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `gx` | `int` | Starting grid column |
+`gz` | `int` | Starting grid row |
+| `maxRadius` | `int` | Maximum search radius in cells |
+
+Returns `(gx, gz)` of the nearest walkable cell, or the original position if none is found within the radius.
+
+```lua
+-- Convert world position to grid, snap if blocked
+local GRID_SIZE  = 512
+local WORLD_SIZE = 1024.0
+local function toGrid(w) return math.floor((w + WORLD_SIZE * 0.5) / WORLD_SIZE * GRID_SIZE) end
+
+local gx = toGrid(unit:getPosition().x)
+local gz = toGrid(unit:getPosition().z)
+
+if not grid:isCellWalkable(gx, gz) then
+    gx, gz = grid:snapToWalkable(gx, gz, 5)
+end
+```
+
+---
+
 ## Click Object Detection
 ---
 
@@ -112,7 +193,7 @@ function onUpdate()
         local rayEnd = Vertex3D.new(mouseX, mouseY, 100)
 
         -- Check collision with a specific object
-        local targetObject = Brakeza:getSceneObjectByLabel("MyObject")
+        local targetObject = Brakeza:getObjectByName("MyObject")
         if Components:Collisions():isRayCollisionWith(rayOrigin, rayEnd, targetObject) then
             print("Object clicked!")
         end

@@ -7,10 +7,6 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/Config.h"
 #include "../../../include/Components/Components.h"
-#include "../../../include/Cache/ImageCache.h"
-#include "../../../include/Cache/ModelDataCache.h"
-#include "../../../include/Cache/AnimationDataCache.h"
-#include "../../../include/Cache/ScriptDataCache.h"
 
 void GUIAddonToolbar::Draw()
 {
@@ -32,7 +28,7 @@ void GUIAddonToolbar::Draw()
                              ImGuiWindowFlags_NoDocking;
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 8));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 4));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(4, 4));
 
@@ -222,14 +218,7 @@ void GUIAddonToolbar::Helpers()
     VerticalSeparator();
     ImGui::SameLine();
     GUI::DrawButton("Clear engine cache", IconGUI::TOOLBAR_CLEAR_CACHE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
-        imageCache.resetStats();
-        modelDataCache.resetStats();
-        animationDataCache.resetStats();
-        scriptDataCache.resetStats();
-        imageCache.clear();
-        modelDataCache.clear();
-        animationDataCache.clear();
-        scriptDataCache.clear();
+        Components::get()->Render()->clearEngineCache();
     });
 }
 

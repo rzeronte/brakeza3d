@@ -133,6 +133,9 @@ void GuiAddonConsole::DrawWinLogging()
             } else if (strstr(item, "[Warning]")) {
                 color = ImVec4(1.0f, 0.8f, 0.2f, 1.0f);
                 icon = IconGUI::LOGGING_MSG_WARNING;
+            } else if (strstr(item, "[Success]")) {
+                color = ImVec4(0.2f, 1.0f, 0.3f, 1.0f);
+                icon = IconGUI::LOGGING_MSG_SUCCESS;
             } else if (strncmp(item, "# ", 2) == 0) {
                 color = ImVec4(0.4f, 1.0f, 0.4f, 1.0f);
             }
