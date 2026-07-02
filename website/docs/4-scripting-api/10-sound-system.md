@@ -105,6 +105,56 @@ Manipulate sound volume:
     ...
 ```
 
+## Per-Channel Control
+---
+
+Advanced control over individual audio channels. These methods are essential for implementing spatial audio, vehicle engine pitch variation, and channel management in a SoundManager.
+
+### Channel Frequency (Pitch)
+
+Set the playback frequency of a specific channel. Useful for simulating engine RPM changes or Doppler effect.
+
+```lua
+    -- Range: 11025 (slow) to 44100 (normal) to 88200 (fast)
+    -- Default SDL_mixer frequency is 44100
+    local speed = obj:getVelocity():length()
+    local freq = 22050 + (speed / maxSpeed) * 22050
+    Components:Sound():setChannelFrequency(channel, freq)
+```
+
+### Channel Volume
+
+Control the volume of a single channel independently (unlike `setSoundsVolume` which affects all channels globally).
+
+```lua
+    -- Range [0 - 128]
+    local dist = (cameraPos - objPos):length()
+    local vol = math.max(0, 128 - dist * 0.5)
+    Components:Sound():setChannelVolume(channel, vol)
+```
+
+### Channel Position (3D Spatialization)
+
+Set the simulated 3D position of a sound source relative to the listener, using angle and distance.
+
+```lua
+    -- angle: 0-360 (0=front, 90=right, 180=behind)
+    -- distance: 0-255 (0=at listener, 255=faint)
+    Components:Sound():setChannelPosition(channel, 45, 50)
+```
+
+### Query Channel State
+
+Check if a specific channel is currently playing a sound. Useful for channel allocation and stealing logic.
+
+```lua
+    if Components:Sound():isChannelPlaying(channel) then
+        -- Channel is busy, decide to steal or skip
+    else
+        -- Channel is free, safe to use
+    end
+```
+
 ## Automatic Loading
 ---
 

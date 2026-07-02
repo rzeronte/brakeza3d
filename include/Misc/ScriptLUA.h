@@ -68,6 +68,7 @@ struct ScriptMetaInfo {
     std::string codeFile;
     std::string typesFile;
     int ticksPerSecond = 0;
+    std::string information;
 };
 
 class Scene;
@@ -92,6 +93,7 @@ public:
     std::string scriptFilename;
     std::string fileTypes;
     std::string name;
+    std::string information;
     ScriptType type = SCRIPT_GLOBAL;
     Scene* scene = nullptr;
 

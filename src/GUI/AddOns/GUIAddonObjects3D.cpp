@@ -35,6 +35,8 @@ bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObje
 
 void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
 {
+    if (!o || o->isRemoved()) return;
+
     // Configurar el TreeNode
     std::string objectLabel = std::to_string(index + 1) + ") " + o->getName();
     CustomImGui::CustomTreeNodeConfig config(objectLabel.c_str());
@@ -197,6 +199,7 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
 
             std::vector<Object3D*> sorted;
             for (auto &o : objects) {
+                if (o->isRemoved()) continue;
                 if (o->getTypeObject() != type.type) continue;
                 if (!filter.empty() && !exist(o->getName(), filter)) continue;
                 sorted.push_back(o);

@@ -12,7 +12,7 @@ You can access most of the available input-related functionality through the `In
 
 ```lua
 input = Components:Input()
-isEnabled = input::isEnabled()
+isEnabled = input:isEnabled()
 ```
 
 

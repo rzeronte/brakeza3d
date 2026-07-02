@@ -209,9 +209,6 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     ImGui::Separator();
     ImGui::Spacing();
 
-    DrawSceneRenderSettingsNode();
-    ImGui::Spacing();
-
     DrawSceneScriptsNode();
     ImGui::Spacing();
 
@@ -732,35 +729,6 @@ void GUIAddonProjectSetup::DrawSceneScripts()
 
         ImGui::PopID();
     }
-}
-
-void GUIAddonProjectSetup::DrawSceneRenderSettingsNode()
-{
-    CustomImGui::CustomTreeNodeConfig config("Render settings");
-    config.iconSize    = ImVec2(18, 18);
-    config.leftIcon    = FileSystemGUI::Icon(IconGUI::WIN_PROJECT_SETTINGS);
-    config.bulletOpen  = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
-    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
-    config.defaultOpen = false;
-
-    bool isOpen = CustomImGui::CustomTreeNode(config, nullptr);
-    if (!isOpen) return;
-
-    ImGui::Spacing();
-
-    auto win = Components::get()->Window();
-    float col[4] = { win->getClearColorR(), win->getClearColorG(), win->getClearColorB(), win->getClearColorA() };
-
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::BULLET), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-    ImGui::SameLine();
-    ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Clear color");
-    ImGui::SetNextItemWidth(-1);
-    if (ImGui::ColorEdit4("##ClearColor", col, ImGuiColorEditFlags_AlphaBar)) {
-        win->setClearColor(col[0], col[1], col[2], col[3]);
-    }
-
-    ImGui::Spacing();
-    CustomImGui::CustomTreePop();
 }
 
 void GUIAddonProjectSetup::DrawSceneCustomShaders()

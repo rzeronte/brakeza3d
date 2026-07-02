@@ -193,6 +193,10 @@
 			"y":	37
 		}, {
 			"name":	"LOGGING_MSG_OK",
+			"x":	12,
+			"y":	35
+		}, {
+			"name":	"LOGGING_MSG_SUCCESS",
 			"x":	14,
 			"y":	31
 		}, {
@@ -891,6 +895,10 @@
 			"name":	"TOOLBAR_CLEAR_CACHE",
 			"x":	2,
 			"y":	32
+		}, {
+			"name":	"WIN_UI_MANAGER",
+			"x":	6,
+			"y":	1
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

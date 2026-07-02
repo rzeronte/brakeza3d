@@ -42,6 +42,7 @@
 #include "../OpenGL/Quad/ShaderOGLShadowPassDebugLight.h"
 #include "../OpenGL/ShaderOGLComputeParticles.h"
 #include "../OpenGL/ShaderOGLGPUParticles.h"
+#include "../Render/UI/UIManager.h"
 
 struct FrustumPlane {
     float nx, ny, nz, d;
@@ -101,6 +102,8 @@ class ComponentRender : public Component
     std::unordered_map<unsigned int, std::pair<Mesh3D*, std::string>> submeshRegistry;
 
     Shaders shaders;
+
+    UIManager* uiManager{nullptr};
 public:
     ComponentRender() = default;
     ~ComponentRender() override;
@@ -150,6 +153,7 @@ public:
     void DrawLine(const Vertex3D &from, const Vertex3D &to, const Color &c) const;
     void DrawLine2D(int x1, int y1, int x2, int y2, const Color &c, float weight) const;
     void DrawFilledRect(int x, int y, int w, int h, const Color &c) const;
+    void DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const;
     void DrawImage2D(const std::string &path, int x, int y, int w, int h);
     void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb);
     void DrawImage2DFromImage(Image *img, int x, int y, int w, int h) const;
@@ -158,6 +162,9 @@ public:
     void drawGroundBlob(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundBlobToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawOutlineSubmesh(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
+    void clearOutlineBatch() const;
+    void drawOutlineSubmeshBatch(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
+    void flushOutlines() const;
     [[nodiscard]] Vertex3D getSubmeshCenter(Object3D* obj, const std::string& submeshName) const;
     void drawGroundDecal(Object3D* obj, const std::string& texturePath, float r, float g, float b, float a, float radius) const;
     void drawGroundDecalToFB(Object3D* obj, const std::string& texturePath, float r, float g, float b, float a, float radius, const std::string& fb) const;
@@ -196,6 +203,7 @@ public:
     [[nodiscard]] const std::map<std::string, ShaderCustomType>& getShaderTypesMapping() const    { return ShaderTypesMapping; }
     [[nodiscard]] SelectionManager& getSelectionManager()                                         { return selection; }
     [[nodiscard]] TextWriter* getTextWriter() const                                               { return textWriter; }
+    [[nodiscard]] UIManager* getUIManager() const                                                 { return uiManager; }
     [[nodiscard]] GlyphAtlas* getGlyphAtlas() const                                               { return glyphAtlas; }
     static int getLastFrameVisible()                                                              { return lastFrameVisible; }
     static int getLastFrameCulled()                                                               { return lastFrameCulled; }
@@ -219,6 +227,8 @@ public:
     inline static int lastFrameCulled  = 0;
     inline static int lastFrameLightsVisible = 0;
     inline static int lastFrameLightsCulled  = 0;
+
+    void clearEngineCache();
 };
 
 #endif //BRAKEDA3D_COMPONENTRENDER_H

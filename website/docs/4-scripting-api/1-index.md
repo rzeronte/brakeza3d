@@ -154,7 +154,7 @@ for each object.
 You can access local variables of another object from your LUA scripts as follows:
 
 ```lua
-o = Brakeza:getSceneObjectByLabel("MyObject")
+o = Brakeza:getObjectByName("MyObject")
 position = o:getLocalScriptVar("offset")                            -- we get a vertex3D!
 
 print("Read variable 'offset' from object: ".. o:getName())

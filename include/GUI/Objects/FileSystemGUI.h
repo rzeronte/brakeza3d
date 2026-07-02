@@ -23,6 +23,7 @@ public:
     static bool openPopupCreateScene;
     static bool openPopupCreateShader;
     static bool openPopupCreateScript;
+    static bool openPopupCreateWidget;
     static bool autoExpandProject;
     static bool autoExpandScene;
 
@@ -47,6 +48,11 @@ public:
     static void DrawScriptFiles(GUIType::BrowserCache &browser);
     static void DrawScriptsTable(GUIType::BrowserCache &browser);
     static void DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std::string &title);
+
+    // Widgets
+    static void DrawWidgetFiles(GUIType::BrowserCache &browser);
+    static void DrawWidgetsTable(GUIType::BrowserCache &browser);
+    static void DrawWidgetCreatorDialog(GUIType::BrowserCache &browser, std::string &title);
 
     static void LoadImagesFolder(GUIType::BrowserCache &browser, TexturePackage &package);
     static void DrawBrowserFolders(const std::string &folder, GUIType::BrowserCache &browser);

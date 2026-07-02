@@ -251,6 +251,16 @@ void GUIAddonMenu::MenuVideo()
         ImGui::DragScalar("Sort objects interval (ms)", ImGuiDataType_Float, &Config::get()->SORT_OBJECTS_INTERVAL_MS, 5.0f, &sortMin, &sortMax, "%.0f ms");
     }
 
+    ImGui::SeparatorText("Clear color");
+    {
+        auto win = Components::get()->Window();
+        float col[4] = { win->getClearColorR(), win->getClearColorG(), win->getClearColorB(), win->getClearColorA() };
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::ColorEdit4("##ClearColor", col, ImGuiColorEditFlags_AlphaBar)) {
+            win->setClearColor(col[0], col[1], col[2], col[3]);
+        }
+    }
+
     ImGui::SeparatorText("Tools");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_TAKE_SCREENSHOT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Screenshot", nullptr, false)) {

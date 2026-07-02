@@ -258,3 +258,26 @@ void ComponentSound::setSoundsVolume(int v)
     Config::get()->SOUND_VOLUME_FX = static_cast<float>(v);
     Mix_Volume(Config::SoundChannels::SND_GLOBAL, v);
 }
+
+void ComponentSound::setChannelFrequency(int channel, int freq)
+{
+    // Mix_SetFrequency does not exist in SDL2_mixer — per-channel rate change unsupported
+}
+
+void ComponentSound::setChannelVolume(int channel, int vol)
+{
+    if (!isEnabled()) return;
+    Mix_Volume(channel, vol);
+}
+
+void ComponentSound::setChannelPosition(int channel, int angle, int distance)
+{
+    if (!isEnabled()) return;
+    Mix_SetPosition(channel, angle, distance);
+}
+
+bool ComponentSound::isChannelPlaying(int channel)
+{
+    if (!isEnabled()) return false;
+    return Mix_Playing(channel) != 0;
+}

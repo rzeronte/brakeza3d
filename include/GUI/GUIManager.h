@@ -54,6 +54,7 @@ class GUIManager
     GUIType::BrowserCache browserShaders;
     GUIType::BrowserCache browserScripts;
     GUIType::BrowserCache browserImages;
+    GUIType::BrowserCache browserWidgets;
 
     SceneChecker sceneChecker;
     ProjectChecker projectChecker;
@@ -107,6 +108,7 @@ public:
     [[nodiscard]] GUIType::BrowserCache &getBrowserScenes()                             { return browserScenes; }
     [[nodiscard]] GUIType::BrowserCache &getBrowserProjects()                           { return browserProjects; }
     [[nodiscard]] GUIType::BrowserCache &getBrowserShaders()                            { return browserShaders; }
+    [[nodiscard]] GUIType::BrowserCache &getBrowserWidgets()                            { return browserWidgets; }
     [[nodiscard]] GUIType::ViewerObjectsMode getObjectsViewerMode() const               { return viewerMode; }
     [[nodiscard]] std::vector<EditableOpenBaseResource *> getEditableOpenFiles() const  { return openFiles;}
     [[nodiscard]] int getIndexCodeEditorTab() const                                     { return indexCodeEditorTab; }

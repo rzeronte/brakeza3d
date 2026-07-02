@@ -208,7 +208,11 @@ inline void LUAIntegration(sol::state &lua)
         "StopMusic", [](ComponentSound*) { ComponentSound::StopMusic(); },
         "StopChannel", [](ComponentSound*, int channel) { ComponentSound::StopChannel(channel); },
         "getSoundDuration", &ComponentSound::getSoundDuration,
-        "LoadSoundsFromFile", &ComponentSound::LoadSoundsFromFile
+        "LoadSoundsFromFile", &ComponentSound::LoadSoundsFromFile,
+        "setChannelFrequency", &ComponentSound::setChannelFrequency,
+        "setChannelVolume", &ComponentSound::setChannelVolume,
+        "setChannelPosition", &ComponentSound::setChannelPosition,
+        "isChannelPlaying", &ComponentSound::isChannelPlaying
     );
 
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
@@ -238,6 +242,7 @@ inline void LUAIntegration(sol::state &lua)
         "DrawLine",    &ComponentRender::DrawLine,
         "DrawLine2D",     &ComponentRender::DrawLine2D,
         "DrawFilledRect", &ComponentRender::DrawFilledRect,
+        "DrawFilledRectToFB", &ComponentRender::DrawFilledRectToFB,
         "DrawCircle2D",   &ComponentRender::DrawCircle2D,
         "DrawCircle2DToFB", &ComponentRender::DrawCircle2DToFB,
         "DrawImage2D",    &ComponentRender::DrawImage2D,
@@ -282,11 +287,22 @@ inline void LUAIntegration(sol::state &lua)
         "drawGroundCircle",  sol::overload(&ComponentRender::drawGroundCircle,  &ComponentRender::drawGroundCircleToFB),
         "drawGroundBlob",    sol::overload(&ComponentRender::drawGroundBlob,    &ComponentRender::drawGroundBlobToFB),
         "drawGroundDecal",   sol::overload(&ComponentRender::drawGroundDecal,   &ComponentRender::drawGroundDecalToFB),
-        "drawOutlineSubmesh",  &ComponentRender::drawOutlineSubmesh,
-        "getSubmeshCenter",    &ComponentRender::getSubmeshCenter,
+        "drawOutlineSubmesh",      &ComponentRender::drawOutlineSubmesh,
+        "clearOutlineBatch",       &ComponentRender::clearOutlineBatch,
+        "drawOutlineSubmeshBatch", &ComponentRender::drawOutlineSubmeshBatch,
+        "flushOutlines",           &ComponentRender::flushOutlines,
+        "getSubmeshCenter",        &ComponentRender::getSubmeshCenter,
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
-        "getTextWriter",   &ComponentRender::getTextWriter
+        "getTextWriter",   &ComponentRender::getTextWriter,
+        "drawWidget", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data) -> std::tuple<float, std::string> {
+            if (!r.getUIManager()) return {y, ""};
+            return r.getUIManager()->drawWidgetLua(name, x, y, data);
+        },
+        "reloadWidgets", [](ComponentRender& r) {
+            if (!r.getUIManager()) return;
+            r.getUIManager()->reloadWidgets();
+        }
     );
 
     lua.new_usertype<ComponentScripting>("ComponentScripting",
@@ -739,6 +755,8 @@ inline void LUAIntegration(sol::state &lua)
         "drawTextCache",  &TextWriter::drawTextCache,
         "writeTextAtlas",      &TextWriter::writeTextAtlas,
         "writeTextAtlasCache", &TextWriter::writeTextAtlasCache,
+        "writeTextAtlasMiddleScreen",      &TextWriter::writeTextAtlasMiddleScreen,
+        "writeTextAtlasCenterHorizontal",  &TextWriter::writeTextAtlasCenterHorizontal,
         "flushTextBatch",      &TextWriter::flushTextBatch,
         "buildGlyphAtlas", &TextWriter::buildGlyphAtlas,
         "getGlyphAtlas",   &TextWriter::getGlyphAtlas

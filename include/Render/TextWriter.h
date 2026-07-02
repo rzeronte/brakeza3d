@@ -58,10 +58,13 @@ public:
     void buildGlyphAtlas(int atlasSize = 512);
     void writeTextAtlas(int x, int y, const char *text, const Color &c, float scale);
     void writeTextAtlasCache(int x, int y, const char *text, const Color &c, float scale);
+    void writeTextAtlasMiddleScreen(const char *text, const Color &c, float scale);
+    void writeTextAtlasCenterHorizontal(int y, const char *text, const Color &c, float scale);
 
     void flushTextBatch();
 
 private:
+    int measureTextWidthAtlas(const char *text, float scale);
     struct BatchedText {
         int x, y;
         std::string text;

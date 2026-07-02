@@ -63,7 +63,7 @@ We can interact with an Object3D using several methods:
 | `setRotation(rotation: M3)`                 | void   | Sets a new rotation                                          |
 | `setScale(scale: float)`                    | void   | Sets a new scale factor                                      |
 | `setAlpha(alpha: float)`                    | void   | Sets a new opacity factor                                    |
-| `setEnable(enable: bool)`                   | void   | Activates or deactivates the object                          |
+| `setEnabled(enable: bool)`                  | void   | Activates or deactivates the object                          |
 | `setRemoved(removed: bool)`                 | void   | Removes the object in the next frame                         |
 | `setSelectable(selectable: bool)`           | void   | Enables or disables mouse selection for this object          |
 | `setHighlight(r, g, b, a: float)`           | void   | Draws a colored outline around the object (Mesh3D only)      |
@@ -184,7 +184,7 @@ It is commonly used for orientation, axis transformations, and rotating vectors.
 | `Z()`                                     | `Vertex3D`  | Returns the Z axis vector                                      |
 | `getMatrixIdentity()`                     | `M3`        | Returns the identity matrix                                    |
 | `getTranspose()`                          | `M3`        | Returns the transposed matrix                                  |
-| `getMatrixRotationForEulerAngle(p, y, r)` | `M3`        | Creates a rotation matrix from Euler angles (pitch, yaw, roll) |
+| `getMatrixRotationForEulerAngles(p, y, r)` | `M3`        | Creates a rotation matrix from Euler angles (pitch, yaw, roll) |
 
 
 
