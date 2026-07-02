@@ -30,6 +30,7 @@ namespace GUIType
         BROWSE_SCENES,
         BROWSE_SHADERS,
         BROWSE_SCRIPTS,
+        BROWSE_WIDGETS,
     };
 
     enum ViewerObjectsMode {
@@ -65,7 +66,7 @@ namespace GUIType
     };
 
     struct Sizes {
-        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(22, 22);
+        static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(18, 18);
         static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(18, 18);
         static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
@@ -125,6 +126,7 @@ namespace GUIType
         PROJECT_INFO,
         THREADS,
         BROWSER,
+        UI_MANAGER,
     };
 
     struct WindowGUI {
@@ -206,6 +208,7 @@ namespace GUIType
     X(WIN_DEBUG_ICONS, 0, 0) \
     X(LOGGING_CLEAR, 0, 0) \
     X(LOGGING_MSG_OK, 0, 0) \
+    X(LOGGING_MSG_SUCCESS, 0, 0) \
     X(LOGGING_MSG_ERROR, 0, 0) \
     X(LOGGING_MSG_WARNING, 0, 0) \
     X(LOGGING_OPTIONS, 0, 0) \
@@ -380,6 +383,7 @@ namespace GUIType
     X(SCENE_UNLOAD, 0, 0) \
     X(OBJECTS_VIEWER_EMPTY_GROUPS, 0, 0) \
     X(TOOLBAR_CLEAR_CACHE, 0, 0) \
+    X(WIN_UI_MANAGER, 0, 0) \
 
 // IconObject is declared in GUITypes.h (no ImGui dependency)
 

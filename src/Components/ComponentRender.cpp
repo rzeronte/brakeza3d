@@ -18,6 +18,9 @@
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Render/EngineObserver.h"
 #include "../../include/Cache/ImageCache.h"
+#include "../../include/Cache/ModelDataCache.h"
+#include "../../include/Cache/AnimationDataCache.h"
+#include "../../include/Cache/ScriptDataCache.h"
 
 // ── Selection forwarding ──────────────────────────────────────────────────
 void ComponentRender::setSelectedObject(Object3D *o)                  { selection.setSelectedObject(o); }
@@ -82,6 +85,9 @@ void ComponentRender::onStart()
     textWriter->setGlyphAtlas(glyphAtlas);
 
     RegisterShaders();
+
+    uiManager = new UIManager();
+    uiManager->init(this, Config::get()->UI_WIDGETS_FOLDER);
 }
 
 void ComponentRender::RegisterShaders()
@@ -703,6 +709,7 @@ void ComponentRender::DrawFilledRect(int x, int y, int w, int h, const Color &c)
     );
 }
 
+
 void ComponentRender::DrawCircle2D(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive) const
 {
     auto *win = Components::get()->Window();
@@ -776,6 +783,22 @@ static GLuint resolveFB(const std::string& fb)
     if (fb == "ui")         return win->getUIFramebuffer();
     if (fb == "global")     return win->getGlobalFramebuffer();
     return win->getForegroundFramebuffer();
+}
+
+void ComponentRender::DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const
+{
+    auto *win = Components::get()->Window();
+    const int rw = win->getWidthRender();
+    const int rh = win->getHeightRender();
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+    shaders.shaderOGLRect->renderRect(
+        (int)(x * rx), (int)(y * ry),
+        (int)(w * rx), (int)(h * ry),
+        rw, rh,
+        c,
+        resolveFB(fb)
+    );
 }
 
 void ComponentRender::DrawCircle2DToFB(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive, const std::string &fb) const
@@ -874,6 +897,24 @@ void ComponentRender::drawOutlineSubmesh(Object3D* obj, const std::string& subme
     shaders.shaderOGLOutline->drawOutlineSubmesh(mesh, submeshName, Color(r, g, b, a), thickness, Components::get()->Window()->getForegroundFramebuffer());
 }
 
+void ComponentRender::clearOutlineBatch() const
+{
+    shaders.shaderOGLOutline->clearOutlineBatch();
+}
+
+void ComponentRender::drawOutlineSubmeshBatch(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const
+{
+    if (!obj) return;
+    auto* mesh = dynamic_cast<Mesh3D*>(obj);
+    if (!mesh) return;
+    shaders.shaderOGLOutline->drawOutlineSubmeshBatch(mesh, submeshName, Color(r, g, b, a), thickness);
+}
+
+void ComponentRender::flushOutlines() const
+{
+    shaders.shaderOGLOutline->flushOutlines(Components::get()->Window()->getForegroundFramebuffer());
+}
+
 Vertex3D ComponentRender::getSubmeshCenter(Object3D* obj, const std::string& submeshName) const
 {
     if (!obj) return Vertex3D::zero();
@@ -933,7 +974,7 @@ void ComponentRender::ChangeOpenGLProgram(GLuint programID)
 
 void ComponentRender::resizeShadersFramebuffers() const
 {
-    LOG_WARNING("[Render] Resizing framebuffers...");
+    LOG_SUCCESS("[Render] Resizing framebuffers...");
 
     shaders.shaderOGLRender->Destroy();
     shaders.shaderOGLImage->Destroy();
@@ -1173,6 +1214,19 @@ ComponentRender::~ComponentRender()
         delete s;
     }
 
+    delete uiManager;
     delete glyphAtlas;
     delete textWriter;
+}
+
+void ComponentRender::clearEngineCache()
+{
+    imageCache.resetStats();
+    modelDataCache.resetStats();
+    animationDataCache.resetStats();
+    scriptDataCache.resetStats();
+    imageCache.clear();
+    modelDataCache.clear();
+    animationDataCache.clear();
+    scriptDataCache.clear();
 }

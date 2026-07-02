@@ -77,6 +77,88 @@ Through your LUA scripts, you can access the following methods:
 | `drawOutlineSubmesh(obj, name, r, g, b, a, thickness)` | Draws a colored outline around a specific submesh                                                |
 | `getSubmeshCenter(obj, name)`             | Returns the world-space center of the given submesh                                                         |
 | `getTextWriter()`                         | Returns the engine's shared TextWriter instance                                                             |
+| `DrawFilledRectToFB(x, y, w, h, color, fb)` | Draws a filled rectangle into a named framebuffer instead of the screen                                  |
+| `DrawImage2DToFB(path, x, y, w, h, fb)`  | Draws an image into a named framebuffer instead of the screen                                               |
+| `DrawCircle2DToFB(x, y, size, r, g, b, a, waves, speed, thickness, additive, fb)` | Draws a 2D circle into a named framebuffer        |
+| `drawGroundCircleToFB(obj, r, g, b, a, radius, fb)` | Draws a ground circle into a named framebuffer                                                   |
+| `drawGroundDecalToFB(obj, tex, r, g, b, a, radius, fb)` | Projects a decal into a named framebuffer                                                    |
+
+### Drawing to a named framebuffer
+
+All `*ToFB` methods accept a framebuffer name as their last parameter. The valid names are fixed and correspond to the engine's internal layer stack:
+
+| Name | Layer | Composited |
+|------|-------|------------|
+| `"background"` | Bottom layer — drawn before the 3D scene | Yes |
+| `"scene"` | Scene layer — same layer as 3D geometry | Yes |
+| `"ui"` | UI layer — drawn on top of the scene | Yes |
+| `"global"` | Global composite layer | Yes |
+| *(any other value)* | Foreground layer (default fallback) | Yes |
+
+```lua
+local render = Components:Render()
+
+-- Draw a minimap background into the UI layer
+render:DrawImage2DToFB("../assets/ui/minimap_bg.png", 10, 10, 256, 256, "ui")
+render:DrawFilledRectToFB(unitX, unitY, 4, 4, Color.new(0, 1, 0, 1), "ui")
+
+-- Draw a ground selection circle into the scene layer (receives lighting context)
+render:drawGroundCircleToFB(unit, 0, 1, 0, 0.8, 1.5, "scene")
+```
+
+### UI Widget System
+
+Widgets are reusable UI panels defined as JSON files in `assets/ui/`. Each widget contains a list of typed elements (text, image, rect, progressbar, icons, button). The editor (UIManager window) lets you design widgets visually; from Lua you draw them at runtime.
+
+| Method | Parameters | Return | Description |
+|--------|------------|--------|-------------|
+| `drawWidget(name, x, y, data)` | `string, float, float, table` | `nextY, clickedId` | Draws a widget at (x, y); returns the Y position below the widget and the id of any clicked button |
+| `reloadWidgets()` | — | void | Reloads all widget JSON files from disk without restarting |
+
+#### drawWidget data table
+
+The `data` table is keyed by element **id** (as defined in the widget JSON). Each value is a table with the fields that element needs:
+
+| Element type | Accepted fields |
+|---|---|
+| `text` | `text` (string), `color` (Color) |
+| `image` | `path` (string) |
+| `rect` | `color` (Color) |
+| `progressbar` | `value` (float), `max` (float), `color` (Color) |
+| `icons` | `list` (array of image path strings) |
+| `button` | `text` (string), `color` (Color) |
+
+Elements whose id is not present in the data table are rendered with their JSON defaults.
+
+`drawWidget` returns two values:
+- **`nextY`** — the Y pixel coordinate immediately below the widget (useful for stacking multiple widgets)
+- **`clickedId`** — the `id` of the button element that was clicked this frame, or `""` if none
+
+```lua
+local render = Components:Render()
+
+function postUpdate()
+    local nextY, clicked = render:drawWidget("unitCard", 10, 10, {
+        name     = { text = "Soldier",          color = Color.new(1, 1, 1, 1) },
+        hp_bar   = { value = 75, max = 100,     color = Color.new(0.2, 0.8, 0.2, 1) },
+        portrait = { path = "../assets/ui/soldier.png" },
+        btn_stop = { text = "Stop",             color = Color.new(0.9, 0.3, 0.3, 1) },
+    })
+
+    if clicked == "btn_stop" then
+        -- handle button press
+    end
+
+    -- Stack a second widget directly below the first
+    render:drawWidget("resourceBar", 10, nextY + 4, {
+        gold_label = { text = "Gold: " .. gold, color = Color.new(1, 0.85, 0.2, 1) },
+    })
+end
+```
+
+:::note
+Call `reloadWidgets()` after editing a widget JSON at runtime to pick up the changes without reloading the scene.
+:::
 
 ### Multi-selection example
 
@@ -175,7 +257,31 @@ Through your LUA scripts, you can access the following methods:
 | `getCamera()`                  | Returns the camera's `Object3D`        |
 | `getGLMMat4ViewMatrix()`       | Returns the camera's view matrix       |
 | `getGLMMat4ProjectionMatrix()` | Returns the camera's projection matrix |
-| `worldToScreen(pos, w, h)`     | Converts a world-space Vertex3D to screen coordinates; returns Vertex3D where x/y are screen pixels and z > 0 means visible |
+| `worldToScreen(pos, w, h)`     | Converts a world-space position to screen pixels (see below) |
+
+### worldToScreen
+
+Projects a world-space `Vertex3D` onto the screen and returns a `Vertex3D` where:
+
+- `x` — screen pixel column (from left)
+- `y` — screen pixel row (from top)
+- `z > 0` — the point is **in front of** the camera and visible; `z ≤ 0` means it is behind the camera
+
+```lua
+local cam   = Components:Camera()
+local sw    = Components:Window():getWidth()
+local sh    = Components:Window():getHeight()
+local screen = cam:worldToScreen(unit:getPosition(), sw, sh)
+
+if screen.z > 0 then
+    -- unit is on screen — draw UI above it
+    render:DrawFilledRect(screen.x - 2, screen.y - 20, 4, 4, Color.new(1,1,0,1))
+end
+```
+
+:::warning
+Always check `z > 0` before using `x` / `y`. When the object is behind the camera the projected coordinates are invalid.
+:::
 
 
 ## Component Collisions

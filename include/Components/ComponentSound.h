@@ -42,6 +42,11 @@ public:
     static void StopChannel(int channel);
     static void setMusicVolume(int v);
     static void setSoundsVolume(int v);
+
+    void setChannelFrequency(int channel, int freq);
+    void setChannelVolume(int channel, int vol);
+    void setChannelPosition(int channel, int angle, int distance);
+    bool isChannelPlaying(int channel);
 };
 
 

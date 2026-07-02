@@ -59,6 +59,7 @@ class ComponentWindow : public Component
 
     SDL_GLContext context = nullptr;
     SDL_Surface *applicationIcon = nullptr;
+    GLuint renderFBOOverride = 0;
 
     // PBO para lectura async del picking rect (evita stall de glReadPixels)
     mutable GLuint rectPickingPBO = 0;
@@ -110,8 +111,9 @@ public:
     [[nodiscard]] int getHeightRender() const                               { return heightRender; }
     [[nodiscard]] GLuint getSceneFramebuffer() const                        { return openGLBuffers.sceneFBO; }
     [[nodiscard]] GLuint getBackgroundFramebuffer() const                   { return openGLBuffers.backgroundFBO; }
-    [[nodiscard]] GLuint getUIFramebuffer() const                           { return openGLBuffers.uiFBO; }
-    [[nodiscard]] GLuint getForegroundFramebuffer() const                   { return openGLBuffers.foregroundFBO; }
+    [[nodiscard]] GLuint getUIFramebuffer() const                           { return renderFBOOverride ? renderFBOOverride : openGLBuffers.uiFBO; }
+    [[nodiscard]] GLuint getForegroundFramebuffer() const                   { return renderFBOOverride ? renderFBOOverride : openGLBuffers.foregroundFBO; }
+    void setRenderFBOOverride(GLuint fbo)                                   { renderFBOOverride = fbo; }
     [[nodiscard]] GLuint getGlobalFramebuffer() const                       { return openGLBuffers.globalFBO; }
     [[nodiscard]] GLuint getSceneTexture() const                            { return openGLBuffers.sceneTexture; }
     [[nodiscard]] GLuint getGlobalTexture() const                           { return openGLBuffers.globalTexture; }

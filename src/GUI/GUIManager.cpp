@@ -19,6 +19,7 @@
 #include "../../include/GUI/AddOns/GUIAddonDocumentation.h"
 #include "../../include/GUI/Objects/StatusBarGUI.h"
 #include "../../include/GUI/Objects/ThreadGUI.h"
+#include "../../include/GUI/Objects/UIManagerGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
 
 #define ADD_WIN(title, type, icon, shortCut, visible, internal, dockable, isObjectWindow, func, minSize, maxSize) \
@@ -80,6 +81,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Scene detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            "", false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Project detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          "", false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           "", false, false, false, false,  ThreadGUI::MenuWorkers(),                                                  ImVec2(550, 650), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("UI Manager",          GUIType::UI_MANAGER,          IconGUI::WIN_UI_MANAGER,        "", false, false, false, false,  UIManagerGUI::DrawWinUIManager(),                                          ImVec2(1250, 600), ImVec2(FLT_MAX, FLT_MAX));
 
     RegisterDefaultLayoutWindows();
 }
@@ -104,6 +106,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::SCENE_INFO, false},
         { GUIType::THREADS, false},
         { GUIType::BROWSER, true},
+        { GUIType::UI_MANAGER, false},
     };
 
     devsLayoutWindowsConfig =  {
@@ -124,6 +127,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::SCENE_INFO, false},
         { GUIType::THREADS, false},
         { GUIType::BROWSER, true},
+        { GUIType::UI_MANAGER, false},
     };
 
     designLayoutWindowsConfig =  {
@@ -144,6 +148,7 @@ void GUIManager::RegisterDefaultLayoutWindows()
         { GUIType::SCENE_INFO, false},
         { GUIType::THREADS, false},
         { GUIType::BROWSER, false},
+        { GUIType::UI_MANAGER, false},
     };
 }
 
@@ -250,6 +255,14 @@ void GUIManager::LoadBrowserFolders()
             cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
             cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
             FileSystemGUI::LoadImagesFolder(cache, browserImagesTextures);
+        }
+    );
+
+    browserWidgets = GUI::CreateBrowserCache(
+        Config::get()->UI_WIDGETS_FOLDER,
+        "json",
+        [this, &cache = browserWidgets]() {
+            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
         }
     );
 }

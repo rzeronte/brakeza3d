@@ -103,6 +103,23 @@ light:setColor(Color.new(1, 0, 0, 1))
 light:setColorSpecular(Color.new(1, 0.5, 0.5, 1))
 ```
 
+### Frustum Culling
+
+LightPoint supports frustum culling to skip the lighting pass for lights that are not visible from the camera. This can improve performance when many lights are in the scene.
+
+| Method | Parameter | Description |
+|--------|-----------|-------------|
+| `setFrustumCullingEnabled(v)` | `bool` | Enables or disables frustum culling for this light |
+| `getFrustumCullingEnabled()` | — | Returns whether frustum culling is active |
+| `setFrustumCullingOffset(v)` | `float` | Expands the culling sphere radius (use if light bleeds at edges) |
+| `getFrustumCullingOffset()` | — | Returns the current offset value |
+
+```lua
+-- Skip lighting pass when the light leaves the camera frustum
+light:setFrustumCullingEnabled(true)
+light:setFrustumCullingOffset(2.0)  -- expand by 2 units to avoid popping
+```
+
 ### Position and Transformation
 
 As an `Object3D`, use standard methods:
@@ -145,6 +162,23 @@ spot:setOuterCutOff(17.5)
 spot:setCutOff(30.0)
 spot:setOuterCutOff(45.0)
 ```
+
+### Shadow Casting
+
+LightSpot can cast dynamic shadows using PCF shadow mapping (3×3 kernel). Shadow casting is disabled by default.
+
+| Method | Parameter | Description |
+|--------|-----------|-------------|
+| `setCastsShadow(v)` | `bool` | Enables or disables shadow casting for this spotlight |
+| `getCastsShadow()` | — | Returns whether shadow casting is active |
+
+```lua
+spot:setCastsShadow(true)
+```
+
+:::note
+Shadow casting requires `ENABLE_SHADOW_MAPPING` to be active globally (toolbar toggle or `Config`). The engine supports up to 64 spotlights total.
+:::
 
 ### Direction Control
 
@@ -269,6 +303,10 @@ end
 | `setAmbient(Color)` | Ambient color |
 | `setColor(Color)` | Diffuse color |
 | `setColorSpecular(Color)` | Specular color |
+| `setFrustumCullingEnabled(bool)` | Skip lighting pass when light is off-screen |
+| `getFrustumCullingEnabled()` | Query frustum culling state |
+| `setFrustumCullingOffset(float)` | Expand culling sphere to avoid edge popping |
+| `getFrustumCullingOffset()` | Query current offset |
 
 ### LightSpot (inherits LightPoint)
 
@@ -276,3 +314,5 @@ end
 |--------|-------------|
 | `setCutOff(float)` | Inner cone angle |
 | `setOuterCutOff(float)` | Outer cone angle |
+| `setCastsShadow(bool)` | Enable PCF shadow casting |
+| `getCastsShadow()` | Query shadow casting state |
