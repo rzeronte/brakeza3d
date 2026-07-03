@@ -15,6 +15,7 @@ struct UIElementData {
     std::string text      = "Sample";
     Color       color     = {1.0f, 1.0f, 1.0f, 1.0f};
     bool        provided  = false;   // true only when explicitly passed from Lua
+    bool        colorProvided = false; // true only when color key was explicitly passed
     std::string path      = "../assets/images/me.png";
     float       w         = 0;
     float       h         = 0;
@@ -37,6 +38,7 @@ struct UIElement {
 
     // rect
     float alpha{1.0f};
+    Color rectColor{1.0f, 1.0f, 1.0f, 1.0f};
     float wPct{0};   // 0 = fixed px; >0 = fraction of window width  (e.g. 1.0 = 100%)
     float hPct{0};   // 0 = fixed px; >0 = fraction of window height
     std::string alignH{"left"};   // "left" | "center" | "right"
@@ -82,12 +84,12 @@ public:
     void reloadWidgets();
     void clearWidgets();
 
-    // Core renderer — no Lua
-    float drawWidget(const std::string& name, float x, float y, const UIWidgetRenderData& data);
+    // Core renderer — no Lua. fb = "foreground"|"ui"|"background"|"global"|"scene"
+    float drawWidget(const std::string& name, float x, float y, const UIWidgetRenderData& data, const std::string& fb = "foreground");
 
     // Lua wrapper — converts sol::table → UIWidgetRenderData and calls core
     // Returns {nextY, clickedButtonId} — clickedButtonId is "" if no button was clicked
-    std::tuple<float, std::string> drawWidgetLua(const std::string& name, float x, float y, sol::table data);
+    std::tuple<float, std::string> drawWidgetLua(const std::string& name, float x, float y, sol::table data, const std::string& fb = "foreground");
 
     std::unordered_map<std::string, UIWidget>& getWidgets() { return widgets; }
     const std::string& getWidgetsDir() const { return widgetsDir; }
@@ -99,6 +101,8 @@ private:
     std::string widgetsDir;
     std::unordered_map<std::string, UIWidget> widgets;
     std::string lastClickedId;
+    std::string currentFB{"foreground"};
+    bool textPass{false};
 
     void loadWidget(const std::string& filePath);
     void renderElement(const UIElement& el, float baseX, float baseY, const UIElementData& data);

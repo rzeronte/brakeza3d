@@ -131,6 +131,7 @@ public:
     void setWindowTitle(const char *title) const;
     void setGuiZmoOperation(ImGuizmo::OPERATION operation);
     void setImGuiConfig(Config::ImGUIConfigs c);
+    void forceReloadLayout();
     void setImGuiMouse();
     void setWindowSize(int w, int h);
     void setRendererSize(int w, int h);

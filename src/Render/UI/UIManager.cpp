@@ -161,6 +161,9 @@ void UIManager::loadWidget(const std::string& filePath)
         cJSON* alignV = cJSON_GetObjectItem(item, "alignV");
         if (alignV && alignV->valuestring) el.alignV = alignV->valuestring;
 
+        cJSON* rectCol = cJSON_GetObjectItem(item, "color");
+        if (rectCol) el.rectColor = ToolsJSON::getColorByJSON(rectCol);
+
         cJSON* bg = cJSON_GetObjectItem(item, "barBg");
         if (bg) el.barBg = ToolsJSON::getColorByJSON(bg);
 
@@ -231,7 +234,7 @@ float UIManager::getElementHeight(const UIElement& el)
 // ---------------------------------------------------------------------------
 // Core renderer — takes plain C++ data, no Lua
 
-float UIManager::drawWidget(const std::string& name, float x, float y, const UIWidgetRenderData& data)
+float UIManager::drawWidget(const std::string& name, float x, float y, const UIWidgetRenderData& data, const std::string& fb)
 {
     auto it = widgets.find(name);
     if (it == widgets.end()) {
@@ -241,13 +244,11 @@ float UIManager::drawWidget(const std::string& name, float x, float y, const UIW
 
     UIWidget& w = it->second;
     lastClickedId = "";
+    currentFB = fb;
     float s = w.scale > 0 ? w.scale : 1.0f;
     static const UIElementData defaultData;
-    float autoY = y;
-    for (auto& el : w.elements) {
-        auto dit = data.find(el.id);
-        const UIElementData& ed = (dit != data.end()) ? dit->second : defaultData;
 
+    auto buildScaled = [&](const UIElement& el) {
         UIElement scaled = el;
         scaled.x           *= s;
         scaled.y           *= s;
@@ -260,17 +261,45 @@ float UIManager::drawWidget(const std::string& name, float x, float y, const UIW
         scaled.barFontScale*= s;
         scaled.iconSize    *= s;
         scaled.iconGap     *= s;
+        return scaled;
+    };
 
+    // Pass 1: rects, images, icons (no text)
+    textPass = false;
+    float autoY = y;
+    for (auto& el : w.elements) {
+        auto dit = data.find(el.id);
+        const UIElementData& ed = (dit != data.end()) ? dit->second : defaultData;
+        UIElement scaled = buildScaled(el);
         float drawY = el.yAuto ? autoY : y + scaled.y;
         renderElement(scaled, x, drawY, ed);
         if (el.yAuto) autoY += getElementHeight(scaled);
     }
+
+    // Pass 2: texts only
+    textPass = true;
+    autoY = y;
+    for (auto& el : w.elements) {
+        auto dit = data.find(el.id);
+        const UIElementData& ed = (dit != data.end()) ? dit->second : defaultData;
+        UIElement scaled = buildScaled(el);
+        float drawY = el.yAuto ? autoY : y + scaled.y;
+        renderElement(scaled, x, drawY, ed);
+        if (el.yAuto) autoY += getElementHeight(scaled);
+    }
+
+    textPass = false;
     return y + w.height * s;
 }
 
 void UIManager::renderElement(const UIElement& el, float baseX, float baseY, const UIElementData& data)
 {
-    if (el.type == "text")        { renderText(el, baseX, baseY, data);        return; }
+    if (textPass) {
+        if (el.type == "text")        renderText(el, baseX, baseY, data);
+        if (el.type == "progressbar") renderProgressBar(el, baseX, baseY, data);
+        if (el.type == "button")      renderButton(el, baseX, baseY, data);
+        return;
+    }
     if (el.type == "image")       { renderImage(el, baseX, baseY, data);       return; }
     if (el.type == "rect")        { renderRect(el, baseX, baseY, data);        return; }
     if (el.type == "progressbar") { renderProgressBar(el, baseX, baseY, data); return; }
@@ -281,14 +310,14 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
 void UIManager::renderText(const UIElement& el, float x, float y, const UIElementData& data)
 {
     if (data.text.empty()) return;
-    tw->writeTextAtlas((int)(x + el.x), (int)y, data.text.c_str(), data.color, el.fontScale);
+    tw->writeTextAtlasToFB((int)(x + el.x), (int)y, data.text.c_str(), data.color, el.fontScale, currentFB);
 }
 
 void UIManager::renderImage(const UIElement& el, float x, float y, const UIElementData& data)
 {
     if (data.path.empty()) return;
-    render->DrawImage2D(data.path, (int)(x + el.x), (int)y,
-        (int)(el.w * el.imageScale), (int)(el.h * el.imageScale));
+    render->DrawImage2DToFB(data.path, (int)(x + el.x), (int)y,
+                            (int)(el.w * el.imageScale), (int)(el.h * el.imageScale), currentFB);
 }
 
 void UIManager::renderRect(const UIElement& el, float x, float y, const UIElementData& data)
@@ -307,9 +336,9 @@ void UIManager::renderRect(const UIElement& el, float x, float y, const UIElemen
     if      (el.alignV == "center") ry -= h * 0.5f;
     else if (el.alignV == "bottom") ry -= h;
 
-    Color c = data.color;
+    Color c = data.colorProvided ? data.color : el.rectColor;
     c.a *= el.alpha;
-    render->DrawFilledRect((int)rx, (int)ry, (int)w, (int)h, c);
+    render->DrawFilledRectToFB((int)rx, (int)ry, (int)w, (int)h, c, currentFB);
 }
 
 void UIManager::renderProgressBar(const UIElement& el, float x, float y, const UIElementData& data)
@@ -318,9 +347,16 @@ void UIManager::renderProgressBar(const UIElement& el, float x, float y, const U
     float ratio = data.value / maxV;
     float bw = el.barW;
     float bh = el.barH;
-
     float barY = y + el.barOffsetY;
-    render->DrawFilledRect((int)(x + el.x), (int)barY, (int)bw, (int)bh, el.barBg);
+
+    if (textPass) {
+        std::string label = std::to_string((int)data.value) + "/" + std::to_string((int)data.maxValue);
+        tw->writeTextAtlasToFB((int)(x + el.x + el.textOffsetX), (int)barY,
+                               label.c_str(), Color::white(), el.barFontScale, currentFB);
+        return;
+    }
+
+    render->DrawFilledRectToFB((int)(x + el.x), (int)barY, (int)bw, (int)bh, el.barBg, currentFB);
 
     Color fillColor = el.barOk;
     if (ratio < 0.33f) fillColor = el.barLow;
@@ -328,10 +364,7 @@ void UIManager::renderProgressBar(const UIElement& el, float x, float y, const U
 
     int fillW = (int)(bw * ratio);
     if (fillW > 0)
-        render->DrawFilledRect((int)(x + el.x), (int)barY, fillW, (int)bh, fillColor);
-
-    std::string label = std::to_string((int)data.value) + "/" + std::to_string((int)data.maxValue);
-    tw->writeTextAtlas((int)(x + el.x + el.textOffsetX), (int)barY, label.c_str(), Color::white(), el.barFontScale);
+        render->DrawFilledRectToFB((int)(x + el.x), (int)barY, fillW, (int)bh, fillColor, currentFB);
 }
 
 void UIManager::renderIcons(const UIElement& el, float x, float y, const UIElementData& data)
@@ -340,7 +373,8 @@ void UIManager::renderIcons(const UIElement& el, float x, float y, const UIEleme
     for (auto& key : data.iconList) {
         auto mapIt = el.iconMapping.find(key);
         if (mapIt == el.iconMapping.end()) continue;
-        render->DrawImage2D(mapIt->second, (int)cx, (int)y, (int)el.iconSize, (int)el.iconSize);
+        render->DrawImage2DToFB(mapIt->second, (int)cx, (int)y,
+                                (int)el.iconSize, (int)el.iconSize, currentFB);
         cx += el.iconSize + el.iconGap;
     }
 }
@@ -361,20 +395,23 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
     bool pressed = hovered && input && input->isLeftMouseButtonPressed();
     bool clicked = hovered && input && input->isMouseButtonDown();
 
-    Color bg = pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg;
-    render->DrawFilledRect((int)bx, (int)by, (int)bw, (int)bh, bg);
-
-    if (!data.text.empty()) {
-        float scale = el.fontScale > 0 ? el.fontScale : 0.45f;
-        float textW = scale * (float)data.text.size() * 7.5f;
-        float textH = scale * 20.0f;
-        int tx = (int)(bx + (bw - textW) * 0.5f);
-        int ty = (int)(by + (bh - textH) * 0.5f);
-        Color col = data.color;
-        if (col.r == 1 && col.g == 1 && col.b == 1 && col.a == 1)
-            col = Color(0.92f, 0.92f, 0.92f, 1.0f);
-        tw->writeTextAtlas(tx, ty, data.text.c_str(), col, scale);
+    if (textPass) {
+        if (!data.text.empty()) {
+            float scale = el.fontScale > 0 ? el.fontScale : 0.45f;
+            float textW = scale * (float)data.text.size() * 7.5f;
+            float textH = scale * 20.0f;
+            int tx = (int)(bx + (bw - textW) * 0.5f);
+            int ty = (int)(by + (bh - textH) * 0.5f);
+            Color col = data.color;
+            if (col.r == 1 && col.g == 1 && col.b == 1 && col.a == 1)
+                col = Color(0.92f, 0.92f, 0.92f, 1.0f);
+            tw->writeTextAtlasToFB(tx, ty, data.text.c_str(), col, scale, currentFB);
+        }
+        return;
     }
+
+    Color bg = pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg;
+    render->DrawFilledRectToFB((int)bx, (int)by, (int)bw, (int)bh, bg, currentFB);
 
     if (clicked && lastClickedId.empty())
         lastClickedId = el.id;
@@ -393,7 +430,7 @@ UIElementData UIManager::solTableToElementData(sol::table t)
         d.text = textObj.as<std::string>();
 
     sol::object colorObj = t["color"];
-    if (colorObj.valid()) d.color = colorObj.as<Color>();
+    if (colorObj.valid()) { d.color = colorObj.as<Color>(); d.colorProvided = true; }
 
     sol::object pathObj = t["path"];
     if (pathObj.valid() && pathObj.get_type() == sol::type::string)
@@ -423,7 +460,7 @@ UIElementData UIManager::solTableToElementData(sol::table t)
     return d;
 }
 
-std::tuple<float, std::string> UIManager::drawWidgetLua(const std::string& name, float x, float y, sol::table data)
+std::tuple<float, std::string> UIManager::drawWidgetLua(const std::string& name, float x, float y, sol::table data, const std::string& fb)
 {
     auto it = widgets.find(name);
     if (it == widgets.end()) {
@@ -438,6 +475,6 @@ std::tuple<float, std::string> UIManager::drawWidgetLua(const std::string& name,
             renderData[el.id] = solTableToElementData(elObj.as<sol::table>());
     }
 
-    float nextY = drawWidget(name, x, y, renderData);
+    float nextY = drawWidget(name, x, y, renderData, fb);
     return {nextY, lastClickedId};
 }

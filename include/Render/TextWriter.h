@@ -62,6 +62,8 @@ public:
     void writeTextAtlasCenterHorizontal(int y, const char *text, const Color &c, float scale);
 
     void flushTextBatch();
+    void flushTextBatchToFB(const std::string& fb);
+    void writeTextAtlasToFB(int x, int y, const char *text, const Color &c, float scale, const std::string& fb);
 
 private:
     int measureTextWidthAtlas(const char *text, float scale);
