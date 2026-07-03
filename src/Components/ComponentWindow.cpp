@@ -695,6 +695,13 @@ void ComponentWindow::setImGuiConfig(Config::ImGUIConfigs c)
     ImGuiConfigChanged = c;
 }
 
+void ComponentWindow::forceReloadLayout()
+{
+    auto current = ImGuiConfig;
+    ImGuiConfig = static_cast<Config::ImGUIConfigs>(-1);
+    ImGuiConfigChanged = current;
+}
+
 void ComponentWindow::CheckForResizeOpenGLWindow(const SDL_Event &e)
 {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {

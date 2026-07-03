@@ -325,7 +325,7 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * (int)sizeof(float), nullptr);
 
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glDrawArrays(GL_TRIANGLES, 0, idx / 4);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -471,6 +471,52 @@ void TextWriter::drawTextAtlasImmediate(int x, int y, const char *text, float sc
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+void TextWriter::flushTextBatchToFB(const std::string& fb)
+{
+    if (batchQueue.empty() || !glyphAtlas || !glyphAtlas->isBuilt()) return;
+
+    auto* win    = Components::get()->Window();
+    auto* render = Components::get()->Render();
+    auto* shader = render->getShaders()->shaderOGLImage;
+
+    const int rw = win->getWidthRender();
+    const int rh = win->getHeightRender();
+
+    GLuint targetFBO;
+    if      (fb == "foreground") targetFBO = win->getForegroundFramebuffer();
+    else if (fb == "background") targetFBO = win->getBackgroundFramebuffer();
+    else if (fb == "global")     targetFBO = win->getGlobalFramebuffer();
+    else if (fb == "scene")      targetFBO = win->getSceneFramebuffer();
+    else                         targetFBO = win->getUIFramebuffer();
+
+    render->ChangeOpenGLFramebuffer(targetFBO);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    render->ChangeOpenGLProgram(shader->getProgramID());
+
+    glm::mat4 projection = glm::ortho(0.0f, (float)rw, (float)rh, 0.0f, -1.0f, 1.0f);
+    shader->setMat4("projection", projection);
+    shader->setMat4("model", glm::mat4(1.0f));
+    shader->setFloat("alpha", alpha);
+    shader->setInt("inverse", 0);
+    shader->setTexture("image", glyphAtlas->getAtlasTexture(), 0);
+
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    for (const auto& bt : batchQueue) {
+        shader->setVec4("tintColor", glm::vec4(bt.color.r, bt.color.g, bt.color.b, bt.color.a));
+        drawTextAtlasImmediate(bt.x, bt.y, bt.text.c_str(), bt.scale, rx, ry);
+    }
+
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+    glEnable(GL_DEPTH_TEST);
+
+    batchQueue.clear();
+}
+
 void TextWriter::flushTextBatch()
 {
     if (batchQueue.empty() || !glyphAtlas || !glyphAtlas->isBuilt()) return;
@@ -485,6 +531,7 @@ void TextWriter::flushTextBatch()
 
     render->ChangeOpenGLFramebuffer(uiFBO);
     glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
     render->ChangeOpenGLProgram(shader->getProgramID());
 
     glm::mat4 projection = glm::ortho(0.0f, (float)rw, (float)rh, 0.0f, -1.0f, 1.0f);
@@ -497,7 +544,7 @@ void TextWriter::flushTextBatch()
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
 
-    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     for (const auto& bt : batchQueue) {
         shader->setVec4("tintColor", glm::vec4(bt.color.r, bt.color.g, bt.color.b, bt.color.a));
@@ -508,4 +555,45 @@ void TextWriter::flushTextBatch()
     glEnable(GL_DEPTH_TEST);
 
     batchQueue.clear();
+}
+
+void TextWriter::writeTextAtlasToFB(int x, int y, const char* text, const Color& c, float scale, const std::string& fb)
+{
+    if (!glyphAtlas || !glyphAtlas->isBuilt()) return;
+
+    auto* win    = Components::get()->Window();
+    auto* render = Components::get()->Render();
+    auto* shader = render->getShaders()->shaderOGLImage;
+
+    const int rw = win->getWidthRender();
+    const int rh = win->getHeightRender();
+
+    GLuint targetFBO;
+    if      (fb == "foreground") targetFBO = win->getForegroundFramebuffer();
+    else if (fb == "background") targetFBO = win->getBackgroundFramebuffer();
+    else if (fb == "global")     targetFBO = win->getGlobalFramebuffer();
+    else if (fb == "scene")      targetFBO = win->getSceneFramebuffer();
+    else                         targetFBO = win->getUIFramebuffer();
+
+    render->ChangeOpenGLFramebuffer(targetFBO);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    render->ChangeOpenGLProgram(shader->getProgramID());
+
+    glm::mat4 projection = glm::ortho(0.0f, (float)rw, (float)rh, 0.0f, -1.0f, 1.0f);
+    shader->setMat4("projection", projection);
+    shader->setMat4("model", glm::mat4(1.0f));
+    shader->setFloat("alpha", alpha);
+    shader->setInt("inverse", 0);
+    shader->setTexture("image", glyphAtlas->getAtlasTexture(), 0);
+
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+    shader->setVec4("tintColor", glm::vec4(c.r, c.g, c.b, c.a));
+    drawTextAtlasImmediate(x, y, text, scale, rx, ry);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
 }

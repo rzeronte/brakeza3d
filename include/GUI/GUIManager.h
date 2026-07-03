@@ -27,6 +27,7 @@ class Object3D;
 class GUIManager
 {
     std::vector<GUIType::WindowGUI> windows;
+    GUIType::Window focusedWindow = GUIType::Window::SCENE_OBJECTS;
 
     std::vector<GUIType::LayoutWindowConfig> defaultLayoutWindowsConfig;
     std::vector<GUIType::LayoutWindowConfig> devsLayoutWindowsConfig;
@@ -83,6 +84,8 @@ public:
     explicit GUIManager();
     virtual ~GUIManager() = default;
 
+    std::vector<GUIType::WindowGUI> &getWindows() { return windows; }
+    void ToggleSoloFocusedWindow();
     bool isWindowOpen(GUIType::Window w) const;
     bool isEditableFileAlreadyOpen(const std::string &uniqueId) const;
     void LoadDocumentation();

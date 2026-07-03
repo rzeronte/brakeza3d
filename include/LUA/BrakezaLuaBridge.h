@@ -295,9 +295,11 @@ inline void LUAIntegration(sol::state &lua)
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
         "getTextWriter",   &ComponentRender::getTextWriter,
-        "drawWidget", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data) -> std::tuple<float, std::string> {
+        "drawWidget", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data, sol::object fbArg) -> std::tuple<float, std::string> {
             if (!r.getUIManager()) return {y, ""};
-            return r.getUIManager()->drawWidgetLua(name, x, y, data);
+            std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
+                             ? fbArg.as<std::string>() : "foreground";
+            return r.getUIManager()->drawWidgetLua(name, x, y, data, fb);
         },
         "reloadWidgets", [](ComponentRender& r) {
             if (!r.getUIManager()) return;
@@ -758,6 +760,7 @@ inline void LUAIntegration(sol::state &lua)
         "writeTextAtlasMiddleScreen",      &TextWriter::writeTextAtlasMiddleScreen,
         "writeTextAtlasCenterHorizontal",  &TextWriter::writeTextAtlasCenterHorizontal,
         "flushTextBatch",      &TextWriter::flushTextBatch,
+        "flushTextBatchToFB",  &TextWriter::flushTextBatchToFB,
         "buildGlyphAtlas", &TextWriter::buildGlyphAtlas,
         "getGlyphAtlas",   &TextWriter::getGlyphAtlas
     );

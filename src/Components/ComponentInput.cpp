@@ -16,8 +16,8 @@ void ComponentInput::preUpdate()
 {
     Component::preUpdate();
 
-    wantCaptureKeyboard = ImGui::GetIO().WantCaptureKeyboard;
-    wantCaptureMouse    = ImGui::GetIO().WantCaptureMouse;
+    wantCaptureKeyboard = Config::get()->ENABLE_IMGUI && ImGui::GetIO().WantCaptureKeyboard;
+    wantCaptureMouse    = Config::get()->ENABLE_IMGUI && ImGui::GetIO().WantCaptureMouse;
 
     ResetKeyboardMapping();
     ResetMouseMapping();
@@ -193,7 +193,7 @@ void ComponentInput::ResetMouseMapping()
         mouseMiddleButton = true;
     }
 
-    if (ImGui::GetIO().WantCaptureMouse) {
+    if (Config::get()->ENABLE_IMGUI && ImGui::GetIO().WantCaptureMouse) {
         return;
     }
 
@@ -323,6 +323,9 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
         bool ctrlHeld = keyboard[SDL_SCANCODE_LCTRL] || keyboard[SDL_SCANCODE_RCTRL];
         if (ctrlHeld && keyboard[SDL_SCANCODE_P]) {
             Config::get()->ENABLE_POST_PROCESSING_CHAIN = !Config::get()->ENABLE_POST_PROCESSING_CHAIN;
+        }
+        if (ctrlHeld && keyboard[SDL_SCANCODE_GRAVE]) {
+            Brakeza::get()->GUI()->ToggleSoloFocusedWindow();
         }
 
         if (event->type == SDL_KEYDOWN &&

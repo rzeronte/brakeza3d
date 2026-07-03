@@ -243,6 +243,11 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIManager* ui, const std::st
         stepField("imageScale##elis", el.imageScale, 0.05f);
     }
     else if (el.type == "rect") {
+        constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
+        float v[4] = {el.rectColor.r, el.rectColor.g, el.rectColor.b, el.rectColor.a};
+        if (ImGui::ColorEdit4("Color##elrcolor", v, flags))
+            el.rectColor = Color(v[0], v[1], v[2], v[3]);
+
         float hw = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x) * 0.5f;
         ImGui::SetNextItemWidth(hw);
         if (ImGui::DragFloat("alpha##elralpha", &el.alpha, 0.01f, 0.0f, 1.0f, "%.2f"))
@@ -380,6 +385,14 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
             if (el.hPct > 0)       cJSON_AddNumberToObject(item, "hPct", el.hPct);
             if (el.alignH != "left")  cJSON_AddStringToObject(item, "alignH", el.alignH.c_str());
             if (el.alignV != "top")   cJSON_AddStringToObject(item, "alignV", el.alignV.c_str());
+            {
+                cJSON* col = cJSON_CreateObject();
+                cJSON_AddNumberToObject(col, "r", el.rectColor.r);
+                cJSON_AddNumberToObject(col, "g", el.rectColor.g);
+                cJSON_AddNumberToObject(col, "b", el.rectColor.b);
+                cJSON_AddNumberToObject(col, "a", el.rectColor.a);
+                cJSON_AddItemToObject(item, "color", col);
+            }
         }
         else if (el.type == "progressbar") {
             cJSON_AddNumberToObject(item, "barW",        el.barW);
@@ -453,9 +466,7 @@ void UIManagerGUI::DrawElementPreviewFields(UIElement& el)
             pd.color = Color(col[0], col[1], col[2], col[3]);
     }
     else if (el.type == "rect") {
-        float col[4] = { pd.color.r, pd.color.g, pd.color.b, pd.color.a };
-        if (ImGui::ColorEdit4("color##pvrcol", col))
-            pd.color = Color(col[0], col[1], col[2], col[3]);
+        ImGui::TextDisabled("(color comes from element definition)");
     }
     else if (el.type == "image") {
         char buf[256];
@@ -537,9 +548,9 @@ void UIManagerGUI::DrawWidgetPreview(UIManager* ui, const std::string& wName)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     for (auto& el : ui->getWidgets().at(wName).elements)
-        previewData[el.id].provided = true;
+        previewData[el.id].provided = (el.type != "rect");
 
-    ui->drawWidget(wName, 4, 4, previewData);
+    ui->drawWidget(wName, 4, 4, previewData, "foreground");
 
     win->setRenderFBOOverride(0);
     glBindFramebuffer(GL_FRAMEBUFFER, (GLuint)prevFBO);

@@ -197,7 +197,7 @@ void ComponentRender::postUpdate()
     }
 
     RenderAvatars();
-    textWriter->flushTextBatch();
+    textWriter->flushTextBatchToFB("foreground");
 }
 
 void ComponentRender::RenderAvatars()

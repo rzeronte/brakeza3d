@@ -22,6 +22,9 @@
 #include "../../include/GUI/Objects/UIManagerGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
 
+static bool            g_soloActive = false;
+static GUIType::Window g_soloWindow = GUIType::Window::SCENE_OBJECTS;
+
 #define ADD_WIN(title, type, icon, shortCut, visible, internal, dockable, isObjectWindow, func, minSize, maxSize) \
 windows.push_back({ title, type, icon, shortCut, visible, internal, dockable, isObjectWindow, [&] { func; }, minSize, maxSize})
 
@@ -193,8 +196,10 @@ void GUIManager::DrawGUI()
 {
     UpdateImGuiDocking();
 
-    GUIAddonMenu::Draw(this);
-    GUIAddonToolbar::Draw();
+    if (!g_soloActive) {
+        GUIAddonMenu::Draw(this);
+        GUIAddonToolbar::Draw();
+    }
 
     Object3DGUI::DrawSelectedObjectGuizmo();
     Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(this);
@@ -343,11 +348,45 @@ void GUIManager::DrawRegisteredWindows()
         ImGui::SetNextWindowSizeConstraints(window.minSize, window.maxSize);
 
         if (ImGui::Begin(window.label.c_str(), &window.isOpen, flags)) {
+            if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
+                focusedWindow = window.window;
             window.functionCallBack();
             DrawObjectWindowStatusBar(window);
         }
         ImGui::End();
     }
+}
+
+static void DoToggleSoloWindow(GUIType::WindowGUI &window, std::vector<GUIType::WindowGUI> &wins)
+{
+    if (g_soloActive && g_soloWindow == window.window) {
+        g_soloActive = false;
+        Components::get()->Window()->forceReloadLayout();
+    } else {
+        for (auto &w : wins) {
+            if (w.window != window.window) {
+                w.isOpen     = false;
+                w.isDockable = false;
+            }
+        }
+        window.isDockable = false;
+        g_soloActive = true;
+        g_soloWindow = window.window;
+    }
+}
+
+static void DrawSoloWindowButton(GUIType::WindowGUI &window)
+{
+    bool isSolo = g_soloActive && g_soloWindow == window.window;
+    GUI::DrawButtonTransparent(
+        isSolo ? "Restore windows" : "Close all others",
+        IconGUI::PROJECT_CLOSE,
+        GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
+        isSolo,
+        [&window] {
+            DoToggleSoloWindow(window, Brakeza::get()->GUI()->getWindows());
+        }
+    );
 }
 
 void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
@@ -387,6 +426,8 @@ void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
             window.isDockable = !window.isDockable;
         }
     );
+    ImGui::SameLine();
+    DrawSoloWindowButton(window);
 
     ImGui::PopStyleVar();
 }
@@ -528,14 +569,23 @@ void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
             return;
     }
 
+    g_soloActive = false;
+
     for (auto &w: windows) {
-        w.isOpen = false;
+        w.isOpen     = false;
+        w.isDockable = true;
         for (const auto &c : selectedConfig) {
             if (w.window == c.window && c.visible) {
                 w.isOpen = true;
             }
         }
     }
+}
+
+void GUIManager::ToggleSoloFocusedWindow()
+{
+    auto *win = getWindowStatus(focusedWindow);
+    if (win) DoToggleSoloWindow(*win, getWindows());
 }
 
 void GUIManager::SetNextWindowSize(int w, int h)

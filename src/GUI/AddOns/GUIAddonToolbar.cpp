@@ -36,7 +36,7 @@ void GUIAddonToolbar::Draw()
     bool isScriptsRunning = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_PLAY;
     
     if (isScriptsRunning) {
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.0f, 0.8f, 0.8f, 1.0f)); // Turquesa Alerta
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.05f, 0.12f, 0.30f, 1.0f)); // Azul oscuro - play mode
     } else {
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.1f, 0.1f, 0.1f, 1.0f)); // Color normal
     }
