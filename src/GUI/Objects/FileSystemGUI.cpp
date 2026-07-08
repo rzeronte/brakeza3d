@@ -1017,7 +1017,11 @@ void FileSystemGUI::DrawWidgetsTable(GUIType::BrowserCache &browser)
         CustomImGui::TreeActionItem editItem(
             Icon(IconGUI::SHADER_EDIT),
             "Edit Widget",
-            [widgetName]() {
+            [widgetName, fullPath]() {
+                auto* render = Components::get()->Render();
+                auto* ui     = render->getUIManager();
+                if (ui && !ui->getWidgets().count(widgetName))
+                    ui->loadWidgetFromFile(fullPath);
                 auto* guiMgr = Brakeza::get()->GUI();
                 guiMgr->getWindowStatus(GUIType::UI_MANAGER)->isOpen = true;
                 UIManagerGUI::setSelectedWidget(widgetName);
@@ -1094,11 +1098,8 @@ void FileSystemGUI::DrawWidgetFiles(GUIType::BrowserCache &browser)
 
     DrawWidgetCreatorDialog(browser, modalId);
 
-    ImGui::Image(Icon(IconGUI::FOLDER_CURRENT), GUIType::Sizes::ICONS_OBJECTS_ALLOWED);
-    ImGui::SameLine();
-    ImGui::Text("%s", Tools::removeSubstring(browser.currentFolder, Config::get()->ASSETS_FOLDER).c_str());
+    DrawBrowserFolders(Config::get()->UI_WIDGETS_FOLDER, browser);
 
-    ImGui::Separator();
     DrawWidgetsTable(browser);
     ImGui::Separator();
     GUI::ImageButtonNormal(IconGUI::WIN_UI_MANAGER, "Create Widget", [&] {

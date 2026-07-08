@@ -25,12 +25,7 @@ bool GUIAddonObjects3D::exist(const std::string &pattern1, const std::string &pa
 
 bool GUIAddonObjects3D::isObjectTypeVisible(GUIManager *gui, ObjectType typeObject)
 {
-    for (auto& o : gui->visibleTypeObjects) {
-        if (o.visible && o.type == typeObject) {
-            return true;
-        }
-    }
-    return false;
+    return true;
 }
 
 void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
@@ -151,8 +146,6 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
     int globalIndex = 0;
 
     for (auto& type : gui->visibleTypeObjects) {
-        if (!type.visible) continue;
-
         // Contar objetos
         int count = 0;
         for (const auto &o : objects) {
@@ -250,7 +243,10 @@ void GUIAddonObjects3D::DrawObjectTypes(GUIManager *gui)
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(2, 2));
 
     for (auto& o : gui->visibleTypeObjects) {
-        GUI::DrawButton(o.label, o.icon, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, o.visible, [&]{ o.Toggle(); });
+        bool active = o.avatarFlag && *o.avatarFlag;
+        GUI::DrawButton(o.label, o.icon, GUIType::Sizes::ICONS_OBJECTS_ALLOWED, active, [&]{
+            if (o.avatarFlag) *o.avatarFlag = !*o.avatarFlag;
+        });
         ImGui::SameLine();
     }
 

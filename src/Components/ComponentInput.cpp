@@ -169,7 +169,7 @@ void ComponentInput::UpdateMouseStates(SDL_Event *event)
     }
 
     if (event->type == SDL_MOUSEBUTTONUP) {
-        mouseButtonUp = true;
+        if (event->button.button == SDL_BUTTON_LEFT) mouseButtonUp = true;
         drag = false;
     }
 
@@ -298,14 +298,16 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
 
         auto *window = Components::get()->Window();
 
-        if (keyboard[SDL_SCANCODE_F6]) {
-            window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
-        }
-        if (keyboard[SDL_SCANCODE_F7]) {
-            window->setImGuiConfig(Config::ImGUIConfigs::CODING);
-        }
-        if (keyboard[SDL_SCANCODE_F8]) {
-            window->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
+        if (!Brakeza::get()->GUI()->isSoloActive()) {
+            if (keyboard[SDL_SCANCODE_F6]) {
+                window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
+            }
+            if (keyboard[SDL_SCANCODE_F7]) {
+                window->setImGuiConfig(Config::ImGUIConfigs::CODING);
+            }
+            if (keyboard[SDL_SCANCODE_F8]) {
+                window->setImGuiConfig(Config::ImGUIConfigs::DESIGN);
+            }
         }
         if (keyboard[SDL_SCANCODE_F9]) {
             Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::SCENE_OBJECTS)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::SCENE_OBJECTS)->isOpen;
@@ -320,11 +322,12 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::BROWSER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::BROWSER)->isOpen;
         }
 
-        bool ctrlHeld = keyboard[SDL_SCANCODE_LCTRL] || keyboard[SDL_SCANCODE_RCTRL];
+        bool ctrlHeld  = keyboard[SDL_SCANCODE_LCTRL] || keyboard[SDL_SCANCODE_RCTRL];
+        bool lctrlHeld = keyboard[SDL_SCANCODE_LCTRL];
         if (ctrlHeld && keyboard[SDL_SCANCODE_P]) {
             Config::get()->ENABLE_POST_PROCESSING_CHAIN = !Config::get()->ENABLE_POST_PROCESSING_CHAIN;
         }
-        if (ctrlHeld && keyboard[SDL_SCANCODE_GRAVE]) {
+        if (lctrlHeld && keyboard[SDL_SCANCODE_GRAVE]) {
             Brakeza::get()->GUI()->ToggleSoloFocusedWindow();
         }
 

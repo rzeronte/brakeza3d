@@ -197,6 +197,11 @@ void GUIAddonToolbar::Helpers()
         Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen;
     });
     ImGui::SameLine();
+    GUI::DrawButton("UI Manager", IconGUI::WIN_UI_MANAGER, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::UI_MANAGER)->isOpen, [&]() {
+        auto* ws = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::UI_MANAGER);
+        ws->isOpen = !ws->isOpen;
+    });
+    ImGui::SameLine();
     GUI::DrawButton("Documentation", IconGUI::WIN_DOCUMENTATION, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen,[&]() {
         Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::DOCUMENTATION)->isOpen;
     });
