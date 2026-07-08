@@ -92,10 +92,17 @@ void ShaderOGLImage::renderTexture(
 
     setTextureUniform(textureUniform, textureId, 0);
 
+    // Porter-Duff "over": transparent PNG pixels must not overwrite dest RGB/alpha
+    GLboolean blendWasEnabled = glIsEnabled(GL_BLEND);
+    glEnable(GL_BLEND);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glBindVertexArray(0);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (!blendWasEnabled) glDisable(GL_BLEND);
 
     glEnable(GL_DEPTH_TEST);
 

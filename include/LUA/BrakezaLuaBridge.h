@@ -295,15 +295,47 @@ inline void LUAIntegration(sol::state &lua)
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
         "getTextWriter",   &ComponentRender::getTextWriter,
-        "drawWidget", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data, sol::object fbArg) -> std::tuple<float, std::string> {
+        "drawWidget", [](ComponentRender& r, const std::string& name, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string> {
+            if (!r.getUIManager()) return {0.0f, ""};
+            std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
+                             ? fbArg.as<std::string>() : "foreground";
+            float scaleOverride = (scaleArg.valid() && scaleArg.get_type() == sol::type::number)
+                             ? scaleArg.as<float>() : 0.0f;
+            return r.getUIManager()->drawWidgetLua(name, data, fb, scaleOverride);
+        },
+        "drawWidgetAtPos", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string> {
             if (!r.getUIManager()) return {y, ""};
             std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
                              ? fbArg.as<std::string>() : "foreground";
-            return r.getUIManager()->drawWidgetLua(name, x, y, data, fb);
+            float scaleOverride = (scaleArg.valid() && scaleArg.get_type() == sol::type::number)
+                             ? scaleArg.as<float>() : 0.0f;
+            return r.getUIManager()->drawWidgetAtPosLua(name, x, y, data, fb, scaleOverride);
+        },
+        "flushTooltip", [](ComponentRender& r, sol::object dtArg) {
+            if (!r.getUIManager()) return;
+            float dt = (dtArg.valid() && dtArg.get_type() == sol::type::number)
+                       ? dtArg.as<float>() : 0.0f;
+            r.getUIManager()->flushTooltip(dt);
         },
         "reloadWidgets", [](ComponentRender& r) {
             if (!r.getUIManager()) return;
             r.getUIManager()->reloadWidgets();
+        },
+        "loadWidget", [](ComponentRender& r, const std::string& filePath) {
+            if (!r.getUIManager()) return;
+            r.getUIManager()->loadWidgetFromFile(filePath);
+        },
+        "loadWidgets", [](ComponentRender& r, const std::string& dir) {
+            if (!r.getUIManager()) return;
+            r.getUIManager()->loadWidgetsFromDir(dir);
+        },
+        "unloadWidget", [](ComponentRender& r, const std::string& name) {
+            if (!r.getUIManager()) return;
+            r.getUIManager()->unloadWidget(name);
+        },
+        "clearWidgets", [](ComponentRender& r) {
+            if (!r.getUIManager()) return;
+            r.getUIManager()->clearWidgets();
         }
     );
 
@@ -315,8 +347,9 @@ inline void LUAIntegration(sol::state &lua)
         "ReloadScriptEnvironment", &ComponentScripting::ReloadScriptEnvironment,
         "AddSceneLUAScript", &ComponentScripting::AddSceneLUAScript,
         "AddProjectLUAScript", &ComponentScripting::AddProjectLUAScript,
-        "getGlobalScriptVar",  &ComponentScripting::getGlobalScriptVar,
-        "setGlobalScriptVar",  &ComponentScripting::setGlobalScriptVar,
+        "getGlobalScriptVar",       &ComponentScripting::getGlobalScriptVar,
+        "setGlobalScriptVar",       &ComponentScripting::setGlobalScriptVar,
+        "callGlobalScriptFunction", &ComponentScripting::callGlobalScriptFunction,
         "RunProjectScriptsOnStart", &ComponentScripting::RunProjectScriptsOnStart,
         "loadJSON",  &ComponentScripting::loadJSON,
         "saveJSON",  &ComponentScripting::saveJSON
@@ -341,6 +374,7 @@ inline void LUAIntegration(sol::state &lua)
         "isMouseButtonDown", &ComponentInput::isMouseButtonDown,
         "isMouseButtonUp", &ComponentInput::isMouseButtonUp,
         "consumeLeftClick", &ComponentInput::consumeLeftClick,
+        "isLeftClickConsumed", &ComponentInput::isLeftClickConsumed,
         "isEnabled", &ComponentInput::isEnabled,
         "isAnyControllerButtonPressed", &ComponentInput::isAnyControllerButtonPressed,
         "getRelativeRendererMouseX", &ComponentInput::getRelativeRendererMouseX,

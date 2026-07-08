@@ -753,6 +753,13 @@ void ComponentRender::DrawImage2D(const std::string &path, int x, int y, int w, 
 }
 
 
+GLuint ComponentRender::getImageGLTexture(const std::string& path)
+{
+    Image* img = imageCache.getOrLoad(path);
+    if (!img || !img->isLoaded()) return 0;
+    return img->getOGLTextureID();
+}
+
 void ComponentRender::DrawImage2DFromImage(Image *img, int x, int y, int w, int h) const
 {
     if (img == nullptr || !img->isLoaded()) return;

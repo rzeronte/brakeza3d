@@ -157,6 +157,7 @@ public:
     void DrawImage2D(const std::string &path, int x, int y, int w, int h);
     void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb);
     void DrawImage2DFromImage(Image *img, int x, int y, int w, int h) const;
+    [[nodiscard]] GLuint getImageGLTexture(const std::string& path);
     void drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundCircleToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawGroundBlob(Object3D* obj, float r, float g, float b, float a, float radius) const;

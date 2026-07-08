@@ -214,7 +214,10 @@ void SelectionManager::update()
     }
 
     // Click simple — respetar consumo de UI (Lua puede haberlo consumido en su onUpdate)
-    if (input->isLeftClickConsumed()) return;
+    if (input->isLeftClickConsumed()) {
+        clearLeftClickedObject();
+        return;
+    }
 
     Object3D *clicked = pendingClickObject;
     pendingClickObject = nullptr;

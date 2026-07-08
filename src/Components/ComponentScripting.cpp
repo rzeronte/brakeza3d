@@ -321,6 +321,21 @@ void ComponentScripting::setGlobalScriptVar(const std::string& scriptName, const
     }
 }
 
+void ComponentScripting::callGlobalScriptFunction(const std::string& scriptName, const char *funcName, sol::variadic_args args)
+{
+    auto it = scriptsByName.find(scriptName);
+    if (it == scriptsByName.end()) return;
+    sol::object fn = it->second->getGlobalEnvironment()[funcName];
+    if (!fn.valid() || fn.get_type() != sol::type::function) return;
+    sol::protected_function pf = fn;
+    std::vector<sol::object> argVec(args.begin(), args.end());
+    auto result = pf(sol::as_args(argVec));
+    if (!result.valid()) {
+        sol::error err = result;
+        LOG_ERROR("[Scripting] callGlobalScriptFunction %s::%s — %s", scriptName.c_str(), funcName, err.what());
+    }
+}
+
 void ComponentScripting::CreateScriptLUAFile(const FilePath::ScriptFile& path, ScriptType scriptType)
 {
     LOG_MESSAGE("[Scripting] Creating new Script in '%s'...", path.c_str());

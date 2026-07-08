@@ -157,19 +157,20 @@ void GUIManager::RegisterDefaultLayoutWindows()
 
 void GUIManager::RegisterAllowedItemsForViewer()
 {
+    auto* cfg = Config::get();
     visibleTypeObjects = {
-        { "Object",                  ObjectType::Object3D,             IconObject::OBJECT_3D, true },
-        { "Image 2D",                ObjectType::Image2D,              IconObject::IMAGE_2D, true },
-        { "Image 2D animation",      ObjectType::Image2DAnimation,     IconObject::IMAGE_2D_ANIMATION, true },
-        { "Mesh 3D",                 ObjectType::Mesh3D,               IconObject::MESH_3D, true  },
-        { "Mesh 3D animation",       ObjectType::Mesh3DAnimation,      IconObject::MESH_3D_ANIMATION, true  },
-        { "Image 3D",                ObjectType::Image3D,              IconObject::IMAGE_3D, true },
-        { "Image 3D animation",      ObjectType::Image3DAnimation,     IconObject::IMAGE_3D_ANIMATION, true },
-        { "Image 3D animation 360",  ObjectType::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, true },
-        { "Light Point",             ObjectType::LightPoint,           IconObject::LIGHT_POINT, true },
-        { "Light Spot",              ObjectType::LightSpot,            IconObject::LIGHT_SPOT, true },
-        { "Particle Emitter",        ObjectType::ParticleEmitter,      IconObject::PARTICLE_EMITTER, true },
-        { "Swarm",                   ObjectType::Swarm,                IconObject::SWARM, true }
+        { "Object",                  ObjectType::Object3D,             IconObject::OBJECT_3D,              &cfg->SHOW_AVATAR_OBJECT3D             },
+        { "Image 2D",                ObjectType::Image2D,              IconObject::IMAGE_2D,               &cfg->SHOW_AVATAR_IMAGE2D              },
+        { "Image 2D animation",      ObjectType::Image2DAnimation,     IconObject::IMAGE_2D_ANIMATION,     &cfg->SHOW_AVATAR_IMAGE2D_ANIMATION    },
+        { "Mesh 3D",                 ObjectType::Mesh3D,               IconObject::MESH_3D,                &cfg->SHOW_AVATAR_MESH3D               },
+        { "Mesh 3D animation",       ObjectType::Mesh3DAnimation,      IconObject::MESH_3D_ANIMATION,      &cfg->SHOW_AVATAR_MESH3D_ANIMATION     },
+        { "Image 3D",                ObjectType::Image3D,              IconObject::IMAGE_3D,               &cfg->SHOW_AVATAR_IMAGE3D              },
+        { "Image 3D animation",      ObjectType::Image3DAnimation,     IconObject::IMAGE_3D_ANIMATION,     &cfg->SHOW_AVATAR_IMAGE3D_ANIMATION    },
+        { "Image 3D animation 360",  ObjectType::Image3DAnimation360,  IconObject::IMAGE_3D_ANIMATION_360, &cfg->SHOW_AVATAR_IMAGE3D_ANIMATION360 },
+        { "Light Point",             ObjectType::LightPoint,           IconObject::LIGHT_POINT,            &cfg->SHOW_AVATAR_LIGHT_POINT          },
+        { "Light Spot",              ObjectType::LightSpot,            IconObject::LIGHT_SPOT,             &cfg->SHOW_AVATAR_LIGHT_SPOT           },
+        { "Particle Emitter",        ObjectType::ParticleEmitter,      IconObject::PARTICLE_EMITTER,       &cfg->SHOW_AVATAR_PARTICLE_EMITTER     },
+        { "Swarm",                   ObjectType::Swarm,                IconObject::SWARM,                  &cfg->SHOW_AVATAR_SWARM                }
     };
 }
 
@@ -208,7 +209,7 @@ void GUIManager::DrawGUI()
     DrawSplashWindow();
     resourceHub->render();
 
-    StatusBarGUI::Render(resourceHub);
+    if (!g_soloActive) StatusBarGUI::Render(resourceHub);
 
     CloseRemovedEditableOpenFiles();
 
@@ -267,7 +268,8 @@ void GUIManager::LoadBrowserFolders()
         Config::get()->UI_WIDGETS_FOLDER,
         "json",
         [this, &cache = browserWidgets]() {
-            cache.folderFiles = Tools::getFolderFiles(cache.currentFolder, cache.ext);
+            cache.folderFolders = Tools::getFolderFolders(cache.currentFolder);
+            cache.folderFiles   = Tools::getFolderFiles(cache.currentFolder, cache.ext);
         }
     );
 }
@@ -347,7 +349,9 @@ void GUIManager::DrawRegisteredWindows()
         ImGui::SetNextWindowBgAlpha(0.99f);
         ImGui::SetNextWindowSizeConstraints(window.minSize, window.maxSize);
 
-        if (ImGui::Begin(window.label.c_str(), &window.isOpen, flags)) {
+        bool isSolo = g_soloActive && g_soloWindow == window.window;
+        bool* pOpen = isSolo ? nullptr : &window.isOpen;
+        if (ImGui::Begin(window.label.c_str(), pOpen, flags)) {
             if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
                 focusedWindow = window.window;
             window.functionCallBack();
@@ -357,13 +361,21 @@ void GUIManager::DrawRegisteredWindows()
     }
 }
 
+static std::unordered_map<int, bool> g_savedDockable;
+
 static void DoToggleSoloWindow(GUIType::WindowGUI &window, std::vector<GUIType::WindowGUI> &wins)
 {
     if (g_soloActive && g_soloWindow == window.window) {
+        for (auto &w : wins)
+            if (g_savedDockable.count((int)w.window))
+                w.isDockable = g_savedDockable[(int)w.window];
+        g_savedDockable.clear();
         g_soloActive = false;
         Components::get()->Window()->forceReloadLayout();
     } else {
+        g_savedDockable.clear();
         for (auto &w : wins) {
+            g_savedDockable[(int)w.window] = w.isDockable;
             if (w.window != window.window) {
                 w.isOpen     = false;
                 w.isDockable = false;
@@ -380,7 +392,7 @@ static void DrawSoloWindowButton(GUIType::WindowGUI &window)
     bool isSolo = g_soloActive && g_soloWindow == window.window;
     GUI::DrawButtonTransparent(
         isSolo ? "Restore windows" : "Close all others",
-        IconGUI::PROJECT_CLOSE,
+        isSolo ? IconGUI::SOLO_WINDOW_ON : IconGUI::SOLO_WINDOW_OFF,
         GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
         isSolo,
         [&window] {
@@ -429,6 +441,11 @@ void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
     ImGui::SameLine();
     DrawSoloWindowButton(window);
 
+    if (g_soloActive && g_soloWindow == window.window) {
+        ImGui::SameLine();
+        ImGui::TextDisabled("Ctrl+\\ (editor) | RCtrl+Ctrl+\\ (scripts running)");
+    }
+
     ImGui::PopStyleVar();
 }
 
@@ -451,10 +468,12 @@ void GUIManager::UpdateImGuiDocking()
     bool opt_fullscreen = opt_fullscreen_persistant;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
 
-    const float toolbar_height = Config::get()->ENABLE_IMGUI_TOOLBAR ? Config::get()->TOOL_BAR_HEIGHT : 0;
-    const float status_bar_height = Config::get()->ENABLE_IMGUI_STATUSBAR ? Config::get()->STATUS_BAR_HEIGHT : 0;
+    const float toolbar_height = (!g_soloActive && Config::get()->ENABLE_IMGUI_TOOLBAR) ? Config::get()->TOOL_BAR_HEIGHT : 0;
+    const float status_bar_height = (!g_soloActive && Config::get()->ENABLE_IMGUI_STATUSBAR) ? Config::get()->STATUS_BAR_HEIGHT : 0;
 
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
+    if (!g_soloActive)
+        window_flags |= ImGuiWindowFlags_MenuBar;
     if (opt_fullscreen) {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
 
@@ -572,8 +591,7 @@ void GUIManager::setLayoutToDefault(Config::ImGUIConfigs currentConfig)
     g_soloActive = false;
 
     for (auto &w: windows) {
-        w.isOpen     = false;
-        w.isDockable = true;
+        w.isOpen = false;
         for (const auto &c : selectedConfig) {
             if (w.window == c.window && c.visible) {
                 w.isOpen = true;
@@ -712,6 +730,11 @@ GUIType::WindowGUI* GUIManager::getWindowStatus(GUIType::Window window)
         }
     }
     return nullptr;
+}
+
+bool GUIManager::isSoloActive() const
+{
+    return g_soloActive;
 }
 
 bool GUIManager::isEditableFileAlreadyOpen(const std::string &uniqueId) const

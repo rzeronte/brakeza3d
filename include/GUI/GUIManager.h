@@ -121,6 +121,7 @@ public:
     [[nodiscard]] GUIAddonResourceHub * getResourcesHub() const                         { return resourceHub; }
     [[nodiscard]] Image * getSplashImage() const                                        { return splashImage; }
     GUIType::WindowGUI *getWindowStatus(GUIType::Window window);
+    [[nodiscard]] bool isSoloActive() const;
 
     virtual void DrawGUI();
     static void SetNextWindowSize(int w, int h);

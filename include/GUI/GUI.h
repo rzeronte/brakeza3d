@@ -41,11 +41,9 @@ namespace GUIType
     struct ViewerObjectType
     {
         std::string label;
-        ObjectType type;
-        Sheet icon;
-        bool visible;
-
-        void Toggle() { visible = !visible; }
+        ObjectType  type;
+        Sheet       icon;
+        bool*       avatarFlag;  // points to Config::SHOW_AVATAR_* for this type
     };
 
     struct BrowserCache {
@@ -384,6 +382,9 @@ namespace GUIType
     X(OBJECTS_VIEWER_EMPTY_GROUPS, 0, 0) \
     X(TOOLBAR_CLEAR_CACHE, 0, 0) \
     X(WIN_UI_MANAGER, 0, 0) \
+    X(SOLO_WINDOW_ON, 0, 0) \
+    X(SOLO_WINDOW_OFF, 0, 0) \
+    X(DRAGGABLE_UI_ITEM, 0, 0) \
 
 // IconObject is declared in GUITypes.h (no ImGui dependency)
 
