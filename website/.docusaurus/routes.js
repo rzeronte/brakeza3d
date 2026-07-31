@@ -9,7 +9,7 @@ export default [
   },
   {
     path: '/blog',
-    component: ComponentCreator('/blog', '66f'),
+    component: ComponentCreator('/blog', '494'),
     exact: true
   },
   {
@@ -38,6 +38,11 @@ export default [
     exact: true
   },
   {
+    path: '/blog/brakeza3d-0-26-8',
+    component: ComponentCreator('/blog/brakeza3d-0-26-8', 'ed7'),
+    exact: true
+  },
+  {
     path: '/blog/tags',
     component: ComponentCreator('/blog/tags', '287'),
     exact: true
@@ -49,12 +54,12 @@ export default [
   },
   {
     path: '/blog/tags/brakeza-3-d',
-    component: ComponentCreator('/blog/tags/brakeza-3-d', 'fec'),
+    component: ComponentCreator('/blog/tags/brakeza-3-d', '42e'),
     exact: true
   },
   {
     path: '/blog/tags/community',
-    component: ComponentCreator('/blog/tags/community', 'be0'),
+    component: ComponentCreator('/blog/tags/community', '901'),
     exact: true
   },
   {
@@ -69,7 +74,7 @@ export default [
   },
   {
     path: '/blog/tags/release',
-    component: ComponentCreator('/blog/tags/release', '52f'),
+    component: ComponentCreator('/blog/tags/release', 'e36'),
     exact: true
   },
   {
@@ -109,15 +114,15 @@ export default [
   },
   {
     path: '/docs',
-    component: ComponentCreator('/docs', '5d9'),
+    component: ComponentCreator('/docs', '1e0'),
     routes: [
       {
         path: '/docs',
-        component: ComponentCreator('/docs', 'd1f'),
+        component: ComponentCreator('/docs', '421'),
         routes: [
           {
             path: '/docs',
-            component: ComponentCreator('/docs', 'a8d'),
+            component: ComponentCreator('/docs', 'fd3'),
             routes: [
               {
                 path: '/docs/advanced/core-shaders',
@@ -288,6 +293,12 @@ export default [
                 sidebar: "tutorialSidebar"
               },
               {
+                path: '/docs/scripting-api/projectiles',
+                component: ComponentCreator('/docs/scripting-api/projectiles', '2e6'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
                 path: '/docs/scripting-api/shaders-system',
                 component: ComponentCreator('/docs/scripting-api/shaders-system', 'faf'),
                 exact: true,
@@ -296,6 +307,12 @@ export default [
               {
                 path: '/docs/scripting-api/sound-system',
                 component: ComponentCreator('/docs/scripting-api/sound-system', 'e83'),
+                exact: true,
+                sidebar: "tutorialSidebar"
+              },
+              {
+                path: '/docs/scripting-api/sound3d',
+                component: ComponentCreator('/docs/scripting-api/sound3d', 'f7b'),
                 exact: true,
                 sidebar: "tutorialSidebar"
               },

@@ -6,13 +6,16 @@
     },
     "config": "5e9f5e1a"
   },
-  "/blog-66f": {
+  "/blog-494": {
     "__comp": "a6aa9e1f",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "d721f63e"
+      },
       {
         "content": "f73ef951"
       },
@@ -79,6 +82,17 @@
     "sidebar": "814f3328",
     "content": "02e684d3"
   },
+  "/blog/brakeza3d-0-26-8-ed7": {
+    "__comp": "ccc49370",
+    "__context": {
+      "data": {
+        "blogMetadata": "acecf23e"
+      },
+      "plugin": "36994c47"
+    },
+    "sidebar": "814f3328",
+    "content": "ae227d12"
+  },
   "/blog/tags-287": {
     "__comp": "01a85c17",
     "__context": {
@@ -100,13 +114,16 @@
     ],
     "__props": "dd29baf0"
   },
-  "/blog/tags/brakeza-3-d-fec": {
+  "/blog/tags/brakeza-3-d-42e": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "d721f63e"
+      },
       {
         "content": "f73ef951"
       },
@@ -122,13 +139,16 @@
     ],
     "__props": "96aba2d4"
   },
-  "/blog/tags/community-be0": {
+  "/blog/tags/community-901": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "d721f63e"
+      },
       {
         "content": "f73ef951"
       },
@@ -167,13 +187,16 @@
     ],
     "__props": "4f033264"
   },
-  "/blog/tags/release-52f": {
+  "/blog/tags/release-e36": {
     "__comp": "6875c492",
     "__context": {
       "plugin": "36994c47"
     },
     "sidebar": "814f3328",
     "items": [
+      {
+        "content": "d721f63e"
+      },
       {
         "content": "34aa85ca"
       }
@@ -245,17 +268,17 @@
     },
     "content": "393be207"
   },
-  "/docs-5d9": {
+  "/docs-1e0": {
     "__comp": "5e95c892",
     "__context": {
       "plugin": "aba21aa0"
     }
   },
-  "/docs-d1f": {
+  "/docs-421": {
     "__comp": "a7bd4aaa",
     "__props": "0058b4c6"
   },
-  "/docs-a8d": {
+  "/docs-fd3": {
     "__comp": "a94703ab"
   },
   "/docs/advanced/core-shaders-1a7": {
@@ -370,6 +393,10 @@
     "__comp": "17896441",
     "content": "30d8cacc"
   },
+  "/docs/scripting-api/projectiles-2e6": {
+    "__comp": "17896441",
+    "content": "9969f335"
+  },
   "/docs/scripting-api/shaders-system-faf": {
     "__comp": "17896441",
     "content": "b11467dc"
@@ -377,6 +404,10 @@
   "/docs/scripting-api/sound-system-e83": {
     "__comp": "17896441",
     "content": "1260a475"
+  },
+  "/docs/scripting-api/sound3d-f7b": {
+    "__comp": "17896441",
+    "content": "3c5d3988"
   },
   "/docs/scripting-api/swarm-78b": {
     "__comp": "17896441",
