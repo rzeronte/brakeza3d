@@ -151,6 +151,11 @@
               "sidebar": "tutorialSidebar"
             },
             {
+              "id": "scripting-api/projectiles",
+              "path": "/docs/scripting-api/projectiles",
+              "sidebar": "tutorialSidebar"
+            },
+            {
               "id": "scripting-api/shaders-system",
               "path": "/docs/scripting-api/shaders-system",
               "sidebar": "tutorialSidebar"
@@ -158,6 +163,11 @@
             {
               "id": "scripting-api/sound-system",
               "path": "/docs/scripting-api/sound-system",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "scripting-api/sound3d",
+              "path": "/docs/scripting-api/sound3d",
               "sidebar": "tutorialSidebar"
             },
             {
