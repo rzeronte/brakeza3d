@@ -44,7 +44,23 @@ These shortcuts only work when an object is selected in the scene.
 | S | Scale mode |
 | X | Delete selected object |
 | ESC | Deselect object |
-| HOME | Frame camera on selected object |
+
+---
+
+## Snap Camera to Selected Object
+
+Place the camera at a fixed distance from the selected object, aligned to a standard view axis.
+The snap distance (radius) can be adjusted in **View → Snap camera to selected object**.
+
+| Key | View | Camera placed at |
+|-----|------|-----------------|
+| Insert | Front | In front of the object (+Z) |
+| Home | Top | Above the object (+Y), looking straight down |
+| Page Up | Side | To the right of the object (+X) |
+
+:::note
+These shortcuts are disabled when no object is selected.
+:::
 
 ---
 
