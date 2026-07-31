@@ -1,0 +1,8 @@
+{
+	"codeFile":	"../assets/scripts/Demos/GlobalScripts/Sound3DTest.lua",
+	"typesFile":	"../assets/scripts/Demos/GlobalScripts/Sound3DTest.json",
+	"name":	"Sound3DTest",
+	"type":	"Global",
+	"ticks_per_second":	0,
+	"types":	[]
+}

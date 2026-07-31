@@ -1,30 +1,30 @@
 {
-	"screenshot":	"",
+	"screenshot":	"../assets/screenshots/ProjectileTest.png",
 	"ads":	{
 		"direction":	{
-			"x":	-0.3,
-			"y":	-0.6,
-			"z":	-0.8
+			"x":	-0.300000011920929,
+			"y":	-0.600000023841858,
+			"z":	-0.800000011920929
 		},
 		"diffuse":	{
-			"x":	0.8,
-			"y":	0.8,
-			"z":	0.8
+			"x":	0.800000011920929,
+			"y":	0.800000011920929,
+			"z":	0.800000011920929
 		},
 		"specular":	{
-			"x":	0.4,
-			"y":	0.4,
-			"z":	0.4
+			"x":	0.40000000596046448,
+			"y":	0.40000000596046448,
+			"z":	0.40000000596046448
 		},
 		"ambient":	{
-			"x":	0.3,
-			"y":	0.3,
-			"z":	0.3
+			"x":	0.300000011920929,
+			"y":	0.300000011920929,
+			"z":	0.300000011920929
 		}
 	},
 	"objects":	[{
 			"name":	"target",
-			"scale":	1.0,
+			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
 			"selectable":	true,
@@ -52,19 +52,22 @@
 			"collider":	{
 				"mode":	1,
 				"shape":	2,
+				"debugDraw":	true,
 				"friction":	1,
 				"mass":	0,
-				"margin":	0.004,
+				"margin":	0.0040000001899898052,
 				"ccdMotionThreshold":	0,
 				"ccdSweptSphereRadius":	0,
 				"linearDamping":	0,
 				"angularDamping":	0,
 				"restitution":	0,
 				"colliderStatic":	true,
+				"collisionGroup":	1,
+				"collisionMask":	-1,
 				"simpleShapeSize":	{
 					"x":	11.937715530395508,
-					"y":	4.3490095138549805,
-					"z":	8.6857004165649414
+					"y":	4.34900951385498,
+					"z":	8.68570041656494
 				},
 				"kinematicCapsuleSize":	{
 					"x":	0.5,
@@ -86,19 +89,23 @@
 					"typesFile":	"../assets/scripts/Demos/ProjectileLauncherCaptureCollision.json",
 					"name":	"ProjectileLauncherCaptureCollision",
 					"type":	"Object",
+					"ticks_per_second":	0,
 					"types":	[]
 				}],
 			"model":	"../assets/models/StudioCorner.fbx",
 			"enableLights":	true,
+			"renderDefaultPipeline":	true,
 			"frustumCullSubmeshes":	false,
 			"shaders":	[],
 			"type":	2
 		}],
+	"shaders":	[],
 	"scripts":	[{
 			"codeFile":	"../assets/scripts/Demos/ProjectileLauncher.lua",
 			"typesFile":	"../assets/scripts/Demos/ProjectileLauncher.json",
 			"name":	"ProjectileLauncher",
 			"type":	"Global",
+			"ticks_per_second":	0,
 			"types":	[]
 		}],
 	"camera":	{

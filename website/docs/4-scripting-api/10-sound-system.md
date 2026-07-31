@@ -24,7 +24,7 @@ You will be able to play **WAV** and/or **MP3** files.
 ## Channels
 ---
 
-**Brakeza3D** manages sound through the SDL_mixer library, which supports **16 audio channels**.
+**Brakeza3D** manages sound through the SDL_mixer library, which supports **32 audio channels**.
 
 Although the management of these channels is automatic when working from our scripts, Brakeza3D assigns one
 exclusively for music. The rest remain available for sound playback.
@@ -172,3 +172,12 @@ You can find this file at config/sounds.json.
 ```
 
 You can automatically access the sounds and music defined in this file by label.
+
+---
+
+## Positional audio
+---
+
+For sounds that should change volume based on the camera's distance to a point in the world,
+see **[Sound3D](./17-sound3d)** — a dedicated scene object that handles distance attenuation
+automatically and supports zone-based ambient crossfade.

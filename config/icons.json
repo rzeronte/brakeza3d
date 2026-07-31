@@ -105,8 +105,8 @@
 			"y":	37
 		}, {
 			"name":	"MNU_SOUND",
-			"x":	0,
-			"y":	0
+			"x":	5,
+			"y":	13
 		}, {
 			"name":	"MNU_LOGGING",
 			"x":	0,
@@ -893,12 +893,24 @@
 			"y":	30
 		}, {
 			"name":	"TOOLBAR_CLEAR_CACHE",
-			"x":	2,
-			"y":	32
+			"x":	10,
+			"y":	0
 		}, {
 			"name":	"WIN_UI_MANAGER",
 			"x":	6,
 			"y":	1
+		}, {
+			"name":	"SOLO_WINDOW_ON",
+			"x":	3,
+			"y":	35
+		}, {
+			"name":	"SOLO_WINDOW_OFF",
+			"x":	4,
+			"y":	35
+		}, {
+			"name":	"DRAGGABLE_UI_ITEM",
+			"x":	14,
+			"y":	2
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",
@@ -948,5 +960,9 @@
 			"name":	"SWARM",
 			"x":	20,
 			"y":	29
+		}, {
+			"name":	"SOUND_3D",
+			"x":	5,
+			"y":	13
 		}]
 }

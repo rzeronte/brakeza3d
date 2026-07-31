@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/test.lua",
+	"typesFile":	"../assets/scripts/test.json",
+	"name":	"../assets/scripts/test",
+	"type":	"Global",
+	"types":	[]
+}
