@@ -130,6 +130,50 @@ Residential       Market            Port
 
 ---
 
+## Global Ambience Volume
+---
+
+`Sound3D::ambienceVolumeScale` is a C++-side static `float` (default `1.0`) that acts as a global
+multiplier applied on top of every `Sound3D`'s distance-computed volume before it is passed to
+SDL_mixer. It lets you fade all positional audio simultaneously — for example to duck world sounds
+during a cutscene or a menu overlay — without touching individual `baseVolume` values.
+
+### How the volume is computed
+
+```
+distance_vol = baseVolume × (1 − t)    -- linear fade from inner to outer radius
+final_SDL_vol = distance_vol × ambienceVolumeScale
+```
+
+Where `t = (dist − innerRadius) / (outerRadius − innerRadius)` for sources between the two radii,
+`t = 0` inside `innerRadius`, and the source is silenced beyond `outerRadius`.
+
+### Controlling it from Lua
+
+Use `Components:Sound():setAmbienceVolume(percent)` where `percent` is in the range **0–100**:
+
+```lua
+-- Silence all Sound3D sources (e.g. entering a menu)
+Components:Sound():setAmbienceVolume(0)
+
+-- Restore to full volume
+Components:Sound():setAmbienceVolume(100)
+
+-- Gentle duck to 40 % while a cinematic plays
+Components:Sound():setAmbienceVolume(40)
+```
+
+The method converts the percentage to a 0.0–1.0 scale internally
+(`ambienceVolumeScale = percent / 100.0`).
+
+:::note
+`setAmbienceVolume` only affects `Sound3D` positional sources. Music played via
+`ComponentSound:PlayMusic()` and flat sound effects played via `ComponentSound:PlaySound()` are
+not affected.
+:::
+
+---
+
 ## Background music (non-positional)
 ---
 

@@ -112,7 +112,14 @@ Widgets are reusable UI panels defined as JSON files in `assets/ui/`. Each widge
 
 | Method | Parameters | Return | Description |
 |--------|------------|--------|-------------|
-| `drawWidget(name, x, y, data)` | `string, float, float, table` | `nextY, clickedId` | Draws a widget at (x, y); returns the Y position below the widget and the id of any clicked button |
+| `drawWidget(name, data, fb, scale)` | `string, table, string?, float?` | `nextY, hovered, clickedId, tooltipId` | Draws a widget at its JSON-defined position; `fb` selects the target framebuffer (default `"foreground"`), `scale` overrides the JSON scale (0 = use JSON value) |
+| `drawWidgetAtPos(name, x, y, data, fb, scale)` | `string, float, float, table, string?, float?` | `nextY, hovered, clickedId, tooltipId` | Draws a widget at explicit pixel position `(x, y)`; other parameters same as `drawWidget` |
+| `loadWidget(filePath)` | `string` | void | Loads a single widget JSON from the given file path into the UI manager |
+| `loadWidgets(dir)` | `string` | void | Loads all widget JSON files found in the given directory |
+| `unloadWidget(name)` | `string` | void | Unloads the named widget, freeing its resources |
+| `setWidgetAlpha(alpha)` | `float` | void | Sets the global alpha multiplier applied to all widgets (0.0 = fully transparent, 1.0 = fully opaque) |
+| `getHoveredWidgetCursor()` | — | `string` | Returns the cursor name string for the currently hovered widget element (empty string when nothing is hovered) |
+| `flushTooltip(deltaTime)` | `float` | void | Advances the tooltip system timer by `deltaTime` seconds; call once per frame to drive tooltip show/hide transitions |
 | `reloadWidgets()` | — | void | Reloads all widget JSON files from disk without restarting |
 
 #### drawWidget data table
@@ -130,15 +137,18 @@ The `data` table is keyed by element **id** (as defined in the widget JSON). Eac
 
 Elements whose id is not present in the data table are rendered with their JSON defaults.
 
-`drawWidget` returns two values:
+`drawWidget` and `drawWidgetAtPos` each return four values:
 - **`nextY`** — the Y pixel coordinate immediately below the widget (useful for stacking multiple widgets)
+- **`hovered`** — the `id` of the element currently under the mouse cursor, or `""` if none
 - **`clickedId`** — the `id` of the button element that was clicked this frame, or `""` if none
+- **`tooltipId`** — the `id` of the element whose tooltip is active, or `""` if none
 
 ```lua
 local render = Components:Render()
 
 function postUpdate()
-    local nextY, clicked = render:drawWidget("unitCard", 10, 10, {
+    -- drawWidget uses the position defined in the widget JSON
+    local nextY, hovered, clicked, tooltip = render:drawWidget("unitCard", {
         name     = { text = "Soldier",          color = Color.new(1, 1, 1, 1) },
         hp_bar   = { value = 75, max = 100,     color = Color.new(0.2, 0.8, 0.2, 1) },
         portrait = { path = "../assets/ui/soldier.png" },
@@ -149,11 +159,41 @@ function postUpdate()
         -- handle button press
     end
 
-    -- Stack a second widget directly below the first
-    render:drawWidget("resourceBar", 10, nextY + 4, {
+    -- Draw a second widget at an explicit position, below the first
+    render:drawWidgetAtPos("resourceBar", 10, nextY + 4, {
         gold_label = { text = "Gold: " .. gold, color = Color.new(1, 0.85, 0.2, 1) },
     })
 end
+```
+
+#### Widget lifecycle helpers
+
+```lua
+local render = Components:Render()
+
+-- Load a single widget at startup
+render:loadWidget("../assets/ui/rts/hud/unitCard.json")
+
+-- Or bulk-load an entire folder
+render:loadWidgets("../assets/ui/rts/hud/")
+
+-- Fade all widgets out
+render:setWidgetAlpha(0.0)
+
+-- Restore
+render:setWidgetAlpha(1.0)
+
+-- Update cursor when hovering widget elements
+local cursor = render:getHoveredWidgetCursor()
+if cursor ~= "" then
+    Components:Window():LoadCursorImage("../assets/ui/cursors/" .. cursor .. ".png")
+end
+
+-- Drive tooltip timers (call once per frame)
+render:flushTooltip(brakeza:getDeltaTime())
+
+-- Unload a widget that is no longer needed
+render:unloadWidget("unitCard")
 ```
 
 :::note
