@@ -59,8 +59,8 @@ Mesh3D::~Mesh3D()
     UnregisterSubmeshPicking();
 
     if (!sharedTextures) {
-        for (auto texture : modelTextures) delete texture;
-        for (auto texture : modelSpecularTextures) delete texture;
+        modelTextures.clear();
+        modelSpecularTextures.clear();
     }
     
     if (shaderChain) {
@@ -73,6 +73,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
 {
     if (!Tools::FileExists(fileName.c_str())) {
         LOG_ERROR("[Mesh3D] Error import 3D file not exist");
+        loadFailed = true;
         return;
     }
 
@@ -80,6 +81,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
     if (cached) {
         LOG_MESSAGE("[Mesh3D] Cache HIT for '%s'", fileName.c_str());
         cached->cloneInto(*this);
+        UpdateBoundingBox();
         loaded = true;
         return;
     }
@@ -92,11 +94,13 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
         aiProcess_Triangulate |
         aiProcess_SortByPType |
         aiProcess_FlipUVs |
-        aiProcess_GenSmoothNormals
+        aiProcess_GenSmoothNormals |
+        aiProcess_FixInfacingNormals
     );
 
     if (!scene) {
-        LOG_MESSAGE("[Mesh3D] ERROR loading '%s': %s", fileName.c_str(), assimpImporter.GetErrorString());
+        LOG_ERROR("[Mesh3D] ERROR loading '%s': %s", fileName.c_str(), assimpImporter.GetErrorString());
+        loadFailed = true;
         return;
     }
 
@@ -137,6 +141,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
     LOG_MESSAGE("[Mesh3D] Stored '%s' in ModelDataCache (%zu meshes, %zu materials)",
         fileName.c_str(), modelData->meshes.size(), modelData->materials.size());
 
+    UpdateBoundingBox();
     loaded = true;
 }
 
@@ -163,15 +168,38 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntr
             fbxDir = fbxDir.substr(0, fbxDir.find_last_of("/\\") + 1);
             std::string relativePath = fbxDir + p;
 
-            std::string FullPath;
+            // Returns path with .png extension if the original doesn't exist but the .png variant does
+            auto tryPng = [](const std::string& path) -> std::string {
+                if (Tools::FileExists(path.c_str())) return path;
+                auto dot = path.find_last_of('.');
+                if (dot != std::string::npos) {
+                    std::string png = path.substr(0, dot) + ".png";
+                    if (Tools::FileExists(png.c_str())) return png;
+                }
+                return "";
+            };
+
             std::string textureSubPath = Config::get()->TEXTURES_FOLDER + p;
-            if (Tools::FileExists(relativePath.c_str())) {
-                FullPath = relativePath;
-            } else if (Tools::FileExists(textureSubPath.c_str())) {
-                FullPath = textureSubPath;
+            std::string baseSubPath    = Config::get()->TEXTURES_FOLDER + base_filename;
+            const std::string chessPath = Config::get()->TEXTURES_FOLDER + "chessboard.png";
+
+            std::string FullPath;
+            std::string candidate;
+            if (!(candidate = tryPng(relativePath)).empty()) {
+                FullPath = candidate;
+            } else if (!(candidate = tryPng(textureSubPath)).empty()) {
+                FullPath = candidate;
+            } else if (!(candidate = tryPng(baseSubPath)).empty()) {
+                FullPath = candidate;
             } else {
-                FullPath = Config::get()->TEXTURES_FOLDER + base_filename;
+                LOG_MESSAGE("[Mesh3D] Material[%d] texture not found '%s', using chessboard", i, base_filename.c_str());
+                if (outMaterialEntries) outMaterialEntries->push_back({false, "", false, ""});
+                auto *fallback = imageCache.getOrLoad(chessPath);
+                modelTextures.push_back(fallback);
+                modelSpecularTextures.push_back(fallback);
+                continue;
             }
+
             LOG_MESSAGE("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
 
             if (outMaterialEntries) {
@@ -181,13 +209,15 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntr
             modelTextures.push_back(imageCache.getOrLoad(FullPath));
             modelSpecularTextures.push_back(imageCache.getOrLoad(FullPath));
         } else {
-            LOG_MESSAGE("[Mesh3D] Material[%d] has no diffuse texture, using fallback", i);
+            const std::string chessPath = Config::get()->TEXTURES_FOLDER + "chessboard.png";
+            LOG_MESSAGE("[Mesh3D] Material[%d] has no diffuse texture, using chessboard", i);
             if (outMaterialEntries) {
                 outMaterialEntries->push_back({false, "", false, ""});
             }
 
-            modelTextures.push_back(new Image((GLuint)0, 1, 1));
-            modelSpecularTextures.push_back(new Image((GLuint)0, 1, 1));
+            auto *fallback = imageCache.getOrLoad(chessPath);
+            modelTextures.push_back(fallback);
+            modelSpecularTextures.push_back(fallback);
         }
     }
 
@@ -817,13 +847,13 @@ void Mesh3D::UpdateBoundingBox()
 btBvhTriangleMeshShape *Mesh3D::getTriangleMeshFromMesh3D(btVector3 inertia) const
 {
     auto *triangleMesh = new btTriangleMesh();
-    float objScale = getScale();
+    Vertex3D sv = getScaleV();
 
     for (auto &m: meshes) {
         for (auto & modelTriangle : m.modelTriangles) {
-            btVector3 a = modelTriangle->A.toBullet() * objScale;
-            btVector3 b = modelTriangle->B.toBullet() * objScale;
-            btVector3 c = modelTriangle->C.toBullet() * objScale;
+            btVector3 a(modelTriangle->A.x * sv.x, modelTriangle->A.y * sv.y, modelTriangle->A.z * sv.z);
+            btVector3 b(modelTriangle->B.x * sv.x, modelTriangle->B.y * sv.y, modelTriangle->B.z * sv.z);
+            btVector3 c(modelTriangle->C.x * sv.x, modelTriangle->C.y * sv.y, modelTriangle->C.z * sv.z);
             triangleMesh->addTriangle(a, b, c, false);
         }
     }

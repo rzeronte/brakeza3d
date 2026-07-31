@@ -26,6 +26,11 @@ public:
 
     void fnProcess()
     {
+        LOG_MESSAGE("[ThreadJobReadSceneScript] Process END");
+    }
+
+    void fnCallback()
+    {
         if (cJSON_GetObjectItemCaseSensitive(json, "scripts") != nullptr) {
             cJSON *currentScript;
             cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(json, "scripts")) {
@@ -50,11 +55,6 @@ public:
                 Components::get()->Scripting()->AddSceneLUAScript(script);
             }
         }
-        LOG_MESSAGE("[ThreadJobReadSceneScript] Process END");
-    }
-
-    void fnCallback()
-    {
         LOG_MESSAGE("[ThreadJobReadSceneScript] Callback END");
     }
 

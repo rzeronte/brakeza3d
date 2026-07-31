@@ -50,7 +50,7 @@ ThreadPool::ThreadPool(size_t numThreads)
     stop(false),
     activeTasks(0),
     cont(0),
-    maxCallbacksPerFrame(5),
+    maxCallbacksPerFrame(150),
     maxConcurrentTasks(4),
     maxEnqueuedTasks(4096),
     maxEnqueuedCallbacks(4096)

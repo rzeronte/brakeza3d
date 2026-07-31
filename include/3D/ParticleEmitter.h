@@ -23,6 +23,8 @@ class ParticleEmitter : public Object3D
     bool active = true;
     bool stopAdd = false;
     int LastUsedParticle = 0;
+    Object3D* followTarget    = nullptr;
+    float selfDestructTimer   = -1.0f;
 
     ParticleEmitterState state;
     ParticlesContext context;
@@ -76,6 +78,10 @@ public:
     void setTexture(Image *texture);
     void setStopAdd(bool stopAdd);
     void setGPUMode(bool enabled);
+
+    void detach(float fadeTime);
+    void setFollowTarget(Object3D* target)                  { followTarget = target; }
+    [[nodiscard]] Object3D* getFollowTarget() const         { return followTarget; }
 
     void setAttachedLight(LightPoint *light);
     void createAttachedLight(const Color &diffuse, const Color &ambient, const Color &specular, float range);

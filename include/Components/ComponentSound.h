@@ -20,6 +20,7 @@ class ComponentSound : public Component
     SoundPackage soundPackage;
     static int PlayChunk(Mix_Chunk *chunk, int channel, int times);
 public:
+    static constexpr int CHANNEL_UI_HOVER = 0;
     ComponentSound();
 
     void onStart() override;
@@ -39,6 +40,9 @@ public:
     static void playMusicMix(Mix_Music *music, int loops);
     static void fadeInMusic(Mix_Music *music, int loops, int ms);
     static void StopMusic();
+    static void PauseMusic();
+    static void ResumeMusic();
+    static bool isMusicPaused();
     static void StopChannel(int channel);
     static void setMusicVolume(int v);
     static void setSoundsVolume(int v);
@@ -47,6 +51,7 @@ public:
     void setChannelVolume(int channel, int vol);
     void setChannelPosition(int channel, int angle, int distance);
     bool isChannelPlaying(int channel);
+    bool isSoundPlaying(const std::string& label);
 };
 
 

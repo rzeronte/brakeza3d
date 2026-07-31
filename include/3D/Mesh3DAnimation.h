@@ -126,8 +126,13 @@ public:
     [[nodiscard]] bool isRemoveAtEndAnimation() const       { return removeOnAnimationEnd; }
     [[nodiscard]] bool isLoop() const                       { return loop; }
     [[nodiscard]] bool isAnimationEnds() const              { return finished; }
+    [[nodiscard]] int getNumAnimations() const              { return scene ? static_cast<int>(scene->mNumAnimations) : 0; }
+    [[nodiscard]] std::string getAnimationName(int i) const { return (scene && i >= 0 && i < static_cast<int>(scene->mNumAnimations)) ? scene->mAnimations[i]->mName.C_Str() : ""; }
     [[nodiscard]] float getCurrentAnimationMaxTime() const;
     [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
+    [[nodiscard]] Vertex3D getBoneWorldPosition(const std::string& boneName) const;
+    [[nodiscard]] M3 getBoneWorldRotation(const std::string& boneName) const;
+    [[nodiscard]] std::vector<std::string> getBoneNames() const;
 
     static void CalcInterpolatedRotation(aiQuaternion &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);
     static void CalcInterpolatedScaling(aiVector3D &Out, float AnimationTime, const aiNodeAnim *pNodeAnim);

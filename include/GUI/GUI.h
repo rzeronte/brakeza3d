@@ -97,8 +97,9 @@ namespace GUIType
     };
 
     struct Colors {
-        static constexpr ImVec4 BTN_OFF = ImVec4(0.20f, 0.22f, 0.24f, 1.0f);  // Gris oscuro neutro
-        static constexpr ImVec4 BTN_ON = ImVec4(0.28f, 0.38f, 0.32f, 1.0f);   // Gris verdoso sutil 🟢
+        static constexpr ImVec4 BTN_OFF      = ImVec4(0.20f, 0.22f, 0.24f, 1.0f);
+        static constexpr ImVec4 BTN_ON       = ImVec4(0.28f, 0.38f, 0.32f, 1.0f);
+        static constexpr ImVec4 BTN_DISABLED = ImVec4(0.13f, 0.14f, 0.15f, 1.0f);
         static constexpr ImVec4 LUA_COLOR = ImVec4(0.25f, 0.35f, 0.30f, 1.0f); // Verde grisáceo (como tab inactiva)
         static constexpr ImVec4 PLAY_COLOR = ImVec4(0.35f, 0.55f, 0.42f, 1.0f); // Verde apagado profesional
     };
@@ -411,7 +412,7 @@ namespace IconGUI {
 class GUI
 {
 public:
-    static void DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &onClick);
+    static void DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &onClick, bool disabled = false);
     static void DrawButtonTransparent(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()> &cb);
     static void ShowPopUp(const char* title, const char *message, const std::function<void()>& onConfirm);
     static void DrawButtonConfirm(const std::string &title, const std::string &question, GUIType::Sheet icon, ImVec2 size, const std::function<void()>& cb);

@@ -4,6 +4,9 @@
 
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Objects/Mesh3DAnimationGUI.h"
+#include <algorithm>
+#include <vector>
+#include <string>
 
 
 void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
@@ -13,14 +16,32 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
 
     if (ImGui::CollapsingHeader("Mesh3D Animation")) {
 
-        const char* items[o->scene->mNumAnimations];
+        static char animFilter[128] = "";
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputTextWithHint(("##animfilter" + o->getName()).c_str(), "Filter animations...", animFilter, IM_ARRAYSIZE(animFilter));
+
+        std::string filterStr = animFilter;
+        std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), ::tolower);
+
+        std::vector<int> filtered;
         for (unsigned int i = 0; i < o->scene->mNumAnimations; i++) {
-            items[i] = o->scene->mAnimations[i]->mName.C_Str();
+            std::string name = o->scene->mAnimations[i]->mName.C_Str();
+            std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+            if (filterStr.empty() || name.find(filterStr) != std::string::npos)
+                filtered.push_back((int)i);
         }
-        auto comboTitle = "Animations##" + o->getName();
-        int animIdx = o->indexCurrentAnimation;
-        if (ImGui::Combo("Animation", &animIdx, items, IM_ARRAYSIZE(items))) {
-            o->setIndexCurrentAnimation(animIdx);
+
+        std::vector<const char*> filteredNames;
+        int selectedInFiltered = -1;
+        for (int fi = 0; fi < (int)filtered.size(); fi++) {
+            filteredNames.push_back(o->scene->mAnimations[filtered[fi]]->mName.C_Str());
+            if (filtered[fi] == o->indexCurrentAnimation) selectedInFiltered = fi;
+        }
+
+        ImGui::SetNextItemWidth(-1);
+        if (ImGui::ListBox(("##animlist" + o->getName()).c_str(), &selectedInFiltered, filteredNames.data(), (int)filteredNames.size(), 8)) {
+            if (selectedInFiltered >= 0 && selectedInFiltered < (int)filtered.size())
+                o->setIndexCurrentAnimation(filtered[selectedInFiltered]);
         }
 
         ImGui::Separator();

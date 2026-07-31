@@ -5,7 +5,10 @@
 void Transforms::objectSpace(Vertex3D &dst, Vertex3D &src, Object3D *o)
 {
     dst = src;
-    dst.setScaled(o->getScale());
+    Vertex3D sv = o->getScaleV();
+    dst.x *= sv.x;
+    dst.y *= sv.y;
+    dst.z *= sv.z;
 
     dst = o->getRotation() * dst;
     dst = dst + o->getPosition();
@@ -23,9 +26,10 @@ Vertex3D Transforms::objectToLocal(Vertex3D &V, Object3D *o)
     T = T - o->getPosition();
     T = o->getRotation().getTranspose() * T;
 
-    T.x /= o->getScale();
-    T.y /= o->getScale();
-    T.z /= o->getScale();
+    Vertex3D sv = o->getScaleV();
+    T.x /= sv.x;
+    T.y /= sv.y;
+    T.z /= sv.z;
 
     T.u = V.u;
     T.v = V.v;

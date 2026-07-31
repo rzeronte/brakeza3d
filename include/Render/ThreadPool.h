@@ -28,10 +28,10 @@ private:
     std::atomic<int> activeTasks;
     std::atomic<size_t> cont;
 
-    size_t maxCallbacksPerFrame;
-    size_t maxConcurrentTasks;
-    size_t maxEnqueuedTasks;
-    size_t maxEnqueuedCallbacks;
+    std::atomic<size_t> maxCallbacksPerFrame;
+    std::atomic<size_t> maxConcurrentTasks;
+    std::atomic<size_t> maxEnqueuedTasks;
+    std::atomic<size_t> maxEnqueuedCallbacks;
 
     void spawnWorkers(size_t n);
 

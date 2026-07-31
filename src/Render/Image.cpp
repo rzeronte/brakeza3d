@@ -1,4 +1,6 @@
 #include <SDL2/SDL_image.h>
+#include <algorithm>
+#include <cmath>
 
 #include "../../include/Render/Image.h"
 #include "../../include/Brakeza.h"
@@ -43,7 +45,15 @@ Image::Image(GLuint externalTextureId, int width, int height)
 
 void Image::CreateSDLTexture()
 {
+    if (!surface) {
+        LOG_ERROR("[Image] CreateSDLTexture: surface is null");
+        return;
+    }
     texture = SDL_CreateTextureFromSurface(Components::get()->Window()->getRenderer(), surface);
+    if (!texture) {
+        LOG_ERROR("[Image] SDL_CreateTextureFromSurface failed for '%s'", fileName.c_str());
+        return;
+    }
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 }
 
@@ -172,14 +182,50 @@ Color Image::getPixelColor(const int x, const int y) const
 
 void Image::MakeAutoOGLImage()
 {
-    if (textureId == 0 ) {
+    if (textureId != 0) {
         glDeleteTextures(1, &textureId);
+    }
+    if (!surface) {
+        LOG_ERROR("[Image] MakeAutoOGLImage: surface is null");
+        return;
     }
     textureId = MakeOGLImage(surface);
 }
 
 GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
 {
+    if (!surfaceTTF) {
+        LOG_ERROR("[Image] MakeOGLImage: surface is null, returning 0");
+        return 0;
+    }
+
+    if (surfaceTTF->w <= 0 || surfaceTTF->h <= 0 || !surfaceTTF->format || !surfaceTTF->pixels) {
+        LOG_ERROR("[Image] MakeOGLImage: invalid surface (w=%d h=%d fmt=%p px=%p)",
+                  surfaceTTF->w, surfaceTTF->h,
+                  (void*)surfaceTTF->format, surfaceTTF->pixels);
+        return 0;
+    }
+
+    // El driver GL espera bytes-per-pixel coherente con el formato que le declaremos.
+    // Formatos que no sean RGB (3 bpp) ni RGBA (4 bpp) — paletted 8bpp, 16bpp, etc —
+    // los convertimos a RGBA32 para no leer fuera del buffer y no depender de la paleta.
+    const SDL_Surface* uploadSurf = surfaceTTF;
+    SDL_Surface* converted  = nullptr;
+    const Uint8 srcBpp = surfaceTTF->format->BytesPerPixel;
+    if (srcBpp != 3 && srcBpp != 4) {
+        converted = SDL_ConvertSurfaceFormat(const_cast<SDL_Surface*>(surfaceTTF), SDL_PIXELFORMAT_RGBA32, 0);
+        if (!converted) {
+            LOG_ERROR("[Image] MakeOGLImage: SDL_ConvertSurfaceFormat failed for bpp=%u: %s",
+                      (unsigned)srcBpp, SDL_GetError());
+            return 0;
+        }
+        uploadSurf = converted;
+    }
+
+    const int sw = uploadSurf->w;
+    const int sh = uploadSurf->h;
+    const Uint8 bpp = uploadSurf->format->BytesPerPixel;
+
     GLuint texID;
     glGenTextures(1, &texID);
     glBindTexture(GL_TEXTURE_2D, texID);
@@ -189,12 +235,14 @@ GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    GLint Mode = GL_RGB;
-    if (surfaceTTF->format->BytesPerPixel == 4) {
-        Mode = GL_RGBA;
-    }
+    // Cubre padding no múltiplo de 4 en surfaces bpp=3.
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, Mode, surfaceTTF->w, surfaceTTF->h, 0, Mode, GL_UNSIGNED_BYTE, surfaceTTF->pixels);
+    const GLint Mode = (bpp == 4) ? GL_RGBA : GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, Mode, sw, sh, 0, Mode, GL_UNSIGNED_BYTE, uploadSurf->pixels);
+
+    if (converted) SDL_FreeSurface(converted);
 
     return texID;
 }
@@ -253,6 +301,49 @@ void Image::fillCircle(int cx, int cy, int radius,
             pixels[idx + 3] = a;
         }
     }
+}
+
+void Image::fillCircleGrad(int cx, int cy, int radius,
+                           uint8_t r, uint8_t g, uint8_t b, uint8_t a,
+                           float falloffRatio, float power)
+{
+    auto* pixels = static_cast<uint8_t*>(surface->pixels);
+    int w = surface->w, h = surface->h;
+    int falloff = std::max(2, (int)(radius * falloffRatio));
+    int inner = radius - falloff;
+    int r2 = radius * radius;
+    int innerR2 = inner * inner;
+
+    for (int dz = -radius; dz <= radius; dz++) {
+        for (int dx = -radius; dx <= radius; dx++) {
+            int d2 = dx*dx + dz*dz;
+            if (d2 > r2) continue;
+            int nx = cx + dx, ny = cy + dz;
+            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
+
+            float alpha = 1.0f;
+            if (d2 > innerR2) {
+                float dist = std::sqrt(float(d2));
+                float t = (radius - dist) / float(falloff);
+                t = std::clamp(t, 0.0f, 1.0f);
+                alpha = std::pow(t, power);
+            }
+
+            int idx = (ny * w + nx) * 4;
+            pixels[idx + 0] = std::max(pixels[idx + 0], (uint8_t)(r * alpha));
+            pixels[idx + 1] = std::max(pixels[idx + 1], (uint8_t)(g * alpha));
+            pixels[idx + 2] = std::max(pixels[idx + 2], (uint8_t)(b * alpha));
+            pixels[idx + 3] = std::max(pixels[idx + 3], (uint8_t)(a * alpha));
+        }
+    }
+}
+
+void Image::setClampToEdge()
+{
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Image::upload()

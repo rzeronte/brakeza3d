@@ -15,8 +15,9 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 {
     auto scripting = Components::get()->Scripting();
 
-    auto contentFile = Tools::ReadFile(filename);
+    char* contentFile = Tools::ReadFile(filename);
     auto contentJSON = cJSON_Parse(contentFile);
+    free(contentFile);
 
     // thread pools — resize antes de ClearWorld, pools aún sin tareas nuevas
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "thread_pools") != nullptr) {
@@ -126,6 +127,8 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 
     Components::get()->Scripting()->setCurrentProject(new Project(filename));
     FileSystemGUI::autoExpandProject = true;
+
+    cJSON_Delete(contentJSON);
 }
 
 void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)

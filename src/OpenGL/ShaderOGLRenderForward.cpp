@@ -52,6 +52,8 @@ void ShaderOGLRenderForward::LoadUniforms()
     shadowMapArrayUniform = glGetUniformLocation(programID, "shadowMapArray");
 
     enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
+
+    pcfKernelSizeUniform = glGetUniformLocation(programID, "pcfKernelSize");
 }
 
 void ShaderOGLRenderForward::PrepareMainThread()
@@ -97,6 +99,7 @@ void ShaderOGLRenderForward::render(
     setBoolUniform(debugShadowMappingUniform, (Config::get()->SHADOW_MAPPING_DEBUG && Config::get()->ENABLE_SHADOW_MAPPING));
     setFloatUniform(shadowMappingIntensityUniform, Config::get()->SHADOW_MAPPING_INTENSITY);
     setBoolUniform(enableLightsUniform, o->isEnableLights()),
+    setIntUniform(pcfKernelSizeUniform, Config::get()->SHADOW_MAPPING_PCF_KERNEL_SIZE),
 
         // textures
     setIntUniform(materialTextureDiffuseUniform, 0);
@@ -155,25 +158,45 @@ glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL
     const float size = Config::get()->SHADOW_MAPPING_FRUSTUM_SIZE;
 
     glm::mat4 lightProjection = glm::ortho(
-        -size,
-        size,
-        -size,
-        size,
+        -size, size,
+        -size, size,
         Config::get()->SHADOW_MAPPING_DEPTH_NEAR_PLANE,
         Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE
     );
 
-    // Normalizar la dirección de la luz
     glm::vec3 forward = glm::normalize(light.direction);
 
-    // Para una luz direccional, usamos una posición arbitraria en la dirección opuesta a donde apunta la luz
-    glm::vec3 p = -forward * Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE * 0.5f;
+    // Anclar la posición de la cámara de luz al centro de la escena proyectado
+    // sobre el eje de la luz, en lugar de a la dirección opuesta fija.
+    // Esto hace que el frustum siempre cubra la escena desde cualquier ángulo.
+    glm::vec3 sceneCenter = Config::get()->SHADOW_MAPPING_FOCUS;
+    float     halfFar = Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE * 0.5f;
+    glm::vec3 p       = sceneCenter - forward * halfFar;
 
-    glm::mat4 lightView = glm::lookAt(
-        p,
-        p + forward,
-        glm::vec3(0.0f, 1.0f, 0.0f)
-    );
+    glm::vec3 up = (std::abs(forward.y) > 0.99f)
+                 ? glm::vec3(0.0f, 0.0f, 1.0f)
+                 : glm::vec3(0.0f, 1.0f, 0.0f);
+
+    glm::mat4 lightView   = glm::lookAt(p, p + forward, up);
+    glm::mat4 shadowMatrix = lightProjection * lightView;
+
+    // ── Texel snapping: elimina el shadow shimmering ─────────────────────────
+    // La cámara de luz se ancla a la cuadrícula de texels para que la sombra
+    // solo se desplace en incrementos de un texel entero (sin drift sub-texel).
+    float shadowRes = static_cast<float>(Config::get()->SHADOW_MAP_RESOLUTION);
+
+    glm::vec4 shadowOrigin = shadowMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+    shadowOrigin.x *= shadowRes * 0.5f;
+    shadowOrigin.y *= shadowRes * 0.5f;
+
+    glm::vec4 roundedOrigin = glm::round(shadowOrigin);
+    glm::vec4 roundOffset   = roundedOrigin - shadowOrigin;
+    roundOffset.x *= 2.0f / shadowRes;
+    roundOffset.y *= 2.0f / shadowRes;
+    roundOffset.z  = 0.0f;
+    roundOffset.w  = 0.0f;
+
+    lightProjection[3] += roundOffset;
 
     return lightProjection * lightView;
 }
@@ -186,7 +209,8 @@ void ShaderOGLRenderForward::CreateUBOFromLights()
     ComponentRender::setLastFrameLightsCulled(0);
 
     if (Config::get()->ENABLE_LIGHTS) {
-        for (auto &o : Brakeza::get()->getSceneObjects()) {
+        auto sceneObjects = Brakeza::get()->copySceneObjects();
+        for (auto &o : sceneObjects) {
             if (!o->isEnabled()) continue;
             ExtractLights(o);
             for (auto &a: o->getAttached()) {

@@ -435,7 +435,9 @@ void ShadersGUI::LoadDialogShader(ShaderBaseCustom *shader)
 
 ShaderBaseCustomMetaInfo ShadersGUI::ExtractShaderCustomCodeMetainfo(const std::string &pathFile)
 {
-    auto json = cJSON_Parse(Tools::ReadFile(pathFile));
+    char* rawContent = Tools::ReadFile(pathFile);
+    auto json = cJSON_Parse(rawContent);
+    free(rawContent);
 
     auto getStr = [&](const char* key, const char* fallback = "") {
         auto item = cJSON_GetObjectItemCaseSensitive(json, key);

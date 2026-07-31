@@ -272,7 +272,7 @@ void Object3D::setBelongToScene(bool belongToScene)
 
 glm::mat4 Object3D::getModelMatrix() const
 {
-    glm::vec3 scaled(scale);
+    glm::vec3 scaled(scale3D.x, scale3D.y, scale3D.z);
     glm::vec3 translated = position.toGLM();
     glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), translated);
     glm::mat4 rotationMatrix = glm::mat4(getRotation().toGLMMat3());
@@ -549,7 +549,12 @@ void Object3D::setAlphaEnabled(bool value)
 
 void Object3D::setScale(float value)
 {
-    scale = value;
+    scale3D = Vertex3D(value, value, value);
+}
+
+void Object3D::setScaleV(const Vertex3D& v)
+{
+    scale3D = v;
 }
 
 void Object3D::setRemoved(bool value)

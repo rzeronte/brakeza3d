@@ -55,14 +55,20 @@ namespace IconGUI {
     }
 }
 
-void GUI::DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()>& onClick)
+void GUI::DrawButton(const std::string &tooltip, GUIType::Sheet icon, ImVec2 size, bool active, const std::function<void()>& onClick, bool disabled)
 {
     const auto id = tooltip + std::to_string(icon.x) + "_" + std::to_string(icon.y);
     ImGui::PushID(id.c_str());
-    ImGui::PushStyleColor(ImGuiCol_Button, active ? GUIType::Colors::BTN_ON : GUIType::Colors::BTN_OFF);
+
+    ImVec4 btnColor = disabled ? GUIType::Colors::BTN_DISABLED
+                    : active   ? GUIType::Colors::BTN_ON
+                               : GUIType::Colors::BTN_OFF;
+    ImGui::PushStyleColor(ImGuiCol_Button, btnColor);
+    ImGui::BeginDisabled(disabled);
     if (ImGui::ImageButton(FileSystemGUI::Icon(icon), size)) {
         onClick();
     }
+    ImGui::EndDisabled();
     ImGui::PopStyleColor();
     ImGui::PopID();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));

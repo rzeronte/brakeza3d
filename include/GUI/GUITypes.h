@@ -32,7 +32,8 @@ namespace GUIType {
     X(IMAGE_2D_ANIMATION, 0, 0) \
     X(IMAGE_3D, 0, 0) \
     X(IMAGE_2D, 0, 0) \
-    X(SWARM, 0, 0)
+    X(SWARM, 0, 0) \
+    X(SOUND_3D, 0, 0)
 
 namespace IconObject {
     #define DECLARE_ICON(name, x, y) extern GUIType::Sheet name;

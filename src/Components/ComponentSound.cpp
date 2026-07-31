@@ -55,7 +55,8 @@ void ComponentSound::InitSoundSystem() const
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
     }
 
-    Mix_AllocateChannels(16);
+    Mix_AllocateChannels(32);
+    Mix_ReserveChannels(1);  // canal 0 reservado para UI hover (no roba auto-allocate)
     Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
     Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_VOLUME_FX);
 }
@@ -125,6 +126,25 @@ void ComponentSound::fadeInMusic(Mix_Music *music, int loops, int ms)
 void ComponentSound::StopMusic()
 {
     Mix_HaltMusic();
+}
+
+void ComponentSound::PauseMusic()
+{
+    if (Mix_PlayingMusic()) {
+        Mix_PauseMusic();
+    }
+}
+
+void ComponentSound::ResumeMusic()
+{
+    if (Mix_PausedMusic()) {
+        Mix_ResumeMusic();
+    }
+}
+
+bool ComponentSound::isMusicPaused()
+{
+    return Mix_PausedMusic() != 0;
 }
 
 void ComponentSound::StopChannel(int channel)
@@ -233,6 +253,18 @@ void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
         channel,
         times
     );
+}
+
+bool ComponentSound::isSoundPlaying(const std::string& label)
+{
+    Mix_Chunk* chunk = soundPackage.getByLabel(label);
+    if (!chunk) return false;
+    int numChannels = Mix_AllocateChannels(-1);
+    for (int ch = 0; ch < numChannels; ++ch) {
+        if (Mix_Playing(ch) && Mix_GetChunk(ch) == chunk)
+            return true;
+    }
+    return false;
 }
 
 void ComponentSound::setMusicVolume(int v)

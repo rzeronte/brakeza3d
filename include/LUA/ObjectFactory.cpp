@@ -28,6 +28,9 @@
 #include "../Threads/ThreadJobLoadMesh3DAnimation.h"
 #include "../Threads/ThreadJobLoadObject.h"
 #include "../Threads/ThreadJobLoadParticleEmitter.h"
+#include "../3D/Sound3D.h"
+#include "../Serializers/Sound3DSerializer.h"
+#include "../Threads/ThreadJobLoadSound3D.h"
 
 Object3D* ObjectFactory::CreateObject3D(const Vertex3D &position)
 {
@@ -228,6 +231,22 @@ Projectile* ObjectFactory::CreateProjectile(const std::string &file, const Verte
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
+
+    return o;
+}
+
+Sound3D* ObjectFactory::CreateSound3D(const std::string& file, const Vertex3D& position, float innerRadius, float outerRadius, int baseVolume)
+{
+    auto* o = new Sound3D();
+    o->setName(Brakeza::UniqueObjectLabel("Sound3D"));
+    o->setPosition(position);
+    o->sourceFile   = file;
+    o->innerRadius  = innerRadius;
+    o->outerRadius  = outerRadius;
+    o->baseVolume   = baseVolume;
+
+    auto* json = Sound3DSerializer().JsonByObject(o);
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadSound3D>(o, json));
 
     return o;
 }

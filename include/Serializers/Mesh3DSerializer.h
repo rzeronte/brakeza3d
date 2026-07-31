@@ -28,6 +28,7 @@ public:
     static void ApplyShadersBackground(Mesh3D* m);
     static void ApplyCustomShadersMainThread(Mesh3D* m);
     static const char* ExtractFileModelPath(cJSON* json);
+    static Mesh3D* CloneMesh3D(Mesh3D* src);
 };
 
 #endif

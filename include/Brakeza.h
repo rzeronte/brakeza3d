@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <shared_mutex>
 #include "Components/Component.h"
 #include "GUI/GUIManager.h"
 #include "Render/ThreadPool.h"
@@ -19,7 +20,9 @@ class Brakeza
     Timer timer;
 
     std::vector<Object3D *> objects;
+    mutable std::shared_mutex objectsMutex;
     std::unordered_map<std::string, Object3D *> objectsByName;
+    std::unordered_map<unsigned int, Object3D *> objectsById;
 
     GUIManager managerGUI;
     ThreadPool pool;
@@ -55,12 +58,20 @@ public:
 
     float getExecutionTime() const                              { return executionTime; }
     std::vector<Object3D *> &getSceneObjects()                  { return objects; }
+    std::vector<Object3D *> copySceneObjects() const {
+        std::shared_lock lock(objectsMutex);
+        return objects;
+    }
+    void lockObjects() const    { objectsMutex.lock(); }
+    void unlockObjects() const  { objectsMutex.unlock(); }
+    std::unique_lock<std::shared_mutex> uniqueLockObjects() { return std::unique_lock(objectsMutex); }
+    std::shared_lock<std::shared_mutex> sharedLockObjects() const { return std::shared_lock(objectsMutex); }
     float getEngineTotalTime() const                            { return last_ticks / 1000.f; }
     float getDeltaTime() const                                  { return deltaTime / 1000; }
     float getDeltaTimeMicro() const                             { return deltaTime; }
     Components *getComponentsManager() const                    { return componentsManager; }
     GUIManager *GUI()                                           { return &managerGUI; }
-    Object3D *getObjectByIndex(int index) const                 { return objects[index]; }
+    Object3D *getObjectByIndex(int index) const;
     ThreadPool & PoolCompute()                                  { return pool; }
     ThreadPool & PoolImages()                                   { return poolImages; }
     int getPendingJobsCount() const {
@@ -69,7 +80,10 @@ public:
     }
 
     static void Shutdown()                                      { Config::get()->EXIT = true; };
-    void removeAllObjects() { for (auto &o : objects) o->setRemoved(true); }
+    void removeAllObjects() {
+        auto lock = uniqueLockObjects();
+        for (auto &o : objects) o->setRemoved(true);
+    }
     static unsigned int getNextUniqueObjectId();
     static std::string UniqueObjectLabel(const char *prefix);
 

@@ -450,6 +450,8 @@ void Mesh3DAnimation::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Verte
 
 void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
 {
+    if (!scene || !scene->HasAnimations() || indexCurrentAnimation >= scene->mNumAnimations) return;
+
     aiMatrix4x4 Identity = aiMatrix4x4();
 
     auto TicksPerSecond = static_cast<float>(
@@ -977,6 +979,65 @@ BonesMappingColliders *Mesh3DAnimation::getBonesMappingByName(const std::string&
 
 const std::vector<BonesMappingColliders> *Mesh3DAnimation::getBoneMappingColliders() const {
     return &boneMappingColliders;
+}
+
+Vertex3D Mesh3DAnimation::getBoneWorldPosition(const std::string& boneName) const
+{
+    auto it = boneMapping.find(boneName);
+    if (it == boneMapping.end()) return getPosition();
+
+    unsigned int boneId = it->second;
+    if (boneId >= boneInfo.size()) return getPosition();
+
+    aiMatrix4x4 mOffset = boneInfo[boneId].BoneOffset;
+    aiMatrix4x4 mT      = boneInfo[boneId].FinalTransformation;
+    aiVector3D  aBonePos;
+
+    aBonePos = mOffset.Inverse() * aBonePos;
+    aBonePos = mT * aBonePos;
+
+    Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePos);
+    Transforms::objectSpace(bonePosition, bonePosition, const_cast<Mesh3DAnimation*>(this));
+    return bonePosition;
+}
+
+M3 Mesh3DAnimation::getBoneWorldRotation(const std::string& boneName) const
+{
+    auto it = boneMapping.find(boneName);
+    if (it == boneMapping.end()) return getRotation();
+
+    unsigned int boneId = it->second;
+    if (boneId >= boneInfo.size()) return getRotation();
+
+    // FinalTransformation * BoneOffset^-1 = globalInverseTransform * GlobalTransformation
+    // Upper-left 3x3 of this gives bone orientation in model space.
+    aiMatrix4x4 boneOffsetInv = boneInfo[boneId].BoneOffset;
+    boneOffsetInv.Inverse();
+    aiMatrix4x4 mLocal = boneInfo[boneId].FinalTransformation * boneOffsetInv;
+
+    // Normalize columns to strip scale
+    float lenX = std::sqrt(mLocal.a1*mLocal.a1 + mLocal.b1*mLocal.b1 + mLocal.c1*mLocal.c1);
+    float lenY = std::sqrt(mLocal.a2*mLocal.a2 + mLocal.b2*mLocal.b2 + mLocal.c2*mLocal.c2);
+    float lenZ = std::sqrt(mLocal.a3*mLocal.a3 + mLocal.b3*mLocal.b3 + mLocal.c3*mLocal.c3);
+    if (lenX < 1e-6f) lenX = 1.0f;
+    if (lenY < 1e-6f) lenY = 1.0f;
+    if (lenZ < 1e-6f) lenZ = 1.0f;
+
+    M3 localRot(
+        mLocal.a1/lenX, mLocal.a2/lenY, mLocal.a3/lenZ,
+        mLocal.b1/lenX, mLocal.b2/lenY, mLocal.b3/lenZ,
+        mLocal.c1/lenX, mLocal.c2/lenY, mLocal.c3/lenZ
+    );
+
+    return getRotation() * localRot;
+}
+
+std::vector<std::string> Mesh3DAnimation::getBoneNames() const
+{
+    std::vector<std::string> names;
+    names.reserve(boneMapping.size());
+    for (const auto& kv : boneMapping) names.push_back(kv.first);
+    return names;
 }
 
 void Mesh3DAnimation::removeBonesColliderMapping(const std::string& name)

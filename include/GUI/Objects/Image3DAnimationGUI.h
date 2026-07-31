@@ -6,9 +6,13 @@
 #define BRAKEZA3D_IMAGE3DANIMATIONGUI_H
 
 #include "../../3D/Image3DAnimation.h"
+#include "../AddOns/GUIAddonFilePicker.h"
+#include "../../Config.h"
 
 class Image3DAnimationGUI
 {
+    static inline GUIFilePicker picker;
+
 public:
     static void DrawPropertiesGUI(Image3DAnimation *o)
     {
@@ -35,6 +39,11 @@ public:
                 if (ImGui::InputText("Sprite Folder##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
                     o->currentSpriteFileVariableToCreateAnimation = name;
                 }
+                ImGui::SameLine();
+                if (picker.drawTrigger("##browse_anim"))
+                    picker.open(o->currentSpriteFileVariableToCreateAnimation, Config::get()->IMAGES_FOLDER, "../assets/images/", {".png", ".jpg", ".jpeg"});
+                if (picker.draw("Image3DAnim_FilePicker"))
+                    o->currentSpriteFileVariableToCreateAnimation = picker.result;
                 ImGui::InputInt("Width", &o->currentWidthVariableToCreateAnimation);
                 ImGui::InputInt("Height", &o->currentHeightVariableToCreateAnimation);
                 ImGui::InputInt("Nº Frames", &o->currentFramesVariableToCreateAnimation);

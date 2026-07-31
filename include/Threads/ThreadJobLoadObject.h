@@ -25,6 +25,10 @@ public:
     void fnProcess()
     {
         object = JSONSerializerRegistry::instance().deserialize(json);
+        if (object == nullptr) {
+            LOG_ERROR("[ThreadJobLoadObject] deserialize returned null, skipping");
+            return;
+        }
         object->setBelongToScene(isBelongingToScene);
         LOG_MESSAGE("[ThreadJobLoadObject] Process END");
     }

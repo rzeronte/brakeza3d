@@ -26,13 +26,14 @@
 #include "../../include/Serializers/Image3DSerializer.h"
 #include "../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../include/Serializers/SwarmSerializer.h"
+#include "../../include/Serializers/Sound3DSerializer.h"
 #include "../../include/Threads/ThreadJobCleanWorld.h"
 #include "../../include/Threads/ThreadJobClearWorld.h"
 #include "../../include/Threads/ThreadJobReadFileScene.h"
 #include "../../include/Render/EngineObserver.h"
 
-bool SceneLoader::isLoading = false;
-bool SceneLoader::isClearing = false;
+std::atomic<bool> SceneLoader::isLoading{false};
+std::atomic<bool> SceneLoader::isClearing{false};
 
 SceneLoader::SceneLoader()
 {
@@ -211,7 +212,8 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
 
     //Objects
     cJSON *objectsArray = cJSON_CreateArray();
-    for (auto &object : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto &object : sceneObjects) {
         auto objectJson = JSONSerializerRegistry::instance().serialize(object);
 
         cJSON_AddNumberToObject(objectJson, "type", (int) object->getTypeObject());
@@ -300,6 +302,7 @@ void SceneLoader::InitSerializers()
     registry.registerSerializer(ObjectType::ParticleEmitter, std::make_unique<ParticleEmmitterSerializer>());
     registry.registerSerializer(ObjectType::Image2DAnimation, std::make_unique<Image2DAnimationSerializer>());
     registry.registerSerializer(ObjectType::Swarm, std::make_unique<SwarmSerializer>());
+    registry.registerSerializer(ObjectType::Sound3D, std::make_unique<Sound3DSerializer>());
 }
 
 void SceneLoader::SceneLoaderCreateObject(cJSON *object)

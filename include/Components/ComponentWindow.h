@@ -70,6 +70,12 @@ class ComponentWindow : public Component
     bool customCursor = false;
     SDL_Cursor* cursor = nullptr;
 
+    int hoverPickRequestX = -1;
+    int hoverPickRequestY = -1;
+    unsigned int hoverPickResultID = 0;
+    GLuint hoverPBO = 0;
+    bool hoverPBOPending = false;
+
     float clearColorR = 0.0f;
     float clearColorG = 0.0f;
     float clearColorB = 0.0f;
@@ -100,6 +106,8 @@ public:
     void ImGuiInitialize(const std::string &configFile);
     void UpdateMouseCursor() const;
     void LoadCursorImage(const std::string &path);
+    void scheduleHoverPick(int nx, int ny) { hoverPickRequestX = nx; hoverPickRequestY = ny; }
+    [[nodiscard]] unsigned int getHoverPickID() const { return hoverPickResultID; }
 
     [[nodiscard]] bool isWindowMaximized() const;
     OpenGLGBuffer& getGBuffer()                                             { return gBuffer; }

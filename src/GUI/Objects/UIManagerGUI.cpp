@@ -2,13 +2,20 @@
 #include <algorithm>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include "../../../include/GUI/Objects/UIManagerGUI.h"
+#include "../../../include/Config.h"
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/GUI/GUI.h"
+#include "../../../include/GUI/AddOns/GUIAddonFilePicker.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Misc/cJSON.h"
 #include "imgui.h"
+
+static GUIFilePicker s_pickerElImg;
+static GUIFilePicker s_pickerOptImg;
+static int           s_pickerOptIdx = -1;
 
 int UIManagerGUI::selectedWidget  = -1;
 int UIManagerGUI::selectedElement = -1;
@@ -18,6 +25,75 @@ GLuint UIManagerGUI::previewDepthRB  = 0;
 UIWidgetRenderData UIManagerGUI::previewData;
 float  UIManagerGUI::previewZoom         = 1.0f;
 ImVec2 UIManagerGUI::previewPan          = {0.0f, 0.0f};
+
+// ─── Reusable field helpers ───────────────────────────────────────────────
+// Extracted from the ~15 ColorEdit4 / ~20 InputText / 2 image-picker blocks
+// that were previously duplicated inline across DrawElementEditor / SaveWidget helpers.
+
+bool UIManagerGUI::Color4Field(const char* label, Color& c, bool alphaBar)
+{
+    ImGuiColorEditFlags flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
+    if (alphaBar) flags |= ImGuiColorEditFlags_AlphaBar;
+    float v[4] = { c.r, c.g, c.b, c.a };
+    if (ImGui::ColorEdit4(label, v, flags)) {
+        c = Color(v[0], v[1], v[2], v[3]);
+        return true;
+    }
+    return false;
+}
+
+bool UIManagerGUI::StringField(const char* label, std::string& str, float width, int bufSize)
+{
+    // Stack buffer capped at 1024 — every existing caller used 64/128/256/512.
+    if (bufSize > 1024) bufSize = 1024;
+    char buf[1024];
+    const int n = std::min((int)str.size(), bufSize - 1);
+    std::memcpy(buf, str.data(), n);
+    buf[n] = '\0';
+    if (width > 0.0f) ImGui::SetNextItemWidth(width);
+    if (ImGui::InputText(label, buf, (size_t)bufSize)) {
+        str = buf;
+        return true;
+    }
+    return false;
+}
+
+bool UIManagerGUI::ImagePickerField(
+    const char* label,
+    std::string& path,
+    GUIFilePicker& picker,
+    const char* pickerTitle,
+    float inputWidth)
+{
+    bool changed = false;
+    if (StringField(label, path, inputWidth)) changed = true;
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
+            path = std::string((const char*)p->Data);
+            changed = true;
+        }
+        ImGui::EndDragDropTarget();
+    }
+    ImGui::SameLine();
+    // Trigger + picker draw. Caller owns the picker (may share state across options).
+    std::string triggerId = std::string("##browse_") + label;
+    if (picker.drawTrigger(triggerId.c_str()))
+        picker.open(path, Config::get()->IMAGES_FOLDER, "../assets/images/", {".png", ".jpg", ".jpeg", ".bmp", ".tga"});
+    if (picker.draw(pickerTitle)) {
+        path = picker.result;
+        changed = true;
+    }
+    return changed;
+}
+
+void UIManagerGUI::BorderEditorSection(UIElement& el)
+{
+    ImGui::SetNextItemWidth(80);
+    ImGui::DragFloat("Border width px##elbdrw", &el.borderWidth, 0.5f, 0.0f, 20.0f, "%.0f");
+    Color4Field("Normal##elbdrcol",  el.borderColor);        ImGui::SameLine();
+    Color4Field("Hover##elbdrcolhv", el.borderColorHover);   ImGui::SameLine();
+    Color4Field("Press##elbdrcolpr", el.borderColorPressed);
+}
 
 void UIManagerGUI::setSelectedWidget(const std::string& name)
 {
@@ -51,38 +127,49 @@ void UIManagerGUI::DrawWinUIManager()
     for (auto& [k, _] : widgets) names.push_back(k);
     std::sort(names.begin(), names.end());
 
-    // ── Col 1: widget list ────────────────────────────────────────────────
+    // ── Col 1 (split: top = list, bottom = widget setup) ─────────────────
     float colH = ImGui::GetContentRegionAvail().y;
-    ImGui::BeginChild("##col1", ImVec2(310.0f, colH), false);
+    ImGui::BeginChild("##col1", ImVec2(360.0f, colH), false);
+
+    // ── helper: relative label from file path ─────────────────────────────
+    auto makeLabel = [&](int i) -> std::string {
+        const std::string& fp = widgets[names[i]].filePath;
+        std::string label = names[i];
+        for (auto [prefix, skip] : std::initializer_list<std::pair<const char*,size_t>>{
+                {"assets/ui\\",10},{"assets\\ui\\",10},{"assets/ui/",10},{"assets\\ui\\",10},
+                {"assets/",7},{"assets\\",7}}) {
+            auto pos = fp.find(prefix);
+            if (pos != std::string::npos) {
+                label = fp.substr(pos + skip);
+                if (label.size() > 5) label.resize(label.size() - 5);
+                for (char& c : label) if (c == '\\') c = '/';
+                break;
+            }
+        }
+        return label;
+    };
+
+    // ── top sub-panel: list ───────────────────────────────────────────────
+    const float SETUP_H = 215.0f;
+    float listPanelH = colH - SETUP_H - ImGui::GetStyle().ItemSpacing.y * 3.0f - ImGui::GetStyle().SeparatorTextBorderSize;
+    ImGui::BeginChild("##col1_list", ImVec2(-1.0f, listPanelH), false);
+
     ImGui::SeparatorText("Loaded widgets");
 
     static char widgetFilter[128] = "";
     ImGui::SetNextItemWidth(-1.0f);
     ImGui::InputTextWithHint("##wfilter", "Filter...", widgetFilter, sizeof(widgetFilter));
 
-    // Build filtered index list (case-insensitive substring)
     std::string filterLow = widgetFilter;
     for (char& c : filterLow) c = (char)tolower((unsigned char)c);
 
-    std::vector<int> filtered; // indices into names[]
+    std::vector<int> filtered;
     filtered.reserve(names.size());
     for (int i = 0; i < (int)names.size(); i++) {
         if (filterLow.empty()) { filtered.push_back(i); continue; }
-        // Build the same relative label used for display
-        const std::string& fp = widgets[names[i]].filePath;
-        std::string label = names[i];
-        auto pos = fp.find("assets/ui/");  size_t skip = 10;
-        if (pos == std::string::npos) { pos = fp.find("assets\\ui\\"); skip = 10; }
-        if (pos == std::string::npos) { pos = fp.find("assets/");    skip = 7;  }
-        if (pos == std::string::npos) { pos = fp.find("assets\\");   skip = 7;  }
-        if (pos != std::string::npos) {
-            label = fp.substr(pos + skip);
-            if (label.size() > 5) label.resize(label.size() - 5);
-            for (char& c : label) if (c == '\\') c = '/';
-        }
-        std::string labelLow = label;
-        for (char& c : labelLow) c = (char)tolower((unsigned char)c);
-        if (labelLow.find(filterLow) != std::string::npos) filtered.push_back(i);
+        std::string lbl = makeLabel(i);
+        for (char& c : lbl) c = (char)tolower((unsigned char)c);
+        if (lbl.find(filterLow) != std::string::npos) filtered.push_back(i);
     }
 
     float listH = ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing() - 4.0f;
@@ -91,22 +178,8 @@ void UIManagerGUI::DrawWinUIManager()
     for (int fi = 0; fi < (int)filtered.size(); fi++) {
         int i   = filtered[fi];
         bool sel = (i == selectedWidget);
-        // Build label: relative path from "assets/ui/" prefix, e.g. rts/hud/clockWidget
-        const std::string& fp = widgets[names[i]].filePath;
-        std::string label = names[i];
-        auto pos = fp.find("assets/ui/");
-        size_t skip = 10;
-        if (pos == std::string::npos) { pos = fp.find("assets\\ui\\"); skip = 10; }
-        if (pos == std::string::npos) { pos = fp.find("assets/");  skip = 7; }
-        if (pos == std::string::npos) { pos = fp.find("assets\\"); skip = 7; }
-        if (pos != std::string::npos) {
-            std::string rel = fp.substr(pos + skip);
-            if (rel.size() > 5) rel.resize(rel.size() - 5);  // remove ".json"
-            for (char& c : rel) if (c == '\\') c = '/';
-            label = rel;
-        }
         char entry[512];
-        snprintf(entry, sizeof(entry), "%2d  %s##wsel%d", i + 1, label.c_str(), i);
+        snprintf(entry, sizeof(entry), "%2d  %s##wsel%d", i + 1, makeLabel(i).c_str(), i);
         if (ImGui::Selectable(entry, sel)) {
             selectedWidget  = i;
             selectedElement = -1;
@@ -125,126 +198,144 @@ void UIManagerGUI::DrawWinUIManager()
         int n = 0;
         while (widgets.count(newName + (n ? std::to_string(n) : ""))) n++;
         if (n) newName += std::to_string(n);
-
         std::string path = ui->getWidgetsDir() + newName + ".json";
         cJSON* root = cJSON_CreateObject();
         cJSON_AddItemToObject(root, "elements", cJSON_CreateArray());
         char* txt = cJSON_Print(root);
         FILE* f = fopen(path.c_str(), "w");
         if (f) { fputs(txt, f); fclose(f); }
-        free(txt);
-        cJSON_Delete(root);
+        free(txt); cJSON_Delete(root);
         ui->reloadWidgets();
-        selectedWidget  = -1;
-        selectedElement = -1;
+        selectedWidget = -1; selectedElement = -1;
     });
-
     if (selectedWidget >= 0 && selectedWidget < (int)names.size()) {
         ImGui::SameLine();
         GUI::ImageButtonSmall(IconGUI::SCENE_UNLOAD, "Unload", [&]{
             ui->unloadWidget(names[selectedWidget]);
-            selectedWidget  = -1;
-            selectedElement = -1;
+            selectedWidget = -1; selectedElement = -1;
         });
-
         ImGui::SameLine();
         GUI::ImageButtonSmallConfirm(IconGUI::REMOVE, "Delete", "Borrar widget", "Eliminar el archivo JSON del disco?", [&]{
-            std::string path = ui->getWidgetsDir() + names[selectedWidget] + ".json";
-            std::filesystem::remove(path);
+            std::filesystem::remove(ui->getWidgetsDir() + names[selectedWidget] + ".json");
             ui->reloadWidgets();
-            selectedWidget  = -1;
-            selectedElement = -1;
+            selectedWidget = -1; selectedElement = -1;
         });
     }
-
     ImGui::SameLine();
     GUI::ImageButtonSmallConfirm(IconGUI::CLEAR_SCENE, "Clear all", "Limpiar widgets", "Descargar todos los widgets de memoria?", [&]{
-        ui->clearWidgets();
-        selectedWidget  = -1;
-        selectedElement = -1;
+        ui->clearWidgets(); selectedWidget = -1; selectedElement = -1;
     });
 
+    ImGui::EndChild(); // ##col1_list
+
+    // ── bottom sub-panel: widget general setup ────────────────────────────
+    ImGui::Separator();
+    ImGui::BeginChild("##col1_setup", ImVec2(-1.0f, -1.0f), false);
+
+    bool savedWidget = false;
+    static bool openPreviewPopup = false;
+
+    if (selectedWidget >= 0 && selectedWidget < (int)names.size()) {
+        const std::string& wName = names[selectedWidget];
+        UIWidget& w = widgets[wName];
+
+        ImGui::SeparatorText(wName.c_str());
+
+        if (GUI::ImageButtonSmall(IconGUI::SAVE, "Save widget", []{})) {
+            SaveWidget(ui, wName, w);
+            savedWidget = true;
+        }
+        ImGui::SameLine();
+        if (GUI::ImageButtonSmall(IconGUI::SOLO_WINDOW_ON, "Preview", []{}))
+            openPreviewPopup = true;
+        ImGui::SameLine();
+        {
+            const bool active = ui->getDebugHighlightName() == wName;
+            if (active) ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.90f, 0.55f, 0.05f, 0.85f));
+            if (GUI::ImageButtonSmall(IconGUI::SEARCH, active ? "Debug: ON" : "Debug", []{}))
+                ui->setDebugHighlightName(active ? std::string() : wName);
+            if (active) ImGui::PopStyleColor();
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("Highlight this widget wherever it renders in the scene\n(includes nested renders via widgetRef / array).");
+        }
+
+        if (!savedWidget) {
+            ImGui::SetNextItemWidth(70.0f);
+            if (ImGui::DragFloat("Scale##wscale", &w.scale, 0.01f, 0.1f, 5.0f, "%.2f"))
+                w.scale = std::max(0.1f, std::min(5.0f, w.scale));
+
+            ImGui::SetNextItemWidth(90.0f);
+            ImGui::DragFloat("X%%##wposx", &w.posX, 0.001f, 0.0f, 1.0f, "%.3f");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(90.0f);
+            ImGui::DragFloat("Y%%##wposy", &w.posY, 0.001f, 0.0f, 1.0f, "%.3f");
+
+            ImGui::SetNextItemWidth(90.0f);
+            ImGui::DragFloat("offX px##woffx", &w.offsetX, 0.5f, -4000.0f, 4000.0f, "%.0f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Pixel offset added to the computed X position");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(90.0f);
+            ImGui::DragFloat("offY px##woffy", &w.offsetY, 0.5f, -4000.0f, 4000.0f, "%.0f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Pixel offset added to the computed Y position");
+
+            ImGui::SetNextItemWidth(80.0f);
+            ImGui::DragFloat("W%%##wrefW", &w.width,  0.001f, 0.0f, 1.0f, "%.3f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Widget width as fraction of window width (0..1)");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(80.0f);
+            ImGui::DragFloat("H%%##wrefH", &w.height, 0.001f, 0.0f, 1.0f, "%.3f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Widget height as fraction of window height (0..1)");
+
+            Color4Field("BG##wbg",     w.bgColor,     true);
+            Color4Field("Border##wbc", w.borderColor, true);
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(60.0f);
+            ImGui::DragFloat("px##wbw", &w.borderWidth, 0.5f, 0.0f, 20.0f, "%.0f");
+
+            if (!w.cacheable) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.6f, 0.1f, 1.0f));
+            ImGui::Checkbox("Cacheable##wcacheable", &w.cacheable);
+            if (!w.cacheable) { ImGui::PopStyleColor(); ImGui::SameLine(); ImGui::TextDisabled("(interactive — no FBO cache)"); }
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("ON: widget rendered once per data-change, blitted from FBO.\nOFF: re-rendered every frame (use for buttons with hover/press state).");
+            if (ImGui::IsItemEdited()) w.cacheDirty = true;
+        }
+    } else {
+        ImGui::TextDisabled("No widget selected");
+    }
+
+    ImGui::EndChild(); // ##col1_setup
     ImGui::EndChild(); // ##col1
 
-    if (names.empty() || selectedWidget < 0 || selectedWidget >= (int)names.size())
+    if (savedWidget || names.empty() || selectedWidget < 0 || selectedWidget >= (int)names.size())
         return;
 
+    // ── Col 2: elements + editor ──────────────────────────────────────────
     ImGui::SameLine();
 
     const std::string& wName = names[selectedWidget];
     UIWidget& w = widgets[wName];
-
     float col2W = ImGui::GetContentRegionAvail().x - 10.0f;
 
-    // ── Col 2: elements + editor ──────────────────────────────────────────
     ImGui::BeginChild("##col2", ImVec2(col2W, colH), false);
-
-    ImGui::SeparatorText(wName.c_str());
-
-    static bool openPreviewPopup = false;
-    if (GUI::ImageButtonSmall(IconGUI::SAVE, "Save widget", []{})) {
-        SaveWidget(ui, wName, w);
-        ImGui::EndChild();
-        return;
-    }
-    ImGui::SameLine();
-    if (GUI::ImageButtonSmall(IconGUI::SOLO_WINDOW_ON, "Preview", []{}))
-        openPreviewPopup = true;
-
-    ImGui::SetNextItemWidth(70.0f);
-    if (ImGui::DragFloat("Global scale##wscale", &w.scale, 0.01f, 0.1f, 5.0f, "%.2f"))
-        w.scale = std::max(0.1f, std::min(5.0f, w.scale));
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(90.0f);
-    ImGui::DragFloat("Fixed X%%##wposx", &w.posX, 0.001f, 0.0f, 1.0f, "%.3f");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(90.0f);
-    ImGui::DragFloat("Fixed Y%%##wposy", &w.posY, 0.001f, 0.0f, 1.0f, "%.3f");
-
-    ImGui::Spacing();
-    ImGui::SetNextItemWidth(80.0f);
-    ImGui::DragFloat("W (win%%)##wrefW", &w.width,  0.001f, 0.0f, 1.0f, "%.3f");
-    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Widget width as fraction of window width (0..1)");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(80.0f);
-    ImGui::DragFloat("H (win%%)##wrefH", &w.height, 0.001f, 0.0f, 1.0f, "%.3f");
-    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Widget height as fraction of window height (0..1)");
-
-    // Widget-level background and border
-    ImGui::Spacing();
-    float wbg[4] = { w.bgColor.r, w.bgColor.g, w.bgColor.b, w.bgColor.a };
-    if (ImGui::ColorEdit4("BG##wbg", wbg, ImGuiColorEditFlags_AlphaBar))
-        w.bgColor = { wbg[0], wbg[1], wbg[2], wbg[3] };
-    float wbc[4] = { w.borderColor.r, w.borderColor.g, w.borderColor.b, w.borderColor.a };
-    if (ImGui::ColorEdit4("Border##wbc", wbc, ImGuiColorEditFlags_AlphaBar))
-        w.borderColor = { wbc[0], wbc[1], wbc[2], wbc[3] };
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(60.0f);
-    ImGui::DragFloat("Width##wbw", &w.borderWidth, 0.5f, 0.0f, 20.0f, "%.0f");
-
-    ImGui::Spacing();
     ImGui::SeparatorText("Elements");
     DrawElementList(w);
     ImGui::Spacing();
 
     if (selectedElement >= 0 && selectedElement < (int)w.elements.size()) {
         UIElement& el = w.elements[selectedElement];
-
-        if (ImGui::CollapsingHeader("Element Properties", ImGuiTreeNodeFlags_DefaultOpen))
-            DrawElementEditor(el, w, ui, wName);
-
-        if (el.type != "text" && el.type != "rect" && el.type != "button" && el.type != "image" && el.type != "array" && ImGui::CollapsingHeader("Preview Data", ImGuiTreeNodeFlags_DefaultOpen))
+        DrawElementEditor(el, w, ui, wName);
+        if (el.type != "text" && el.type != "rect" && el.type != "button" && el.type != "image" && el.type != "array"
+            && ImGui::CollapsingHeader("Preview Data", ImGuiTreeNodeFlags_None))
             DrawElementPreviewFields(el);
     }
 
-    ImGui::EndChild();
+    ImGui::EndChild(); // ##col2
 
     // ── Preview popup ─────────────────────────────────────────────────────
     if (openPreviewPopup) {
         ImGui::OpenPopup("##widget_preview_popup");
         openPreviewPopup = false;
     }
-    ImGui::SetNextWindowSize(ImVec2(440.0f, 540.0f), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(440.0f, 800.0f), ImGuiCond_FirstUseEver);
     if (ImGui::BeginPopup("##widget_preview_popup")) {
         DrawWidgetPreview(ui, wName);
         ImGui::EndPopup();
@@ -261,8 +352,10 @@ void UIManagerGUI::DrawElementList(UIWidget& w)
         auto& el = w.elements[i];
         std::string label = "[" + el.type + "] " + el.id + "##el" + std::to_string(i);
         bool sel = (i == selectedElement);
+        if (!el.enabled) ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.85f, 0.2f, 0.2f, 1.0f));
         if (ImGui::Selectable(label.c_str(), sel))
             selectedElement = i;
+        if (!el.enabled) ImGui::PopStyleColor();
     }
     ImGui::EndChild();
 
@@ -312,89 +405,8 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
 {
     static const char* types[] = { "text", "image", "rect", "progressbar", "icons", "button", "widget", "array" };
 
-    ImGui::SeparatorText("Element Properties");
-
-    char idBuf[128]; strncpy(idBuf, el.id.c_str(), sizeof(idBuf)-1); idBuf[sizeof(idBuf)-1]='\0';
-    ImGui::SetNextItemWidth(160);
-    if (ImGui::InputText("id##elid", idBuf, sizeof(idBuf))) el.id = idBuf;
-
-    int typeIdx = 0;
-    for (int i = 0; i < 8; i++) if (el.type == types[i]) { typeIdx = i; break; }
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(110);
-    if (ImGui::Combo("type##eltype", &typeIdx, types, 8)) el.type = types[typeIdx];
-
-    ImGui::SeparatorText("Layout");
-    ImGui::Checkbox("yAuto##elyauto", &el.yAuto);
-    ImGui::SameLine();
-    if (el.type == "array")
-        ImGui::TextDisabled("(auto Y in parent — places this array block below the previous element)");
-    else
-        ImGui::TextDisabled("(auto Y in parent — places this element below the previous one)");
-    if (ImGui::IsItemHovered()) ImGui::SetTooltip(
-        "Controls where THIS element sits inside its parent widget.\n"
-        "This is NOT about the array's own internal alignment.\n\n"
-        "ON  -> Y is computed automatically: element starts right\n"
-        "       below the previous element in the parent widget.\n"
-        "       The x/y fields are ignored.\n\n"
-        "OFF -> Y is taken from the 'y' field (fixed pixel offset\n"
-        "       from the top of the parent widget).");
-
-    // Helper: InputFloat + [–] [+] buttons. step=1 for px fields, small for scale fields.
-    auto stepField = [&](const char* label, float& v, float step) {
-        constexpr float BTN = 18.0f;
-        constexpr float GAP = 2.0f;
-        float fieldW = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x) * 0.5f
-                       - BTN * 2.0f - GAP * 2.0f;
-        ImGui::SetNextItemWidth(std::max(fieldW, 40.0f));
-        ImGui::InputFloat(label, &v, 0, 0, step >= 1.0f ? "%.0f" : "%.3f");
-        ImGui::SameLine(0, GAP);
-        if (ImGui::SmallButton((std::string("-##m") + label).c_str())) v -= step;
-        ImGui::SameLine(0, GAP);
-        if (ImGui::SmallButton((std::string("+##p") + label).c_str())) v += step;
-    };
-    auto stepFieldRow = [&](const char* la, float& va, const char* lb, float& vb, float step) {
-        stepField(la, va, step);
-        ImGui::SameLine();
-        stepField(lb, vb, step);
-    };
-
-    constexpr float xyStep    = 0.001f;
-    constexpr float whStep    = 0.001f;
-    constexpr const char* xyFmt     = "%.3f";
-    constexpr const char* whFmt     = "%.3f";
     constexpr float spatialStep = 0.001f;
-    constexpr const char* spatialFmt  = "%.3f";
-
-    if (!el.yAuto) {
-        ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("x %%##elx", &el.x, xyStep, 0.0f, 0.0f, xyFmt);
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("y %%##ely", &el.y, xyStep, 0.0f, 0.0f, xyFmt);
-    }
-    if (el.type != "text" && el.type != "progressbar") {
-        ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("w %%##elw", &el.w, whStep, 0.0f, 0.0f, whFmt);
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("h %%##elh", &el.h, whStep, 0.0f, 0.0f, whFmt);
-    }
-    ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("padL %%##elpL", &el.paddingLeft,   0.001f, 0.0f, 0.0f, "%.3f");
-    if (ImGui::IsItemHovered()) ImGui::SetTooltip("PaddingLeft — shifts element right (left side guaranteed).");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("padT %%##elpT", &el.paddingTop,    0.001f, 0.0f, 0.0f, "%.3f");
-    if (ImGui::IsItemHovered()) ImGui::SetTooltip("PaddingTop — pre-element space (yAuto) / adds to y (fixed).");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("padB %%##elpB", &el.paddingBottom, 0.001f, 0.0f, 0.0f, "%.3f");
-    if (ImGui::IsItemHovered()) ImGui::SetTooltip("PaddingBottom — post-element space (yAuto) / adds to effective height (fixed).");
-
-    // Helper: border editor block (image, button, array)
-    auto borderEditor = [&]() {
-        constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-        float v[4] = { el.borderColor.r, el.borderColor.g, el.borderColor.b, el.borderColor.a };
-        if (ImGui::ColorEdit4("Border color##elbdrcol", v, flags))
-            el.borderColor = Color(v[0], v[1], v[2], v[3]);
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(80);
-        ImGui::DragFloat("Border width %%##elbdrw", &el.borderWidth, 0.001f, 0.0f, 0.1f, "%.3f");
-    };
+    constexpr const char* spatialFmt = "%.3f";
 
     // Helper: small reset button to the left of static string fields
     auto resetStrBtn = [&](const char* uid, std::string& str) {
@@ -405,57 +417,107 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         ImGui::SameLine();
     };
 
-    // Type-specific fields
+    // ── Section 1: Identity & Type ────────────────────────────────────────
+    if (ImGui::CollapsingHeader("Identity & Type", ImGuiTreeNodeFlags_None)) {
+        ImGui::Checkbox("enabled##elenabled", &el.enabled);
+        ImGui::SameLine();
+        StringField("id##elid", el.id, 160.0f, 128);
+
+        int typeIdx = 0;
+        for (int i = 0; i < 8; i++) if (el.type == types[i]) { typeIdx = i; break; }
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(110);
+        if (ImGui::Combo("type##eltype", &typeIdx, types, 8)) el.type = types[typeIdx];
+    }
+
+    // ── Section 2: Layout ─────────────────────────────────────────────────
+    if (ImGui::CollapsingHeader("Layout", ImGuiTreeNodeFlags_None)) {
+        ImGui::Checkbox("yAuto##elyauto", &el.yAuto);
+        ImGui::SameLine();
+        if (el.type == "array")
+            ImGui::TextDisabled("(auto Y in parent — places this array block below the previous element)");
+        else
+            ImGui::TextDisabled("(auto Y in parent — places this element below the previous one)");
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip(
+            "Controls where THIS element sits inside its parent widget.\n"
+            "This is NOT about the array's own internal alignment.\n\n"
+            "ON  -> Y is computed automatically: element starts right\n"
+            "       below the previous element in the parent widget.\n"
+            "       The x/y fields are ignored.\n\n"
+            "OFF -> Y is taken from the 'y' field (fixed pixel offset\n"
+            "       from the top of the parent widget).");
+
+        if (!el.yAuto) {
+            ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("x %%##elx", &el.x, 0.001f, 0.0f, 0.0f, "%.3f");
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("y %%##ely", &el.y, 0.001f, 0.0f, 0.0f, "%.3f");
+        }
+        if (el.type != "progressbar") {
+            ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("w %%##elw", &el.w, 0.001f, 0.0f, 0.0f, "%.3f");
+            if (el.type != "text") {
+                ImGui::SameLine();
+                ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("h %%##elh", &el.h, 0.001f, 0.0f, 0.0f, "%.3f");
+            }
+        }
+        ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("padL %%##elpL", &el.paddingLeft,   0.001f, 0.0f, 0.0f, "%.3f");
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip("PaddingLeft — shifts element right (left side guaranteed).");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("padT %%##elpT", &el.paddingTop,    0.001f, 0.0f, 0.0f, "%.3f");
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip("PaddingTop — pre-element space (yAuto) / adds to y (fixed).");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("padB %%##elpB", &el.paddingBottom, 0.001f, 0.0f, 0.0f, "%.3f");
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip("PaddingBottom — post-element space (yAuto) / adds to effective height (fixed).");
+    }
+
+    // ── Section 3: Type-specific properties ───────────────────────────────
+    // Trailing "##typespec" keeps the ID stable across type changes, so the
+    // header's open/closed state persists when the user swaps the type combo.
+    std::string typeHdr = (el.type.empty() ? std::string("Type") : el.type) + " properties##typespec";
+    if (!ImGui::CollapsingHeader(typeHdr.c_str(), ImGuiTreeNodeFlags_None)) return;
+
     if (el.type == "text") {
         ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("fontScale##elfs", &el.fontScale, 0.01f, 0.0f, 10.0f, "%.2f");
-        constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-        float v[4] = {el.staticTextColor.r, el.staticTextColor.g, el.staticTextColor.b, el.staticTextColor.a};
-        if (ImGui::ColorEdit4("Color##eltxtcolor", v, flags))
-            el.staticTextColor = Color(v[0], v[1], v[2], v[3]);
+        Color4Field("Color##eltxtcolor", el.staticTextColor);
         {
-            char tbuf[256]; strncpy(tbuf, el.staticText.c_str(), sizeof(tbuf)-1); tbuf[sizeof(tbuf)-1]='\0';
+            const char* alignItems[] = { "left", "center", "right" };
+            int alignIdx = (el.textAlign == "center") ? 1 : (el.textAlign == "right") ? 2 : 0;
+            ImGui::SetNextItemWidth(90.0f);
+            if (ImGui::Combo("textAlign##eltxtal", &alignIdx, alignItems, IM_ARRAYSIZE(alignItems)))
+                el.textAlign = alignItems[alignIdx];
+            if (el.w <= 0.0f && alignIdx != 0) {
+                ImGui::SameLine(); ImGui::TextDisabled("(needs w > 0)");
+            }
+        }
+        {
             resetStrBtn("rsttxt", el.staticText);
-            ImGui::SetNextItemWidth(260);
-            if (ImGui::InputText("text##eltxtst", tbuf, sizeof(tbuf))) el.staticText = tbuf;
+            StringField("text##eltxtst", el.staticText, 260.0f, 256);
             ImGui::SameLine(); ImGui::TextDisabled("(static, overridden by Lua)");
         }
     }
     else if (el.type == "image") {
         ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("imageScale##elis", &el.imageScale, 0.05f, 0.0f, 10.0f, "%.2f");
         {
-            char ibuf[256]; strncpy(ibuf, el.staticImagePath.c_str(), sizeof(ibuf)-1); ibuf[sizeof(ibuf)-1]='\0';
             resetStrBtn("rstimgpath", el.staticImagePath);
             ImGui::Image(FileSystemGUI::Icon(IconGUI::DRAGGABLE_UI_ITEM), ImVec2(12, 12)); ImGui::SameLine();
-            ImGui::SetNextItemWidth(260);
-            if (ImGui::InputText("imagePath##elimgpath", ibuf, sizeof(ibuf))) el.staticImagePath = ibuf;
-            if (ImGui::BeginDragDropTarget()) {
-                if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM))
-                    el.staticImagePath = std::string((const char*)p->Data);
-                ImGui::EndDragDropTarget();
-            }
+            ImagePickerField("imagePath##elimgpath", el.staticImagePath, s_pickerElImg, "UIEl_Image_FilePicker", 260.0f);
             if (!el.staticImagePath.empty()) {
                 GLuint tid = Components::get()->Render()->getImageGLTexture(el.staticImagePath);
                 if (tid) { ImGui::SameLine(); ImGui::Image((ImTextureID)(intptr_t)tid, ImVec2(32, 32)); }
             }
         }
         {
-            char ttbuf[256]; strncpy(ttbuf, el.tooltip.c_str(), sizeof(ttbuf)-1); ttbuf[sizeof(ttbuf)-1]='\0';
-            ImGui::SetNextItemWidth(360);
-            if (ImGui::InputText("tooltip##elimgtt", ttbuf, sizeof(ttbuf))) el.tooltip = ttbuf;
+            StringField("tooltip##elimgtt", el.tooltip, 360.0f, 256);
             ImGui::SameLine(); ImGui::TextDisabled("(shown on hover)");
         }
-        borderEditor();
+        BorderEditorSection(el);
     }
     else if (el.type == "rect") {
-        constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-        float v[4] = {el.rectColor.r, el.rectColor.g, el.rectColor.b, el.rectColor.a};
-        if (ImGui::ColorEdit4("Color##elrcolor", v, flags))
-            el.rectColor = Color(v[0], v[1], v[2], v[3]);
+        Color4Field("Color##elrcolor", el.rectColor);
 
         ImGui::SetNextItemWidth(80.0f);
         if (ImGui::DragFloat("alpha##elralpha", &el.alpha, 0.01f, 0.0f, 1.0f, "%.2f"))
             el.alpha = std::max(0.0f, std::min(1.0f, el.alpha));
-        borderEditor();
+        BorderEditorSection(el);
     }
     else if (el.type == "progressbar") {
         ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("barW %%##elbw", &el.barW, spatialStep, 0.0f, 1.0f, spatialFmt);
@@ -465,12 +527,7 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         ImGui::SameLine();
         ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("txtOffY %%##eltoy", &el.textOffsetY, spatialStep, -1.0f, 1.0f, spatialFmt);
         ImGui::SetNextItemWidth(70.0f); ImGui::DragFloat("barFontScale##elbfs", &el.barFontScale, 0.01f, 0.0f, 10.0f, "%.2f");
-        {
-            constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-            float v[4] = {el.staticTextColor.r, el.staticTextColor.g, el.staticTextColor.b, el.staticTextColor.a};
-            if (ImGui::ColorEdit4("Text color##elpbcolor", v, flags))
-                el.staticTextColor = Color(v[0], v[1], v[2], v[3]);
-        }
+        Color4Field("Text color##elpbcolor", el.staticTextColor);
         DrawProgressBarColors(el);
     }
     else if (el.type == "icons") {
@@ -489,24 +546,19 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         ImGui::SameLine();
         ImGui::SetNextItemWidth(60.0f); ImGui::DragFloat("txtOffY %%##elbtntoy", &el.btnTextOffsetY, spatialStep, -1.0f, 1.0f, spatialFmt);
         {
-            char ttbuf[256]; strncpy(ttbuf, el.tooltip.c_str(), sizeof(ttbuf)-1); ttbuf[sizeof(ttbuf)-1]='\0';
-            ImGui::SetNextItemWidth(360);
-            if (ImGui::InputText("tooltip##elbtntt", ttbuf, sizeof(ttbuf))) el.tooltip = ttbuf;
+            StringField("tooltip##elbtntt", el.tooltip, 360.0f, 256);
             ImGui::SameLine(); ImGui::TextDisabled("(shown on hover)");
         }
         {
-            constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-            float v[4] = {el.staticTextColor.r, el.staticTextColor.g, el.staticTextColor.b, el.staticTextColor.a};
-            if (ImGui::ColorEdit4("Text color##elbtncolor", v, flags))
-                el.staticTextColor = Color(v[0], v[1], v[2], v[3]);
+            StringField("sound##elbtnsd", el.sound, 200.0f, 128);
+            ImGui::SameLine(); ImGui::TextDisabled("(hover sound ID)");
         }
+        Color4Field("Text color##elbtncolor", el.staticTextColor);
 
         ImGui::SeparatorText("Static Content");
         {
-            char tbuf[128]; strncpy(tbuf, el.staticText.c_str(), sizeof(tbuf)-1); tbuf[sizeof(tbuf)-1]='\0';
             resetStrBtn("rstbtntxt", el.staticText);
-            ImGui::SetNextItemWidth(200);
-            if (ImGui::InputText("text##elbtntxt", tbuf, sizeof(tbuf))) el.staticText = tbuf;
+            StringField("text##elbtntxt", el.staticText, 200.0f, 128);
             ImGui::SameLine(); ImGui::TextDisabled("(fallback label if no option matches)");
         }
 
@@ -521,19 +573,11 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
             // Header line: index label + key + text + color + delete
             ImGui::TextDisabled("#%d", oi);
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(80.0f);
-            char kbuf[64]; strncpy(kbuf, opt.key.c_str(), sizeof(kbuf)-1); kbuf[sizeof(kbuf)-1]='\0';
-            if (ImGui::InputText("key##optk", kbuf, sizeof(kbuf))) opt.key = kbuf;
+            StringField("key##optk", opt.key, 80.0f, 64);
             ImGui::SameLine();
-            ImGui::SetNextItemWidth(130.0f);
-            char tbuf2[256]; strncpy(tbuf2, opt.text.c_str(), sizeof(tbuf2)-1); tbuf2[sizeof(tbuf2)-1]='\0';
-            if (ImGui::InputText("text##optt", tbuf2, sizeof(tbuf2))) opt.text = tbuf2;
+            StringField("text##optt", opt.text, 130.0f, 256);
             ImGui::SameLine();
-            {
-                constexpr auto cflags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop | ImGuiColorEditFlags_AlphaBar;
-                float cv[4] = {opt.color.r, opt.color.g, opt.color.b, opt.color.a};
-                if (ImGui::ColorEdit4("##optcol", cv, cflags)) { opt.color = Color(cv[0],cv[1],cv[2],cv[3]); opt.colorSet = true; }
-            }
+            if (Color4Field("##optcol", opt.color, /*alphaBar*/ true)) opt.colorSet = true;
             ImGui::SameLine();
             GUI::DrawButton("Delete option", IconGUI::REMOVE, ImVec2(12, 12), false, [&]{ optToDelete = oi; });
 
@@ -543,28 +587,29 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 if (tid) { ImGui::Image((ImTextureID)(intptr_t)tid, ImVec2(24, 24)); ImGui::SameLine(); }
                 else { ImGui::Image(FileSystemGUI::Icon(IconGUI::DRAGGABLE_UI_ITEM), ImVec2(12, 12)); ImGui::SameLine(); }
                 ImGui::TextDisabled("image"); ImGui::SameLine();
-                char ibuf[512]; strncpy(ibuf, opt.image.c_str(), sizeof(ibuf)-1); ibuf[sizeof(ibuf)-1]='\0';
-                ImGui::SetNextItemWidth(220.0f);
-                if (ImGui::InputText("##optimg", ibuf, sizeof(ibuf))) opt.image = ibuf;
+                StringField("##optimg", opt.image, 220.0f, 512);
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM))
                         opt.image = std::string((const char*)p->Data);
                     ImGui::EndDragDropTarget();
                 }
+                ImGui::SameLine();
+                if (s_pickerOptImg.drawTrigger("##browse_optimg")) {
+                    s_pickerOptIdx = oi;
+                    s_pickerOptImg.open(opt.image, Config::get()->IMAGES_FOLDER, "../assets/images/", {".png", ".jpg", ".jpeg", ".bmp", ".tga"});
+                }
             }
+            if (s_pickerOptImg.draw("UIBtn_OptImg_FilePicker") && s_pickerOptIdx == oi)
+                opt.image = s_pickerOptImg.result;
 
             // Tooltip rows
             {
                 ImGui::TextDisabled("tooltip"); ImGui::SameLine();
-                char ttbuf[256]; strncpy(ttbuf, opt.tooltip.c_str(), sizeof(ttbuf)-1); ttbuf[sizeof(ttbuf)-1]='\0';
-                ImGui::SetNextItemWidth(220.0f);
-                if (ImGui::InputText("##opttt", ttbuf, sizeof(ttbuf))) opt.tooltip = ttbuf;
+                StringField("##opttt", opt.tooltip, 220.0f, 256);
             }
             {
                 ImGui::TextDisabled("ttWidget"); ImGui::SameLine();
-                char twbuf[128]; strncpy(twbuf, opt.tooltipWidget.c_str(), sizeof(twbuf)-1); twbuf[sizeof(twbuf)-1]='\0';
-                ImGui::SetNextItemWidth(220.0f);
-                if (ImGui::InputText("##opttw", twbuf, sizeof(twbuf))) opt.tooltipWidget = twbuf;
+                StringField("##opttw", opt.tooltipWidget, 220.0f, 128);
             }
 
             if (oi < (int)el.options.size() - 1)
@@ -580,28 +625,19 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         });
 
         ImGui::SeparatorText("Button Colors");
-        constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-        auto ce = [&](const char* label, Color& c) {
-            float v[4] = {c.r, c.g, c.b, c.a};
-            if (ImGui::ColorEdit4(label, v, flags)) c = Color(v[0], v[1], v[2], v[3]);
-        };
-        ce("Normal##cbtn",  el.btnBg);      ImGui::SameLine();
-        ce("Hover##cbtnhv", el.btnHover);   ImGui::SameLine();
-        ce("Press##cbtnpr", el.btnPressed);
-        borderEditor();
+        Color4Field("Normal##cbtn",  el.btnBg);      ImGui::SameLine();
+        Color4Field("Hover##cbtnhv", el.btnHover);   ImGui::SameLine();
+        Color4Field("Press##cbtnpr", el.btnPressed);
+        BorderEditorSection(el);
     }
     else if (el.type == "widget") {
-        char refBuf[128]; strncpy(refBuf, el.widgetRef.c_str(), sizeof(refBuf)-1); refBuf[sizeof(refBuf)-1]='\0';
-        ImGui::SetNextItemWidth(200);
-        if (ImGui::InputText("widgetRef##elwref", refBuf, sizeof(refBuf))) el.widgetRef = refBuf;
+        StringField("widgetRef##elwref", el.widgetRef, 200.0f, 128);
         ImGui::SameLine(); ImGui::TextDisabled("(widget name)");
     }
     else if (el.type == "array") {
         ImGui::SeparatorText("Array");
 
-        char refBuf[128]; strncpy(refBuf, el.widgetRef.c_str(), sizeof(refBuf)-1); refBuf[sizeof(refBuf)-1]='\0';
-        ImGui::SetNextItemWidth(200);
-        if (ImGui::InputText("widgetRef##elaref", refBuf, sizeof(refBuf))) el.widgetRef = refBuf;
+        StringField("widgetRef##elaref", el.widgetRef, 200.0f, 128);
         if (ImGui::IsItemHovered()) ImGui::SetTooltip("Name of the child widget to repeat N times.");
 
         ImGui::SetNextItemWidth(80);
@@ -617,6 +653,28 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         if (ImGui::IsItemHovered()) ImGui::SetTooltip(
             "vertical   -> items stacked top to bottom.\n"
             "horizontal -> items placed left to right.");
+
+        ImGui::SeparatorText("Pagination");
+
+        ImGui::Checkbox("paginate##elapag", &el.arrayPaginate);
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip(
+            "Enables pagination.\n"
+            "arrayCount = items per page.\n"
+            "Lua passes: count=total items, page=current page (0-based).\n"
+            "Clicks return __prev / __next for nav buttons.");
+
+        if (el.arrayPaginate) {
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(160);
+            char pagerBuf[128] = {};
+            std::strncpy(pagerBuf, el.arrayPagerWidget.c_str(), sizeof(pagerBuf) - 1);
+            if (ImGui::InputText("pager widget##elapagw", pagerBuf, sizeof(pagerBuf)))
+                el.arrayPagerWidget = pagerBuf;
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip(
+                "Widget used to render the pagination bar.\n"
+                "Must expose: __prev (button), pageLabel (text), __next (button).\n"
+                "Leave empty to use the default 'arrayPager'.");
+        }
 
         ImGui::SeparatorText("Spacing");
 
@@ -641,12 +699,10 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 "Only active when distribute is disabled.");
         }
 
-        borderEditor();
+        BorderEditorSection(el);
 
         ImGui::SeparatorText("Background");
-        float abg[4] = { el.bgColor.r, el.bgColor.g, el.bgColor.b, el.bgColor.a };
-        if (ImGui::ColorEdit4("bg color##elabg", abg, ImGuiColorEditFlags_AlphaBar))
-            el.bgColor = Color(abg[0], abg[1], abg[2], abg[3]);
+        Color4Field("bg color##elabg", el.bgColor, /*alphaBar*/ true);
         if (ImGui::IsItemHovered()) ImGui::SetTooltip("Filled rect drawn behind each array item.\nAlpha = 0 → no background.");
 
         ImGui::SeparatorText("Per-item data (from Lua)");
@@ -667,17 +723,10 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
 void UIManagerGUI::DrawProgressBarColors(UIElement& el)
 {
     ImGui::SeparatorText("Bar Colors");
-    constexpr auto flags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoDragDrop;
-
-    auto colorEdit = [&](const char* label, Color& c) {
-        float v[4] = { c.r, c.g, c.b, c.a };
-        if (ImGui::ColorEdit4(label, v, flags)) c = Color(v[0], v[1], v[2], v[3]);
-    };
-
-    colorEdit("BG##cbg",       el.barBg);  ImGui::SameLine();
-    colorEdit(">66%%##cok",    el.barOk);  ImGui::SameLine();
-    colorEdit("33-66%%##cm",   el.barMid); ImGui::SameLine();
-    colorEdit("<33%%##cl",     el.barLow);
+    Color4Field("BG##cbg",       el.barBg);  ImGui::SameLine();
+    Color4Field(">66%%##cok",    el.barOk);  ImGui::SameLine();
+    Color4Field("33-66%%##cm",   el.barMid); ImGui::SameLine();
+    Color4Field("<33%%##cl",     el.barLow);
 }
 
 // ---------------------------------------------------------------------------
@@ -738,6 +787,8 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
     cJSON_AddNumberToObject(root, "scale", w.scale);
     if (w.posX != 0.0f) cJSON_AddNumberToObject(root, "posX", w.posX);
     if (w.posY != 0.0f) cJSON_AddNumberToObject(root, "posY", w.posY);
+    if (w.offsetX != 0.0f) cJSON_AddNumberToObject(root, "offsetX", w.offsetX);
+    if (w.offsetY != 0.0f) cJSON_AddNumberToObject(root, "offsetY", w.offsetY);
     if (w.width  > 0) cJSON_AddNumberToObject(root, "width",  w.width);
     if (w.height > 0) cJSON_AddNumberToObject(root, "height", w.height);
     if (w.bgColor.a > 0.0f) {
@@ -757,6 +808,7 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
         cJSON_AddItemToObject(root, "borderColor", bc);
         cJSON_AddNumberToObject(root, "borderWidth", w.borderWidth);
     }
+    if (!w.cacheable) cJSON_AddFalseToObject(root, "cacheable");
 
     cJSON* arr = cJSON_CreateArray();
 
@@ -764,6 +816,7 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
         cJSON* item = cJSON_CreateObject();
         cJSON_AddStringToObject(item, "id",   el.id.c_str());
         cJSON_AddStringToObject(item, "type", el.type.c_str());
+        if (!el.enabled) cJSON_AddFalseToObject(item, "enabled");
         if (!el.yAuto) {
             cJSON_AddNumberToObject(item, "x", el.x);
             cJSON_AddNumberToObject(item, "y", el.y);
@@ -779,6 +832,7 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
         if (el.type == "text") {
             cJSON_AddNumberToObject(item, "fontScale", el.fontScale);
             if (!el.staticText.empty()) cJSON_AddStringToObject(item, "text", el.staticText.c_str());
+            if (el.textAlign != "left") cJSON_AddStringToObject(item, "textAlign", el.textAlign.c_str());
             const Color& tc = el.staticTextColor;
             if (tc.r < 0.999f || tc.g < 0.999f || tc.b < 0.999f || tc.a < 0.999f) {
                 cJSON* tcJ = cJSON_CreateObject();
@@ -875,9 +929,12 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
             if (tc.r < 0.999f || tc.g < 0.999f || tc.b < 0.999f || tc.a < 0.999f)
                 addCol("textColor", tc);
             if (!el.tooltip.empty()) cJSON_AddStringToObject(item, "tooltip", el.tooltip.c_str());
+            if (!el.sound.empty())   cJSON_AddStringToObject(item, "sound",   el.sound.c_str());
             if (el.borderWidth > 0.0f) {
                 cJSON_AddNumberToObject(item, "borderWidth", el.borderWidth);
-                addCol("borderColor", el.borderColor);
+                addCol("borderColor",        el.borderColor);
+                addCol("borderColorHover",   el.borderColorHover);
+                addCol("borderColorPressed", el.borderColorPressed);
             }
             if (!el.options.empty()) {
                 cJSON* optArr = cJSON_CreateArray();
@@ -920,6 +977,10 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
             cJSON_AddStringToObject(item, "arrayAlign", el.arrayAlign.c_str());
             if (el.arrayDistribute)
                 cJSON_AddTrueToObject(item, "arrayDistribute");
+            if (el.arrayPaginate)
+                cJSON_AddTrueToObject(item, "arrayPaginate");
+            if (!el.arrayPagerWidget.empty())
+                cJSON_AddStringToObject(item, "arrayPagerWidget", el.arrayPagerWidget.c_str());
             if (el.arrayOffset != 0.0f)
                 cJSON_AddNumberToObject(item, "arrayOffset", el.arrayOffset);
             if (el.borderWidth > 0.0f) {

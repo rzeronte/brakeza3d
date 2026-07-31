@@ -137,6 +137,8 @@ void ShaderOGLShadowPass::renderSceneDirectionalLight(
     const DirLightOpenGL& light
 ) const {
     auto render = Components::get()->Render();
+    const int res = Config::get()->SHADOW_MAP_RESOLUTION;
+    glViewport(0, 0, res, res);
     render->ChangeOpenGLFramebuffer(directionalLightDepthMapFBO);
     render->ChangeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -148,7 +150,6 @@ void ShaderOGLShadowPass::renderSceneDirectionalLight(
         const bool feedbackFBO = dynamic_cast<Mesh3DAnimation*>(mesh) != nullptr;
         setMat4Uniform(matrixModelUniform, mesh->getModelMatrix());
         for (const auto& m : mesh->getMeshData()) {
-            if (!m.visibleInFrustum) continue;
             setVAOAttributes(
                 feedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
                 m.uvBuffer,
@@ -162,6 +163,9 @@ void ShaderOGLShadowPass::renderSceneDirectionalLight(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     render->ChangeOpenGLFramebuffer(0);
+
+    auto win = Components::get()->Window();
+    glViewport(0, 0, win->getWidthRender(), win->getHeightRender());
 }
 
 void ShaderOGLShadowPass::renderSceneSpotLight(
@@ -172,6 +176,8 @@ void ShaderOGLShadowPass::renderSceneSpotLight(
     if (light == nullptr) return;
 
     auto render = Components::get()->Render();
+    const int res = Config::get()->SHADOW_MAP_RESOLUTION;
+    glViewport(0, 0, res, res);
     render->ChangeOpenGLFramebuffer(spotLightsDepthMapsFBO);
     render->ChangeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -183,7 +189,6 @@ void ShaderOGLShadowPass::renderSceneSpotLight(
         const bool feedbackFBO = dynamic_cast<Mesh3DAnimation*>(mesh) != nullptr;
         setMat4Uniform(matrixModelUniform, mesh->getModelMatrix());
         for (const auto& m : mesh->getMeshData()) {
-            if (!m.visibleInFrustum) continue;
             setVAOAttributes(
                 feedbackFBO ? m.feedbackBuffer : m.vertexBuffer,
                 m.uvBuffer,
@@ -197,6 +202,9 @@ void ShaderOGLShadowPass::renderSceneSpotLight(
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
     render->ChangeOpenGLFramebuffer(0);
+
+    auto win = Components::get()->Window();
+    glViewport(0, 0, win->getWidthRender(), win->getHeightRender());
 }
 
 GLuint ShaderOGLShadowPass::getSpotLightsDepthMapsFBO() const
@@ -262,15 +270,12 @@ void ShaderOGLShadowPass::createDirectionalLightDepthTexture()
         glDeleteTextures(1, &directionalLightDepthTexture);
     }
 
-    auto window = Components::get()->Window();
-
-    int width = window->getWidthRender();
-    int height = window->getHeightRender();
+    int res = Config::get()->SHADOW_MAP_RESOLUTION;
 
     glGenTextures(1, &directionalLightDepthTexture);
     glBindTexture(GL_TEXTURE_2D, directionalLightDepthTexture);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0,GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, res, res, 0,GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -305,16 +310,17 @@ GLuint ShaderOGLShadowPass::getSpotLightsShadowMapArrayTextures() const
 void ShaderOGLShadowPass::createSpotLightsDepthTextures(int numLights)
 {
     LOG_MESSAGE("[ShaderOGLShadowPass] Allocating shadow map array for %d shadow casters", numLights);
-    auto window = Components::get()->Window();
 
     if (spotLightsDepthMapArray != 0) {
         glDeleteTextures(1, &spotLightsDepthMapArray);
         spotLightsDepthMapArray = 0;
     }
 
+    int res = Config::get()->SHADOW_MAP_RESOLUTION;
+
     glGenTextures(1, &spotLightsDepthMapArray);
     glBindTexture(GL_TEXTURE_2D_ARRAY, spotLightsDepthMapArray);
-    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, window->getWidthRender(), window->getHeightRender(), numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_DEPTH_COMPONENT32, res, res, numLights,0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);

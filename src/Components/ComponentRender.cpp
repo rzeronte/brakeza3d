@@ -188,7 +188,7 @@ void ComponentRender::onUpdate()
 
 void ComponentRender::postUpdate()
 {
-    std::vector<Object3D *> &sceneObjects = Brakeza::get()->getSceneObjects();
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
 
     for (auto &o: sceneObjects) {
         if (!o->isEnabled()) continue;
@@ -204,6 +204,7 @@ void ComponentRender::RenderAvatars()
 {
     if (!Config::get()->SHOW_AVATARS) return;
     if (!Config::get()->ENABLE_IMGUI) return;
+    if (Components::get()->Scripting()->isExecuting()) return;
 
     auto* gui = Brakeza::get()->GUI();
     if (!gui) return;
@@ -217,7 +218,8 @@ void ComponentRender::RenderAvatars()
     const int screenH = Config::get()->screenHeight;
     const GLuint uiFBO = window->getUIFramebuffer();
 
-    for (auto* obj : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto* obj : sceneObjects) {
         if (!obj->isEnabled() || obj->isRemoved()) continue;
         if (!obj->showAvatar) continue;
         if (!isAvatarTypeEnabled(obj->getTypeObject())) continue;
@@ -264,6 +266,7 @@ bool ComponentRender::isAvatarTypeEnabled(ObjectType type)
         case ObjectType::Image3D:              return cfg->SHOW_AVATAR_IMAGE3D;
         case ObjectType::Image2D:              return cfg->SHOW_AVATAR_IMAGE2D;
         case ObjectType::Swarm:                return cfg->SHOW_AVATAR_SWARM;
+        case ObjectType::Sound3D:              return cfg->SHOW_AVATAR_SOUND3D;
     }
     return true;
 }
@@ -285,7 +288,8 @@ Object3D* ComponentRender::hitTestAvatar(int screenX, int screenY) const
     Object3D* best = nullptr;
     float bestDepth = std::numeric_limits<float>::max();
 
-    for (auto* obj : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto* obj : sceneObjects) {
         if (!obj->isEnabled() || obj->isRemoved()) continue;
         if (!obj->showAvatar) continue;
         if (!isAvatarTypeEnabled(obj->getTypeObject())) continue;
@@ -338,7 +342,7 @@ void ComponentRender::updateFrustum()
     auto* cam = Components::get()->Camera();
     glm::mat4 vp = cam->getGLMMat4ProjectionMatrix() * cam->getGLMMat4ViewMatrix();
 
-    // Gribb-Hartmann: extract 6 frustum planes from the VP matrix (GLM column-major)
+    // Gribb-Hartmann: extract 6 frustum pla     nes from the VP matrix (GLM column-major)
     auto extract = [&](float sign, int row) {
         FrustumPlane p;
         p.nx = vp[0][3] + sign * vp[0][row];
@@ -405,7 +409,7 @@ bool ComponentRender::isInFrustum(const Object3D *o, float radiusOverride)
 
 void ComponentRender::onUpdateSceneObjects()
 {
-    std::vector<Object3D *> &sceneObjects = Brakeza::get()->getSceneObjects();
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
 
     sortFrameTime += Brakeza::get()->getDeltaTimeMicro();
     if (sortFrameTime >= Config::get()->SORT_OBJECTS_INTERVAL_MS) {
@@ -457,6 +461,7 @@ void ComponentRender::UpdateFPS()
 void ComponentRender::DeleteRemovedObjects()
 {
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
+    auto lock = Brakeza::get()->uniqueLockObjects();
     sceneObjects.erase(
         std::remove_if(
             sceneObjects.begin(),
@@ -733,7 +738,7 @@ void ComponentRender::DrawCircle2D(int x, int y, int size, float r, float g, flo
 
 void ComponentRender::DrawImage2D(const std::string &path, int x, int y, int w, int h)
 {
-    Image* img = imageCache.getOrLoad(path);
+    Image* img = getOrLoadImage(path);
     if (!img || !img->isLoaded()) return;
 
     auto *win = Components::get()->Window();
@@ -782,14 +787,27 @@ void ComponentRender::DrawImage2DFromImage(Image *img, int x, int y, int w, int 
     glDisable(GL_BLEND);
 }
 
+static GLuint s_fboOverride = 0;
+
+void ComponentRender::setFBOOverride(GLuint fbo)  { s_fboOverride = fbo; }
+void ComponentRender::clearFBOOverride()           { s_fboOverride = 0;   }
+
 static GLuint resolveFB(const std::string& fb)
 {
+    if (s_fboOverride) return s_fboOverride;
     auto* win = Components::get()->Window();
     if (fb == "scene")      return win->getSceneFramebuffer();
     if (fb == "background") return win->getBackgroundFramebuffer();
     if (fb == "ui")         return win->getUIFramebuffer();
     if (fb == "global")     return win->getGlobalFramebuffer();
     return win->getForegroundFramebuffer();
+}
+
+GLuint ComponentRender::resolveEffectiveFBO(const std::string& fb) { return resolveFB(fb); }
+
+void ComponentRender::DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb) const
+{
+    shaders.shaderOGLImage->renderTexture(tex, 0, 0, rW, rH, rW, rH, 1.0f, true, resolveFB(fb));
 }
 
 void ComponentRender::DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const
@@ -828,9 +846,22 @@ void ComponentRender::DrawCircle2DToFB(int x, int y, int size, float r, float g,
     );
 }
 
-void ComponentRender::DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb)
+Image* ComponentRender::getOrLoadImage(const std::string &path)
 {
+    auto it = renderImageCache.find(path);
+    if (it != renderImageCache.end()) return it->second;
     Image* img = imageCache.getOrLoad(path);
+    renderImageCache[path] = img;
+    return img;
+}
+
+void ComponentRender::DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb, float alpha)
+{
+    DrawImage2DFromImageToFB(getOrLoadImage(path), x, y, w, h, fb, alpha);
+}
+
+void ComponentRender::DrawImage2DFromImageToFB(Image* img, int x, int y, int w, int h, const std::string &fb, float alpha)
+{
     if (!img || !img->isLoaded()) return;
 
     auto *win = Components::get()->Window();
@@ -843,7 +874,7 @@ void ComponentRender::DrawImage2DToFB(const std::string &path, int x, int y, int
         (int)(x * rx), (int)(y * ry),
         (int)(w * rx), (int)(h * ry),
         rw, rh,
-        1.0f,
+        alpha,
         false,
         resolveFB(fb)
     );
@@ -853,6 +884,12 @@ void ComponentRender::drawGroundCircle(Object3D* obj, float r, float g, float b,
 {
     if (!obj) return;
     shaders.shaderGroundCircle->draw(obj, Color(r, g, b, a), radius, Components::get()->Window()->getForegroundFramebuffer());
+}
+
+void ComponentRender::drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius, float thickness) const
+{
+    if (!obj) return;
+    shaders.shaderGroundCircle->draw(obj, Color(r, g, b, a), radius, Components::get()->Window()->getForegroundFramebuffer(), thickness);
 }
 
 void ComponentRender::drawGroundCircleToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const
@@ -1022,7 +1059,8 @@ void ComponentRender::resizeShadersFramebuffers() const
     auto window = Components::get()->Window();
     int w = window->getWidthRender();
     int h = window->getHeightRender();
-    for (auto *obj : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto *obj : sceneObjects) {
         auto *mesh = dynamic_cast<Mesh3D*>(obj);
         if (mesh && !mesh->getCustomShaders().empty()) {
             auto *chain = mesh->GetShaderChain();
@@ -1101,7 +1139,8 @@ void ComponentRender::RunShadowPass() const
     auto shaderRender = shaders.shaderOGLRender;
 
     std::vector<Mesh3D*> casters;
-    for (auto* obj : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto* obj : sceneObjects) {
         if (!obj->isEnabled()) continue;
 
         if (auto* anim = dynamic_cast<Mesh3DAnimation*>(obj)) {

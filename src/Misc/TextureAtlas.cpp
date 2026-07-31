@@ -166,6 +166,10 @@ bool TextureAtlas::AddToAtlas(Image *texture, const std::string& name)
 
 bool TextureAtlas::AllocationCheck(int xpos, int ypos, int width, int height) const
 {
+    if (xpos + width > totalWidth || ypos + height > totalHeight) {
+        return false;
+    }
+
     int baseOffset = ypos * totalWidth + xpos;
     int max_global_x = totalWidth * ypos + totalWidth;
 
@@ -191,6 +195,10 @@ bool TextureAtlas::AllocationCheck(int xpos, int ypos, int width, int height) co
 
 void TextureAtlas::AllocateMask(int xpos, int ypos, int width, int height) const
 {
+    if (xpos + width > totalWidth || ypos + height > totalHeight) {
+        return;
+    }
+
     int baseOffset = ypos * totalWidth + xpos;
 
     for (int y = 0; y < height; y++) {

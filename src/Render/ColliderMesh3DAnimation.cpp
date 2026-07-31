@@ -233,6 +233,8 @@ void AssimpAnimationService::LoadMeshVertex(int meshId, aiMesh *mesh, std::vecto
 
 void AssimpAnimationService::UpdateBonesFinalTransformations(float TimeInSeconds)
 {
+    if (!scene || !scene->HasAnimations() || indexCurrentAnimation >= scene->mNumAnimations) return;
+
     auto Identity = aiMatrix4x4();
 
     float TicksPerSecond = scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0

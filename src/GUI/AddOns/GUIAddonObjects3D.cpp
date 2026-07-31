@@ -42,6 +42,7 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
 
     // Checkbox para enable/disable
     bool isEnabled = o->isEnabled();
+    bool wasEnabled = isEnabled;
     config.showCheckbox = true;
     config.p_checked = &isEnabled;
     config.isLeaf = true;
@@ -122,8 +123,10 @@ void GUIAddonObjects3D::DrawObjectWithCustomNode(Object3D* o, int index)
         LOG_MESSAGE("[Objects] Selected: %s", o->getName().c_str());
     }
 
-    // Actualizar estado enabled
-    o->setEnabled(isEnabled);
+    // Actualizar estado enabled solo cuando cambió
+    if (isEnabled != wasEnabled) {
+        o->setEnabled(isEnabled);
+    }
 
     // Drag & Drop shaders (Mesh3D)
     if (mesh != nullptr) {

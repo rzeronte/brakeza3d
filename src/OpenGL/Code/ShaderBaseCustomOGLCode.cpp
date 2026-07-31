@@ -644,7 +644,7 @@ void ShaderBaseCustomOGLCode::UpdateFileTypes() const
 
     Tools::WriteToFile(this->fileTypes, output_string);
 
-    delete output_string;
+    free(output_string);
 }
 
 void ShaderBaseCustomOGLCode::AddDataTypeEmpty(const char *name, const char *type)

@@ -415,7 +415,7 @@ void ScriptLUA::UpdateFileTypes() const
 
     Tools::WriteToFile(this->fileTypes, output_string);
 
-    delete output_string;
+    free(output_string);
 }
 
 void ScriptLUA::UpdateScriptCodeWith(const std::string& content) const

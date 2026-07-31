@@ -6,9 +6,13 @@
 #define BRAKEZA3D_IMAGE3DANIMATION8DIRGUI_H
 
 #include "../../3D/Image3DAnimation360.h"
+#include "../AddOns/GUIAddonFilePicker.h"
+#include "../../Config.h"
 
 class Image3DAnimation360GUI
 {
+    static inline GUIFilePicker picker;
+
 public:
     static void DrawPropertiesGUI(Image3DAnimation360 *o)
     {
@@ -33,6 +37,11 @@ public:
                 if (ImGui::InputText("Sprite Folder##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
                     o->currentSpriteFileVariableToCreateAnimation = name;
                 }
+                ImGui::SameLine();
+                if (picker.drawTrigger("##browse_anim360"))
+                    picker.open(o->currentSpriteFileVariableToCreateAnimation, Config::get()->IMAGES_FOLDER, "../assets/images/", {".png", ".jpg", ".jpeg"});
+                if (picker.draw("Image3DAnim360_FilePicker"))
+                    o->currentSpriteFileVariableToCreateAnimation = picker.result;
                 if (ImGui::InputInt("Num. Frames", &o->currentFramesVariableToCreateAnimation)) {
                 }
 

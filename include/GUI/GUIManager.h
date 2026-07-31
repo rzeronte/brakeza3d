@@ -72,9 +72,7 @@ class GUIManager
     void DrawWinDepthLightsMap();
     void DrawRegisteredWindows();
 
-    static void DrawObjectWindowStatusBar(GUIType::WindowGUI &window);
-
-    static float GetObjectStatusBarHeight();
+    static void DrawWindowMenuBar(GUIType::WindowGUI &window);
 
     void DrawWinKeyboardMouse();
     void DrawSplashWindow();

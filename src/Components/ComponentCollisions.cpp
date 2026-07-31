@@ -138,7 +138,8 @@ void ComponentCollisions::CheckCollisionsForAll() const
     }
 
     // Ghost objects don't generate manifolds — iterate their overlapping pairs directly
-    for (auto &object : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto &object : sceneObjects) {
         if (object->isRemoved() || !object->isEnabled() || !object->isCollisionsEnabled()) continue;
         if (object->getCollisionMode() != GHOST) continue;
 
@@ -170,7 +171,8 @@ void ComponentCollisions::UpdatePhysicObjects() const
 {
     if (!isEnabled()) return;
 
-    for (auto &object : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (auto &object : sceneObjects) {
         if (object->isRemoved() || !object->isCollisionsEnabled()) continue;
 
         object->Integrate();

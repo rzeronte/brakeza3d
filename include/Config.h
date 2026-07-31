@@ -69,6 +69,7 @@ public:
     std::string PROJECTS_EXT    = "json";
     std::string IMAGES_EXT      = "png";
     std::string MESH3D_EXT      = "fbx";
+    std::string SOUNDS_EXT      = "wav";
 
     // GLOBAL AXIS DIRECTIONS
     Vertex3D right = Vertex3D(1, 0, 0);
@@ -149,6 +150,7 @@ public:
     bool SHOW_AVATAR_IMAGE3D              = false;
     bool SHOW_AVATAR_IMAGE2D              = false;
     bool SHOW_AVATAR_SWARM                = false;
+    bool SHOW_AVATAR_SOUND3D              = false;
 
     // View options
     bool DRAW_ANIMATION_BONES = false;
@@ -173,6 +175,9 @@ public:
     float SHADOW_MAPPING_DEPTH_NEAR_PLANE = 1.0f;
     float SHADOW_MAPPING_DEPTH_FAR_PLANE = 200.0f;
     float SHADOW_MAPPING_FRUSTUM_SIZE = 30.0f;
+    int SHADOW_MAP_RESOLUTION = 2048;
+    int SHADOW_MAPPING_PCF_KERNEL_SIZE = 2;
+    glm::vec3 SHADOW_MAPPING_FOCUS = glm::vec3(512.0f, 0.0f, 512.0f);
 
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 100.f;

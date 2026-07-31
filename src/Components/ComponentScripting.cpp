@@ -9,6 +9,7 @@
 #include "../../include/GUI/Objects/ScriptLuaGUI.h"
 #include "../../include/LUA/BrakezaLuaBridge.h"
 #include "../../include/LUA/ObjectFactory.h"
+#include "../../include/Loaders/SceneLoader.h"
 
 void ComponentScripting::onStart()
 {
@@ -98,7 +99,7 @@ void ComponentScripting::ReloadLUAScripts()
         s->ReloadScriptCode();
     }
 
-    auto &sceneObjects = Brakeza::get()->getSceneObjects();
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
     for (auto &object : sceneObjects) {
         object->ReloadScriptsCode();
         object->ReloadScriptsEnvironment();
@@ -219,18 +220,15 @@ void ComponentScripting::RemoveProjectScript(ScriptLUA *script)
 
 void ComponentScripting::onStartScripts() const
 {
-    LOG_MESSAGE("Executing OnStart for PROJECT scripts...");
     for (auto script : projectScripts) {
         script->RunGlobal("onStart");
     }
 
-    LOG_MESSAGE("Executing OnStart for SCENE scripts...");
     for (auto script : sceneScripts) {
         script->RunGlobal("onStart");
     }
 
-    LOG_MESSAGE("Executing OnStart for OBJECT scripts...");
-    auto &sceneObjects = Brakeza::get()->getSceneObjects();
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
     for (auto object : sceneObjects) {
         object->RunStartScripts();
     }
@@ -348,9 +346,11 @@ void ComponentScripting::CreateScriptLUAFile(const FilePath::ScriptFile& path, S
     Tools::WriteToFile(codeFile, content);
 
     auto typesFileJson = CreateEmptyTypesFileJSON(name, codeFile, typesFile, scriptType);
-    Tools::WriteToFile(typesFile, cJSON_Print(typesFileJson));
+    char* typesStr = cJSON_Print(typesFileJson);
+    Tools::WriteToFile(typesFile, typesStr);
+    free(typesStr);
 
-    delete[] content;
+    free(content);
 }
 
 static sol::table cjsonToLua(sol::state &lua, cJSON *node)
@@ -428,7 +428,7 @@ sol::table ComponentScripting::loadJSON(const std::string &path)
         return lua.create_table();
     }
     cJSON *root = cJSON_Parse(raw);
-    delete[] raw;
+    free(raw);
     if (!root) {
         LOG_ERROR("[ComponentScripting] loadJSON: parse error in ", path.c_str());
         return lua.create_table();

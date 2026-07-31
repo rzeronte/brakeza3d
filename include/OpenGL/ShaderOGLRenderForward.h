@@ -62,6 +62,7 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
     GLint shadowMappingIntensityUniform = 0;
     GLint shadowMapArrayUniform = 0;
     GLint enableDirectionalLightShadowMapUniform = 0;
+    GLint pcfKernelSizeUniform = 0;
 
     static constexpr size_t MAX_POINT_LIGHTS = 1024;
     static constexpr size_t MAX_SPOT_LIGHTS = 1024;

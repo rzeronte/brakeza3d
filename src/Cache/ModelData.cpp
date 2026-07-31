@@ -46,19 +46,18 @@ void ModelData::cloneInto(Mesh3D& target) const
 
     target.setSourceFile(sourceFile);
 
+    const std::string chessboardPath = Config::get()->TEXTURES_FOLDER + "chessboard.png";
     for (const auto& mat : materials) {
         if (mat.hasDiffuseTexture) {
-            Image* img = imageCache.getOrLoad(mat.diffuseTexturePath);
-            target.getModelTextures().push_back(img);
+            target.getModelTextures().push_back(imageCache.getOrLoad(mat.diffuseTexturePath));
         } else {
-            target.getModelTextures().push_back(new Image((GLuint)0, 1, 1));
+            target.getModelTextures().push_back(imageCache.getOrLoad(chessboardPath));
         }
 
         if (mat.hasSpecularTexture) {
-            Image* img = imageCache.getOrLoad(mat.specularTexturePath);
-            target.getModelSpecularTextures().push_back(img);
+            target.getModelSpecularTextures().push_back(imageCache.getOrLoad(mat.specularTexturePath));
         } else {
-            target.getModelSpecularTextures().push_back(new Image((GLuint)0, 1, 1));
+            target.getModelSpecularTextures().push_back(imageCache.getOrLoad(chessboardPath));
         }
     }
 

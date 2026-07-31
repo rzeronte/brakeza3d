@@ -7,6 +7,8 @@
 #include <GL/glew.h>
 #include "../../Render/UI/UIManager.h"
 
+class GUIFilePicker;
+
 class UIManagerGUI
 {
     static int selectedWidget;
@@ -26,6 +28,18 @@ class UIManagerGUI
     static void SaveWidget(UIManager* ui, const std::string& widgetName, UIWidget& w);
     static void DrawWidgetPreview(UIManager* ui, const std::string& wName);
     static void DrawElementPreviewFields(UIElement& el);
+
+    // ── Reusable field helpers (extracted from repeated inline blocks) ────
+    // All take a label with ##uid suffix for stable ImGui IDs; return true if edited.
+    static bool Color4Field(const char* label, Color& c, bool alphaBar = false);
+    static bool StringField(const char* label, std::string& str, float width, int bufSize = 256);
+    static bool ImagePickerField(
+        const char* label,
+        std::string& path,
+        GUIFilePicker& picker,
+        const char* pickerTitle,
+        float inputWidth = 260.0f);
+    static void BorderEditorSection(UIElement& el);
 
 public:
     static void DrawWinUIManager();

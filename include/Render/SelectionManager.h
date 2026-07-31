@@ -14,11 +14,12 @@ class SelectionManager {
     Object3D* lastLeftClickedObject = nullptr;
     std::string lastLeftClickedSubmeshName;
 
-    bool isRectSelecting   = false;
-    int rectSelectStartX   = 0;
-    int rectSelectStartY   = 0;
-    int rectSelectCurrentX = 0;
-    int rectSelectCurrentY = 0;
+    bool isRectSelecting     = false;
+    bool rectSelectEnabled   = true;
+    int rectSelectStartX     = 0;
+    int rectSelectStartY     = 0;
+    int rectSelectCurrentX   = 0;
+    int rectSelectCurrentY   = 0;
 
 
     bool pendingLeftClick        = false;
@@ -43,6 +44,9 @@ public:
     void clearRightClickedObject()                                      { lastRightClickedObject = nullptr; }
     void clearRightClickedSubmeshName()                                 { lastRightClickedSubmeshName.clear(); }
     void clearLeftClickedObject()                                       { lastLeftClickedObject = nullptr; lastLeftClickedSubmeshName.clear(); }
+
+    void setRectSelectEnabled(bool v)   { rectSelectEnabled = v; if (!v) isRectSelecting = false; }
+    [[nodiscard]] bool isRectSelectEnabled() const { return rectSelectEnabled; }
 
     void processSDLEvent(SDL_Event *event);
     void update();

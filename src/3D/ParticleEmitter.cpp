@@ -74,9 +74,29 @@ void ParticleEmitter::onUpdate()
 {
     Object3D::onUpdate();
 
+    if (followTarget != nullptr) {
+        if (!followTarget->isRemoved())
+            setPosition(followTarget->getPosition());
+        else
+            followTarget = nullptr;
+    }
+
+    if (selfDestructTimer >= 0.0f) {
+        selfDestructTimer -= Brakeza::get()->getDeltaTime();
+        if (selfDestructTimer <= 0.0f)
+            setRemoved(true);
+    }
+
     if (attachedLight != nullptr && !attachedLight->isRemoved()) {
         attachedLight->setPosition(getPosition());
     }
+}
+
+void ParticleEmitter::detach(float fadeTime)
+{
+    followTarget      = nullptr;
+    stopAdd           = true;
+    selfDestructTimer = fadeTime;
 }
 
 void ParticleEmitter::Draw()

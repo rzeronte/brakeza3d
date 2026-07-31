@@ -30,6 +30,7 @@ class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad 
     GLuint debugShadowMappingUniform = 0;
     GLuint shadowMappingIntensityUniform = 0;
     GLuint enableDirectionalLightShadowMapUniform = 0;
+    GLuint pcfKernelSizeUniform = 0;
 
     GLuint bufferSpotLightsMatricesUBO = 0;
     bool spotMatricesBufferReady = false;

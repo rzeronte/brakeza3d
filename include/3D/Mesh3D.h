@@ -3,6 +3,7 @@
 #define SDL2_3D_ENGINE_MESH_H
 
 #include <mutex>
+#include <atomic>
 #include <string>
 #include <assimp/scene.h>
 #include <glm/vec3.hpp>
@@ -65,7 +66,8 @@ protected:
     AABB3D aabb;
     Octree *octree = nullptr;
     Grid3D *grid = nullptr;
-    bool loaded = false;
+    std::atomic<bool> loaded = false;
+    std::atomic<bool> loadFailed = false;
 
     bool sharedTextures = false;
     bool renderDefaultPipeline = true;
@@ -124,6 +126,7 @@ public:
     GLuint GetChainTempTexture() const { return chainTempTexture; }
 
     [[nodiscard]] bool isLoaded() const                                           { return loaded; }
+    [[nodiscard]] bool isLoadFailed() const                                       { return loadFailed; }
     [[nodiscard]] ObjectType getTypeObject() const override                       { return ObjectType::Mesh3D; }
     GUIType::Sheet getIcon() override                                             { return IconObject::MESH_3D; }
     std::vector<Mesh3DData> &getMeshData()                                        { return meshes; }

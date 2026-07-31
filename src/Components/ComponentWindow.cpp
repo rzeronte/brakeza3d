@@ -3,6 +3,7 @@
 #include <complex>
 #include <set>
 #include <vector>
+#include <unordered_map>
 #include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <SDL_image.h>
@@ -51,7 +52,8 @@ void ComponentWindow::onUpdate()
 {
     Component::onUpdate();
 
-    for (const auto &o : Brakeza::get()->getSceneObjects()) {
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+    for (const auto &o : sceneObjects) {
         if (!o->isEnabled()) continue;
         if (o->getTypeObject() != ObjectType::Image2D) continue;
         auto *img = static_cast<Image2D*>(o);
@@ -61,11 +63,38 @@ void ComponentWindow::onUpdate()
 
 void ComponentWindow::postUpdate()
 {
-    Component::postUpdate();
+    if (hoverPBO == 0)
+        glGenBuffers(1, &hoverPBO);
+
+    // Read result from last frame's async readback (no stall — GPU already done)
+    if (hoverPBOPending) {
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, hoverPBO);
+        const auto* rgb = static_cast<const unsigned char*>(glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
+        if (rgb) {
+            hoverPickResultID = ((unsigned int)rgb[0] << 16) | ((unsigned int)rgb[1] << 8) | (unsigned int)rgb[2];
+            glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+        }
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+        hoverPBOPending = false;
+    }
+
+    if (hoverPickRequestX < 0) return;
+
+    // Issue async readback into PBO for next frame to consume
+    glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, hoverPBO);
+    glBufferData(GL_PIXEL_PACK_BUFFER, 3, nullptr, GL_STREAM_READ);
+    glReadPixels(hoverPickRequestX, getHeightRender() - hoverPickRequestY - 1, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    hoverPickRequestX = -1;
+    hoverPBOPending   = true;
 }
 
 void ComponentWindow::onEnd()
 {
+    if (hoverPBO) { glDeleteBuffers(1, &hoverPBO); hoverPBO = 0; }
     TTF_CloseFont(fontDefault);
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);

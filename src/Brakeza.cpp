@@ -79,7 +79,7 @@ void Brakeza::PreMainLoop()
 static void DumpObserverState()
 {
     auto *render  = Components::get()->Render();
-    auto &objects = Brakeza::get()->getSceneObjects();
+    auto objects = Brakeza::get()->copySceneObjects();
 
     int lights = 0;
     for (auto *o : objects) {
@@ -193,8 +193,12 @@ void Brakeza::AddObject3D(Object3D *obj, const std::string &label)
 {
     LOG_MESSAGE("[AddObject] Adding object '%s' to scene...", label.c_str());
     obj->setName(label);
-    objects.push_back(obj);
-    objectsByName[label] = obj;
+    {
+        std::unique_lock lock(objectsMutex);
+        objects.push_back(obj);
+        objectsByName[label] = obj;
+        objectsById[obj->getId()] = obj;
+    }
 
     obj->ReloadScriptsEnvironment();
     if (componentsManager->Scripting()->isExecuting()) {
@@ -264,9 +268,13 @@ void Brakeza::onEndComponents() const
 void Brakeza::AutoLoadProjectOrContinue() const
 {
     if (cliOptions.autoload) {
+        printf("[Brakeza] ProjectLoader::LoadProject START\n"); fflush(stdout);
         ProjectLoader::LoadProject(Config::get()->PROJECTS_FOLDER + cliOptions.project);
+        printf("[Brakeza] ProjectLoader::LoadProject DONE\n"); fflush(stdout);
         Config::get()->ENABLE_IMGUI = false;
+        printf("[Brakeza] PlayLUAScripts START\n"); fflush(stdout);
         componentsManager->Scripting()->PlayLUAScripts();
+        printf("[Brakeza] PlayLUAScripts DONE\n"); fflush(stdout);
         return;
     }
 
@@ -293,6 +301,7 @@ std::string Brakeza::UniqueObjectLabel(const char *prefix)
 
 Object3D *Brakeza::getObjectByName(const std::string &label) const
 {
+    std::shared_lock lock(objectsMutex);
     auto it = objectsByName.find(label);
     if (it != objectsByName.end()) return it->second;
     return nullptr;
@@ -301,20 +310,22 @@ Object3D *Brakeza::getObjectByName(const std::string &label) const
 void Brakeza::removeObjectFromIndex(Object3D *obj)
 {
     auto it = objectsByName.find(obj->getName());
-    if (it != objectsByName.end() && it->second == obj) {
+    if (it != objectsByName.end() && it->second == obj)
         objectsByName.erase(it);
-    }
+    objectsById.erase(obj->getId());
 }
 
 Object3D *Brakeza::getObjectById(const unsigned int id) const
 {
-    for (const auto &o : objects) {
-        if (o->getId() == id) {
-            return o;
-        }
-    }
+    std::shared_lock lock(objectsMutex);
+    auto it = objectsById.find(id);
+    return it != objectsById.end() ? it->second : nullptr;
+}
 
-    return nullptr;
+Object3D *Brakeza::getObjectByIndex(int index) const
+{
+    std::shared_lock lock(objectsMutex);
+    return objects[index];
 }
 
 Object3D *Brakeza::getObjectAtScreen(int rawX, int rawY) const
