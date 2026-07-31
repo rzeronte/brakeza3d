@@ -201,6 +201,7 @@ add_executable(Brakeza3D
         src/3D/ParticleEmitter.cpp include/3D/ParticleEmitter.h
         src/Misc/ScriptLUA.cpp include/Misc/ScriptLUA.h
         src/3D/Swarm.cpp include/3D/Swarm.h
+        src/3D/Sound3D.cpp include/3D/Sound3D.h
         src/3D/TentacleIK.cpp include/3D/TentacleIK.h
         src/Render/Triangle3D.cpp include/Render/Triangle3D.h
         src/2D/Vector2D.cpp include/Render/Vector2D.h
@@ -255,6 +256,7 @@ add_executable(Brakeza3D
         src/Serializers/Object3DSerializer.cpp include/Serializers/Object3DSerializer.h
         src/Serializers/ParticleEmmitterSerializer.cpp include/Serializers/ParticleEmmitterSerializer.h
         src/Serializers/SwarmSerializer.cpp include/Serializers/SwarmSerializer.h
+        src/Serializers/Sound3DSerializer.cpp include/Serializers/Sound3DSerializer.h
         include/Render/JSONSerializer.h
 
         # Physics
@@ -305,6 +307,7 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobLoadLightSpot.h
         include/Threads/ThreadJobLoadParticleEmitter.h
         include/Threads/ThreadJobLoadSwarm.h
+        include/Threads/ThreadJobLoadSound3D.h
         include/Threads/ThreadJobResolveSwarms.h
         include/Threads/ThreadJobLoadImage2D.h
         include/Threads/ThreadJobLoadImage3DAnimation360.h
@@ -410,7 +413,7 @@ target_include_directories(Brakeza3D PRIVATE
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(Brakeza3D PRIVATE -O0 -Wall -g)
 elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_options(Brakeza3D PRIVATE -O3 -w)
+    target_compile_options(Brakeza3D PRIVATE -O3 -w -g)
 endif()
 
 target_compile_definitions(Brakeza3D PRIVATE ENABLE_LOGGING_BUILD)
@@ -436,3 +439,7 @@ target_link_libraries(Brakeza3D
         ${SWSCALE_LIBRARY}
         ${SWRESAMPLE_LIBRARY}
 )
+
+if(WIN32)
+    target_link_libraries(Brakeza3D dbghelp)
+endif()

@@ -1,0 +1,41 @@
+{
+	"gap": 8,
+	"scale": 1,
+	"posX": 0.01,
+	"posY": 0.3,
+	"width": 0.099,
+	"height": 0.222,
+	"elements": [{
+			"id": "panelBg",
+			"type": "rect",
+			"x": 0.0,
+			"y": 0.0,
+			"w": 1.0,
+			"h": 1.0,
+			"alpha": 0.9,
+			"color": { "r": 0.08, "g": 0.08, "b": 0.14, "a": 1.0 }
+		}, {
+			"id": "title",
+			"type": "text",
+			"x": 0.0444,
+			"y": 0.0273,
+			"fontScale": 0.42
+		}, {
+			"id": "separator",
+			"type": "rect",
+			"x": 0.0,
+			"y": 0.1091,
+			"w": 1.0,
+			"h": 0.0091,
+			"alpha": 0.6,
+			"color": { "r": 0.4, "g": 0.5, "b": 0.7, "a": 1.0 }
+		}, {
+			"id": "unitList",
+			"type": "array",
+			"x": 0.0556,
+			"y": 0.1455,
+			"widgetRef": "exampleCard",
+			"arrayCount": 3,
+			"arrayAlign": "vertical"
+		}]
+}

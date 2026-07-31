@@ -94,7 +94,7 @@
 					"z":	0.10000000149011612
 				},
 				"constant":	1,
-				"linear":	0.1125,
+				"linear":	0.11249999701976776,
 				"quadratic":	0.046875
 			},
 			"type":	6
@@ -161,19 +161,53 @@
 				},
 				"diffuse":	{
 					"x":	0.800000011920929,
-					"y":	0.8999999761581421,
+					"y":	0.899999976158142,
 					"z":	1
 				},
 				"specular":	{
 					"x":	0.800000011920929,
-					"y":	0.8999999761581421,
+					"y":	0.899999976158142,
 					"z":	1
 				},
 				"constant":	1,
-				"linear":	0.1125,
+				"linear":	0.11249999701976776,
 				"quadratic":	0.046875
 			},
 			"type":	6
+		}, {
+			"name":	"Mesh_Cube",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	7,
+				"y":	0.5,
+				"z":	-14
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	30,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
 		}, {
 			"name":	"CPU_Sparks",
 			"scale":	1,
@@ -238,17 +272,17 @@
 				"diffuse":	{
 					"x":	1,
 					"y":	1,
-					"z":	0.30000001192092896
+					"z":	0.300000011920929
 				},
 				"specular":	{
 					"x":	1,
 					"y":	1,
-					"z":	0.30000001192092896
+					"z":	0.300000011920929
 				},
 				"constant":	1,
 				"linear":	0.15000000596046448,
 				"quadratic":	0.0833333358168602
-				},
+			},
 			"type":	6
 		}, {
 			"name":	"GPU_Magic",
@@ -312,17 +346,93 @@
 					"z":	0.20000000298023224
 				},
 				"diffuse":	{
-					"x":	0.8999999761581421,
-					"y":	0.30000001192092896,
+					"x":	0.899999976158142,
+					"y":	0.300000011920929,
 					"z":	1
 				},
 				"specular":	{
-					"x":	0.8999999761581421,
-					"y":	0.30000001192092896,
+					"x":	0.899999976158142,
+					"y":	0.300000011920929,
 					"z":	1
 				},
 				"constant":	1,
-				"linear":	0.1125,
+				"linear":	0.11249999701976776,
+				"quadratic":	0.046875
+			},
+			"type":	6
+		}, {
+			"name":	"GPU_Fire",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	6,
+				"y":	0,
+				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-1.5,
+				"PARTICLES_BY_SECOND":	8,
+				"PARTICLE_LIFESPAN":	1.5,
+				"SMOKE_ANGLE_RANGE":	35,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	255,
+				"MIN_VELOCITY":	4,
+				"MAX_VELOCITY":	10,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	5,
+				"DECELERATION_FACTOR":	0.959999978542328
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.899999976158142,
+				"b":	0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1,
+				"g":	0.10000000149011612,
+				"b":	0,
+				"a":	0
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15000000596046448,
+					"y":	0.119999997317791,
+					"z":	0.014999999664723873
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.800000011920929,
+					"z":	0.10000000149011612
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.800000011920929,
+					"z":	0.10000000149011612
+				},
+				"constant":	1,
+				"linear":	0.11249999701976776,
 				"quadratic":	0.046875
 			},
 			"type":	6
@@ -384,7 +494,7 @@
 			"attachedLight":	{
 				"ambient":	{
 					"x":	0.15000000596046448,
-					"y":	0.07000000029802322,
+					"y":	0.070000000298023224,
 					"z":	0
 				},
 				"diffuse":	{
@@ -403,15 +513,151 @@
 			},
 			"type":	6
 		}, {
-			"name":	"GPU_Fire",
+			"name":	"Mesh_Torus",
 			"scale":	1,
 			"alpha":	1,
 			"enabled":	true,
 			"selectable":	true,
 			"position":	{
-				"x":	6,
-				"y":	0,
+				"x":	-5,
+				"y":	0.5,
 				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/torus.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Cone",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0.5,
+				"z":	-12
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cone.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Icosphere",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-7,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/icosphere.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Mesh_Pyramid",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	5,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/piramid.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"GPU_Smoke",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	2,
+				"y":	0,
+				"z":	-10
 			},
 			"rotation":	{
 				"x":	0,
@@ -431,28 +677,28 @@
 			"isCollisionsEnabled":	false,
 			"scripts":	[],
 			"context":	{
-				"GRAVITY":	-1.5,
-				"PARTICLES_BY_SECOND":	8,
-				"PARTICLE_LIFESPAN":	1.5,
-				"SMOKE_ANGLE_RANGE":	35,
-				"MIN_ALPHA":	150,
-				"MAX_ALPHA":	255,
-				"MIN_VELOCITY":	4,
-				"MAX_VELOCITY":	10,
-				"POSITION_NOISE":	2,
-				"VELOCITY_NOISE":	5,
-				"DECELERATION_FACTOR":	0.959999978542328
+				"GRAVITY":	-0.5,
+				"PARTICLES_BY_SECOND":	3,
+				"PARTICLE_LIFESPAN":	2.5,
+				"SMOKE_ANGLE_RANGE":	20,
+				"MIN_ALPHA":	100,
+				"MAX_ALPHA":	220,
+				"MIN_VELOCITY":	2,
+				"MAX_VELOCITY":	6,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	3,
+				"DECELERATION_FACTOR":	0.98000001907348633
 			},
 			"colorFrom":	{
 				"r":	1,
-				"g":	0.899999976158142,
+				"g":	0.40000000596046448,
 				"b":	0,
 				"a":	1
 			},
 			"colorTo":	{
-				"r":	1,
-				"g":	0.10000000149011612,
-				"b":	0,
+				"r":	0.600000023841858,
+				"g":	0.600000023841858,
+				"b":	0.600000023841858,
 				"a":	0
 			},
 			"gpuMode":	true,
@@ -460,22 +706,22 @@
 			"attachedLight":	{
 				"ambient":	{
 					"x":	0.15000000596046448,
-					"y":	0.11999999731779099,
-					"z":	0.014999999664723873
+					"y":	0.070000000298023224,
+					"z":	0
 				},
 				"diffuse":	{
 					"x":	1,
-					"y":	0.800000011920929,
-					"z":	0.10000000149011612
+					"y":	0.5,
+					"z":	0
 				},
 				"specular":	{
 					"x":	1,
-					"y":	0.800000011920929,
-					"z":	0.10000000149011612
+					"y":	0.5,
+					"z":	0
 				},
 				"constant":	1,
-				"linear":	0.1125,
-				"quadratic":	0.046875
+				"linear":	0.15000000596046448,
+				"quadratic":	0.0833333358168602
 			},
 			"type":	6
 		}, {
@@ -536,7 +782,7 @@
 			"attachedLight":	{
 				"ambient":	{
 					"x":	0.15000000596046448,
-					"y":	0.11999999731779099,
+					"y":	0.119999997317791,
 					"z":	0.014999999664723873
 				},
 				"diffuse":	{
@@ -550,84 +796,8 @@
 					"z":	0.10000000149011612
 				},
 				"constant":	1,
-				"linear":	0.1125,
+				"linear":	0.11249999701976776,
 				"quadratic":	0.046875
-			},
-			"type":	6
-		}, {
-			"name":	"GPU_Smoke",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"selectable":	true,
-			"position":	{
-				"x":	2,
-				"y":	0,
-				"z":	-10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	false,
-				"depthTest":	true,
-				"writeDepth":	false,
-				"shadowMap":	false,
-				"frustumCulling":	false,
-				"blend_function_src":	1,
-				"blend_function_dst":	771
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"context":	{
-				"GRAVITY":	-0.5,
-				"PARTICLES_BY_SECOND":	3,
-				"PARTICLE_LIFESPAN":	2.5,
-				"SMOKE_ANGLE_RANGE":	20,
-				"MIN_ALPHA":	100,
-				"MAX_ALPHA":	220,
-				"MIN_VELOCITY":	2,
-				"MAX_VELOCITY":	6,
-				"POSITION_NOISE":	1,
-				"VELOCITY_NOISE":	3,
-				"DECELERATION_FACTOR":	0.98000001907348633
-			},
-			"colorFrom":	{
-				"r":	1,
-				"g":	0.40000000596046448,
-				"b":	0,
-				"a":	1
-			},
-			"colorTo":	{
-				"r":	0.600000023841858,
-				"g":	0.600000023841858,
-				"b":	0.600000023841858,
-				"a":	0
-			},
-			"gpuMode":	true,
-			"texture":	"../assets/images/Particles/particle_soft.png",
-			"attachedLight":	{
-				"ambient":	{
-					"x":	0.15000000596046448,
-					"y":	0.07000000029802322,
-					"z":	0
-				},
-				"diffuse":	{
-					"x":	1,
-					"y":	0.5,
-					"z":	0
-				},
-				"specular":	{
-					"x":	1,
-					"y":	0.5,
-					"z":	0
-				},
-				"constant":	1,
-				"linear":	0.15000000596046448,
-				"quadratic":	0.0833333358168602
 			},
 			"type":	6
 		}, {
@@ -687,22 +857,22 @@
 			"texture":	"../assets/images/Particles/particle_soft.png",
 			"attachedLight":	{
 				"ambient":	{
-					"x":	0.05999999865889549,
+					"x":	0.0599999986588955,
 					"y":	0.15000000596046448,
 					"z":	0.20000000298023224
 				},
 				"diffuse":	{
-					"x":	0.30000001192092896,
+					"x":	0.300000011920929,
 					"y":	0.800000011920929,
 					"z":	1
 				},
 				"specular":	{
-					"x":	0.30000001192092896,
+					"x":	0.300000011920929,
 					"y":	0.800000011920929,
 					"z":	1
 				},
 				"constant":	1,
-				"linear":	0.1125,
+				"linear":	0.11249999701976776,
 				"quadratic":	0.046875
 			},
 			"type":	6
@@ -763,124 +933,25 @@
 			"texture":	"../assets/images/Particles/particle_soft.png",
 			"attachedLight":	{
 				"ambient":	{
-					"x":	0.05999999865889549,
+					"x":	0.0599999986588955,
 					"y":	0.15000000596046448,
 					"z":	0.20000000298023224
 				},
 				"diffuse":	{
-					"x":	0.30000001192092896,
+					"x":	0.300000011920929,
 					"y":	0.800000011920929,
 					"z":	1
 				},
 				"specular":	{
-					"x":	0.30000001192092896,
+					"x":	0.300000011920929,
 					"y":	0.800000011920929,
 					"z":	1
 				},
 				"constant":	1,
-				"linear":	0.1125,
+				"linear":	0.11249999701976776,
 				"quadratic":	0.046875
 			},
 			"type":	6
-		}, {
-			"name":	"Mesh_Torus",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"selectable":	true,
-			"position":	{
-				"x":	-5,
-				"y":	0.5,
-				"z":	-12
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"frustumCulling":	true,
-				"blend_function_src":	1,
-				"blend_function_dst":	1
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/basic/torus.fbx",
-			"enableLights":	true,
-			"frustumCullSubmeshes":	false,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Mesh_Cube",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"selectable":	true,
-			"position":	{
-				"x":	7,
-				"y":	0.5,
-				"z":	-14
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	30,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"frustumCulling":	true,
-				"blend_function_src":	1,
-				"blend_function_dst":	1
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/basic/cube.fbx",
-			"enableLights":	true,
-			"frustumCullSubmeshes":	false,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Mesh_Cone",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"selectable":	true,
-			"position":	{
-				"x":	0,
-				"y":	0.5,
-				"z":	-12
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"frustumCulling":	true,
-				"blend_function_src":	1,
-				"blend_function_dst":	1
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/basic/cone.fbx",
-			"enableLights":	true,
-			"frustumCullSubmeshes":	false,
-			"shaders":	[],
-			"type":	2
 		}, {
 			"name":	"Mesh_Cylinder",
 			"scale":	1,
@@ -911,72 +982,7 @@
 			"scripts":	[],
 			"model":	"../assets/models/basic/cilinder.fbx",
 			"enableLights":	true,
-			"frustumCullSubmeshes":	false,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Mesh_Icosphere",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"selectable":	true,
-			"position":	{
-				"x":	-7,
-				"y":	0.5,
-				"z":	-10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"frustumCulling":	true,
-				"blend_function_src":	1,
-				"blend_function_dst":	1
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/basic/icosphere.fbx",
-			"enableLights":	true,
-			"frustumCullSubmeshes":	false,
-			"shaders":	[],
-			"type":	2
-		}, {
-			"name":	"Mesh_Pyramid",
-			"scale":	1,
-			"alpha":	1,
-			"enabled":	true,
-			"selectable":	true,
-			"position":	{
-				"x":	5,
-				"y":	0.5,
-				"z":	-10
-			},
-			"rotation":	{
-				"x":	0,
-				"y":	0,
-				"z":	0
-			},
-			"renderSettings":	{
-				"blend":	true,
-				"culling":	true,
-				"depthTest":	true,
-				"writeDepth":	true,
-				"shadowMap":	true,
-				"frustumCulling":	true,
-				"blend_function_src":	1,
-				"blend_function_dst":	1
-			},
-			"isCollisionsEnabled":	false,
-			"scripts":	[],
-			"model":	"../assets/models/basic/piramid.fbx",
-			"enableLights":	true,
+			"renderDefaultPipeline":	true,
 			"frustumCullSubmeshes":	false,
 			"shaders":	[],
 			"type":	2

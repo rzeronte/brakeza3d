@@ -1,0 +1,62 @@
+{
+	"screenshot":	"../assets/screenshots/UITest.png",
+	"ads":	{
+		"direction":	{
+			"x":	-0.17000000178813934,
+			"y":	-0.0599999986588955,
+			"z":	-1
+		},
+		"diffuse":	{
+			"x":	0.19262295961380005,
+			"y":	0.19262295961380005,
+			"z":	0.19262295961380005
+		},
+		"specular":	{
+			"x":	0.49180328845977783,
+			"y":	0,
+			"z":	0.036280587315559387
+		},
+		"ambient":	{
+			"x":	0.27868854999542236,
+			"y":	0.098226293921470642,
+			"z":	0.098226293921470642
+		}
+	},
+	"objects":	[],
+	"shaders":	[{
+			"name":	"Chromatic Aberration Postprocessing",
+			"type":	"Postprocessing",
+			"vsFile":	"../assets/shaders/Examples/CodePostprocessing/ChromaticAberrationPostprocessing.vs",
+			"fsFile":	"../assets/shaders/Examples/CodePostprocessing/ChromaticAberrationPostprocessing.fs",
+			"typesFile":	"../assets/shaders/Examples/CodePostprocessing/ChromaticAberrationPostprocessing.json",
+			"types":	[{
+					"name":	"intensity",
+					"type":	"float",
+					"value":	0.039999999105930328
+				}, {
+					"name":	"sceneTexture",
+					"type":	"scene"
+				}],
+			"enabled":	true
+		}],
+	"scripts":	[{
+			"codeFile":	"../assets/scripts/test.lua",
+			"typesFile":	"../assets/scripts/test.json",
+			"name":	"../assets/scripts/test",
+			"type":	"Global",
+			"ticks_per_second":	0,
+			"types":	[]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	-10.935354232788086,
+			"y":	7.8682708740234375,
+			"z":	28.7230224609375
+		},
+		"rotation":	{
+			"x":	17.925197601318359,
+			"y":	19.29987907409668,
+			"z":	0
+		}
+	}
+}

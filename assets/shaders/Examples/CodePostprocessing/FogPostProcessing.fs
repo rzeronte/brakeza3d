@@ -40,5 +40,12 @@ void main()
         0.0, 1.0
     );
 
+    // Si el pixel ya es negro (shroud del FOW), no aplicar niebla atmosférica
+    float lum = dot(sceneColor, vec3(0.299, 0.587, 0.114));
+    if (lum < 0.02) {
+        FragColor = vec4(sceneColor, 1.0);
+        return;
+    }
+
     FragColor = vec4(mix(sceneColor, fogColor, fogFactor), 1.0);
 }

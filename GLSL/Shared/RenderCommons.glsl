@@ -64,6 +64,7 @@ uniform int numShadowMaps;
 
 uniform bool debugShadowMapping;
 uniform float shadowIntensity;
+uniform int pcfKernelSize;
 
 uniform int numSpotLights;
 
@@ -103,16 +104,18 @@ float ShadowCalculationDir(vec3 fragPos, mat4 lightSpaceMatrix, vec3 normal, vec
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(dirLightShadowMap, 0);
+    int kernel = pcfKernelSize < 0 ? 0 : pcfKernelSize;
 
-    for(int x = -1; x <= 1; ++x) {
-        for(int y = -1; y <= 1; ++y) {
+    for(int x = -kernel; x <= kernel; ++x) {
+        for(int y = -kernel; y <= kernel; ++y) {
             vec2 offset = vec2(x, y) * texelSize;
             float pcfDepth = texture(dirLightShadowMap, projCoords.xy + offset).r;
             shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
         }
     }
 
-    shadow /= 9.0;
+    float tapCount = float((2 * kernel + 1) * (2 * kernel + 1));
+    shadow /= max(tapCount, 1.0);
     return shadow;
 }
 
@@ -136,16 +139,18 @@ float ShadowCalculationSpot(vec3 fragPos, int lightIndex, vec3 normal, vec3 ligh
 
     float shadow = 0.0;
     vec2 texelSize = 1.0 / vec2(textureSize(shadowMapArray, 0).xy);
+    int kernel = pcfKernelSize < 0 ? 0 : pcfKernelSize;
 
-    for(int x = -1; x <= 1; ++x) {
-        for(int y = -1; y <= 1; ++y) {
+    for(int x = -kernel; x <= kernel; ++x) {
+        for(int y = -kernel; y <= kernel; ++y) {
             vec2 offset = vec2(x, y) * texelSize;
             float pcfDepth = texture(shadowMapArray, vec3(projCoords.xy + offset, float(lightIndex))).r;
             shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
         }
     }
 
-    shadow /= 9.0;
+    float tapCount = float((2 * kernel + 1) * (2 * kernel + 1));
+    shadow /= max(tapCount, 1.0);
     return shadow;
 }
 

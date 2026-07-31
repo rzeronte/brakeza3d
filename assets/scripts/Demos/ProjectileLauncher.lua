@@ -21,8 +21,9 @@ local power   = 18.0
 local projSize = 1.0
 local counter = 0
 
-local pending = {}
-local active  = {}
+local pending      = {}
+local active       = {}
+local activeTrails = {}
 
 local C_TITLE  = Color.new(1.0,  0.86, 0.31, 1.0)
 local C_VALUE  = Color.new(0.70, 1.0,  0.70, 1.0)
@@ -115,6 +116,26 @@ function promotePending(dt)
                 proj:fire(p.dir, p.pow, 98.0, 0.12,
                     CollisionGroups.ProjectileGroup,
                     CollisionGroups.AllFilter)
+
+                local emitter = ObjectFactory.ParticleEmitter(proj:getPosition(), Color.new(0.7, 0.7, 0.7, 0.9), Color.new(0.2, 0.2, 0.2, 0.0))
+                if emitter ~= nil then
+                    emitter:setTexture("../assets/images/RTS/trail_smoke.png")
+                    emitter:setFollowTarget(proj)
+                    local ctx = emitter:getContext()
+                    ctx.PARTICLES_BY_SECOND  = 500
+                    ctx.PARTICLE_LIFESPAN    = 5.0
+                    ctx.GRAVITY              = 0.10
+                    ctx.SMOKE_ANGLE_RANGE    = 80
+                    ctx.MIN_VELOCITY         = 6
+                    ctx.MAX_VELOCITY         = 18
+                    ctx.MIN_ALPHA            = 200
+                    ctx.MAX_ALPHA            = 255
+                    ctx.POSITION_NOISE       = 8
+                    ctx.VELOCITY_NOISE       = 10
+                    ctx.DECELERATION_FACTOR  = 0.88
+                    table.insert(activeTrails, { proj = proj, emitter = emitter })
+                end
+
                 table.insert(active, { name = p.name, timer = 0 })
             else
                 local scaled = Vertex3D.new(
@@ -148,6 +169,16 @@ function tickActive(dt)
         end
     end
     active = keep
+
+    local aliveTrails = {}
+    for _, t in ipairs(activeTrails) do
+        if t.proj:isRemoved() then
+            t.emitter:detach(1.0)
+        else
+            table.insert(aliveTrails, t)
+        end
+    end
+    activeTrails = aliveTrails
 end
 
 -- ── HUD ──────────────────────────────────────────────────────────────────────
