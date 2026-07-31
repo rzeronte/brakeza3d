@@ -7,6 +7,58 @@ description: Shaders system API in Brakeza3D including uniforms, GLSL templates,
 # Shaders system
 ---
 
+## Shader Pipeline Order
+---
+
+Brakeza3D runs two independent shader chains per frame. Understanding their execution order is
+essential when you need to combine object-level and scene-level effects.
+
+### Frame loop steps (relevant to shaders)
+
+| Step | Name | Shaders that run |
+|------|------|-----------------|
+| 2 | `OnUpdateComponents` | **Object shaders** — `Mesh3D::customShaders` for each mesh |
+| 3 | `LightPass` | Built-in deferred ADS lighting (not user-scriptable) |
+| 6 | `PostProcessingShadersChain` | **Scene shaders** — PostProcessingManager ping-pong FBOs |
+
+### Object shaders (Mesh3D)
+
+Object shaders are attached to individual `Mesh3D` (or `Mesh3DAnimation`) instances. They run
+during step 2 using the mesh's own geometry and texture-space UVs. They are configured in the
+editor under **Object Properties → Custom Shaders**.
+
+- UVs are in **texture space** (0.0–1.0 across the mesh surface)
+- Access the chain texture in code shaders via the `SCENE` data type
+- Access the chain texture in node shaders via the `Internal Texture (Color)` node
+- Do **not** sample the ping-pong chain texture as a mesh diffuse slot — UV spaces are incompatible
+
+### Scene shaders (PostProcessingManager)
+
+Scene shaders operate on the entire rendered frame via a fullscreen quad ping-pong between two
+FBOs (both `GL_RGBA16F` color + `GL_DEPTH_COMPONENT24` depth). They run during step 6, after
+lighting has been applied.
+
+- UVs are in **screen space**: `gl_FragCoord.xy / textureSize(sceneTexture, 0)`
+- Retrieve at runtime: `Components:Render():getSceneShaderByLabel("label")`
+- Remove all at runtime: `Components:Render():clearSceneShaders()`
+
+### `setSceneHidden` and shader enable state
+
+`SceneLoader::setSceneHidden(name, false)` (Lua: `sceneLoader:setSceneHidden(name, false)`)
+**restores** each scene shader to the enabled/disabled state it had when it was hidden. It does
+**not** unconditionally enable every shader — shaders that were already disabled before hiding
+remain disabled after un-hiding.
+
+```lua
+-- Hide a scene (suspends its objects and saves shader states)
+sceneLoader:setSceneHidden("Interior", true)
+
+-- Restore — shaders come back in exactly the state they left
+sceneLoader:setSceneHidden("Interior", false)
+```
+
+---
+
 ## Shader Variables (uniforms)
 ---
 

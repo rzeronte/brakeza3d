@@ -233,7 +233,8 @@ inline void LUAIntegration(sol::state &lua)
         "setChannelFrequency", &ComponentSound::setChannelFrequency,
         "setChannelVolume", &ComponentSound::setChannelVolume,
         "setChannelPosition", &ComponentSound::setChannelPosition,
-        "isChannelPlaying", &ComponentSound::isChannelPlaying
+        "isChannelPlaying", &ComponentSound::isChannelPlaying,
+        "isSoundPlaying", [](ComponentSound* s, std::string label) { return s->isSoundPlaying(label); }
     );
 
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",

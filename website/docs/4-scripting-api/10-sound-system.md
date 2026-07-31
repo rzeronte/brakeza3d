@@ -155,6 +155,35 @@ Check if a specific channel is currently playing a sound. Useful for channel all
     end
 ```
 
+### Query Sound State by Label
+
+Check if a sound loaded by label is currently playing on any channel.
+
+```lua
+    if Components:Sound():isSoundPlaying("engine_idle") then
+        -- Sound is already playing, skip
+    else
+        Components:Sound():PlaySound("engine_idle", 2, -1)
+    end
+```
+
+## Ambience Volume
+---
+
+`setAmbienceVolume` controls a global multiplier applied to all positional `Sound3D` sources
+(0 = silence, 100 = full volume). It does not affect music or flat sound effects.
+
+```lua
+    -- Duck world sounds during a cutscene
+    Components:Sound():setAmbienceVolume(0)
+
+    -- Restore when gameplay resumes
+    Components:Sound():setAmbienceVolume(100)
+```
+
+See **[Sound3D — Global Ambience Volume](./17-sound3d#global-ambience-volume)** for the full
+interaction with `baseVolume` and distance attenuation.
+
 ## Automatic Loading
 ---
 

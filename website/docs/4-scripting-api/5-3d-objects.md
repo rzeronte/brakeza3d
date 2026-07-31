@@ -94,6 +94,89 @@ function onUpdate()
 end
 ```
 
+## Image3DAnimation360
+---
+
+`Image3DAnimation360` (Lua type: `BillboardAnimation8Directions`) is a billboard sprite that
+automatically selects one of **8 directional animation strips** based on the angle between the
+camera and the object. It is the standard entity for top-down or isometric units that need to
+appear to face the camera correctly from any viewing direction (e.g. soldiers, civilians, vehicles).
+
+Each directional strip is a separate sprite sheet stored in a sub-folder. The object picks the
+correct strip every frame using the horizontal angle between the camera forward vector and the
+object's facing direction, divided into 8 equal sectors of 45°.
+
+### Creating from Lua
+
+```lua
+local unit = ObjectFactory.Image3DAnimation360(
+    "../assets/sprites/soldier/",   -- root folder (used by the serializer)
+    Vertex3D.new(0, 0, 50),        -- world position
+    2.0,                            -- billboard width  (world units)
+    3.5                             -- billboard height (world units)
+)
+unit:setName("soldier_01")
+Brakeza:AddObject3D(unit, "soldier_01")
+```
+
+### Adding directional animations
+
+After creation, register each animation strip with `CreateAnimationDirectional2D`. The strips are
+indexed internally in the order they are added:
+
+```lua
+-- The Lua binding for CreateAnimationDirectional2D is not currently exposed;
+-- use the JSON scene format or the editor to configure directional animations.
+```
+
+:::note
+`Image3DAnimation360` directional animations are typically configured in the scene JSON rather
+than at runtime from Lua. The editor (Object Properties window) provides a GUI to add and preview
+each of the 8 directional strips.
+:::
+
+### Lua methods
+
+`BillboardAnimation8Directions` inherits all standard `Object3D` methods (position, rotation,
+scale, enable/disable, collision, etc.). No additional Lua methods are exposed beyond those
+inherited from `Object3D`.
+
+| Inherited method | Description |
+|---|---|
+| `setPosition(Vertex3D)` | Move the billboard to a world position |
+| `setEnabled(bool)` | Show or hide the object |
+| `setRemoved(bool)` | Mark for deletion |
+| `isRemoved()` | Returns true if the object has been removed |
+| `setName(string)` | Set the object's name |
+| `getPosition()` | Returns the current world position |
+
+### Scene file format
+
+```json
+{
+  "name": "soldier_01",
+  "type": 11,
+  "position": { "x": 0, "y": 0, "z": 50 },
+  "width": 2.0,
+  "height": 3.5,
+  "animations": [
+    { "file": "../assets/sprites/soldier/south.png",     "frames": 8, "fps": 12, "zeroDirection": true,  "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/southwest.png", "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/west.png",      "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/northwest.png", "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/north.png",     "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/northeast.png", "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/east.png",      "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 },
+    { "file": "../assets/sprites/soldier/southeast.png", "frames": 8, "fps": 12, "zeroDirection": false, "maxTimes": 0 }
+  ]
+}
+```
+
+`zeroDirection: true` marks the strip that represents the canonical facing direction (angle 0).
+`maxTimes: 0` means the animation loops indefinitely.
+
+---
+
 ## Common Object3D Methods
 ---
 
