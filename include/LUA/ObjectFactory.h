@@ -11,6 +11,7 @@
 #include "../3D/Image3DAnimation.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/LightSpot.h"
+#include "../3D/Sound3D.h"
 #include "../3D/Mesh3D.h"
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/ParticleEmitter.h"
@@ -34,6 +35,7 @@ class ObjectFactory {
     static Projectile* CreateProjectile(const std::string &file, const Vertex3D &position);
     static TextWriter* CreateTextWriter(const std::string& fontFile);
     static ScriptLUA* CreateScriptLUA(const std::string& pathFile);
+    static Sound3D*   CreateSound3D(const std::string& file, const Vertex3D& position, float innerRadius, float outerRadius, int baseVolume);
 
 };
 

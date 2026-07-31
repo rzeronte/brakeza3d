@@ -31,21 +31,30 @@ void Scene::setHidden(bool value)
         for (auto* obj : objects) {
             savedEnabledStates[obj] = obj->isEnabled();
             obj->setEnabled(false);
+            obj->DisableSimulationCollider();
         }
     } else {
         for (auto* obj : objects) {
             auto it = savedEnabledStates.find(obj);
-            obj->setEnabled(it != savedEnabledStates.end() ? it->second : true);
+            const bool wasEnabled = (it != savedEnabledStates.end() ? it->second : true);
+            obj->setEnabled(wasEnabled);
+            if (wasEnabled) obj->EnableSimulationCollider();
         }
         savedEnabledStates.clear();
     }
 
     // Scene shaders belonging to this scene
     for (auto* shader : Components::get()->Render()->getSceneShaders()) {
-        if (shader->getScene() == this) {
-            shader->setEnabled(!hidden);
+        if (shader->getScene() != this) continue;
+        if (hidden) {
+            savedShaderStates[shader] = shader->isEnabled();
+            shader->setEnabled(false);
+        } else {
+            auto it = savedShaderStates.find(shader);
+            shader->setEnabled(it != savedShaderStates.end() ? it->second : false);
         }
     }
+    if (!hidden) savedShaderStates.clear();
 }
 
 void Scene::addObject(Object3D *obj)

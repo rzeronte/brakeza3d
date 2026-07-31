@@ -7,6 +7,7 @@
 
 #include <string>
 #include <map>
+#include <atomic>
 #include "../SceneObjectTypes.h"
 #include "../Misc/cJSON.h"
 #include "../Misc/FilePaths.h"
@@ -20,8 +21,8 @@ class SceneLoader
 
 public:
     explicit SceneLoader();
-    static bool isLoading;
-    static bool isClearing;
+    static std::atomic<bool> isLoading;
+    static std::atomic<bool> isClearing;
 
     static void LoadSceneSettings(const cJSON *contentJSON);
     static void LoadCameraSettings(const cJSON *contentJSON);

@@ -18,20 +18,29 @@ public:
 
     void fnProcess()
     {
+        // Vacío: todo el trabajo se hace en fnCallback (main thread) para evitar
+        // accesos a Lua/OpenGL/Bullet desde worker thread.
+    }
+
+    void fnCallback()
+    {
         auto scripting = Components::get()->Scripting();
 
         scripting->StopLUAScripts();
 
-        for (auto &o: scripting->getSceneScripts()) {
+        auto scriptsCopy = scripting->getSceneScripts();
+        for (auto *o: scriptsCopy) {
             scripting->RemoveSceneScript(o);
         }
 
         auto render = Components::get()->Render();
-        for (auto &s: render->getSceneShaders()) {
+        auto shadersCopy = render->getSceneShaders();
+        for (auto *s: shadersCopy) {
             render->RemoveSceneShader(s);
         }
 
-        for (auto &object: Brakeza::get()->getSceneObjects()) {
+        auto sceneObjects = Brakeza::get()->copySceneObjects();
+        for (auto &object: sceneObjects) {
             if (!object->isMultiScene()) {
                 object->setRemoved(true);
             }
@@ -40,12 +49,7 @@ public:
         Components::get()->Scripting()->setCurrentScene(nullptr);
         Components::get()->Render()->setSelectedObject(nullptr);
 
-        SceneLoader::isClearing = false;
-        LOG_MESSAGE("[ThreadJobClearWorld] Process END");
-    }
-
-    void fnCallback()
-    {
+        SceneLoader::isClearing.store(false);
         LOG_MESSAGE("[ThreadJobClearWorld] Callback END");
     }
 };

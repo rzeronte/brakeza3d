@@ -53,24 +53,18 @@ std::shared_ptr<void> ResourceCacheBase::getOrLoadInternal(
     const std::string& key,
     std::function<std::shared_ptr<void>()> factory)
 {
-    {
-        std::lock_guard<std::mutex> lock(_mutex);
-        auto it = _cache.find(key);
-        if (it != _cache.end()) {
-            _hits++;
-            { std::lock_guard<std::mutex> hlock(_hitsMutex); _hitsPerKey[key]++; }
-            return it->second;
-        }
+    std::lock_guard<std::mutex> lock(_mutex);
+
+    auto it = _cache.find(key);
+    if (it != _cache.end()) {
+        _hits++;
+        { std::lock_guard<std::mutex> hlock(_hitsMutex); _hitsPerKey[key]++; }
+        return it->second;
     }
 
     _misses++;
     auto resource = factory();
-
-    {
-        std::lock_guard<std::mutex> lock(_mutex);
-        _cache[key] = resource;
-    }
-
+    _cache[key] = resource;
     return resource;
 }
 

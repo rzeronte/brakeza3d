@@ -201,3 +201,28 @@ const char* Mesh3DSerializer::ExtractFileModelPath(cJSON *json)
 {
     return cJSON_GetObjectItemCaseSensitive(json, "model")->valuestring;
 }
+
+Mesh3D* Mesh3DSerializer::CloneMesh3D(Mesh3D* src)
+{
+    auto* json = Mesh3DSerializer().JsonByObject(src);
+
+    auto* dst = new Mesh3D(src->sourceFile);
+    dst->setName(Brakeza::UniqueObjectLabel(src->getName().c_str()));
+
+    Vertex3D p = src->getPosition();
+    dst->setPosition(Vertex3D(p.x + 1.0f, p.y, p.z + 1.0f));
+    dst->setScaleV(src->getScaleV());
+    dst->setRotation(src->getRotation());
+    dst->setEnabled(src->isEnabled());
+    dst->setAlpha(src->getAlpha());
+    dst->getRenderSettings() = src->getRenderSettings();
+    dst->setEnableLights(src->isEnableLights());
+    dst->setRenderPipelineDefault(src->isRenderPipelineDefault());
+    dst->setFrustumCullSubmeshes(src->isFrustumCullSubmeshes());
+
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
+        std::make_shared<ThreadJobLoadMesh3D>(dst, json));
+    cJSON_Delete(json);
+
+    return dst;
+}

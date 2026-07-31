@@ -5,6 +5,8 @@
 #ifndef BRAKEZA3D_THREADJOBMAKERIGIDBODY_H
 #define BRAKEZA3D_THREADJOBMAKERIGIDBODY_H
 
+#include <chrono>
+#include <thread>
 #include "ThreadJobBase.h"
 #include "../3D/Mesh3D.h"
 #include "../Components/Components.h"
@@ -27,8 +29,12 @@ public:
 
     void fnProcess()
     {
-        while (!mesh->isLoaded()) {
-            LOG_MESSAGE("[ThreadJobMakeRigidBody] waiting for mesh load...");
+        while (!mesh->isLoaded() && !mesh->isLoadFailed()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        if (mesh->isLoadFailed()) {
+            LOG_ERROR("[ThreadJobMakeRigidBody] mesh load failed, skipping rigid body for '%s'", mesh->getName().c_str());
+            return;
         }
 
         LOG_MESSAGE("[ThreadJobMakeRigidBody] Building body for '%s' - CollisionShape: %d", mesh->getName().c_str(), shape);

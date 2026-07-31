@@ -18,7 +18,10 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
     cJSON *root = cJSON_CreateObject();
 
     cJSON_AddStringToObject(root, "name", o->getName().c_str());
-    cJSON_AddNumberToObject(root, "scale", o->getScale());
+    Vertex3D sv = o->getScaleV();
+    cJSON_AddNumberToObject(root, "scaleX", sv.x);
+    cJSON_AddNumberToObject(root, "scaleY", sv.y);
+    cJSON_AddNumberToObject(root, "scaleZ", sv.z);
     cJSON_AddNumberToObject(root, "alpha", o->getAlpha());
     cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
     cJSON_AddBoolToObject(root, "selectable", o->isSelectable());
@@ -121,7 +124,16 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
     //Position
     o->setPosition(ToolsJSON::getVertex3DByJSON(cJSON_GetObjectItemCaseSensitive(json, "position")));
-    o->setScale(static_cast<float>(cJSON_GetObjectItemCaseSensitive(json, "scale")->valuedouble));
+    auto* scaleXItem = cJSON_GetObjectItemCaseSensitive(json, "scaleX");
+    if (scaleXItem) {
+        float sx = (float)scaleXItem->valuedouble;
+        float sy = (float)cJSON_GetObjectItemCaseSensitive(json, "scaleY")->valuedouble;
+        float sz = (float)cJSON_GetObjectItemCaseSensitive(json, "scaleZ")->valuedouble;
+        o->setScaleV(Vertex3D(sx, sy, sz));
+    } else {
+        auto* scaleItem = cJSON_GetObjectItemCaseSensitive(json, "scale");
+        if (scaleItem) o->setScale((float)scaleItem->valuedouble);
+    }
 
     //Rotation
     if (cJSON_GetObjectItemCaseSensitive(json, "rotation") != nullptr) {

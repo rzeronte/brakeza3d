@@ -64,9 +64,9 @@ public:
     void flushTextBatch();
     void flushTextBatchToFB(const std::string& fb);
     void writeTextAtlasToFB(int x, int y, const char *text, const Color &c, float scale, const std::string& fb);
+    int measureTextWidthAtlas(const char *text, float scale);
 
 private:
-    int measureTextWidthAtlas(const char *text, float scale);
     struct BatchedText {
         int x, y;
         std::string text;

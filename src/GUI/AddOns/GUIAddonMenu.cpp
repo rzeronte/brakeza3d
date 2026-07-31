@@ -25,8 +25,14 @@
 #include "../../../include/Serializers/Image2DAnimationSerializer.h"
 #include "../../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../../include/Serializers/SwarmSerializer.h"
+#include "../../../include/Serializers/Sound3DSerializer.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/GUI/Objects/ShadersGUI.h"
+#include "../../../include/GUI/Objects/UIManagerGUI.h"
 #include "../../../include/Render/Drawable.h"
+#include "../../../include/Loaders/ProjectLoader.h"
+#include "../../../include/Loaders/SceneLoader.h"
 
 
 void GUIAddonMenu::Draw(GUIManager *gui)
@@ -185,6 +191,20 @@ void GUIAddonMenu::MenuAddObject()
         SwarmSerializer().MenuLoad("");
         ImGui::EndMenu();
     }
+
+    ImGui::SeparatorText("Sound");
+    ImGui::Image(FileSystemGUI::Icon(IconObject::SOUND_3D), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Sound3D")) {
+        if (ImGui::MenuItem("Default (radio_beep.wav)")) {
+            Sound3DSerializer().MenuLoad("");
+        }
+        ImGui::Separator();
+        DrawItemsToLoad(setup->SOUNDS_FOLDER, Config::get()->SOUNDS_EXT, IconObject::SOUND_3D, [](const std::string& path) {
+            Sound3DSerializer().MenuLoad(path);
+        });
+        ImGui::EndMenu();
+    }
 }
 
 void GUIAddonMenu::MenuVideo()
@@ -327,6 +347,21 @@ void GUIAddonMenu::MenuIllumination()
         ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
         ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        int minPcf = 0, maxPcf = 5;
+        ImGui::DragScalar("PCF Kernel Size", ImGuiDataType_S32, &setup->SHADOW_MAPPING_PCF_KERNEL_SIZE, 1.0f, &minPcf, &maxPcf, "%d", 1.0f);
+
+        static const int resOptions[] = { 512, 1024, 2048, 4096 };
+        static const char* resLabels[] = { "512", "1024", "2048", "4096" };
+        int currentRes = 0;
+        for (int i = 0; i < 4; i++) {
+            if (resOptions[i] == setup->SHADOW_MAP_RESOLUTION) { currentRes = i; break; }
+        }
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        if (ImGui::Combo("Shadow Map Resolution", &currentRes, resLabels, 4)) {
+            setup->SHADOW_MAP_RESOLUTION = resOptions[currentRes];
+            Components::get()->Render()->getShaders()->shaderShadowPass->ResetFramebuffers();
+        }
     }
     ImGui::SeparatorText("Sun light setup");
     auto& dirLight = Components::get()->Render()->getShaders()->shaderOGLRender->getDirectionalLight();
@@ -436,6 +471,38 @@ void GUIAddonMenu::MenuCamera()
     if (Config::get()->MOUSE_LOOK) {
         ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Sensibility", &Config::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
+    }
+
+    ImGui::SeparatorText("Snap camera to selected object");
+    ImGui::DragFloat("Radius##snap", &GUIAddonMenu::snapRadius, 0.5f, 0.1f, 10000.0f, "%.1f");
+
+    auto *selected = Components::get()->Render()->getSelectedObject();
+    bool hasSelected = selected != nullptr;
+
+    if (!hasSelected) ImGui::BeginDisabled();
+
+    if (ImGui::Button("Front [Ins]")) {
+        auto pos = selected->getPosition();
+        camera->setPosition(Vertex3D(pos.x, pos.y, pos.z + GUIAddonMenu::snapRadius));
+        camera->setRotationFromEulerAngles(0.f, 0.f, 0.f);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Top [Inicio]")) {
+        auto pos = selected->getPosition();
+        camera->setPosition(Vertex3D(pos.x, pos.y + GUIAddonMenu::snapRadius, pos.z));
+        camera->setRotationFromEulerAngles(89.f, 0.f, 0.f);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Side [Re Pag]")) {
+        auto pos = selected->getPosition();
+        camera->setPosition(Vertex3D(pos.x + GUIAddonMenu::snapRadius, pos.y, pos.z));
+        camera->setRotationFromEulerAngles(0.f, -90.f, 0.f);
+    }
+
+    if (!hasSelected) {
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+        ImGui::TextDisabled("(no object selected)");
     }
 }
 
@@ -725,6 +792,159 @@ void GUIAddonMenu::MenuInterface()
         ImGui::MenuItem("Image2D Animation",    nullptr, &setup->SHOW_AVATAR_IMAGE2D_ANIMATION);
         ImGui::Image(FileSystemGUI::Icon(IconObject::SWARM),                  GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Swarm",                nullptr, &setup->SHOW_AVATAR_SWARM);
+        ImGui::EndMenu();
+    }
+}
+
+void GUIAddonMenu::DrawFileMenuTree(
+    std::string& folder,
+    std::string& ext,
+    GUIType::Sheet fileIcon,
+    const std::vector<FileMenuAction>& actions)
+{
+    auto files   = Tools::getFolderFiles(folder, ext);
+    auto folders = Tools::getFolderFolders(folder);
+
+    for (const auto& folderName : folders) {
+        auto fullPath = folder + "/" + folderName;
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::FOLDER), GUIType::Sizes::ICON_SIZE_MENUS);
+        ImGui::SameLine();
+        if (ImGui::BeginMenu(folderName.c_str())) {
+            DrawFileMenuTree(fullPath, ext, fileIcon, actions);
+            ImGui::EndMenu();
+        }
+    }
+
+    for (const auto& file : files) {
+        auto fullPath = folder + "/" + file;
+        ImGui::Image(FileSystemGUI::Icon(fileIcon), GUIType::Sizes::ICON_SIZE_MENUS);
+        ImGui::SameLine();
+        if (actions.size() == 1) {
+            if (ImGui::MenuItem(file.c_str())) {
+                actions[0].callback(fullPath);
+            }
+        } else {
+            if (ImGui::BeginMenu(file.c_str())) {
+                for (const auto& action : actions) {
+                    ImGui::Image(FileSystemGUI::Icon(action.icon), GUIType::Sizes::ICON_SIZE_MENUS);
+                    ImGui::SameLine();
+                    if (ImGui::MenuItem(action.label)) {
+                        action.callback(fullPath);
+                    }
+                }
+                ImGui::EndMenu();
+            }
+        }
+    }
+
+    if (files.empty() && folders.empty()) {
+        ImGui::TextDisabled("(empty)");
+    }
+}
+
+void GUIAddonMenu::MenuFile(GUIManager *gui)
+{
+    auto setup = Config::get();
+
+    // Projects
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::PROJECT_FILE), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Projects")) {
+        DrawFileMenuTree(
+            setup->PROJECTS_FOLDER,
+            setup->PROJECTS_EXT,
+            IconGUI::PROJECT_FILE,
+            {
+                { IconGUI::PROJECT_INFO, "Project info",   [](const std::string& p) { Brakeza::get()->GUI()->getProjectChecker().LoadProjectInfoDialog(p); } },
+                { IconGUI::PROJECT_OPEN, "Open project",   [](const std::string& p) { ProjectLoader::LoadProject(p); } },
+            }
+        );
+        ImGui::EndMenu();
+    }
+
+    // Scenes
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCENE_FILE), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Scenes")) {
+        DrawFileMenuTree(
+            setup->SCENES_FOLDER,
+            setup->SCENES_EXT,
+            IconGUI::SCENE_FILE,
+            {
+                { IconGUI::SCENE_INFO, "Scene info",   [](const std::string& p) { Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(p); } },
+                { IconGUI::SCENE_LOAD, "Load scene",   [](const std::string& p) { SceneLoader::ClearWorld(); SceneLoader::LoadScene(p); } },
+            }
+        );
+        ImGui::EndMenu();
+    }
+
+    // Scripts
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SCRIPT_FILE), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Scripts")) {
+        DrawFileMenuTree(
+            setup->SCRIPTS_FOLDER,
+            setup->SCRIPTS_EXT,
+            IconGUI::SCRIPT_FILE,
+            {
+                { IconGUI::SCRIPT_LOAD, "Attach to scene", [](const std::string& p) {
+                    auto meta = ScriptLuaGUI::ExtractScriptMetainfo(p);
+                    auto* script = new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
+                    if (script->getType() != SCRIPT_GLOBAL) {
+                        LOG_ERROR("[Scene] Error: Cannot attach Object script to Scene. Only Global scripts are allowed.");
+                        delete script;
+                        return;
+                    }
+                    Components::get()->Scripting()->AddSceneLUAScript(script);
+                    FileSystemGUI::autoExpandScene = true;
+                }},
+                { IconGUI::SCRIPT_EDIT, "Edit script",     [](const std::string& p) { ScriptLuaGUI::LoadScriptDialog(p); } },
+            }
+        );
+        ImGui::EndMenu();
+    }
+
+    // Shaders
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::SHADER_FILE), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("Shaders")) {
+        DrawFileMenuTree(
+            setup->CUSTOM_SHADERS_FOLDER,
+            setup->SHADERS_EXT,
+            IconGUI::SHADER_FILE,
+            {
+                { IconGUI::SHADER_LOAD, "Attach to scene", [](const std::string& p) {
+                    Components::get()->Render()->LoadShaderIntoScene(p);
+                    FileSystemGUI::autoExpandScene = true;
+                }},
+                { IconGUI::SHADER_EDIT, "Edit shader",     [](const std::string& p) { ShadersGUI::LoadDialogShader(p); } },
+            }
+        );
+        ImGui::EndMenu();
+    }
+
+    // UI Widgets
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_UI_MANAGER), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("UI Widgets")) {
+        std::string widgetFolder = setup->UI_WIDGETS_FOLDER;
+        std::string widgetExt   = "json";
+        DrawFileMenuTree(
+            widgetFolder,
+            widgetExt,
+            IconGUI::WIN_UI_MANAGER,
+            {
+                { IconGUI::SHADER_EDIT, "Edit widget", [](const std::string& p) {
+                    std::string widgetName = Tools::getFilenameWithoutExtension(p);
+                    auto* render = Components::get()->Render();
+                    auto* ui     = render->getUIManager();
+                    if (ui && !ui->getWidgets().count(widgetName))
+                        ui->loadWidgetFromFile(p);
+                    Brakeza::get()->GUI()->getWindowStatus(GUIType::UI_MANAGER)->isOpen = true;
+                    UIManagerGUI::setSelectedWidget(widgetName);
+                }},
+            }
+        );
         ImGui::EndMenu();
     }
 }

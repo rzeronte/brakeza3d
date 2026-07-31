@@ -100,6 +100,7 @@ class ComponentRender : public Component
 
     std::vector<ShaderBaseCustom*> sceneShaders;
     std::unordered_map<unsigned int, std::pair<Mesh3D*, std::string>> submeshRegistry;
+    std::unordered_map<std::string, Image*> renderImageCache;
 
     Shaders shaders;
 
@@ -154,11 +155,18 @@ public:
     void DrawLine2D(int x1, int y1, int x2, int y2, const Color &c, float weight) const;
     void DrawFilledRect(int x, int y, int w, int h, const Color &c) const;
     void DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const;
+    void DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb) const;
+    static void setFBOOverride(GLuint fbo);
+    static void clearFBOOverride();
+    static GLuint resolveEffectiveFBO(const std::string& fb);
     void DrawImage2D(const std::string &path, int x, int y, int w, int h);
-    void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb);
+    void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f);
+    void DrawImage2DFromImageToFB(Image *img, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f);
     void DrawImage2DFromImage(Image *img, int x, int y, int w, int h) const;
+    Image* getOrLoadImage(const std::string &path);
     [[nodiscard]] GLuint getImageGLTexture(const std::string& path);
     void drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius) const;
+    void drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius, float thickness) const;
     void drawGroundCircleToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawGroundBlob(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundBlobToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;

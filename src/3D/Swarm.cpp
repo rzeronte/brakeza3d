@@ -45,7 +45,7 @@ void Swarm::onUpdate()
 
 void Swarm::resolvePendingMembers()
 {
-    auto& sceneObjects = Brakeza::get()->getSceneObjects();
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
 
     auto resolve = [&](std::vector<std::string>& pending, bool isPredator) {
         std::vector<std::string> unresolved;

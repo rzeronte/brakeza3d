@@ -38,7 +38,7 @@ class Object3D: public Collider
 {
 protected:
     unsigned int id = 0;
-    float scale = 1.f;
+    Vertex3D scale3D = Vertex3D(1.f, 1.f, 1.f);
     float alpha = 1.f;
     float distanceToCamera = 0.f;
     float boundingRadius = 2.0f;
@@ -95,6 +95,7 @@ public:
     void setPosition(const Vertex3D &p);
     void setRotation(const M3 &r);
     void setScale(float value);
+    void setScaleV(const Vertex3D& v);
     void setRemoved(bool value);
     void setDrawOffset(const Vertex3D &v);
     void setAlpha(float alpha);
@@ -124,7 +125,8 @@ public:
     [[nodiscard]] virtual ObjectType getTypeObject() const              { return ObjectType::Object3D; }
     [[nodiscard]] unsigned int getId() const                            { return id; }
     [[nodiscard]] float &getAlpha()                                     { return alpha; }
-    [[nodiscard]] float getScale() const                                { return scale; }
+    [[nodiscard]] float getScale() const                                { return (scale3D.x + scale3D.y + scale3D.z) / 3.f; }
+    [[nodiscard]] Vertex3D getScaleV() const                           { return scale3D; }
     [[nodiscard]] float getDistanceToCamera() const                     { return distanceToCamera; }
     [[nodiscard]] float getBoundingRadius() const                       { return boundingRadius; }
     void setBoundingRadius(float r)                                     { boundingRadius = r; }

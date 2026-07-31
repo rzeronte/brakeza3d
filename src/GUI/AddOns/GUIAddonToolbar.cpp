@@ -55,8 +55,6 @@ void GUIAddonToolbar::Draw()
         VerticalSeparator();
         TransformationsToolsIcons();
         VerticalSeparator();
-        RenderTriangleModes();
-        VerticalSeparator();
         LightsOptions();
         VerticalSeparator();
         Helpers();
@@ -103,8 +101,8 @@ void GUIAddonToolbar::TransformationsToolsIcons()
         window->setGuiZmoOperation(ImGuizmo::OPERATION::ROTATE);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Scale (S)", IconGUI::TOOLBAR_SCALE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::SCALE_X, [&]() {
-        window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE_X);
+    GUI::DrawButton("Scale (S)", IconGUI::TOOLBAR_SCALE, GUIType::Sizes::ICONS_TOOLBAR, operation == ImGuizmo::OPERATION::SCALE, [&]() {
+        window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE);
     } );
 }
 
@@ -150,6 +148,7 @@ void GUIAddonToolbar::LUAStatusIcons()
 {
     auto scripting = Components::get()->Scripting();
     bool isStop = scripting->getStateLUAScripts() == Config::LuaStateScripts::LUA_STOP;
+    bool isScriptsRunning = !isStop;
     auto icon = isStop ? IconGUI::LUA_PLAY : IconGUI::LUA_STOP;
     auto label = isStop ? "Play (F1)" : "Stop (CTRL+F1)";
     auto callbackStop = [&]() { scripting->StopLUAScripts(); };
@@ -161,16 +160,16 @@ void GUIAddonToolbar::LUAStatusIcons()
     ImGui::SameLine();
     GUI::DrawButton("Reload scripts (F2)", IconGUI::LUA_RELOAD, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
         scripting->ReloadLUAScripts();
-    });
+    }, isScriptsRunning);
     VerticalSeparator();
     ImGui::SameLine();
     GUI::DrawButton("Clear scene (F3)", IconGUI::CLEAR_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
         SceneLoader::ClearWorld();
-    });
+    }, isScriptsRunning);
     ImGui::SameLine();
     GUI::DrawButton("Clean scene (F4)", IconGUI::CLEAN_SCENE, GUIType::Sizes::ICONS_TOOLBAR, false, [&]() {
         SceneLoader::CleanWorld();
-    });
+    }, isScriptsRunning);
 
 }
 
@@ -192,6 +191,10 @@ void GUIAddonToolbar::Helpers()
         GUI::Toggle(Config::get()->SHOW_AVATARS);
     });
     VerticalSeparator();
+    ImGui::SameLine();
+    GUI::DrawButton("Media Browser", IconGUI::WIN_IMAGES, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::MEDIA_BROWSER)->isOpen, [&]() {
+        Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::MEDIA_BROWSER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::MEDIA_BROWSER)->isOpen;
+    });
     ImGui::SameLine();
     GUI::DrawButton("Profiler", IconGUI::WIN_PROFILER, GUIType::Sizes::ICONS_TOOLBAR, Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen, [&]() {
         Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::PROFILER)->isOpen;
@@ -227,24 +230,6 @@ void GUIAddonToolbar::Helpers()
     });
 }
 
-void GUIAddonToolbar::RenderTriangleModes()
-{
-    GUI::DrawButton("Pixels", IconGUI::RENDER_PIXELS, GUIType::Sizes::ICONS_TOOLBAR,Config::get()->TRIANGLE_MODE_PIXELS,[&]() {
-        GUI::Toggle(Config::get()->TRIANGLE_MODE_PIXELS);
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Shading", IconGUI::RENDER_SHADING, GUIType::Sizes::ICONS_TOOLBAR,Config::get()->TRIANGLE_MODE_SHADING, [&]() {
-        GUI::Toggle(Config::get()->TRIANGLE_MODE_SHADING);
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Wireframe", IconGUI::RENDER_WIRE, GUIType::Sizes::ICONS_TOOLBAR,Config::get()->TRIANGLE_MODE_WIREFRAME, [&]() {
-        GUI::Toggle(Config::get()->TRIANGLE_MODE_WIREFRAME);
-    });
-    ImGui::SameLine();
-    GUI::DrawButton("Diffuse", IconGUI::RENDER_TEXTURE, GUIType::Sizes::ICONS_TOOLBAR,Config::get()->TRIANGLE_MODE_TEXTURIZED, [&]() {
-        GUI::Toggle(Config::get()->TRIANGLE_MODE_TEXTURIZED);
-    });
-}
 
 void GUIAddonToolbar::VerticalSeparator()
 {

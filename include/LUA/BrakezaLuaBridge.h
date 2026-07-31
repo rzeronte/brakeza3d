@@ -7,6 +7,7 @@
 
 #include "ObjectFactory.h"
 #include "../../sol/sol.hpp"
+#include "../Cache/ImageCache.h"
 #include "../3D/Vertex3D.h"
 #include "../Misc/ScriptLUA.h"
 #include "../Components/ComponentCamera.h"
@@ -22,6 +23,7 @@
 #include "../3D/Image3DAnimation.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/ParticleEmitter.h"
+#include "../3D/Sound3D.h"
 #include "../Misc/VideoPlayer.h"
 #include "../Threads/ThreadJobPathfinding.h"
 #include "../Threads/ThreadJobReadObjectScript.h"
@@ -89,6 +91,7 @@ inline void LUAIntegration(sol::state &lua)
         "setRotation", &Object3D::setRotation,
         "getTypeObject", &Object3D::getTypeObject,
         "getName", &Object3D::getName,
+        "getId", &Object3D::getId,
         "getRotation", &Object3D::getRotation,
         "setBelongToScene", &Object3D::setBelongToScene,
         "setEnabled", &Object3D::setEnabled,
@@ -97,6 +100,8 @@ inline void LUAIntegration(sol::state &lua)
         "setName", &Object3D::setName,
         "getScale", &Object3D::getScale,
         "setScale", &Object3D::setScale,
+        "getScaleV", &Object3D::getScaleV,
+        "setScaleV", &Object3D::setScaleV,
         "getModelMatrix", &Object3D::getModelMatrix,
         "getM3ModelMatrix", &Object3D::getM3ModelMatrix,
         "AxisForward", &Object3D::forward,
@@ -179,6 +184,18 @@ inline void LUAIntegration(sol::state &lua)
                 o->setScene(scene);
                 scene->addObject(o);
             }
+        },
+        "getBoneWorldPosition", [](Object3D* o, const std::string& name) -> Vertex3D {
+            auto* anim = dynamic_cast<Mesh3DAnimation*>(o);
+            return anim ? anim->getBoneWorldPosition(name) : o->getPosition();
+        },
+        "getBoneWorldRotation", [](Object3D* o, const std::string& name) -> M3 {
+            auto* anim = dynamic_cast<Mesh3DAnimation*>(o);
+            return anim ? anim->getBoneWorldRotation(name) : o->getRotation();
+        },
+        "getBoneNames", [](Object3D* o) -> std::vector<std::string> {
+            auto* anim = dynamic_cast<Mesh3DAnimation*>(o);
+            return anim ? anim->getBoneNames() : std::vector<std::string>{};
         }
     );
 
@@ -203,9 +220,13 @@ inline void LUAIntegration(sol::state &lua)
         "AddMusic", &ComponentSound::AddMusic,
         "setMusicVolume", [](ComponentSound*, int v) { ComponentSound::setMusicVolume(v); },
         "setSoundsVolume", [](ComponentSound*, int v) { ComponentSound::setSoundsVolume(v); },
+        "setAmbienceVolume", [](ComponentSound*, int percent) { Sound3D::ambienceVolumeScale = percent / 100.0f; },
         "PlaySound", &ComponentSound::PlaySound,
         "PlayMusic", &ComponentSound::PlayMusic,
         "StopMusic", [](ComponentSound*) { ComponentSound::StopMusic(); },
+        "PauseMusic", [](ComponentSound*) { ComponentSound::PauseMusic(); },
+        "ResumeMusic", [](ComponentSound*) { ComponentSound::ResumeMusic(); },
+        "isMusicPaused", [](ComponentSound*) { return ComponentSound::isMusicPaused(); },
         "StopChannel", [](ComponentSound*, int channel) { ComponentSound::StopChannel(channel); },
         "getSoundDuration", &ComponentSound::getSoundDuration,
         "LoadSoundsFromFile", &ComponentSound::LoadSoundsFromFile,
@@ -232,6 +253,14 @@ inline void LUAIntegration(sol::state &lua)
         "getWidthRender", &ComponentWindow::getWidthRender,
         "isWindowMaximized", &ComponentWindow::isWindowMaximized,
         "LoadCursorImage", &ComponentWindow::LoadCursorImage,
+        "scheduleHoverPick", [](ComponentWindow& w, int mx, int my) {
+            int nx = (int)((float)mx / w.getWidth()  * w.getWidthRender());
+            int ny = (int)((float)my / w.getHeight() * w.getHeightRender());
+            w.scheduleHoverPick(nx, ny);
+        },
+        "getHoverPickID", [](const ComponentWindow& w) -> unsigned int {
+            return w.getHoverPickID();
+        },
         "setImGuiMouse", &ComponentWindow::setImGuiMouse,
         "setClearColor", &ComponentWindow::setClearColor
     );
@@ -273,6 +302,7 @@ inline void LUAIntegration(sol::state &lua)
             cr->removeFromSelection(o);
         },
         "clearSelection", &ComponentRender::clearSelection,
+        "setDragSelectEnabled", [](ComponentRender* cr, bool v) { cr->getSelectionManager().setRectSelectEnabled(v); },
         "setSelectedObject", &ComponentRender::setSelectedObject,
         "hasMultipleSelected", &ComponentRender::hasMultipleSelected,
         "isObjectInSelection", [](ComponentRender* cr, Object3D* o) -> bool {
@@ -284,7 +314,11 @@ inline void LUAIntegration(sol::state &lua)
         "getLastLeftClickedObject", &ComponentRender::getLastLeftClickedObject,
         "clearLeftClickedObject", &ComponentRender::clearLeftClickedObject,
         "getLastLeftClickedSubmeshName", &ComponentRender::getLastLeftClickedSubmeshName,
-        "drawGroundCircle",  sol::overload(&ComponentRender::drawGroundCircle,  &ComponentRender::drawGroundCircleToFB),
+        "drawGroundCircle",  sol::overload(
+            static_cast<void(ComponentRender::*)(Object3D*,float,float,float,float,float)const>(&ComponentRender::drawGroundCircle),
+            static_cast<void(ComponentRender::*)(Object3D*,float,float,float,float,float,float)const>(&ComponentRender::drawGroundCircle),
+            &ComponentRender::drawGroundCircleToFB
+        ),
         "drawGroundBlob",    sol::overload(&ComponentRender::drawGroundBlob,    &ComponentRender::drawGroundBlobToFB),
         "drawGroundDecal",   sol::overload(&ComponentRender::drawGroundDecal,   &ComponentRender::drawGroundDecalToFB),
         "drawOutlineSubmesh",      &ComponentRender::drawOutlineSubmesh,
@@ -295,21 +329,25 @@ inline void LUAIntegration(sol::state &lua)
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
         "getTextWriter",   &ComponentRender::getTextWriter,
-        "drawWidget", [](ComponentRender& r, const std::string& name, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string> {
-            if (!r.getUIManager()) return {0.0f, ""};
+        "drawWidget", [](ComponentRender& r, const std::string& name, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string, std::string, std::string> {
+            if (!r.getUIManager()) return {0.0f, "", "", ""};
             std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
                              ? fbArg.as<std::string>() : "foreground";
             float scaleOverride = (scaleArg.valid() && scaleArg.get_type() == sol::type::number)
                              ? scaleArg.as<float>() : 0.0f;
             return r.getUIManager()->drawWidgetLua(name, data, fb, scaleOverride);
         },
-        "drawWidgetAtPos", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string> {
-            if (!r.getUIManager()) return {y, ""};
+        "drawWidgetAtPos", [](ComponentRender& r, const std::string& name, float x, float y, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string, std::string, std::string> {
+            if (!r.getUIManager()) return {y, "", "", ""};
             std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
                              ? fbArg.as<std::string>() : "foreground";
             float scaleOverride = (scaleArg.valid() && scaleArg.get_type() == sol::type::number)
                              ? scaleArg.as<float>() : 0.0f;
             return r.getUIManager()->drawWidgetAtPosLua(name, x, y, data, fb, scaleOverride);
+        },
+        "getHoveredWidgetCursor", [](ComponentRender& r) -> std::string {
+            if (!r.getUIManager()) return "";
+            return r.getUIManager()->getHoveredCursorName();
         },
         "flushTooltip", [](ComponentRender& r, sol::object dtArg) {
             if (!r.getUIManager()) return;
@@ -336,6 +374,17 @@ inline void LUAIntegration(sol::state &lua)
         "clearWidgets", [](ComponentRender& r) {
             if (!r.getUIManager()) return;
             r.getUIManager()->clearWidgets();
+        },
+        "setWidgetAlpha", [](ComponentRender& r, float a) {
+            if (r.getUIManager()) r.getUIManager()->setGlobalAlpha(a);
+        },
+        "getObjectByPickingID", [](ComponentRender&, unsigned int id) -> Object3D* {
+            if (id == 0) return nullptr;
+            return Brakeza::get()->getObjectById(id);
+        },
+        "getSubmeshEntry", [](ComponentRender& r, unsigned int id) -> std::tuple<Object3D*, std::string> {
+            auto entry = r.getSubmeshEntry(id);
+            return { entry.first, entry.second };
         }
     );
 
@@ -430,6 +479,7 @@ inline void LUAIntegration(sol::state &lua)
         "Shutdown", &Brakeza::Shutdown,
         "AddObject3D",  &Brakeza::AddObject3D,
         "getObjectByName",    &Brakeza::getObjectByName,
+        "getObjectById",      &Brakeza::getObjectById,
         "getObjectAtScreen",  &Brakeza::getObjectAtScreen,
         "removeAllObjects",      &Brakeza::removeAllObjects,
         "getPendingJobsCount",   &Brakeza::getPendingJobsCount,
@@ -465,6 +515,7 @@ inline void LUAIntegration(sol::state &lua)
        sol::base_classes, sol::bases<Object3D>(),
         "getM3ViewMatrix", &Camera3D::getM3ViewMatrix,
        "setFOV", &Camera3D::setFOV,
+       "getFOV", [](Camera3D*) { return Config::get()->HORIZONTAL_FOV; },
        "getM3ProjectionMatrix", &Camera3D::getM3ProjectionMatrix,
        "setRotationFromEulerAngles", &Camera3D::setRotationFromEulerAngles,
        "getNearPlane", [](Camera3D*) { return Config::get()->FRUSTUM_NEARPLANE_DISTANCE; },
@@ -548,7 +599,15 @@ inline void LUAIntegration(sol::state &lua)
         "getOctree", &Mesh3D::getOctree,
         "getGrid3D", &Mesh3D::getGrid3D,
         "isRenderPipelineDefault", &Mesh3D::isRenderPipelineDefault,
-        "setRenderPipelineDefault",  &Mesh3D::setRenderPipelineDefault
+        "setRenderPipelineDefault", &Mesh3D::setRenderPipelineDefault,
+        "getMeshCount", [](Mesh3D& m) -> int {
+            return (int)m.getModelTextures().size();
+        },
+        "setDiffuseTexture", [](Mesh3D& m, int meshIdx, const std::string& path) {
+            auto& textures = m.getModelTextures();
+            if (meshIdx < 0 || meshIdx >= (int)textures.size()) return;
+            textures[meshIdx] = imageCache.getOrLoad(FilePath::ImageFile(path));
+        }
     );
 
     lua.new_usertype<Mesh3DAnimation>("Mesh3DAnimation",
@@ -558,7 +617,12 @@ inline void LUAIntegration(sol::state &lua)
         "setAnimationSpeed", &Mesh3DAnimation::setAnimationSpeed,
         "isAnimationEnds", &Mesh3DAnimation::isAnimationEnds,
         "setLoop", &Mesh3DAnimation::setLoop,
-        "isLoop", &Mesh3DAnimation::isLoop
+        "isLoop", &Mesh3DAnimation::isLoop,
+        "getNumAnimations", &Mesh3DAnimation::getNumAnimations,
+        "getAnimationName", &Mesh3DAnimation::getAnimationName,
+        "getBoneWorldPosition", &Mesh3DAnimation::getBoneWorldPosition,
+        "getBoneWorldRotation", &Mesh3DAnimation::getBoneWorldRotation,
+        "getBoneNames", &Mesh3DAnimation::getBoneNames
     );
 
     lua.new_usertype<Projectile>("Projectile",
@@ -651,6 +715,23 @@ inline void LUAIntegration(sol::state &lua)
                 camera.value_or(false),
                 renderSettings.value_or(false)
             );
+        },
+        "loadSceneADS", [](SceneLoader*, std::string name) {
+            auto *scene = Components::get()->Scripting()->getSceneByName(name);
+            if (!scene) return;
+            const std::string &path = scene->getFilePath();
+            FILE *f = fopen(path.c_str(), "rb");
+            if (!f) return;
+            fseek(f, 0, SEEK_END);
+            long sz = ftell(f);
+            rewind(f);
+            std::string buf(sz, '\0');
+            fread(buf.data(), 1, sz, f);
+            fclose(f);
+            cJSON *root = cJSON_Parse(buf.c_str());
+            if (!root) return;
+            SceneLoader::LoadADSSettings(root);
+            cJSON_Delete(root);
         }
     );
 
@@ -758,7 +839,11 @@ inline void LUAIntegration(sol::state &lua)
         "isGPUMode", &ParticleEmitter::isGPUMode,
         "createAttachedLight", &ParticleEmitter::createAttachedLight,
         "removeAttachedLight", &ParticleEmitter::removeAttachedLight,
-        "getAttachedLight", &ParticleEmitter::getAttachedLight
+        "getAttachedLight", &ParticleEmitter::getAttachedLight,
+        "getContext",      [](ParticleEmitter& e) -> ParticlesContext& { return e.getContextPointer(); },
+        "detach",          &ParticleEmitter::detach,
+        "setFollowTarget", &ParticleEmitter::setFollowTarget,
+        "getFollowTarget", &ParticleEmitter::getFollowTarget
     );
 
     lua.new_enum("CollisionShape",
@@ -810,8 +895,10 @@ inline void LUAIntegration(sol::state &lua)
         "createEmpty",  [](int w, int h) { return Image::createEmpty(w, h); },
         "destroy",      &Image::destroy,
         "clearChannel", &Image::clearChannel,
-        "fillCircle",   &Image::fillCircle,
-        "upload",       &Image::upload
+        "fillCircle",     &Image::fillCircle,
+        "fillCircleGrad", &Image::fillCircleGrad,
+        "upload",         &Image::upload,
+        "setClampToEdge", &Image::setClampToEdge
     );
 
     lua.new_usertype<ShaderBaseCustomOGLCode>("ShaderOpenGLCustom",
@@ -875,6 +962,14 @@ inline void LUAIntegration(sol::state &lua)
         "getObject", &CollisionInfo::getObject
     );
 
+    lua.new_usertype<Sound3D>("Sound3D",
+        sol::base_classes, sol::bases<Object3D>(),
+        "setSoundLoop",    [](Sound3D* s, bool v){ s->loop = v; },
+        "setInnerRadius",  [](Sound3D* s, float v){ s->innerRadius = v; },
+        "setOuterRadius",  [](Sound3D* s, float v){ s->outerRadius = v; },
+        "setBaseVolume",   [](Sound3D* s, int v){ s->baseVolume = v; }
+    );
+
     lua.new_usertype<ObjectFactory>("ObjectFactory",
         "Object3D",           &ObjectFactory::CreateObject3D,
         "Image2D",            &ObjectFactory::CreateImage2D,
@@ -890,11 +985,35 @@ inline void LUAIntegration(sol::state &lua)
         "Projectile",         &ObjectFactory::CreateProjectile,
         "TextWriter",         &ObjectFactory::CreateTextWriter,
         "ScriptLUA",          &ObjectFactory::CreateScriptLUA,
+        "Sound3D",            &ObjectFactory::CreateSound3D,
         "PlayVideoCutscene",  [](ObjectFactory*, const std::string &path) {
             VideoPlayer vp(path);
             vp.play();
         }
     );
+
+    lua["ShadowConfig"] = lua.create_table();
+    lua["ShadowConfig"]["setFrustumSize"]   = [](float v) { Config::get()->SHADOW_MAPPING_FRUSTUM_SIZE = v; };
+    lua["ShadowConfig"]["getFrustumSize"]   = []() -> float { return Config::get()->SHADOW_MAPPING_FRUSTUM_SIZE; };
+    lua["ShadowConfig"]["setFarPlane"]      = [](float v) { Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE = v; };
+    lua["ShadowConfig"]["getFarPlane"]      = []() -> float { return Config::get()->SHADOW_MAPPING_DEPTH_FAR_PLANE; };
+    lua["ShadowConfig"]["setIntensity"]     = [](float v) { Config::get()->SHADOW_MAPPING_INTENSITY = v; };
+    lua["ShadowConfig"]["getIntensity"]     = []() -> float { return Config::get()->SHADOW_MAPPING_INTENSITY; };
+    lua["ShadowConfig"]["setShadowEnabled"] = [](bool v)  { Config::get()->ENABLE_SHADOW_MAPPING = v; };
+    lua["ShadowConfig"]["isShadowEnabled"]  = []() -> bool { return Config::get()->ENABLE_SHADOW_MAPPING; };
+    lua["ShadowConfig"]["setResolution"]    = [](int res) {
+        res = std::max(256, std::min(res, 8192));
+        Config::get()->SHADOW_MAP_RESOLUTION = res;
+        Components::get()->Render()->getShaders()->shaderShadowPass->ResetFramebuffers();
+    };
+    lua["ShadowConfig"]["getResolution"]    = []() -> int { return Config::get()->SHADOW_MAP_RESOLUTION; };
+    lua["ShadowConfig"]["setPCFKernelSize"] = [](int size) {
+        Config::get()->SHADOW_MAPPING_PCF_KERNEL_SIZE = std::max(0, size);
+    };
+    lua["ShadowConfig"]["getPCFKernelSize"] = []() -> int { return Config::get()->SHADOW_MAPPING_PCF_KERNEL_SIZE; };
+    lua["ShadowConfig"]["setFocus"] = [](float x, float y, float z) {
+        Config::get()->SHADOW_MAPPING_FOCUS = glm::vec3(x, y, z);
+    };
 }
 
 #endif //BRAKEZA3D_LUAINTEGRATION_H

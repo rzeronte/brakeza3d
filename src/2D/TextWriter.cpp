@@ -40,7 +40,7 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
         const float ry = (float)rh / (float)win->getHeight();
         targetW   = rw;
         targetH   = rh;
-        targetFBO = win->getUIFramebuffer();
+        targetFBO = ComponentRender::resolveEffectiveFBO("ui");
         x = (int)std::round(x * rx);
         y = (int)std::round(y * ry);
         w = (int)std::round(w * rx);
@@ -102,7 +102,7 @@ void TextWriter::endTextCache()
 {
     activeTextCache = nullptr;
     auto *win = Components::get()->Window();
-    Components::get()->Render()->ChangeOpenGLFramebuffer(win->getUIFramebuffer());
+    Components::get()->Render()->ChangeOpenGLFramebuffer(ComponentRender::resolveEffectiveFBO("ui"));
     glViewport(0, 0, win->getWidthRender(), win->getHeightRender());
 }
 
@@ -125,7 +125,7 @@ void TextWriter::drawTextCache(const std::string &name, int x, int y)
         rw, rh,
         1.0f,
         true,   // FBO textures need Y-flip: ortho(0,W,H,0) stores content inverted vs SDL textures
-        win->getUIFramebuffer()
+        ComponentRender::resolveEffectiveFBO("ui")
     );
 }
 
@@ -295,7 +295,7 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
         const float ry = (float)rh / (float)win->getHeight();
         targetW   = rw;
         targetH   = rh;
-        targetFBO = win->getUIFramebuffer();
+        targetFBO = ComponentRender::resolveEffectiveFBO("ui");
         for (int j = 0; j < numFloats; j += 4) {
             vertices[j]     *= rx;
             vertices[j + 1] *= ry;
@@ -482,12 +482,7 @@ void TextWriter::flushTextBatchToFB(const std::string& fb)
     const int rw = win->getWidthRender();
     const int rh = win->getHeightRender();
 
-    GLuint targetFBO;
-    if      (fb == "foreground") targetFBO = win->getForegroundFramebuffer();
-    else if (fb == "background") targetFBO = win->getBackgroundFramebuffer();
-    else if (fb == "global")     targetFBO = win->getGlobalFramebuffer();
-    else if (fb == "scene")      targetFBO = win->getSceneFramebuffer();
-    else                         targetFBO = win->getUIFramebuffer();
+    GLuint targetFBO = ComponentRender::resolveEffectiveFBO(fb);
 
     render->ChangeOpenGLFramebuffer(targetFBO);
     glDisable(GL_DEPTH_TEST);
@@ -527,7 +522,7 @@ void TextWriter::flushTextBatch()
 
     const int rw = win->getWidthRender();
     const int rh = win->getHeightRender();
-    const GLuint uiFBO = win->getUIFramebuffer();
+    const GLuint uiFBO = ComponentRender::resolveEffectiveFBO("ui");
 
     render->ChangeOpenGLFramebuffer(uiFBO);
     glDisable(GL_DEPTH_TEST);
@@ -568,12 +563,7 @@ void TextWriter::writeTextAtlasToFB(int x, int y, const char* text, const Color&
     const int rw = win->getWidthRender();
     const int rh = win->getHeightRender();
 
-    GLuint targetFBO;
-    if      (fb == "foreground") targetFBO = win->getForegroundFramebuffer();
-    else if (fb == "background") targetFBO = win->getBackgroundFramebuffer();
-    else if (fb == "global")     targetFBO = win->getGlobalFramebuffer();
-    else if (fb == "scene")      targetFBO = win->getSceneFramebuffer();
-    else                         targetFBO = win->getUIFramebuffer();
+    GLuint targetFBO = ComponentRender::resolveEffectiveFBO(fb);
 
     render->ChangeOpenGLFramebuffer(targetFBO);
     glDisable(GL_DEPTH_TEST);

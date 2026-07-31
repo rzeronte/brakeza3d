@@ -84,7 +84,7 @@ void GUIManager::RegisterWindows()
     ADD_WIN("Scene detail",        GUIType::SCENE_INFO,          IconGUI::SCENE_INFO,            "", false, true,  false, false,  sceneChecker.DrawWinSceneInfo(),                                           ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Project detail",      GUIType::PROJECT_INFO,        IconGUI::PROJECT_INFO,          "", false, true,  false, false,  projectChecker.DrawWinProjectInfo(),                                       ImVec2(600, 450), ImVec2(FLT_MAX, FLT_MAX));
     ADD_WIN("Threads",             GUIType::THREADS,             IconGUI::WIN_THREADS,           "", false, false, false, false,  ThreadGUI::MenuWorkers(),                                                  ImVec2(550, 650), ImVec2(FLT_MAX, FLT_MAX));
-    ADD_WIN("UI Manager",          GUIType::UI_MANAGER,          IconGUI::WIN_UI_MANAGER,        "", false, false, false, false,  UIManagerGUI::DrawWinUIManager(),                                          ImVec2(1250, 600), ImVec2(FLT_MAX, FLT_MAX));
+    ADD_WIN("UI Manager",          GUIType::UI_MANAGER,          IconGUI::WIN_UI_MANAGER,        "", false, false, false, false,  UIManagerGUI::DrawWinUIManager(),                                          ImVec2(800, 600), ImVec2(FLT_MAX, FLT_MAX));
 
     RegisterDefaultLayoutWindows();
 }
@@ -170,7 +170,8 @@ void GUIManager::RegisterAllowedItemsForViewer()
         { "Light Point",             ObjectType::LightPoint,           IconObject::LIGHT_POINT,            &cfg->SHOW_AVATAR_LIGHT_POINT          },
         { "Light Spot",              ObjectType::LightSpot,            IconObject::LIGHT_SPOT,             &cfg->SHOW_AVATAR_LIGHT_SPOT           },
         { "Particle Emitter",        ObjectType::ParticleEmitter,      IconObject::PARTICLE_EMITTER,       &cfg->SHOW_AVATAR_PARTICLE_EMITTER     },
-        { "Swarm",                   ObjectType::Swarm,                IconObject::SWARM,                  &cfg->SHOW_AVATAR_SWARM                }
+        { "Swarm",                   ObjectType::Swarm,                IconObject::SWARM,                  &cfg->SHOW_AVATAR_SWARM                },
+        { "Sound 3D",                ObjectType::Sound3D,              IconObject::SOUND_3D,               &cfg->SHOW_AVATAR_SOUND3D              }
     };
 }
 
@@ -178,6 +179,7 @@ void GUIManager::RegisterMenu()
 {
     menus = {
         {"Brakeza3D",       IconGUI::MNU_BRAKEZA,           [&] { GUIAddonMenu::MenuBrakeza3D(); }},
+        {"File",            IconGUI::FOLDER,                [&] { GUIAddonMenu::MenuFile(this); }},
         {"Script Controls", IconGUI::MNU_SCRIPT_CONTROLS,   [&] { GUIAddonMenu::MenuScriptControls(); }},
         {"Add Object",      IconGUI::MNU_ADD_OBJECT,        [&] { GUIAddonMenu::MenuAddObject(); }},
         {"Video",           IconGUI::MNU_VIDEO,             [&] { GUIAddonMenu::MenuVideo(); }},
@@ -337,7 +339,7 @@ void GUIManager::DrawRegisteredWindows()
 
         if (!selected && window.autoHideIfNotSelected) continue;
 
-        ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing;
+        ImGuiWindowFlags flags = ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_MenuBar;
 
         if (!window.isDockable) {
             flags |= ImGuiWindowFlags_NoDocking;
@@ -354,8 +356,8 @@ void GUIManager::DrawRegisteredWindows()
         if (ImGui::Begin(window.label.c_str(), pOpen, flags)) {
             if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
                 focusedWindow = window.window;
+            DrawWindowMenuBar(window);
             window.functionCallBack();
-            DrawObjectWindowStatusBar(window);
         }
         ImGui::End();
     }
@@ -387,34 +389,23 @@ static void DoToggleSoloWindow(GUIType::WindowGUI &window, std::vector<GUIType::
     }
 }
 
-static void DrawSoloWindowButton(GUIType::WindowGUI &window)
+void GUIManager::DrawWindowMenuBar(GUIType::WindowGUI &window)
 {
-    bool isSolo = g_soloActive && g_soloWindow == window.window;
-    GUI::DrawButtonTransparent(
-        isSolo ? "Restore windows" : "Close all others",
-        isSolo ? IconGUI::SOLO_WINDOW_ON : IconGUI::SOLO_WINDOW_OFF,
-        GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
-        isSolo,
-        [&window] {
-            DoToggleSoloWindow(window, Brakeza::get()->GUI()->getWindows());
-        }
-    );
-}
+    if (!ImGui::BeginMenuBar()) return;
 
-void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
-{
-    ImGui::BeginChild(
-        "WindowContent",
-        ImVec2(0, ImGui::GetContentRegionAvail().y - GetObjectStatusBarHeight() + 8.0f),
-        false,
-        ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
-    );
-    ImGui::EndChild();
+    // Cluster of 2 (or 3, with auto-hide) transparent icon buttons pinned to the right edge.
+    // Tight spacing/padding + shift into the right window padding so the cluster hugs the edge.
+    constexpr float kIconGap    = 1.0f;   // px between buttons
+    constexpr float kFramePadX  = 1.0f;   // inner padding per side of each button
+    constexpr float kRightShift = 6.0f;   // eat into WindowPadding.x to sit closer to the border
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,  ImVec2(kIconGap,   ImGui::GetStyle().ItemSpacing.y));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(kFramePadX, ImGui::GetStyle().FramePadding.y));
 
-    //bool isDocked = ImGui::IsWindowDocked();
-
-    ImGui::Separator();
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, ImGui::GetStyle().ItemSpacing.y));
+    const float iconW   = GUIType::Sizes::ICONS_OBJECTS_ALLOWED.x;
+    const int   nBtn    = 2 + (window.isObjectWindow ? 1 : 0);
+    const float cluster = (iconW + kFramePadX * 2.0f) * nBtn + kIconGap * (nBtn - 1);
+    const float rightX  = ImGui::GetContentRegionMax().x - cluster + kRightShift;
+    if (rightX > ImGui::GetCursorPosX()) ImGui::SetCursorPosX(rightX);
 
     if (window.isObjectWindow) {
         GUI::DrawButtonTransparent(
@@ -422,11 +413,8 @@ void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
             window.autoHideIfNotSelected ? IconGUI::WIN_OBJECT_AUTOHIDE_OFF : IconGUI::WIN_OBJECT_AUTOHIDE_ON,
             GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
             window.autoHideIfNotSelected,
-            [&] {
-                window.autoHideIfNotSelected = !window.autoHideIfNotSelected;
-            }
+            [&] { window.autoHideIfNotSelected = !window.autoHideIfNotSelected; }
         );
-        ImGui::SameLine();
     }
 
     GUI::DrawButtonTransparent(
@@ -434,32 +422,20 @@ void GUIManager::DrawObjectWindowStatusBar(GUIType::WindowGUI &window)
         window.isDockable ? IconGUI::DOCKING_ON : IconGUI::DOCKING_OFF,
         GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
         window.isDockable,
-        [&] {
-            window.isDockable = !window.isDockable;
-        }
+        [&] { window.isDockable = !window.isDockable; }
     );
-    ImGui::SameLine();
-    DrawSoloWindowButton(window);
 
-    if (g_soloActive && g_soloWindow == window.window) {
-        ImGui::SameLine();
-        ImGui::TextDisabled("Ctrl+\\ (editor) | RCtrl+Ctrl+\\ (scripts running)");
-    }
+    const bool isSolo = g_soloActive && g_soloWindow == window.window;
+    GUI::DrawButtonTransparent(
+        isSolo ? "Restore windows  (Ctrl+\\ editor | RCtrl+Ctrl+\\ scripts running)" : "Close all others",
+        isSolo ? IconGUI::SOLO_WINDOW_ON : IconGUI::SOLO_WINDOW_OFF,
+        GUIType::Sizes::ICONS_OBJECTS_ALLOWED,
+        isSolo,
+        [&window] { DoToggleSoloWindow(window, Brakeza::get()->GUI()->getWindows()); }
+    );
 
-    ImGui::PopStyleVar();
-}
-
-float GUIManager::GetObjectStatusBarHeight()
-{
-    float height = 0.0f;
-
-    height += ImGui::GetStyle().ItemSpacing.y;
-    height += ImGui::GetFrameHeight();
-    height += ImGui::GetStyle().FramePadding.y * 2.0f;
-    height += ImGui::GetStyle().ItemSpacing.y;
-    height += ImGui::GetStyle().SeparatorTextPadding.y;
-
-    return height;
+    ImGui::PopStyleVar(2);
+    ImGui::EndMenuBar();
 }
 
 void GUIManager::UpdateImGuiDocking()

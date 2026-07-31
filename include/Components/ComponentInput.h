@@ -70,6 +70,13 @@ class ComponentInput : public Component
     bool wantCaptureKeyboard = false;
     bool wantCaptureMouse = false;
 
+    // Per-frame smoothing state for middle-button camera drag (deltas accumulated across SDL events,
+    // then low-pass filtered once per frame in onUpdate for consistent feel regardless of event rate).
+    float pendingMouseLookDx = 0.0f;
+    float pendingMouseLookDy = 0.0f;
+    float smoothedMouseLookDx = 0.0f;
+    float smoothedMouseLookDy = 0.0f;
+
 public:
     ComponentInput() = default;
     void onStart() override;
@@ -83,6 +90,7 @@ public:
     void UpdateMouseStates(SDL_Event *e);
     void HandleKeyboardMovingCamera() const;
     void HandleMouseLook(SDL_Event *);
+    void ApplySmoothedMouseLook();
     void ResetMouseMapping();
     void UpdateGamePadStates();
     void HandleCheckPadConnection(SDL_Event *pEvent);

@@ -6,8 +6,10 @@
 #include <string>
 
 #include "../../../include/Render/UI/UIManager.h"
+#include "../../../include/Render/Image.h"
 #include "../../../include/Components/ComponentRender.h"
 #include "../../../include/Components/ComponentInput.h"
+#include "../../../include/Components/ComponentSound.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Misc/cJSON.h"
 #include "../../../include/Misc/ToolsJSON.h"
@@ -22,8 +24,17 @@ void UIManager::init(ComponentRender* r, const std::string& dir)
     loadWidgets();
 }
 
+static void freeWidgetCache(UIWidget& w)
+{
+    if (w.cacheFBO)     { glDeleteFramebuffers(1, &w.cacheFBO);  w.cacheFBO = 0; }
+    if (w.cacheTexture) { glDeleteTextures(1, &w.cacheTexture);  w.cacheTexture = 0; }
+    w.cacheRW = 0;  w.cacheRH = 0;  w.cacheDirty = true;
+    w.cachedData.clear();
+}
+
 void UIManager::loadWidgets()
 {
+    for (auto& [n, w] : widgets) freeWidgetCache(w);
     widgets.clear();
     loadedDirs.clear();
     loadWidgetsFromDir(widgetsDir);
@@ -31,6 +42,7 @@ void UIManager::loadWidgets()
 
 void UIManager::reloadWidgets()
 {
+    for (auto& [n, w] : widgets) freeWidgetCache(w);
     widgets.clear();
     auto dirs = loadedDirs;   // snapshot — loadWidgetsFromDir modifica loadedDirs
     loadedDirs.clear();
@@ -41,6 +53,7 @@ void UIManager::reloadWidgets()
 
 void UIManager::clearWidgets()
 {
+    for (auto& [n, w] : widgets) freeWidgetCache(w);
     widgets.clear();
     loadedDirs.clear();
 }
@@ -127,6 +140,10 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
     if (posXItem) widget.posX = (float)posXItem->valuedouble;
     cJSON* posYItem = cJSON_GetObjectItem(root, "posY");
     if (posYItem) widget.posY = (float)posYItem->valuedouble;
+    cJSON* offsetXItem = cJSON_GetObjectItem(root, "offsetX");
+    if (offsetXItem) widget.offsetX = (float)offsetXItem->valuedouble;
+    cJSON* offsetYItem = cJSON_GetObjectItem(root, "offsetY");
+    if (offsetYItem) widget.offsetY = (float)offsetYItem->valuedouble;
     cJSON* widthItem = cJSON_GetObjectItem(root, "width");
     if (widthItem) widget.width = (float)widthItem->valuedouble;
     cJSON* heightItem = cJSON_GetObjectItem(root, "height");
@@ -143,6 +160,10 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
     parseColor4(cJSON_GetObjectItem(root, "borderColor"), widget.borderColor);
     cJSON* bwItem = cJSON_GetObjectItem(root, "borderWidth");
     if (bwItem) widget.borderWidth = (float)bwItem->valuedouble;
+    cJSON* wCursorItem = cJSON_GetObjectItem(root, "cursor");
+    if (wCursorItem && wCursorItem->valuestring) widget.cursor = wCursorItem->valuestring;
+    cJSON* cacheableItem = cJSON_GetObjectItem(root, "cacheable");
+    if (cacheableItem && cJSON_IsBool(cacheableItem)) widget.cacheable = cJSON_IsTrue(cacheableItem);
 
     cJSON* elementsArr = cJSON_GetObjectItem(root, "elements");
     if (elementsArr && cJSON_IsArray(elementsArr)) {
@@ -172,6 +193,8 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             cJSON* fontScale = cJSON_GetObjectItem(item, "fontScale"); if (fontScale) el.fontScale = (float)fontScale->valuedouble;
             cJSON* textCol = cJSON_GetObjectItem(item, "textColor"); if (textCol) el.staticTextColor = ToolsJSON::getColorByJSON(textCol);
             cJSON* staticText = cJSON_GetObjectItem(item, "text"); if (staticText && staticText->valuestring) el.staticText = staticText->valuestring;
+            cJSON* txtAlign = cJSON_GetObjectItem(item, "textAlign"); if (txtAlign && txtAlign->valuestring) el.textAlign = txtAlign->valuestring;
+            cJSON* cached = cJSON_GetObjectItem(item, "cached"); if (cached && cJSON_IsBool(cached)) el.cached = cJSON_IsTrue(cached);
             cJSON* imageScale = cJSON_GetObjectItem(item, "imageScale"); if (imageScale) el.imageScale = (float)imageScale->valuedouble;
             cJSON* staticImg = cJSON_GetObjectItem(item, "imagePath"); if (staticImg && staticImg->valuestring) el.staticImagePath = staticImg->valuestring;
             cJSON* staticImgOff = cJSON_GetObjectItem(item, "imagePathOff"); if (staticImgOff && staticImgOff->valuestring) el.staticImagePathOff = staticImgOff->valuestring;
@@ -209,16 +232,32 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             if (arrayAlign && arrayAlign->valuestring) el.arrayAlign = arrayAlign->valuestring;
             cJSON* arrayDistribute = cJSON_GetObjectItem(item, "arrayDistribute");
             if (arrayDistribute) el.arrayDistribute = (arrayDistribute->type == cJSON_True);
+            cJSON* arrayPaginate = cJSON_GetObjectItem(item, "arrayPaginate");
+            if (arrayPaginate) el.arrayPaginate = (arrayPaginate->type == cJSON_True);
+            cJSON* arrayPagerWidget = cJSON_GetObjectItem(item, "arrayPagerWidget");
+            if (arrayPagerWidget && arrayPagerWidget->valuestring) el.arrayPagerWidget = arrayPagerWidget->valuestring;
             cJSON* arrayOffset = cJSON_GetObjectItem(item, "arrayOffset");
             if (arrayOffset) el.arrayOffset = (float)arrayOffset->valuedouble;
+            cJSON* arrayPrefix = cJSON_GetObjectItem(item, "arrayPrefix");
+            if (arrayPrefix && arrayPrefix->valuestring) el.arrayPrefix = arrayPrefix->valuestring;
             cJSON* borderCol = cJSON_GetObjectItem(item, "borderColor");
             if (borderCol) el.borderColor = ToolsJSON::getColorByJSON(borderCol);
+            cJSON* borderColHov = cJSON_GetObjectItem(item, "borderColorHover");
+            if (borderColHov) el.borderColorHover = ToolsJSON::getColorByJSON(borderColHov);
+            else if (borderCol) el.borderColorHover = el.borderColor;
+            cJSON* borderColPrs = cJSON_GetObjectItem(item, "borderColorPressed");
+            if (borderColPrs) el.borderColorPressed = ToolsJSON::getColorByJSON(borderColPrs);
+            else if (borderCol) el.borderColorPressed = el.borderColor;
             cJSON* borderW = cJSON_GetObjectItem(item, "borderWidth");
             if (borderW) el.borderWidth = (float)borderW->valuedouble;
             cJSON* bgColItem = cJSON_GetObjectItem(item, "bgColor");
             if (bgColItem) el.bgColor = ToolsJSON::getColorByJSON(bgColItem);
             cJSON* tooltipItem = cJSON_GetObjectItem(item, "tooltip");
             if (tooltipItem && tooltipItem->valuestring) el.tooltip = tooltipItem->valuestring;
+            cJSON* soundItem = cJSON_GetObjectItem(item, "sound");
+            if (soundItem && soundItem->valuestring) el.sound = soundItem->valuestring;
+            cJSON* cursorItem = cJSON_GetObjectItem(item, "cursor");
+            if (cursorItem && cursorItem->valuestring) el.cursor = cursorItem->valuestring;
             cJSON* optArr = cJSON_GetObjectItem(item, "options");
             if (optArr && cJSON_IsArray(optArr)) {
                 int optSize = cJSON_GetArraySize(optArr);
@@ -241,6 +280,8 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             if (paddingTop)    el.paddingTop    = (float)paddingTop->valuedouble;
             cJSON* paddingBottom = cJSON_GetObjectItem(item, "paddingBottom");
             if (paddingBottom) el.paddingBottom = (float)paddingBottom->valuedouble;
+            cJSON* enabledItem = cJSON_GetObjectItem(item, "enabled");
+            if (enabledItem && cJSON_IsBool(enabledItem)) el.enabled = cJSON_IsTrue(enabledItem);
             widget.elements.push_back(el);
         }
     }
@@ -340,11 +381,12 @@ float UIManager::getElementHeight(const UIElement& el)
 
 float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRenderData& data, bool useDefaultData)
 {
-    if (widgetRenderDepth == 0) lastClickedId = "";
+    if (widgetRenderDepth == 0) { lastClickedId = ""; lastRightClickedId = ""; lastHoveredId = ""; hoveredCursorName = ""; }
     widgetRenderDepth++;
     static const UIElementData defaultData;
     const UIWidgetRenderData* prevData = currentData;
     currentData = &data;
+    bool prevTextPass = textPass;
 
     float prevRenderScale = currentRenderScale;
     float ownScale = w.scale > 0 ? w.scale : 1.0f;
@@ -397,10 +439,16 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
             auto it2 = widgets.find(sc.widgetRef);
             if (it2 != widgets.end()) {
                 float ss = it2->second.scale > 0 ? it2->second.scale : 1.0f;
-                int cnt = (elData.count > 0) ? elData.count : sc.arrayCount;
+                int totalIt  = (elData.count > 0) ? elData.count : 0;
+                int pg       = (elData.page >= 0) ? elData.page : 0;
+                int pgOffset = sc.arrayPaginate ? (pg * sc.arrayCount) : 0;
+                int onPage   = (sc.arrayPaginate && totalIt > 0) ? std::min(sc.arrayCount, std::max(0, totalIt - pgOffset)) : 0;
+                int cnt      = sc.arrayPaginate ? onPage : ((elData.count > 0) ? elData.count : sc.arrayCount);
+                int totPages = (sc.arrayPaginate && totalIt > 0) ? ((totalIt + sc.arrayCount - 1) / sc.arrayCount) : -1;
                 if (sc.arrayAlign == "horizontal") return it2->second.height * ss * s;
                 float step = it2->second.height * ss * s + sc.arrayOffset;
-                return step * (float)cnt;
+                float navH = (sc.arrayPaginate && totPages > 1) ? it2->second.height * ss * s : 0.0f;
+                return step * (float)cnt + navH;
             }
         }
         return getElementHeight(sc);
@@ -409,46 +457,119 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
     float dynamicH = ch * s;
     float dynamicW = cw * s;
 
-    // Draw widget background before any element.
-    if (w.bgColor.a > 0.0f) {
-        render->DrawFilledRectToFB(
-            (int)x, (int)y, (int)dynamicW, (int)dynamicH, applyGA(w.bgColor), currentFB);
+    // Widget-level cursor: checked every frame (not cached — it's a side effect, not rendering).
+    if (!w.cursor.empty() && !textPass) {
+        int mx = input ? input->getRawMouseX() : -1;
+        int my = input ? input->getRawMouseY() : -1;
+        if (mx >= (int)x && mx <= (int)(x + dynamicW) && my >= (int)y && my <= (int)(y + dynamicH))
+            hoveredCursorName = w.cursor;
     }
 
-    // Pass 1: rects, images, icons (no text)
-    textPass = false;
-    float autoY = y;
-    for (auto& el : w.elements) {
-        UIElement scaled = buildScaled(el);
-        if (el.yAuto) autoY += scaled.paddingTop;
-        float drawY = el.yAuto ? autoY : y + scaled.y + scaled.paddingTop;
-        renderElement(scaled, x, drawY, resolveData(el));
-        if (el.yAuto) autoY += getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom;
+    // Lambda encapsulating all draw operations for this widget (background + elements + border).
+    // Called either directly (non-cacheable) or inside the dirty-render path (cacheable).
+    auto renderContent = [&]() {
+        if (!hitTestOnly && w.bgColor.a > 0.0f)
+            render->DrawFilledRectToFB((int)x, (int)y, (int)dynamicW, (int)dynamicH, applyGA(w.bgColor), currentFB);
+
+        // Pass 1: rects, images, icons (no text) — also runs hit-test
+        textPass = false;
+        float autoY = y;
+        for (auto& el : w.elements) {
+            UIElement scaled = buildScaled(el);
+            if (el.yAuto) autoY += scaled.paddingTop;
+            float drawY = el.yAuto ? autoY : y + scaled.y + scaled.paddingTop;
+            renderElement(scaled, x, drawY, resolveData(el));
+            if (el.yAuto) autoY += getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom;
+        }
+
+        // Pass 2: text only — skipped entirely in hit-test-only mode
+        if (!hitTestOnly) {
+            textPass = true;
+            autoY = y;
+            for (auto& el : w.elements) {
+                UIElement scaled = buildScaled(el);
+                if (el.yAuto) autoY += scaled.paddingTop;
+                float drawY = el.yAuto ? autoY : y + scaled.y + scaled.paddingTop;
+                renderElement(scaled, x, drawY, resolveData(el));
+                if (el.yAuto) autoY += getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom;
+            }
+        }
+
+        if (!hitTestOnly && w.borderWidth > 0.0f) {
+            int bw = (int)w.borderWidth;
+            Color bc = applyGA(w.borderColor);
+            int ix = (int)x, iy = (int)y, iw = (int)dynamicW, ih = (int)dynamicH;
+            render->DrawFilledRectToFB(ix,       iy,       iw, bw, bc, currentFB);
+            render->DrawFilledRectToFB(ix,       iy+ih-bw, iw, bw, bc, currentFB);
+            render->DrawFilledRectToFB(ix,       iy,       bw, ih, bc, currentFB);
+            render->DrawFilledRectToFB(ix+iw-bw, iy,       bw, ih, bc, currentFB);
+        }
+
+        if (!hitTestOnly && !debugHighlightName.empty()) {
+            auto hit = widgets.find(debugHighlightName);
+            if (hit != widgets.end() && &hit->second == &w) {
+                int ix = (int)x, iy = (int)y, iw = (int)dynamicW, ih = (int)dynamicH;
+                render->DrawFilledRectToFB(ix, iy, iw, ih, Color(1.0f, 0.5f, 0.0f, 0.30f), currentFB);
+                constexpr int hbw = 2;
+                Color hbc(1.0f, 0.75f, 0.0f, 0.95f);
+                render->DrawFilledRectToFB(ix,        iy,        iw,  hbw, hbc, currentFB);
+                render->DrawFilledRectToFB(ix,        iy+ih-hbw, iw,  hbw, hbc, currentFB);
+                render->DrawFilledRectToFB(ix,        iy,        hbw, ih,  hbc, currentFB);
+                render->DrawFilledRectToFB(ix+iw-hbw, iy,        hbw, ih,  hbc, currentFB);
+            }
+        }
+    };
+
+    // ── FBO Cache path (only at top-level depth, non-interactive widgets) ──────
+    if (w.cacheable && widgetRenderDepth == 1) {
+        const int rW = winPtr->getWidthRender();
+        const int rH = winPtr->getHeightRender();
+
+        // Recreate FBO if it doesn't exist or render resolution changed
+        if (w.cacheFBO == 0 || w.cacheRW != rW || w.cacheRH != rH) {
+            if (w.cacheFBO)     { glDeleteFramebuffers(1, &w.cacheFBO);  w.cacheFBO = 0; }
+            if (w.cacheTexture) { glDeleteTextures(1, &w.cacheTexture);  w.cacheTexture = 0; }
+            glGenTextures(1, &w.cacheTexture);
+            glBindTexture(GL_TEXTURE_2D, w.cacheTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, rW, rH, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glGenFramebuffers(1, &w.cacheFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, w.cacheFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, w.cacheTexture, 0);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            w.cacheRW = rW;  w.cacheRH = rH;
+            w.cacheDirty = true;
+        }
+
+        if (w.cacheDirty || data != w.cachedData) {
+            // Clear cache FBO (transparent)
+            glBindFramebuffer(GL_FRAMEBUFFER, w.cacheFBO);
+            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+            // Redirect all draw calls to the cache FBO, render content, restore
+            render->setFBOOverride(w.cacheFBO);
+            renderContent();
+            render->clearFBOOverride();
+
+            w.cachedData = data;
+            w.cacheDirty = false;
+        }
+
+        // Always blit the cached texture to the current target FB
+        render->DrawWidgetCacheToFB(w.cacheTexture, rW, rH, currentFB);
+
+        // Hit-test pass: no GPU draw calls, only mouse interaction detection
+        hitTestOnly = true;
+        renderContent();
+        hitTestOnly = false;
+    } else {
+        renderContent();
     }
 
-    // Pass 2: texts only
-    textPass = true;
-    autoY = y;
-    for (auto& el : w.elements) {
-        UIElement scaled = buildScaled(el);
-        if (el.yAuto) autoY += scaled.paddingTop;
-        float drawY = el.yAuto ? autoY : y + scaled.y + scaled.paddingTop;
-        renderElement(scaled, x, drawY, resolveData(el));
-        if (el.yAuto) autoY += getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom;
-    }
-
-    // Draw widget border after all elements.
-    if (w.borderWidth > 0.0f) {
-        int bw = (int)w.borderWidth;
-        Color bc = applyGA(w.borderColor);
-        int ix = (int)x, iy = (int)y, iw = (int)dynamicW, ih = (int)dynamicH;
-        render->DrawFilledRectToFB(ix,       iy,       iw, bw, bc, currentFB);
-        render->DrawFilledRectToFB(ix,       iy+ih-bw, iw, bw, bc, currentFB);
-        render->DrawFilledRectToFB(ix,       iy,       bw, ih, bc, currentFB);
-        render->DrawFilledRectToFB(ix+iw-bw, iy,       bw, ih, bc, currentFB);
-    }
-
-    textPass = false;
+    textPass = prevTextPass;
     currentData = prevData;
     currentRenderScale = prevRenderScale;
     widgetRenderDepth--;
@@ -467,8 +588,8 @@ float UIManager::drawWidget(const std::string& name, const UIWidgetRenderData& d
     currentFB = fb;
 
     auto* win = Components::get()->Window();
-    float ox = w.posX * (float)win->getWidth();
-    float oy = w.posY * (float)win->getHeight();
+    float ox = w.posX * (float)win->getWidth()  + w.offsetX;
+    float oy = w.posY * (float)win->getHeight() + w.offsetY;
 
     float prevScale = w.scale;
     if (scaleOverride > 0.0f) w.scale = w.scale * scaleOverride;
@@ -490,7 +611,7 @@ float UIManager::drawWidgetAtPos(const std::string& name, float x, float y, cons
 
     float prevScale = w.scale;
     if (scaleOverride > 0.0f) w.scale = w.scale * scaleOverride;
-    float result = renderWidgetAt(w, x, y, data);
+    float result = renderWidgetAt(w, x + w.offsetX, y + w.offsetY, data);
     w.scale = prevScale;
     return result;
 }
@@ -507,11 +628,20 @@ static UIWidgetRenderData filterDataByPrefix(const UIWidgetRenderData& data, con
 
 void UIManager::renderElement(const UIElement& el, float baseX, float baseY, const UIElementData& data)
 {
+    if (!el.enabled) return;
+
     // Helper: compute step for array items.
     // - arrayDistribute=false (default): step = child natural size × scales (fixed, set at load time).
     // - arrayDistribute=true: step = full window dimension / arrayCount (computed at runtime).
     //   In distribute mode the child widget is still rendered at its own scale; only the spacing changes.
-    int resolvedCount = (data.count > 0) ? data.count : el.arrayCount;
+    bool isPaginated  = el.arrayPaginate;
+    int  pageSize     = el.arrayCount;
+    int  currentPage  = (isPaginated && data.page >= 0) ? data.page : 0;
+    int  totalItems   = (data.count > 0) ? data.count : 0;
+    int  totalPages   = (isPaginated && totalItems > 0) ? ((totalItems + pageSize - 1) / pageSize) : -1;
+    int  pageOffset   = isPaginated ? (currentPage * pageSize) : 0;
+    int  itemsOnPage  = (isPaginated && totalItems > 0) ? std::min(pageSize, std::max(0, totalItems - pageOffset)) : 0;
+    int  resolvedCount = isPaginated ? itemsOnPage : ((data.count > 0) ? data.count : pageSize);
 
     auto arrayStep = [&](UIWidget& child) -> std::pair<float,float> {
         float stepX = 0.0f, stepY = 0.0f;
@@ -550,11 +680,12 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
                         auto [stepX, stepY] = arrayStep(it->second);
                         const UIWidgetRenderData& fullData = currentData ? *currentData : UIWidgetRenderData{};
                         for (int i = 0; i < resolvedCount; i++) {
-                            auto sub = filterDataByPrefix(fullData, std::to_string(i) + "_");
+                            auto sub = filterDataByPrefix(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
                             renderWidgetAt(it->second,
                                 baseX + el.x + (float)i * stepX,
                                 baseY + el.y + (float)i * stepY, sub, false);
                         }
+                        // arrayPager widget renders its own text pass; nothing to do here.
                     }
                     renderDepth--;
                 }
@@ -590,10 +721,11 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
                 render->DrawFilledRectToFB((int)(baseX + el.x), (int)(baseY + el.y), (int)totalW, (int)totalH, applyGA(el.bgColor), currentFB);
             }
             for (int i = 0; i < resolvedCount; i++) {
-                std::string prevId = lastClickedId;
+                std::string prevId      = lastClickedId;
+                std::string prevHoverId = lastHoveredId;
                 float ix = baseX + el.x + (float)i * stepX;
                 float iy = baseY + el.y + (float)i * stepY;
-                auto sub = filterDataByPrefix(fullData, std::to_string(i) + "_");
+                auto sub = filterDataByPrefix(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
                 renderWidgetAt(it->second, ix, iy, sub, false);
                 if (el.borderWidth > 0.0f) {
                     int bord = (int)el.borderWidth;
@@ -604,7 +736,49 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
                     render->DrawFilledRectToFB((int)(ix+cw-bord), (int)iy,   bord, (int)ch,   bc, currentFB);
                 }
                 if (lastClickedId != prevId && !lastClickedId.empty())
-                    lastClickedId = std::to_string(i) + "_" + lastClickedId;
+                    lastClickedId = std::to_string(pageOffset + i) + "_" + lastClickedId;
+                if (lastHoveredId != prevHoverId && !lastHoveredId.empty())
+                    lastHoveredId = std::to_string(pageOffset + i) + "_" + lastHoveredId;
+            }
+            // Pagination nav bar — rendered via arrayPager widget
+            if (isPaginated && totalPages > 1) {
+                const std::string& pagerName = el.arrayPagerWidget.empty() ? "arrayPager" : el.arrayPagerWidget;
+                auto pagerIt = widgets.find(pagerName);
+                if (pagerIt != widgets.end()) {
+                    float navX = baseX + el.x;
+                    float navY = baseY + el.y + (float)resolvedCount * stepY;
+                    // Scale widget to match the array element pixel width
+                    float natW = (float)winPtr->getWidthRender() * pagerIt->second.width;
+                    float pagerScale = (natW > 0.0f && currentRenderScale > 0.0f)
+                        ? cw / (natW * currentRenderScale) : 1.0f;
+                    bool prevEnabled = currentPage > 0;
+                    bool nextEnabled = (totalPages < 0) || (currentPage < totalPages - 1);
+                    // Build pager data
+                    UIWidgetRenderData pagerData;
+                    Color cActive{0.85f, 0.85f, 0.85f, 1.0f};
+                    Color cDim   {0.28f, 0.28f, 0.35f, 1.0f};
+                    UIElementData prevEl; prevEl.provided = true; prevEl.colorProvided = true;
+                    prevEl.color = prevEnabled ? cActive : cDim;
+                    pagerData["__prev"] = prevEl;
+                    UIElementData nextEl; nextEl.provided = true; nextEl.colorProvided = true;
+                    nextEl.color = nextEnabled ? cActive : cDim;
+                    pagerData["__next"] = nextEl;
+                    UIElementData lblEl; lblEl.provided = true;
+                    lblEl.text = totalPages > 0
+                        ? std::to_string(currentPage + 1) + " / " + std::to_string(totalPages)
+                        : std::to_string(currentPage + 1);
+                    pagerData["pageLabel"] = lblEl;
+                    // Render pager widget (handles both its own text+non-text passes)
+                    std::string savedClick = lastClickedId;
+                    float prevPagerScale = pagerIt->second.scale;
+                    pagerIt->second.scale = pagerScale;
+                    renderWidgetAt(pagerIt->second, navX, navY, pagerData, false);
+                    pagerIt->second.scale = prevPagerScale;
+                    // Reject clicks on disabled buttons
+                    if ((lastClickedId == "__prev" && !prevEnabled) ||
+                        (lastClickedId == "__next" && !nextEnabled))
+                        lastClickedId = savedClick;
+                }
             }
         }
         renderDepth--;
@@ -613,19 +787,56 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
 
 void UIManager::renderText(const UIElement& el, float x, float y, const UIElementData& data)
 {
+    if (hitTestOnly) return;
     const std::string& text = data.text.empty() ? el.staticText : data.text;
     if (text.empty()) return;
     const Color col = applyGA(data.colorProvided ? data.color : el.staticTextColor);
-    tw->writeTextAtlasToFB((int)(x + el.x), (int)y, text.c_str(), col, el.fontScale, currentFB);
+    int tx = (int)(x + el.x);
+    if (el.w > 0.0f && el.textAlign != "left") {
+        int textW = tw->measureTextWidthAtlas(text.c_str(), el.fontScale);
+        if      (el.textAlign == "center") tx += (int)((el.w - (float)textW) * 0.5f);
+        else if (el.textAlign == "right")  tx += (int)(el.w - (float)textW);
+    }
+
+    if (!el.cached) {
+        tw->writeTextAtlasToFB(tx, (int)y, text.c_str(), col, el.fontScale, currentFB);
+        return;
+    }
+
+    // Cached path: rebuild FBO only when text content changes
+    const std::string& cacheKey = el.id;
+    if (textCacheContent[cacheKey] != text) {
+        int tw_px = tw->measureTextWidthAtlas(text.c_str(), el.fontScale);
+        int th_px = (int)(el.fontScale * 32.0f);
+        tw->beginTextCache(cacheKey, std::max(tw_px, 1), std::max(th_px, 1));
+        tw->writeTextAtlas(0, 0, text.c_str(), col, el.fontScale);
+        tw->endTextCache();
+        textCacheContent[cacheKey] = text;
+    }
+    tw->drawTextCache(cacheKey, tx, (int)y);
+}
+
+void UIManager::drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha)
+{
+    if (path.empty() || !render) return;
+    auto it = imagePointerCache.find(path);
+    if (it == imagePointerCache.end()) {
+        Image* img = render->getOrLoadImage(path);
+        imagePointerCache[path] = img;
+        it = imagePointerCache.find(path);
+    }
+    if (it->second)
+        render->DrawImage2DFromImageToFB(it->second, x, y, w, h, currentFB, alpha);
 }
 
 void UIManager::renderImage(const UIElement& el, float x, float y, const UIElementData& data)
 {
+    if (hitTestOnly) return;
     const std::string& path = data.path.empty() ? el.staticImagePath : data.path;
     if (path.empty()) return;
     int ix = (int)(x + el.x), iy = (int)y;
     int iw = (int)(el.w * el.imageScale), ih = (int)(el.h * el.imageScale);
-    render->DrawImage2DToFB(path, ix, iy, iw, ih, currentFB);
+    drawImageCached(path, ix, iy, iw, ih, globalAlpha);
     if (el.borderWidth > 0.0f) {
         int bw = (int)el.borderWidth;
         Color bc = applyGA(el.borderColor);
@@ -644,6 +855,7 @@ void UIManager::renderImage(const UIElement& el, float x, float y, const UIEleme
 
 void UIManager::renderRect(const UIElement& el, float x, float y, const UIElementData& data)
 {
+    if (hitTestOnly) return;
     auto* win = Components::get()->Window();
     float w = el.wPct > 0 ? (float)win->getWidthRender()  * el.wPct
             : data.w  > 0 ? data.w : el.w;
@@ -673,6 +885,7 @@ void UIManager::renderRect(const UIElement& el, float x, float y, const UIElemen
 
 void UIManager::renderProgressBar(const UIElement& el, float x, float y, const UIElementData& data)
 {
+    if (hitTestOnly) return;
     float maxV = data.maxValue > 0 ? data.maxValue : 1.0f;
     float ratio = data.value / maxV;
     float bw = el.barW;
@@ -701,19 +914,22 @@ void UIManager::renderProgressBar(const UIElement& el, float x, float y, const U
 
 void UIManager::renderIcons(const UIElement& el, float x, float y, const UIElementData& data)
 {
+    if (hitTestOnly) return;
     float cx = x + el.x;
     for (auto& key : data.iconList) {
         auto mapIt = el.iconMapping.find(key);
         if (mapIt == el.iconMapping.end()) continue;
-        render->DrawImage2DToFB(mapIt->second, (int)cx, (int)y,
-                                (int)el.iconSize, (int)el.iconSize, currentFB);
+        drawImageCached(mapIt->second, (int)cx, (int)y,
+                        (int)el.iconSize, (int)el.iconSize, globalAlpha);
         cx += el.iconSize + el.iconGap;
     }
 }
 
 void UIManager::renderButton(const UIElement& el, float x, float y, const UIElementData& data)
 {
-    if (!data.provided && el.staticText.empty() && el.staticImagePath.empty() && el.options.empty()) return;
+    const bool hasContent = data.provided || !el.staticText.empty() || !el.staticImagePath.empty() || !el.options.empty();
+    const bool hasVisuals = el.btnBg.a > 0.0f || el.btnHover.a > 0.0f || el.btnPressed.a > 0.0f || el.borderWidth > 0.0f;
+    if (!hasContent && !hasVisuals) return;
 
     float bx = x + el.x;
     float by = y;
@@ -726,6 +942,15 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
                    my >= (int)by && my <= (int)(by + bh);
     bool pressed = hovered && input && input->isLeftMouseButtonPressed();
     bool clicked = hovered && input && input->isMouseButtonUp();
+
+    const std::string hoverKey = el.id + "@" + std::to_string((int)bx) + "," + std::to_string((int)by);
+    if (hovered && !el.sound.empty()) {
+        bool wasHovered = lastHoverState.count(hoverKey) && lastHoverState[hoverKey];
+        if (!wasHovered)
+            Components::get()->Sound()->PlaySound(el.sound, ComponentSound::CHANNEL_UI_HOVER, 0);
+    }
+    if (hovered && !el.cursor.empty()) hoveredCursorName = el.cursor;
+    lastHoverState[hoverKey] = hovered;
 
     // Resolve active option (by key, or options[0] as editor/fallback preview)
     const UIElementOption* activeOpt = nullptr;
@@ -754,9 +979,8 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
     float imgPad = imgSize > 0 ? (bh - imgSize) * 0.5f : 0.0f;
 
     if (textPass) {
-        if (!resolvedText.empty()) {
+        if (!hitTestOnly && !resolvedText.empty()) {
             float scale = el.fontScale > 0 ? el.fontScale : 0.45f;
-            // Measure using actual glyph metrics for accurate centering
             float textW = 0.0f, textH = 0.0f;
             if (tw && tw->getGlyphAtlas() && tw->getGlyphAtlas()->isBuilt()) {
                 const GlyphAtlas* ga = tw->getGlyphAtlas();
@@ -789,29 +1013,45 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
         return;
     }
 
-    Color bg = applyGA(pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg);
-    render->DrawFilledRectToFB((int)bx, (int)by, (int)bw, (int)bh, bg, currentFB);
+    if (!hitTestOnly) {
+        Color bg = applyGA(pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg);
+        render->DrawFilledRectToFB((int)bx, (int)by, (int)bw, (int)bh, bg, currentFB);
 
-    if (el.borderWidth > 0.0f) {
-        int bord = (int)el.borderWidth;
-        Color bc = applyGA(el.borderColor);
-        render->DrawFilledRectToFB((int)bx,       (int)by,       (int)bw, bord,   bc, currentFB);
-        render->DrawFilledRectToFB((int)bx,       (int)(by+bh-bord), (int)bw, bord, bc, currentFB);
-        render->DrawFilledRectToFB((int)bx,       (int)by,       bord, (int)bh,   bc, currentFB);
-        render->DrawFilledRectToFB((int)(bx+bw-bord), (int)by,   bord, (int)bh,   bc, currentFB);
-    }
+        if (el.borderWidth > 0.0f) {
+            int bord = (int)el.borderWidth;
+            Color bc = applyGA(pressed ? el.borderColorPressed : hovered ? el.borderColorHover : el.borderColor);
+            render->DrawFilledRectToFB((int)bx,           (int)by,           (int)bw, bord,   bc, currentFB);
+            render->DrawFilledRectToFB((int)bx,           (int)(by+bh-bord), (int)bw, bord,   bc, currentFB);
+            render->DrawFilledRectToFB((int)bx,           (int)by,           bord, (int)bh,   bc, currentFB);
+            render->DrawFilledRectToFB((int)(bx+bw-bord), (int)by,           bord, (int)bh,   bc, currentFB);
+        }
 
-    if (imgSize > 0) {
-        float imgX = resolvedText.empty() ? bx + (bw - imgSize) * 0.5f : bx + imgPad;
-        render->DrawImage2DToFB(resolvedPath,
-            (int)(imgX            + el.btnImgOffsetX),
-            (int)(by + imgPad + el.btnImgOffsetY),
-            (int)imgSize, (int)imgSize, currentFB);
+        if (imgSize > 0) {
+            if (resolvedText.empty() && el.iconSize <= 0) {
+                drawImageCached(resolvedPath,
+                    (int)(bx + el.btnImgOffsetX), (int)(by + el.btnImgOffsetY),
+                    (int)bw, (int)bh, globalAlpha);
+            } else {
+                float imgX = resolvedText.empty() ? bx + (bw - imgSize) * 0.5f : bx + imgPad;
+                drawImageCached(resolvedPath,
+                    (int)(imgX + el.btnImgOffsetX), (int)(by + imgPad + el.btnImgOffsetY),
+                    (int)imgSize, (int)imgSize, globalAlpha);
+            }
+        }
     }
 
     if (clicked && lastClickedId.empty()) {
         lastClickedId = el.id;
         if (input) input->consumeLeftClick();
+    }
+
+    bool rightClicked = hovered && input && input->isClickRightUp();
+    if (rightClicked && lastRightClickedId.empty()) {
+        lastRightClickedId = el.id;
+    }
+
+    if (hovered && lastHoveredId.empty()) {
+        lastHoveredId = el.id;
     }
 
     if (hovered) {
@@ -965,6 +1205,9 @@ UIElementData UIManager::solTableToElementData(sol::table t)
     sol::object countObj = t["count"];
     if (countObj.valid()) d.count = countObj.as<int>();
 
+    sol::object pageObj = t["page"];
+    if (pageObj.valid()) d.page = pageObj.as<int>();
+
     sol::object keyObj = t["key"];
     if (keyObj.valid() && keyObj.get_type() == sol::type::string)
         d.key = keyObj.as<std::string>();
@@ -986,26 +1229,26 @@ static UIWidgetRenderData solTableToRenderData(sol::table data)
     return renderData;
 }
 
-std::tuple<float, std::string> UIManager::drawWidgetLua(const std::string& name, sol::table data, const std::string& fb, float scaleOverride)
+std::tuple<float, std::string, std::string, std::string> UIManager::drawWidgetLua(const std::string& name, sol::table data, const std::string& fb, float scaleOverride)
 {
     auto it = widgets.find(name);
     if (it == widgets.end()) {
         printf("[UIManager] WARN: widget '%s' not found\n", name.c_str());
-        return {0.0f, ""};
+        return {0.0f, "", "", ""};
     }
 
     float nextY = drawWidget(name, solTableToRenderData(data), fb, scaleOverride);
-    return {nextY, lastClickedId};
+    return {nextY, lastClickedId, lastRightClickedId, lastHoveredId};
 }
 
-std::tuple<float, std::string> UIManager::drawWidgetAtPosLua(const std::string& name, float x, float y, sol::table data, const std::string& fb, float scaleOverride)
+std::tuple<float, std::string, std::string, std::string> UIManager::drawWidgetAtPosLua(const std::string& name, float x, float y, sol::table data, const std::string& fb, float scaleOverride)
 {
     auto it = widgets.find(name);
     if (it == widgets.end()) {
         printf("[UIManager] WARN: widget '%s' not found\n", name.c_str());
-        return {y, ""};
+        return {y, "", "", ""};
     }
 
     float nextY = drawWidgetAtPos(name, x, y, solTableToRenderData(data), fb, scaleOverride);
-    return {nextY, lastClickedId};
+    return {nextY, lastClickedId, lastRightClickedId, lastHoveredId};
 }

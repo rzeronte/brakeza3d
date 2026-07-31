@@ -1,8 +1,12 @@
+#include <cmath>
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../imgui/ImGuizmo.h"
 #include "../../include/Brakeza.h"
+#include "../../include/GUI/AddOns/GUIAddonMenu.h"
+#include "../../include/Render/JSONSerializerRegistry.h"
+#include "../../include/Serializers/Mesh3DSerializer.h"
 
 void ComponentInput::onStart()
 {
@@ -35,6 +39,10 @@ void ComponentInput::onUpdate()
 
     if (keyboardEnabled  && !ImGui::GetIO().WantCaptureKeyboard) {
         HandleKeyboardMovingCamera();
+    }
+
+    if (mouseEnabled) {
+        ApplySmoothedMouseLook();
     }
 }
 
@@ -84,22 +92,68 @@ void ComponentInput::HandleMouseLook(SDL_Event *event)
 
     if (event->type == SDL_MOUSEWHEEL && event->wheel.y != 0) {
         auto camera = Components::get()->Camera()->getCamera();
-        camera->MoveForward(-(float)event->wheel.y * Config::get()->WALKING_SPEED * 3.0f);
+        camera->MoveForward((float)event->wheel.y * Config::get()->WALKING_SPEED * 3.0f);
     }
 
-    if (mouseMotion && isRightMouseButtonPressed()) {
-        if (event->type == SDL_MOUSEMOTION) {
-            auto camera = Components::get()->Camera()->getCamera();
+    // Reset accumulator + filter on middle-button-down so each drag starts clean
+    // (no residual from previous drag pushing the camera when you re-engage).
+    if (event->type == SDL_MOUSEBUTTONDOWN && event->button.button == SDL_BUTTON_MIDDLE) {
+        pendingMouseLookDx = pendingMouseLookDy = 0.0f;
+        smoothedMouseLookDx = smoothedMouseLookDy = 0.0f;
+    }
 
-            camera->Yaw(-event->motion.xrel * Config::get()->MOUSE_SENSITIVITY);
-            camera->Pitch(event->motion.yrel * Config::get()->MOUSE_SENSITIVITY);
+    // Only accumulate raw deltas here — actual camera update happens per-frame in ApplySmoothedMouseLook.
+    if (event->type == SDL_MOUSEMOTION && isMiddleMouseButtonPressed()) {
+        pendingMouseLookDx += (float)event->motion.xrel;
+        pendingMouseLookDy += (float)event->motion.yrel;
+    }
+}
 
-            camera->setRotation(M3::getMatrixRotationForEulerAngles(
-                camera->getPitch(),
-                camera->getYaw(),
-                camera->getRoll()
-            ));
-        }
+void ComponentInput::ApplySmoothedMouseLook()
+{
+    if (!Config::get()->MOUSE_LOOK) return;
+    if (Config::get()->ENABLE_IMGUI && ImGui::GetIO().WantCaptureMouse) {
+        pendingMouseLookDx = pendingMouseLookDy = 0.0f;
+        return;
+    }
+
+    // Per-frame low-pass. Larger alpha = snappier; smaller = smoother/more lag.
+    constexpr float kAlpha = 0.5f;
+    smoothedMouseLookDx = kAlpha * pendingMouseLookDx + (1.0f - kAlpha) * smoothedMouseLookDx;
+    smoothedMouseLookDy = kAlpha * pendingMouseLookDy + (1.0f - kAlpha) * smoothedMouseLookDy;
+    pendingMouseLookDx = pendingMouseLookDy = 0.0f;
+
+    // Ignore sub-pixel residues from the decaying filter tail once the drag ends.
+    if (std::fabs(smoothedMouseLookDx) < 0.05f && std::fabs(smoothedMouseLookDy) < 0.05f) {
+        smoothedMouseLookDx = smoothedMouseLookDy = 0.0f;
+        return;
+    }
+
+    if (!isMiddleMouseButtonPressed()) return;
+
+    auto camera = Components::get()->Camera()->getCamera();
+    const bool isShift = keyboard[SDL_SCANCODE_LSHIFT] || keyboard[SDL_SCANCODE_RSHIFT];
+
+    if (isShift) {
+        // Blender-style pan: mouse right → view content moves right → camera translates left.
+        // getRotation() is world→camera; its transpose gives camera-basis in world space
+        // (same convention as getGLMMat4ViewMatrix uses to derive forward).
+        const float panSpeed = Config::get()->MOUSE_SENSITIVITY * 2.0f;
+        auto invRot = camera->getRotation().getTranspose();
+        const auto right = invRot * Vertex3D(1, 0, 0);
+        const auto up    = invRot * Vertex3D(0, 1, 0);
+        camera->setPosition(camera->getPosition()
+            + right.getScaled(-smoothedMouseLookDx * panSpeed)
+            + up.getScaled(    smoothedMouseLookDy * panSpeed));
+    } else {
+        camera->Yaw(-smoothedMouseLookDx * Config::get()->MOUSE_SENSITIVITY);
+        camera->Pitch(smoothedMouseLookDy * Config::get()->MOUSE_SENSITIVITY);
+
+        camera->setRotation(M3::getMatrixRotationForEulerAngles(
+            camera->getPitch(),
+            camera->getYaw(),
+            camera->getRoll()
+        ));
     }
 }
 
@@ -116,7 +170,7 @@ void ComponentInput::HandleKeyboardMovingCamera() const
         if (isShiftPressed) {
             camera->MoveVertical(Config::get()->WALKING_SPEED);
         } else {
-            camera->MoveForward(-Config::get()->WALKING_SPEED);
+            camera->MoveForward(Config::get()->WALKING_SPEED);
         }
     }
 
@@ -124,7 +178,7 @@ void ComponentInput::HandleKeyboardMovingCamera() const
         if (isShiftPressed) {
             camera->MoveVertical(-Config::get()->WALKING_SPEED);
         } else {
-            camera->MoveBackward(-Config::get()->WALKING_SPEED);
+            camera->MoveBackward(Config::get()->WALKING_SPEED);
         }
     }
 
@@ -331,17 +385,25 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             Brakeza::get()->GUI()->ToggleSoloFocusedWindow();
         }
 
-        if (event->type == SDL_KEYDOWN &&
-            event->key.repeat == 0 &&
-            event->key.keysym.scancode == SDL_SCANCODE_HOME)
-        {
+        if (event->type == SDL_KEYDOWN && event->key.repeat == 0) {
             auto* sel = Components::get()->Render()->getSelectedObject();
             if (sel != nullptr) {
-                const float FOCUS_DISTANCE = 15.0f;
                 auto* camera = Components::get()->Camera()->getCamera();
-                Vertex3D target = sel->getPosition();
-                camera->setPosition(target + Vertex3D(0.0f, FOCUS_DISTANCE * 0.5f, FOCUS_DISTANCE));
-                camera->LookAt(target);
+                float r = GUIAddonMenu::snapRadius;
+                Vertex3D pos = sel->getPosition();
+
+                if (event->key.keysym.scancode == SDL_SCANCODE_INSERT) {
+                    camera->setPosition(Vertex3D(pos.x, pos.y, pos.z + r));
+                    camera->setRotationFromEulerAngles(0.f, 0.f, 0.f);
+                }
+                if (event->key.keysym.scancode == SDL_SCANCODE_HOME) {
+                    camera->setPosition(Vertex3D(pos.x, pos.y + r, pos.z));
+                    camera->setRotationFromEulerAngles(89.f, 0.f, 0.f);
+                }
+                if (event->key.keysym.scancode == SDL_SCANCODE_PAGEUP) {
+                    camera->setPosition(Vertex3D(pos.x + r, pos.y, pos.z));
+                    camera->setRotationFromEulerAngles(0.f, -90.f, 0.f);
+                }
             }
         }
 
@@ -354,7 +416,7 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             Components::get()->Window()->ToggleFullScreen();
         }
 
-        // Transformation shortcuts (T, R, S) — solo con un objeto seleccionado
+        // Transformation shortcuts (T, R, S) y clone (Shift+D) — solo con un objeto seleccionado
         auto selectedObject = Components::get()->Render()->getSelectedObject();
         if (selectedObject != nullptr) {
             if (keyboard[SDL_SCANCODE_T]) {
@@ -364,7 +426,27 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
                 window->setGuiZmoOperation(ImGuizmo::OPERATION::ROTATE);
             }
             if (keyboard[SDL_SCANCODE_S]) {
-                window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE_X);
+                window->setGuiZmoOperation(ImGuizmo::OPERATION::SCALE);
+            }
+
+            bool shiftHeld = keyboard[SDL_SCANCODE_LSHIFT] || keyboard[SDL_SCANCODE_RSHIFT];
+            if (shiftHeld && keyboard[SDL_SCANCODE_D] && event->key.repeat == 0) {
+                auto* asMesh = dynamic_cast<Mesh3D*>(selectedObject);
+                if (asMesh) {
+                    auto* cloned = Mesh3DSerializer::CloneMesh3D(asMesh);
+                    Components::get()->Render()->setSelectedObject(cloned);
+                } else {
+                    cJSON* json = JSONSerializerRegistry::instance().serialize(selectedObject);
+                    cJSON_AddNumberToObject(json, "type", (int)selectedObject->getTypeObject());
+                    Object3D* cloned = JSONSerializerRegistry::instance().deserialize(json);
+                    cJSON_Delete(json);
+                    if (cloned) {
+                        Vertex3D p = cloned->getPosition();
+                        cloned->setPosition(Vertex3D(p.x + 1.0f, p.y, p.z + 1.0f));
+                        cloned->setName(Brakeza::UniqueObjectLabel(cloned->getName().c_str()));
+                        Components::get()->Render()->setSelectedObject(cloned);
+                    }
+                }
             }
         }
 

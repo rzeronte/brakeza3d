@@ -49,49 +49,48 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
             // rotation
             if (o->featuresGUI.rotation) {
-                float oldPitch = o->getRotation().getPitchDegree();
-                float oldYaw = o->getRotation().getYawDegree();
-                float oldRoll = o->getRotation().getRollDegree();
-                float pitch = oldPitch;
-                float yaw = oldYaw;
-                float roll = oldRoll;
+                // Edit-buffer pattern: avoid re-decomposing the matrix to Euler on every
+                // frame while the user is dragging — that roundtrip is unstable near
+                // gimbal-lock (pitch ~ ±90°) and causes the sliders to jump around.
+                static const Object3D* editedObj = nullptr;
+                static float           editBuf[3] = {0, 0, 0};
+                static bool            wasActive  = false;
 
                 ImGui::PushID("reset_rotation");
                 GUI::DrawButton("Reset rotation", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
                     LOG_MESSAGE("Reset Rotation");
                     o->setRotation(M3::getMatrixIdentity());
+                    editBuf[0] = editBuf[1] = editBuf[2] = 0.0f;
+                    editedObj = o;
                 });
                 ImGui::PopID();
-                ImGui::SameLine();  // ✅ Ahora el DragFloat va a la derecha
+                ImGui::SameLine();
+
+                // Resync from the matrix only when NOT actively dragging (or switched object)
+                if (!wasActive || editedObj != o) {
+                    editBuf[0] = o->getRotation().getPitchDegree();
+                    editBuf[1] = o->getRotation().getYawDegree();
+                    editBuf[2] = o->getRotation().getRollDegree();
+                }
+
+                bool changed = ImGui::DragFloat3("Rotation", editBuf, 0.5f, -360.0f, 360.0f, "%.2f");
+                bool nowActive = ImGui::IsItemActive();
+
+                if (changed) {
+                    // Rebuild the full rotation from the buffer's Euler angles — no drift
+                    o->setRotation(M3::getMatrixRotationForEulerAngles(
+                        ToolsMaths::DegreesToRadians(editBuf[0]),
+                        ToolsMaths::DegreesToRadians(editBuf[1]),
+                        ToolsMaths::DegreesToRadians(editBuf[2])
+                    ));
+                }
+
+                if (nowActive) editedObj = o;
+                wasActive = nowActive;
+
+                ImGui::Separator();
 
                 float vec3f[3];
-                vec3f[0] = pitch;
-                vec3f[1] = yaw;
-                vec3f[2] = roll;
-                if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
-                    const float factor = 0.0025f;
-                    pitch = vec3f[0];
-                    yaw = vec3f[1];
-                    roll = vec3f[2];
-                    if (abs(pitch - oldPitch) > 0) {
-                        auto partialRotX = M3::arbitraryAxis(o->getRotation().X(), ToolsMaths::RadiansToDegrees(pitch - oldPitch) * factor);
-                        o->setRotation(o->getRotation() * partialRotX);
-                        M3::normalize(o->rotation);
-                    }
-
-                    if (abs(yaw - oldYaw) > 0) {
-                        auto partialRotY = M3::arbitraryAxis(o->getRotation().Y(), ToolsMaths::RadiansToDegrees(yaw - oldYaw) * factor);
-                        o->setRotation(o->getRotation() * partialRotY);
-                        M3::normalize(o->rotation);
-                    }
-
-                    if (abs(roll - oldRoll) > 0) {
-                        auto partialRotZ = M3::arbitraryAxis(o->getRotation().Z(), ToolsMaths::RadiansToDegrees(roll - oldRoll) * factor);
-                        o->setRotation(o->getRotation() * partialRotZ);
-                        M3::normalize(o->rotation);
-                    }
-                }
-                ImGui::Separator();
 
                 ImGui::PushID("reset_drawoffset");
                 GUI::DrawButton("Reset rotation", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
@@ -120,9 +119,10 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 ImGui::PopID();
                 ImGui::SameLine();
 
-                const float range_scale_min = -360;
-                const float range_scale_max = 360;
-                ImGui::DragScalar("Scale", ImGuiDataType_Float, &o->scale, 0.01, &range_scale_min, &range_scale_max, "%f", 1.0f);
+                float sv[3] = {o->scale3D.x, o->scale3D.y, o->scale3D.z};
+                if (ImGui::DragFloat3("Scale", sv, 0.01f, -360.f, 360.f, "%.3f")) {
+                    o->scale3D = Vertex3D(sv[0], sv[1], sv[2]);
+                }
             }
         }
     }

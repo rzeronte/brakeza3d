@@ -254,13 +254,18 @@ void Drawable::drawObject3DGizmo(
         }
 
         if (currentOperation == ImGuizmo::OPERATION::ROTATE) {
-            auto m = M3::fromMat3GLM(objectMatrixManipulated).getTranspose();
+            // toGLMMat3 <-> fromMat3GLM already round-trip identity, so no transpose here.
+            // normalize() strips any scale baked into the columns before storing.
+            auto m = M3::fromMat3GLM(objectMatrixManipulated);
             M3::normalize(m);
             o->setRotation(m);
         }
 
-        if (currentOperation == ImGuizmo::OPERATION::SCALE_X) {
-            o->setScale(glm::length(glm::vec3(objectMatrixManipulated[0])));
+        if (currentOperation == ImGuizmo::OPERATION::SCALE) {
+            const float sx = glm::length(glm::vec3(objectMatrixManipulated[0]));
+            const float sy = glm::length(glm::vec3(objectMatrixManipulated[1]));
+            const float sz = glm::length(glm::vec3(objectMatrixManipulated[2]));
+            o->setScaleV(Vertex3D(sx, sy, sz));
         }
     }
 

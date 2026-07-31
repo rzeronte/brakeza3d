@@ -17,7 +17,8 @@ enum class ObjectType {
     Image2DAnimation = 9,
     Image3D = 10,
     Image2D = 11,
-    Swarm = 12
+    Swarm = 12,
+    Sound3D = 13
 };
 
 #endif //BRAKEZA3D_SCENEOBJECTTYPES_H

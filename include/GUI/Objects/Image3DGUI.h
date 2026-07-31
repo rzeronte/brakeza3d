@@ -7,9 +7,13 @@
 
 #include "../../3D/Image3D.h"
 #include "../../Misc/Logging.h"
+#include "../../Config.h"
+#include "../AddOns/GUIAddonFilePicker.h"
 
 class Image3DGUI
 {
+    static inline GUIFilePicker picker;
+
 public:
     static void DrawPropertiesGUI(Image3D *o)
     {
@@ -34,22 +38,40 @@ public:
                     float height = fixedWidth * ((float) o->image->height() / (float) o->image->width());
                     ImGui::Image(o->image->getOGLImTexture(),ImVec2(fixedWidth, height));
                 } else {
-                    ImGui::Text("No image selected. Drag a texture here!");
+                    ImGui::Text("No image selected. Drag a texture here or Browse.");
                 }
 
                 if (ImGui::BeginDragDropTarget()) {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(GUIType::DragDropTarget::IMAGE_ITEM)) {
                         auto selection = static_cast<char *>(payload->Data);
-                        std::string fullPath = selection;
                         if (o->image == nullptr) {
-                            o->image = new Image(fullPath);
+                            o->image = new Image(FilePath::ImageFile(selection));
+                            o->image->MakeAutoOGLImage();
                         } else {
-                            o->image->setImage(fullPath);
+                            o->image->setImage(FilePath::ImageFile(selection));
+                            o->image->MakeAutoOGLImage();
                         }
                         LOG_MESSAGE("File %s", selection);
                     }
                     ImGui::EndDragDropTarget();
                 }
+
+                if (picker.drawTrigger("##browse_img3d")) {
+                    std::string current = o->image ? o->image->getFileName().path : "";
+                    picker.open(current, Config::get()->IMAGES_FOLDER,
+                                "../assets/images/", {".png", ".jpg", ".jpeg", ".bmp", ".tga"});
+                }
+
+                if (picker.draw("Image3D_FilePicker")) {
+                    if (o->image == nullptr) {
+                        o->image = new Image(FilePath::ImageFile(picker.result));
+                        o->image->MakeAutoOGLImage();
+                    } else {
+                        o->image->setImage(FilePath::ImageFile(picker.result));
+                        o->image->MakeAutoOGLImage();
+                    }
+                }
+
                 ImGui::TreePop();
             }
             ImGui::Separator();

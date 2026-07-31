@@ -47,15 +47,17 @@ public:
     void destroy();
     void clearChannel(int channel, uint8_t value);
     void fillCircle(int cx, int cy, int radius, uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+    void fillCircleGrad(int cx, int cy, int radius, uint8_t r, uint8_t g, uint8_t b, uint8_t a, float falloffRatio, float power);
     void upload();
+    void setClampToEdge();
 
     [[nodiscard]] float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
 
     [[nodiscard]] float getAlpha() const                        { return alpha; }
     [[nodiscard]] bool isLoaded() const                         { return loaded; }
-    [[nodiscard]] int height() const                            { return surface->h; }
-    [[nodiscard]] int width() const                             { return surface->w; }
-    [[nodiscard]] void* pixels() const                          { return surface->pixels; }
+    [[nodiscard]] int height() const                            { return surface ? surface->h : 0; }
+    [[nodiscard]] int width() const                             { return surface ? surface->w : 0; }
+    [[nodiscard]] void* pixels() const                          { return surface ? surface->pixels : nullptr; }
     [[nodiscard]] SDL_Texture *getTexture() const               { return texture; }
     [[nodiscard]] SDL_Surface *getSurface() const               { return surface; }
     [[nodiscard]] ImTextureID getOGLImTexture() const           { return (ImTextureID)(intptr_t)textureId;; }

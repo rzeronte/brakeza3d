@@ -90,7 +90,7 @@ public:
         }
 
         if (loadScripts)
-            Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobReadSceneScript>(json, scene));
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneScript>(json, scene));
 
         if (loadShaders)
             Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json, scene));

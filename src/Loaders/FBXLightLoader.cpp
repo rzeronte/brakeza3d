@@ -148,6 +148,11 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
     if (rotZ != 0.f) modelMatrix = glm::rotate(modelMatrix, glm::radians(rotZ), glm::vec3(0.f, 0.f, 1.f));
     modelMatrix = glm::scale(modelMatrix, glm::vec3(scale));
 
+    // Cancel out the FBX root-node transform (unit scale, axis convention, etc.)
+    // so light positions match mesh vertices loaded by Assimp for the same file.
+    aiMatrix4x4 globalInverse = scene->mRootNode->mTransformation;
+    globalInverse.Inverse();
+
     for (unsigned int i = 0; i < scene->mNumLights; i++) {
         const aiLight *al = scene->mLights[i];
         std::string name = al->mName.C_Str();
@@ -157,7 +162,8 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
         aiNode* lightNode = FindNodeByName(scene->mRootNode, al->mName);
         if (lightNode) {
             aiMatrix4x4 worldTf = GetWorldTransform(lightNode);
-            localPos = worldTf * localPos;
+            // Apply globalInverse to cancel the FBX root transform (same as mesh pipeline)
+            localPos = globalInverse * worldTf * localPos;
         }
 
         // Apply the scene-level transform (same as the city mesh)

@@ -34,12 +34,19 @@ void ShaderOGLRenderDeferred::LoadUniforms()
 
 void ShaderOGLRenderDeferred::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const
 {
+    const auto& textures  = o->getModelTextures();
+    const auto& specTextures = o->getModelSpecularTextures();
     for (const auto& m: o->getMeshData()) {
         if (!m.visibleInFrustum) continue;
+        if (m.materialIndex < 0 || (size_t)m.materialIndex >= textures.size() ||
+            (size_t)m.materialIndex >= specTextures.size()) continue;
+        auto* tex = textures[m.materialIndex];
+        auto* specTex = specTextures[m.materialIndex];
+        if (!tex || !specTex) continue;
         render(
             o,
-            o->getModelTextures()[m.materialIndex]->getOGLTextureID(),
-            o->getModelSpecularTextures()[m.materialIndex]->getOGLTextureID(),
+            tex->getOGLTextureID(),
+            specTex->getOGLTextureID(),
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.uvBuffer,
             useFeedbackBuffer ? m.feedbackNormalBuffer : m.normalBuffer,

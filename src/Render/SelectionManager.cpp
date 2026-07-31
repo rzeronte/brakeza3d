@@ -121,7 +121,7 @@ void SelectionManager::processSDLEvent(SDL_Event *event)
         isRectSelecting = false;
     }
 
-    if (event->type == SDL_MOUSEMOTION && (event->motion.state & SDL_BUTTON_LMASK)) {
+    if (rectSelectEnabled && event->type == SDL_MOUSEMOTION && (event->motion.state & SDL_BUTTON_LMASK)) {
         rectSelectCurrentX = event->motion.x;
         rectSelectCurrentY = event->motion.y;
 
@@ -206,7 +206,7 @@ void SelectionManager::update()
                 auto entry = Components::get()->Render()->getSubmeshEntry(id);
                 o = entry.first;
             }
-            if (o != nullptr && o->isSelectable() && !isObjectInSelection(o))
+            if (o != nullptr && o->isEnabled() && o->isSelectable() && !isObjectInSelection(o))
                 selectedObjects.push_back(o);
         }
         LOG_MESSAGE("[Selection] Rect selection: %zu objects", selectedObjects.size());
@@ -225,7 +225,7 @@ void SelectionManager::update()
         if (clicked != nullptr) addToSelection(clicked);
     } else {
         selectedObjects.clear();
-        if (clicked != nullptr && clicked->isSelectable())
+        if (clicked != nullptr && clicked->isEnabled() && clicked->isSelectable())
             selectedObjects.push_back(clicked);
     }
 }

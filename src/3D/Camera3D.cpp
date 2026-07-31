@@ -54,21 +54,27 @@ void Camera3D::UpdatePositionForVelocity()
 
 void Camera3D::UpdateVelocity()
 {
-    if (fabs(speed) > 0) {
-        velocity.vertex2.z = getPosition().z + speed * static_cast<float>(cos(-yaw * M_PI / 180.0));
-        velocity.vertex2.x = getPosition().x + speed * static_cast<float>(sin(-yaw * M_PI / 180.0));
-        velocity.vertex2.y = getPosition().y + speed * static_cast<float>(sin(pitch * M_PI / 180.0)); // VERTICAL
+    if (fabs(speed) == 0.0f && fabs(strafe) == 0.0f) {
+        jump = 0;
+        return;
     }
 
-    if (fabs(strafe) > 0) {
-        velocity.vertex2.z += strafe * static_cast<float>(-sin(-yaw * M_PI / 180.0));
-        velocity.vertex2.x += -strafe * static_cast<float>(-cos(-yaw * M_PI / 180.0));
-    }
+    auto invRot = getRotation().getTranspose();
+    Vertex3D fwd   = invRot * Vertex3D(0, 0, -1);
+    Vertex3D right = invRot * Vertex3D(1, 0, 0);
 
-    // Reset speed
-    speed = 0;
+    Vertex3D delta(
+        fwd.x * speed + right.x * strafe,
+        fwd.y * speed,
+        fwd.z * speed + right.z * strafe
+    );
+
+    velocity.vertex1 = getPosition();
+    velocity.vertex2 = getPosition() + delta;
+
+    speed  = 0;
     strafe = 0;
-    jump = 0;
+    jump   = 0;
 }
 
 void Camera3D::setRotationFromEulerAngles(float nPitch, float nYaw, float nRoll)
@@ -120,11 +126,11 @@ glm::mat4 Camera3D::getGLMMat4ViewMatrix()
     Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, -1);
 
     const auto p = position.toGLM();
-    ViewMatrix = glm::lookAt(
-        p,
-        p + forward.toGLM(),
-        glm::vec3(0,1,0)
-    );
+    glm::vec3 fwd = forward.toGLM();
+    glm::vec3 worldUp = glm::vec3(0, 1, 0);
+    glm::vec3 up = (glm::abs(glm::dot(fwd, worldUp)) > 0.999f) ? glm::vec3(0, 0, -1) : worldUp;
+
+    ViewMatrix = glm::lookAt(p, p + fwd, up);
 
     return ViewMatrix;
 }

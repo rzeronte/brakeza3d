@@ -19,17 +19,17 @@ public:
 
     void fnProcess()
     {
-        for (auto &o: Brakeza::get()->getSceneObjects()) {
-            if (!o->isMultiScene() && !o->isBelongToScene()) {
-                o->setRemoved(true);
-            }
-        }
-
         LOG_MESSAGE("[ThreadJobCleanScene] Process END");
     }
 
     void fnCallback()
     {
+        auto sceneObjects = Brakeza::get()->copySceneObjects();
+        for (auto &o: sceneObjects) {
+            if (!o->isMultiScene() && !o->isBelongToScene()) {
+                o->setRemoved(true);
+            }
+        }
         LOG_MESSAGE("[ThreadJobCleanScene] Callback END");
     }
 };

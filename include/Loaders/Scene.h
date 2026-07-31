@@ -13,6 +13,7 @@
 #include "SceneChecker.h"
 
 class Object3D;
+class ShaderBaseCustom;
 
 class Scene
 {
@@ -41,7 +42,8 @@ private:
     std::string name;
     bool active = true;
     bool hidden = false;
-    std::unordered_map<Object3D*, bool> savedEnabledStates;
+    std::unordered_map<Object3D*, bool>        savedEnabledStates;
+    std::unordered_map<ShaderBaseCustom*, bool> savedShaderStates;
     std::vector<Object3D*> objects;
 };
 

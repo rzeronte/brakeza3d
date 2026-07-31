@@ -44,6 +44,8 @@ void ShaderOGLLightPass::LoadUniforms()
     shadowMapArrayUniform = glGetUniformLocation(programID, "shadowMapArray");
 
     enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
+
+    pcfKernelSizeUniform = glGetUniformLocation(programID, "pcfKernelSize");
 }
 
 void ShaderOGLLightPass::PrepareMainThread()
@@ -107,6 +109,7 @@ void ShaderOGLLightPass::render(
     setIntUniform(numSpotLightsUniform, numSpotLights);
 
     setBoolUniform(enableDirectionalLightShadowMapUniform, Config::get()->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
+    setIntUniform(pcfKernelSizeUniform, Config::get()->SHADOW_MAPPING_PCF_KERNEL_SIZE);
 
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
