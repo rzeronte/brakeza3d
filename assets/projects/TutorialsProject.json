@@ -8,21 +8,25 @@
 	},
 	"scripts":	[],
 	"scenes":	[{
-			"path":	"../assets/scenes/DemoScene.json"
+			"path":	"../assets/scenes/ShowRoomTest.json"
 		}, {
-			"path":	"../assets/scenes/DemoScene02.json"
-		}, {
-			"path":	"../assets/scenes/DemoScene03.json"
-		}, {
-			"path":	"../assets/scenes/DemoScene04.json"
-		}, {
-			"path":	"../assets/scenes/RainCubesScene.json"
+			"path":	"../assets/scenes/LightsTest.json"
 		}, {
 			"path":	"../assets/scenes/ParticleTest.json"
 		}, {
-			"path":	"../assets/scenes/TestQuarters.json"
-		}, {
 			"path":	"../assets/scenes/PerformanceTest.json"
+		}, {
+			"path":	"../assets/scenes/RainCubesTest.json"
+		}, {
+			"path":	"../assets/scenes/SwarmBoidsTest.json"
+		}, {
+			"path":	"../assets/scenes/TextRenderingTest.json"
+		}, {
+			"path":	"../assets/scenes/PostProcessingTest.json"
+		}, {
+			"path":	"../assets/scenes/ProjectileTest.json"
+		}, {
+			"path":	"../assets/scenes/UITest.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,
@@ -31,5 +35,21 @@
 	"resolution":	{
 		"width":	1920,
 		"height":	1009
+	},
+	"thread_pools":	{
+		"compute":	{
+			"num_threads":	4,
+			"max_concurrent_tasks":	4,
+			"max_callbacks_per_frame":	8,
+			"max_enqueued_tasks":	4096,
+			"max_enqueued_callbacks":	4096
+		},
+		"images":	{
+			"num_threads":	4,
+			"max_concurrent_tasks":	4,
+			"max_callbacks_per_frame":	8,
+			"max_enqueued_tasks":	4096,
+			"max_enqueued_callbacks":	4096
+		}
 	}
 }

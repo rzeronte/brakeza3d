@@ -1,0 +1,183 @@
+{
+	"screenshot":	"",
+	"ads":	{
+		"direction":	{
+			"x":	0.3,
+			"y":	-0.7,
+			"z":	-0.6
+		},
+		"diffuse":	{
+			"x":	0.8,
+			"y":	0.8,
+			"z":	0.8
+		},
+		"specular":	{
+			"x":	0.4,
+			"y":	0.4,
+			"z":	0.4
+		},
+		"ambient":	{
+			"x":	0.25,
+			"y":	0.25,
+			"z":	0.25
+		}
+	},
+	"objects":	[{
+			"name":	"Ground",
+			"scale":	10,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	-0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Marker_Beep_Left",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-12,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cone.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Marker_Ambient_Center",
+			"scale":	1.5,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0.75,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/icosphere.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"Marker_Beep_Right",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	12,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cone.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[{
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/Sound3DTest.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/Sound3DTest.json",
+			"name":	"Sound3DTest",
+			"type":	"Global",
+			"ticks_per_second":	0,
+			"types":	[]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	0,
+			"y":	3,
+			"z":	10
+		},
+		"rotation":	{
+			"x":	8,
+			"y":	0,
+			"z":	0
+		}
+	}
+}
