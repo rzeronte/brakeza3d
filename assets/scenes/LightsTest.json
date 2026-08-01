@@ -1,0 +1,236 @@
+{
+	"screenshot":	"../assets/screenshots/LightsTest.png",
+	"ads":	{
+		"direction":	{
+			"x":	0.3529999852180481,
+			"y":	-0.76999998092651367,
+			"z":	-0.37134084105491638
+		},
+		"diffuse":	{
+			"x":	0.0450819730758667,
+			"y":	0.0450819730758667,
+			"z":	0.0450819730758667
+		},
+		"specular":	{
+			"x":	0.21551662683486938,
+			"y":	0.57786881923675537,
+			"z":	0.46203494071960449
+		},
+		"ambient":	{
+			"x":	0.040983617305755615,
+			"y":	0.040983617305755615,
+			"z":	0.040983617305755615
+		}
+	},
+	"objects":	[{
+			"name":	"light01",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	17.217319488525391,
+				"y":	0.774649143218994,
+				"z":	-4.82331085205078
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.90163934230804443,
+				"y":	0.28083845973014832,
+				"z":	0.860931158065796
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.49000000953674316,
+			"linear":	0.0900000035762787,
+			"quadratic":	0.032000001519918442,
+			"frustumCullingEnabled":	false,
+			"frustumCullingOffset":	0,
+			"type":	4
+		}, {
+			"name":	"spotlight01",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-6.26857328414917,
+				"y":	4.0869979858398438,
+				"z":	-4.34797477722168
+			},
+			"rotation":	{
+				"x":	37.418537139892578,
+				"y":	39.6597900390625,
+				"z":	26.00529670715332
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	0.35245907306671143,
+				"y":	1,
+				"z":	0
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	1.2699999809265137,
+			"linear":	-0.300000011920929,
+			"quadratic":	0.032000001519918442,
+			"frustumCullingEnabled":	false,
+			"frustumCullingOffset":	0,
+			"cutOff":	0.989300012588501,
+			"outerCutOff":	0.861899971961975,
+			"type":	5
+		}, {
+			"name":	"level",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models//DevLevel.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}, {
+			"name":	"spotlight02",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-20.547201156616211,
+				"y":	-0.59985768795013428,
+				"z":	3.6418421268463135
+			},
+			"rotation":	{
+				"x":	179.99998474121094,
+				"y":	85.655364990234375,
+				"z":	-179.99998474121094
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"ambient":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"diffuse":	{
+				"x":	1,
+				"y":	0,
+				"z":	0
+			},
+			"specular":	{
+				"x":	1,
+				"y":	1,
+				"z":	1
+			},
+			"constant":	0.41999998688697815,
+			"linear":	0.0599999986588955,
+			"quadratic":	0.032000001519918442,
+			"frustumCullingEnabled":	false,
+			"frustumCullingOffset":	0,
+			"cutOff":	0.856000006198883,
+			"outerCutOff":	0.78189998865127563,
+			"type":	5
+		}],
+	"shaders":	[],
+	"scripts":	[{
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/CycleDayNightDemo.json",
+			"name":	"CycleDayNightDemo",
+			"type":	"Global",
+			"ticks_per_second":	0,
+			"types":	[{
+					"name":	"test",
+					"type":	"string",
+					"value":	"ohla"
+				}]
+		}],
+	"camera":	{
+		"position":	{
+			"x":	-16.028116226196289,
+			"y":	16.229948043823242,
+			"z":	37.152969360351563
+		},
+		"rotation":	{
+			"x":	30.675149917602539,
+			"y":	20.199911117553711,
+			"z":	0
+		}
+	}
+}

@@ -10,9 +10,9 @@
 	"scenes":	[{
 			"path":	"../assets/scenes/ParticleTest.json"
 		}, {
-			"path":	"../assets/scenes/RainCubesScene.json"
+			"path":	"../assets/scenes/RainCubesTest.json"
 		}, {
-			"path":	"../assets/scenes/DemoScene.json"
+			"path":	"../assets/scenes/ShowRoomTest.json"
 		}],
 	"sound":	{
 		"volume_fx":	50,
