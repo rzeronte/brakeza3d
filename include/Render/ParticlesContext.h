@@ -36,7 +36,8 @@ struct ParticlesContext {
         int alphaMax,
         int positionNoise,
         int velocityNoise,
-        float decelerationFactor
+        float decelerationFactor,
+        float particleSizeScale = 1.0f
     )
     :
         GRAVITY(gravity),
@@ -49,7 +50,8 @@ struct ParticlesContext {
         MAX_ALPHA(alphaMax),
         POSITION_NOISE(positionNoise),
         VELOCITY_NOISE(velocityNoise),
-        DECELERATION_FACTOR(decelerationFactor)
+        DECELERATION_FACTOR(decelerationFactor),
+        PARTICLE_SIZE_SCALE(particleSizeScale)
     {
     }
 
@@ -80,6 +82,7 @@ struct ParticlesContext {
     int POSITION_NOISE;
     int VELOCITY_NOISE;
     float DECELERATION_FACTOR;
+    float PARTICLE_SIZE_SCALE = 1.0f;  // multiplica el tamaño base (~0.1-0.6 u) de cada partícula. 1.0 = comportamiento original.
 };
 
 #endif //BRAKEZA3D_PARTICLESCONTEXT_H

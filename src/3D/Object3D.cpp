@@ -16,6 +16,7 @@ Object3D::Object3D()
     pickingColor(Color::idToColor(id)),
     type(ObjectType::Object3D)
 {
+    Brakeza::get()->registerLiveObject(this);
 }
 
 Vertex3D Object3D::up() const
@@ -161,12 +162,19 @@ void Object3D::LookAt(const Vertex3D &target)
 {
     Vertex3D direction = (target - position).getInverse().getNormalize();
 
-    // Primary world-up: (0,0,1). Fallback (0,1,0) when direction is parallel to it
-    // (movement purely along Z) to avoid a zero cross-product and NaN rotation.
-    Vertex3D worldUp(0, 0, 1);
+    // Primary world-up: (0,1,0) -- matches the engine's own Y-up convention (Config::up,
+    // Camera3D::getGLMMat4ViewMatrix's worldUp/fallback pair). Using (0,0,1) here used to
+    // make billboards (Image3D::LookAtBillboard) lose track of camera yaw specifically in
+    // near-top-down views: the RTS camera's cenital mode (CameraRTS.lua, pitch ~89 deg) still
+    // allows free yaw, and with Z as the reference axis the resulting "up" stopped depending
+    // on yaw entirely at steep pitch, so sprites stayed glued to a fixed world rotation while
+    // everything else on screen rotated with the camera. Fallback (0,0,1) only for the true
+    // singularity: direction nearly parallel to world Y (looking straight up/down), which
+    // would otherwise zero out the cross product and produce a NaN rotation.
+    Vertex3D worldUp(0, 1, 0);
     Vertex3D rightVector = worldUp % direction;
     if (rightVector.getModule() < 0.001f) {
-        worldUp = Vertex3D(0, 1, 0);
+        worldUp = Vertex3D(0, 0, 1);
         rightVector = worldUp % direction;
     }
 
@@ -560,7 +568,7 @@ void Object3D::setScaleV(const Vertex3D& v)
 void Object3D::setRemoved(bool value)
 {
     if (value && !removed) {
-        LOG_MESSAGE("[Object3D] setRemoved(true) on '%s'", getName().c_str());
+        LOG_MESSAGE("[Object3D] setRemoved(true) on '%s' (%p)", getName().c_str(), (void*)this);
     }
     removed = value;
 }
@@ -582,6 +590,12 @@ void Object3D::setName(const std::string& value)
 
 void Object3D::setEnabled(bool value)
 {
+    // (2026-09-15) Se probo loguear aqui con getName() para el mismo chase -- MAL: getName()
+    // lee this->name, y en un caso real de UAF (this apunta a memoria ya liberada/corrupta) esa
+    // lectura crasheaba ANTES de imprimir nada, disfrazando un UAF de "puntero null" (0x68 no
+    // era this+offset, era el valor basura leido DENTRO del std::string corrupto de name al
+    // intentar imprimirlo). El print seguro (solo el puntero, sin desreferenciar) esta en el
+    // binding Lua (BrakezaLuaBridge.h), que es donde realmente hace falta para el chase.
     enabled = value;
 }
 
@@ -597,6 +611,19 @@ void Object3D::setRotation(const M3 &r)
 
 Object3D::~Object3D()
 {
+    // PRIMERISIMA linea: sacar este puntero del registro de "vivos" antes de tocar nada mas,
+    // para que isValidObjectPointer() ya lo vea invalido desde el instante mas temprano
+    // posible. Ver Brakeza::livePointers / isValidObjectPointer().
+    Brakeza::get()->unregisterLiveObject(this);
+
+    // Log con nombre + puntero: el SEH handler (main.cpp) imprime la direccion de memoria
+    // exacta que causo un 0xC0000005 -- cruzarla contra este log identifica que objeto se
+    // estaba destruyendo justo antes, sin depender de leer memoria ya corrupta en el momento
+    // del crash (asi se identifico el UAF de 'rally_marker' en HUDManager.getNameCached).
+    // Solo con Logging > "Verbose (per-object)" activo: con ~1000 objetos por reinicio, este
+    // log (+ Mesh3D/Collider) congelaba ~1 s el frame de destrucción.
+    LOG_VERBOSE("[Object3D] ~Object3D '%s' (%p)", getName().c_str(), (void*)this);
+
     for (auto a: attachedObjects) {
         delete a;
     }

@@ -77,8 +77,11 @@ void PostProcessingManager::createFramebuffer(GLuint& fbo, GLuint& texture, GLui
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
 
     // Verificar que el framebuffer está completo
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        std::cerr << "ERROR: Framebuffer no está completo!" << std::endl;
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE) {
+        LOG_ERROR("[PostProcessingManager] framebuffer incompleto (status 0x%X) at %dx%d, fbo=%u texture=%u", status, width, height, fbo, texture);
+    } else {
+        LOG_MESSAGE("[PostProcessingManager] framebuffer OK (fbo=%u texture=%u) at %dx%d", fbo, texture, width, height);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -106,6 +109,8 @@ void PostProcessingManager::resize(int width, int height)
 {
     currentWidth = width;
     currentHeight = height;
+
+    LOG_MESSAGE("[PostProcessingManager] resize(%d, %d), %d shader FBO(s)", width, height, (int)shaderFBOs.size());
 
     for (size_t i = 0; i < shaderFBOs.size(); i++) {
         deleteFramebuffer(shaderFBOs[i], shaderTextures[i], shaderDepthRBOs[i]);

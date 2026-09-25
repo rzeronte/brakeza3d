@@ -16,6 +16,8 @@
 #include "../../include/Threads/ThreadJobLoadObject.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Serializers/LightPointSerializer.h"
+#include "../../include/3D/LightPoint.h"
+#include "../../include/Loaders/FBXLightLoader.h"
 #include "../../include/Serializers/Object3DSerializer.h"
 #include "../../include/Serializers/Mesh3DSerializer.h"
 #include "../../include/Serializers/Mesh3DAnimationSerializer.h"
@@ -34,6 +36,7 @@
 
 std::atomic<bool> SceneLoader::isLoading{false};
 std::atomic<bool> SceneLoader::isClearing{false};
+std::string SceneLoader::currentLightsFile;
 
 SceneLoader::SceneLoader()
 {
@@ -88,6 +91,49 @@ void SceneLoader::LoadSceneSettings(const cJSON *contentJSON)
 {
     LoadADSSettings(contentJSON);
     LoadCameraSettings(contentJSON);
+}
+
+// Importa currentLightsFile y añade las luces resultantes a la escena, marcándolas para que
+// SaveScene las excluya del guardado normal (se regeneran siempre desde el FBX).
+static void ImportCurrentLightsFile(Scene *scene)
+{
+    if (SceneLoader::currentLightsFile.empty()) return;
+
+    auto lights = FBXLightLoader::LoadLightsFromFile(SceneLoader::currentLightsFile);
+    for (auto *light : lights) {
+        if (auto *lp = dynamic_cast<LightPoint*>(light)) lp->setImportedFromLightsFile(true);
+        Brakeza::get()->AddObject3D(light, light->getName());
+        if (scene != nullptr) {
+            light->setBelongToScene(true);
+            light->setScene(scene);
+            scene->addObject(light);
+        }
+    }
+    LOG_MESSAGE("[SceneLoader] lightsFile: %zu luces cargadas desde '%s'", lights.size(), SceneLoader::currentLightsFile.c_str());
+}
+
+void SceneLoader::LoadLightsFileAssociation(const cJSON *contentJSON, Scene *scene)
+{
+    cJSON *lightsFileJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "lightsFile");
+    currentLightsFile = (lightsFileJSON != nullptr && cJSON_IsString(lightsFileJSON) && lightsFileJSON->valuestring != nullptr)
+        ? lightsFileJSON->valuestring
+        : "";
+
+    ImportCurrentLightsFile(scene);
+}
+
+void SceneLoader::ReimportLightsFile(const std::string &path, Scene *scene)
+{
+    // Quitar las luces importadas anteriormente por esta misma asociación antes de recargar --
+    // sin esto, cada reimport apilaría un juego de luces nuevo encima del anterior.
+    for (auto *object : Brakeza::get()->copySceneObjects()) {
+        if (auto *lp = dynamic_cast<LightPoint*>(object)) {
+            if (lp->isImportedFromLightsFile()) lp->setRemoved(true);
+        }
+    }
+
+    currentLightsFile = path;
+    ImportCurrentLightsFile(scene);
 }
 
 void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
@@ -210,10 +256,19 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
     cJSON_AddItemToObject(adsJSON, "ambient", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().ambient)));
     cJSON_AddItemToObject(root, "ads", adsJSON);
 
+    // Asociación con fichero de luces FBX (ver FBXLightLoader / LoadLightsFileAssociation)
+    cJSON_AddStringToObject(root, "lightsFile", currentLightsFile.c_str());
+
     //Objects
     cJSON *objectsArray = cJSON_CreateArray();
     auto sceneObjects = Brakeza::get()->copySceneObjects();
     for (auto &object : sceneObjects) {
+        // Las luces importadas desde lightsFile se regeneran siempre al recargar la escena --
+        // guardarlas también las duplicaría en cada recarga.
+        if (auto *lp = dynamic_cast<LightPoint*>(object)) {
+            if (lp->isImportedFromLightsFile()) continue;
+        }
+
         auto objectJson = JSONSerializerRegistry::instance().serialize(object);
 
         cJSON_AddNumberToObject(objectJson, "type", (int) object->getTypeObject());

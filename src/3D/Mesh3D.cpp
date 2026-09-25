@@ -1,6 +1,7 @@
 #define GL_GLEXT_PROTOTYPES
 
 #include <vector>
+#include <mutex>
 #include <assimp/cimport.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include "../../include/3D/Mesh3D.h"
@@ -37,20 +38,38 @@ Mesh3D::Mesh3D(const FilePath::ModelFile& modelFile)
 
 Mesh3D::~Mesh3D()
 {
-    LOG_MESSAGE("[Mesh3D] Destroying '%s'...", getName().c_str());
+    LOG_VERBOSE("[Mesh3D] Destroying '%s'...", getName().c_str());
 
     for (auto &m : meshes) {
         for (auto triangle : m.modelTriangles) delete triangle;
         for (auto vertex : m.modelVertices) delete vertex;
 
-        if (glIsBuffer(m.vertexBuffer))
-            glDeleteBuffers(1, &m.vertexBuffer);
+        // vertexBuffer/uvBuffer/normalBuffer/vertexBoneDataBuffer son compartidos (Fase 2.1,
+        // extendida a animacion) cuando sharedStaticGeometry esta a true: los libera el
+        // destructor del recurso compartido (ModelData o AnimationData) cuando el ultimo
+        // shared_ptr desaparece, no esta instancia. Sin eso (fallback), siguen siendo
+        // propios de esta malla.
+        if (!sharedStaticGeometry) {
+            if (glIsBuffer(m.vertexBuffer))
+                glDeleteBuffers(1, &m.vertexBuffer);
 
-        if (glIsBuffer(m.uvBuffer))
-            glDeleteBuffers(1, &m.uvBuffer);
+            if (glIsBuffer(m.uvBuffer))
+                glDeleteBuffers(1, &m.uvBuffer);
 
-        if (glIsBuffer(m.normalBuffer))
-            glDeleteBuffers(1, &m.normalBuffer);
+            if (glIsBuffer(m.normalBuffer))
+                glDeleteBuffers(1, &m.normalBuffer);
+
+            if (glIsBuffer(m.vertexBoneDataBuffer))
+                glDeleteBuffers(1, &m.vertexBoneDataBuffer);
+
+            if (glIsBuffer(m.indexBuffer))
+                glDeleteBuffers(1, &m.indexBuffer);
+        }
+
+        // feedbackBuffer/feedbackNormalBuffer son la pose ANIMADA actual de esta instancia
+        // (salida del transform feedback) -- nunca se comparten, siempre propios.
+        if (glIsBuffer(m.feedbackBuffer))
+            glDeleteBuffers(1, &m.feedbackBuffer);
 
         if (glIsBuffer(m.feedbackNormalBuffer))
             glDeleteBuffers(1, &m.feedbackNormalBuffer);
@@ -77,10 +96,23 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
         return;
     }
 
+    // fnProcess() de ThreadJobLoadMesh3D llama a esta funcion desde threads distintos del pool.
+    // get()+parse+store() no es atomico -- sin este lock, anadir el mismo fichero varias veces
+    // seguidas (p.ej. 3 clicks rapidos en el menu Mesh3D) puede lanzar 3 jobs en paralelo que vean
+    // los 3 cache MISS a la vez, cada uno subiendo su propio VBO/EBO -- geometria duplicada que
+    // nunca comparte buffer, así que el batching/instancing de Fase 4 (sameBatch() en
+    // ComponentRender::FlushOpaqueQueue) nunca los agrupa aunque sea literalmente el mismo modelo.
+    // Lock POR FICHERO (antes global): ficheros distintos se cargan en paralelo.
+    auto keyLoadMutex = modelDataCache.getKeyLoadMutex(fileName);
+    std::unique_lock<std::mutex> cacheLoadLock(*keyLoadMutex);
+
     auto cached = modelDataCache.get(fileName);
     if (cached) {
+        cacheLoadLock.unlock(); // ya cacheado: el clonado por instancia no necesita serializarse
         LOG_MESSAGE("[Mesh3D] Cache HIT for '%s'", fileName.c_str());
         cached->cloneInto(*this);
+        sharedModel = cached;
+        sharedStaticGeometry = true;
         UpdateBoundingBox();
         loaded = true;
         return;
@@ -137,6 +169,8 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
     }
 
     modelDataCache.store(fileName, modelData);
+    sharedModel = modelData;
+    sharedStaticGeometry = true;
 
     LOG_MESSAGE("[Mesh3D] Stored '%s' in ModelDataCache (%zu meshes, %zu materials)",
         fileName.c_str(), modelData->meshes.size(), modelData->materials.size());
@@ -185,7 +219,10 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntr
 
             std::string FullPath;
             std::string candidate;
-            if (!(candidate = tryPng(relativePath)).empty()) {
+            bool isAbsolute = p.size() >= 2 && p[1] == ':';
+            if (isAbsolute && !(candidate = tryPng(p)).empty()) {
+                FullPath = candidate;
+            } else if (!(candidate = tryPng(relativePath)).empty()) {
                 FullPath = candidate;
             } else if (!(candidate = tryPng(textureSubPath)).empty()) {
                 FullPath = candidate;
@@ -330,16 +367,23 @@ void Mesh3D::onUpdate()
 
     auto sceneFramebuffer = window->getSceneFramebuffer();
 
+    // ShaderOGLOutline toca GL_BLEND/DEPTH_TEST/CULL_FACE por su cuenta (técnica de stencil
+    // multi-pasada) sin pasar por la caché compartida de Fase 1.1.1 (Deferred/Forward, más abajo
+    // en este mismo bucle por objeto) -- invalidarla tras cada uso para que el próximo Apply* no
+    // se fíe de un valor obsoleto.
     if (isGUISelected() && !Components::get()->Scripting()->isExecuting()) {
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getForegroundFramebuffer());
+        render->InvalidateRenderStateCache();
     }
 
     if (render->getLastRightClickedObject() == this && !isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+        render->InvalidateRenderStateCache();
     }
 
     if (highlighted) {
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+        render->InvalidateRenderStateCache();
     }
 
     if (frustumCullSubmeshes) updateSubmeshFrustumVisibility();
@@ -349,16 +393,23 @@ void Mesh3D::onUpdate()
     if (Config::get()->TRIANGLE_MODE_TEXTURIZED ) {
         if (!isTransparent() ) {
             if (Config::get()->ENABLE_LIGHTS && enableLights) {
+                // Fase 3 (Etapa 1): encolar en vez de dibujar al instante -- ComponentRender::
+                // FlushOpaqueQueue() dibuja todo ordenado al final de la Pasada 2. Mismos filtros/
+                // datos que antes (ver ComponentRender::EnqueueOpaque), solo cambia el cuándo.
                 if (isRenderPipelineDefault())
-                    render->getShaderOGLRenderDeferred()->renderMesh(this, false, fbo);
+                    render->EnqueueOpaque(this, false, fbo);
             } else {
                 render->getShaders()->shaderOGLRender->renderMesh(this, false, fbo);
             }
         }
     }
 
+    // Wireframe/Shading (debug) tocan GL_BLEND directamente sin pasar por la caché -- invalidar
+    // tras usarlos, igual que con Outline. Points solo toca GL_POINT_SPRITE/
+    // GL_VERTEX_PROGRAM_POINT_SIZE (confirmado), no hace falta.
     if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
         render->getShaders()->shaderOGLWireframe->renderMesh(this, false, Color::gray(), fbo);
+        render->InvalidateRenderStateCache();
     }
 
     if (Config::get()->TRIANGLE_MODE_PIXELS) {
@@ -367,6 +418,7 @@ void Mesh3D::onUpdate()
 
     if (Config::get()->TRIANGLE_MODE_SHADING) {
         render->getShaders()->shaderOGLShading->renderMesh(this, false, fbo);
+        render->InvalidateRenderStateCache();
     }
 
     if (Config::get()->DRAW_MESH3D_AABB) {
@@ -383,15 +435,17 @@ void Mesh3D::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
-        render->getShaders()->shaderOGLColor->renderMeshWithSubmeshColors(
-            this,
-            false,
-            false,
-            window->getPickingColorFramebuffer().FBO
-        );
+        // Fase 4b: encolado igual que el G-Buffer (EnqueueOpaque más arriba) -- se dibuja todo
+        // junto en FlushPickingQueue(), agrupando instancias del mismo modelo en una sola
+        // llamada instanciada en vez de un draw por objeto cada frame.
+        render->EnqueuePicking(this, false, window->getPickingColorFramebuffer().FBO);
     }
 
-    RunObjectShaders();
+    // Encolado, NO se dibuja aquí -- ver ComponentRender::FlushObjectShaderQueue() y el comentario
+    // en EnqueueObjectShaders sobre por qué debe ir después del flush del pase opaco.
+    if (!customShaders.empty()) {
+        render->EnqueueObjectShaders(this);
+    }
 }
 
 void Mesh3D::postUpdate()
@@ -414,6 +468,10 @@ void Mesh3D::RunObjectShaders() const
 
     auto window = Components::get()->Window();
     shaderChain->ProcessChain(this, customShaders, window->getGBuffer().FBO);
+    // ShaderOGLCustomCodeMesh3D::renderMesh() toca GL_DEPTH_TEST/GL_BLEND/GL_CULL_FACE directo,
+    // fuera de la caché de Fase 1.1.1 -- invalidar para que el próximo Apply* (FlushOpaqueQueue)
+    // no se fíe de un valor obsoleto, igual que ya hacen Outline/Wireframe/Shading/Color.
+    Components::get()->Render()->InvalidateRenderStateCache();
 }
 
 void Mesh3D::BuildOctree(int depth)
@@ -439,9 +497,12 @@ void Mesh3D::makeRigidBodyFromTriangleMesh(float mass, btDiscreteDynamicsWorld *
 
     setMass(mass);
 
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    // Posición Y rotación (sin escala -- las triangulaciones de abajo ya vienen escaladas a mano
+    // o son mesh local-space consumido con la malla ya orientada). Antes esto solo ponía la
+    // posición con setIdentity() en la rotación, ignorándola por completo: el collider quedaba
+    // sin rotar aunque la malla visual sí lo estuviera (p.ej. "city", con el offset de import
+    // FBX habitual) -- el bug de "los colisionables no están bien rotados".
+    btTransform transformation = Tools::GLMMatrixToBulletTransformNoScale(getModelMatrix());
 
     btVector3 inertia(0, 0, 0);
 
@@ -480,9 +541,12 @@ void Mesh3D::makeRigidBodyFromTriangleMeshFromConvexHull(float mass, btDiscreteD
 
     setMass(mass);
 
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    // Posición Y rotación (sin escala -- las triangulaciones de abajo ya vienen escaladas a mano
+    // o son mesh local-space consumido con la malla ya orientada). Antes esto solo ponía la
+    // posición con setIdentity() en la rotación, ignorándola por completo: el collider quedaba
+    // sin rotar aunque la malla visual sí lo estuviera (p.ej. "city", con el offset de import
+    // FBX habitual) -- el bug de "los colisionables no están bien rotados".
+    btTransform transformation = Tools::GLMMatrixToBulletTransformNoScale(getModelMatrix());
 
     btVector3 inertia(0, 0, 0);
     btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
@@ -518,9 +582,12 @@ btRigidBody* Mesh3D::BuildRigidBodyFromTriangleMeshOnly(float mass)
 {
     setMass(mass);
 
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    // Posición Y rotación (sin escala -- las triangulaciones de abajo ya vienen escaladas a mano
+    // o son mesh local-space consumido con la malla ya orientada). Antes esto solo ponía la
+    // posición con setIdentity() en la rotación, ignorándola por completo: el collider quedaba
+    // sin rotar aunque la malla visual sí lo estuviera (p.ej. "city", con el offset de import
+    // FBX habitual) -- el bug de "los colisionables no están bien rotados".
+    btTransform transformation = Tools::GLMMatrixToBulletTransformNoScale(getModelMatrix());
 
     btVector3 inertia(0, 0, 0);
 
@@ -555,9 +622,12 @@ btRigidBody* Mesh3D::BuildRigidBodyFromConvexHullOnly(float mass)
 {
     setMass(mass);
 
-    btTransform transformation;
-    transformation.setIdentity();
-    transformation.setOrigin(getPosition().toBullet());
+    // Posición Y rotación (sin escala -- las triangulaciones de abajo ya vienen escaladas a mano
+    // o son mesh local-space consumido con la malla ya orientada). Antes esto solo ponía la
+    // posición con setIdentity() en la rotación, ignorándola por completo: el collider quedaba
+    // sin rotar aunque la malla visual sí lo estuviera (p.ej. "city", con el offset de import
+    // FBX habitual) -- el bug de "los colisionables no están bien rotados".
+    btTransform transformation = Tools::GLMMatrixToBulletTransformNoScale(getModelMatrix());
 
     btVector3 inertia(0, 0, 0);
     btCollisionShape* shape = getConvexHullShapeFromMesh(inertia);
@@ -891,7 +961,43 @@ btConvexHullShape *Mesh3D::getConvexHullShapeFromMesh(btVector3 inertia)
 void Mesh3D::FillOGLBuffers()
 {
     LOG_MESSAGE("[Mesh3D] Filling buffers...");
-    ComponentRender::FillOGLBuffers(meshes);
+
+    if (!sharedModel) {
+        // Sin ModelData compartido (carga fallida o instancia no venida de fichero
+        // cacheado): comportamiento antiguo, buffers propios de esta instancia.
+        ComponentRender::FillOGLBuffers(meshes);
+        RegisterSubmeshPicking();
+        return;
+    }
+
+    // Fase 2.1: geometria compartida entre todas las instancias del mismo fichero.
+    for (size_t i = 0; i < meshes.size() && i < sharedModel->meshes.size(); i++) {
+        auto &m = meshes[i];
+        auto &shared = sharedModel->meshes[i];
+
+        if (m.vertices.empty() || m.uvs.empty() || m.normals.empty()) {
+            LOG_ERROR("[Mesh3D] FillOGLBuffers: mesh with empty geometry (vertices=%zu uvs=%zu normals=%zu) — skipped",
+                m.vertices.size(), m.uvs.size(), m.normals.size());
+            continue;
+        }
+
+        if (!glIsBuffer(shared.vertexBuffer)) {
+            // Primera instancia que carga este modelo: sube la geometria compartida una vez,
+            // deduplicada con EBO (Fase 2.2).
+            ComponentRender::BuildDedupedStaticGeometry(
+                shared.vertices, shared.normals, shared.uvs,
+                shared.vertexBuffer, shared.uvBuffer, shared.normalBuffer,
+                shared.indexBuffer, shared.indexCount
+            );
+        }
+
+        m.vertexBuffer = shared.vertexBuffer;
+        m.uvBuffer = shared.uvBuffer;
+        m.normalBuffer = shared.normalBuffer;
+        m.indexBuffer = shared.indexBuffer;
+        m.indexCount = shared.indexCount;
+    }
+
     RegisterSubmeshPicking();
 }
 

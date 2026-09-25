@@ -1,5 +1,7 @@
 #include "../../../include/OpenGL/Base/ShaderBaseCompute.h"
 #include "../../../include/Misc/Logging.h"
+#include "../../../include/Render/Profiler.h"
+#include "../../../include/Components/Components.h"
 
 #include <fstream>
 #include <sstream>
@@ -81,6 +83,8 @@ void ShaderBaseCompute::PrepareMainThread()
 void ShaderBaseCompute::dispatch(GLuint groupsX, GLuint groupsY, GLuint groupsZ) const
 {
     glUseProgram(programID);
+    Profiler::get()->incrementProgramChanges();
+    Components::get()->Render()->setLastProgramUsed(programID);
     glDispatchCompute(groupsX, groupsY, groupsZ);
     glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }

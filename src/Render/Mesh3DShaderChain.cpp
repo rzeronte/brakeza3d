@@ -107,7 +107,9 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
                     m.vertices.size(),
                     mesh->getModelMatrix(),
                     Components::get()->Camera()->getGLMMat4ViewMatrix(),
-                    Components::get()->Camera()->getGLMMat4ProjectionMatrix()
+                    Components::get()->Camera()->getGLMMat4ProjectionMatrix(),
+                    m.indexBuffer,
+                    m.indexCount
                 );
             }
         } else {

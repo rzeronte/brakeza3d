@@ -5,6 +5,7 @@
 #include "../../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
 #include "../../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Render/Profiler.h"
 
 ShaderNodesMesh3D::ShaderNodesMesh3D(
     const std::string& label,
@@ -94,6 +95,7 @@ void ShaderNodesMesh3D::RenderMesh(
 
     // Renderizar
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, vertexCount);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

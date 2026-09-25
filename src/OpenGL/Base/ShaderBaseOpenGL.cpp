@@ -7,6 +7,8 @@
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/OpenGL/ShaderPreProcessor.h"
+#include "../../../include/Render/Profiler.h"
+#include "../../../include/3D/Mesh3DAnimation.h"
 
 ShaderBaseOpenGL::ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename, bool enableFeedback)
 :
@@ -372,6 +374,45 @@ void ShaderBaseOpenGL::setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GL
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 }
 
+void ShaderBaseOpenGL::setVAOBoneAttributes(GLuint vertexBoneDataBuffer, int boneIdsLocation, int weightsLocation)
+{
+    glEnableVertexAttribArray(boneIdsLocation);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBoneDataBuffer);
+    glVertexAttribIPointer(boneIdsLocation, 4, GL_INT, sizeof(VertexBoneData), (const GLvoid*)offsetof(VertexBoneData, IDs));
+
+    glEnableVertexAttribArray(weightsLocation);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBoneDataBuffer);
+    glVertexAttribPointer(weightsLocation, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)offsetof(VertexBoneData, Weights));
+}
+
+void ShaderBaseOpenGL::DrawMeshGeometry(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount)
+{
+    if (indexBuffer != 0) {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+        glDrawElements(mode, indexCount, GL_UNSIGNED_INT, nullptr);
+        Profiler::get()->incrementDrawCall(mode, indexCount);
+        return;
+    }
+
+    glDrawArrays(mode, 0, vertexCount);
+    Profiler::get()->incrementDrawCall(mode, vertexCount);
+}
+
+// Fase 4: mismo criterio glDrawElements/glDrawArrays que DrawMeshGeometry, versión instanciada
+// para runs de 2+ entradas idénticas de la cola de opacos (ver ComponentRender::FlushOpaqueQueue).
+void ShaderBaseOpenGL::DrawMeshGeometryInstanced(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, GLsizei instanceCount)
+{
+    if (indexBuffer != 0) {
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+        glDrawElementsInstanced(mode, indexCount, GL_UNSIGNED_INT, nullptr, instanceCount);
+        Profiler::get()->incrementDrawCall(mode, indexCount, instanceCount);
+        return;
+    }
+
+    glDrawArraysInstanced(mode, 0, vertexCount, instanceCount);
+    Profiler::get()->incrementDrawCall(mode, vertexCount, instanceCount);
+}
+
 void ShaderBaseOpenGL::setMat4Uniform(GLuint uniform, const glm::mat4 &mat)
 {
     glUniformMatrix4fv(uniform, 1, GL_FALSE, &mat[0][0]);
@@ -379,38 +420,20 @@ void ShaderBaseOpenGL::setMat4Uniform(GLuint uniform, const glm::mat4 &mat)
 
 void ShaderBaseOpenGL::setTextureUniform(GLuint uniform, GLuint texture, int index)
 {
-    if (index == 0) {
-        glActiveTexture(GL_TEXTURE0);
-    } else if (index == 1) {
-        glActiveTexture(GL_TEXTURE1);
-    } else if (index == 2) {
-        glActiveTexture(GL_TEXTURE2);
-    } else if (index == 3) {
-        glActiveTexture(GL_TEXTURE3);
-    } else if (index == 4) {
-        glActiveTexture(GL_TEXTURE4);
-    } else if (index == 5) {
-        glActiveTexture(GL_TEXTURE5);
-    }
+    // GL_TEXTURE0 + index para CUALQUIER unidad: antes era una cadena de if que solo cubría 0-5, y con
+    // index>=6 no cambiaba de unidad -- enganchaba la textura sobre la unidad activa anterior (la 5 =
+    // shadow map direccional en LightPass) en silencio.
+    glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, texture);
     glUniform1i(uniform, index);
 }
 
 void ShaderBaseOpenGL::setTextureArrayUniform(GLuint uniform, GLuint texture, int index)
 {
-    if (index == 0) {
-        glActiveTexture(GL_TEXTURE0);
-    } else if (index == 1) {
-        glActiveTexture(GL_TEXTURE1);
-    } else if (index == 2) {
-        glActiveTexture(GL_TEXTURE2);
-    } else if (index == 3) {
-        glActiveTexture(GL_TEXTURE3);
-    } else if (index == 4) {
-        glActiveTexture(GL_TEXTURE4);
-    } else if (index == 5) {
-        glActiveTexture(GL_TEXTURE5);
-    }
+    // GL_TEXTURE0 + index para CUALQUIER unidad: antes era una cadena de if que solo cubría 0-5, y con
+    // index>=6 no cambiaba de unidad -- enganchaba la textura sobre la unidad activa anterior (la 5 =
+    // shadow map direccional en LightPass) en silencio.
+    glActiveTexture(GL_TEXTURE0 + index);
 
     glBindTexture(GL_TEXTURE_2D_ARRAY, texture);
     glUniform1i(uniform, index);
@@ -418,19 +441,10 @@ void ShaderBaseOpenGL::setTextureArrayUniform(GLuint uniform, GLuint texture, in
 
 void ShaderBaseOpenGL::setTexture(const std::string &name, GLuint textureID, int index) const
 {
-    if (index == 0) {
-        glActiveTexture(GL_TEXTURE0);
-    } else if (index == 1) {
-        glActiveTexture(GL_TEXTURE1);
-    } else if (index == 2) {
-        glActiveTexture(GL_TEXTURE2);
-    } else if (index == 3) {
-        glActiveTexture(GL_TEXTURE3);
-    } else if (index == 4) {
-        glActiveTexture(GL_TEXTURE4);
-    } else if (index == 5) {
-        glActiveTexture(GL_TEXTURE5);
-    }
+    // GL_TEXTURE0 + index para CUALQUIER unidad: antes era una cadena de if que solo cubría 0-5, y con
+    // index>=6 no cambiaba de unidad -- enganchaba la textura sobre la unidad activa anterior (la 5 =
+    // shadow map direccional en LightPass) en silencio.
+    glActiveTexture(GL_TEXTURE0 + index);
     glBindTexture(GL_TEXTURE_2D, textureID);
     glUniform1i(getUniformLocation(name), index);
 }

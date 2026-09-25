@@ -1,10 +1,9 @@
-#include <SDL2/SDL_mixer.h>
-
 // Undefine Windows API macro that conflicts with our PlaySound method
 #ifdef PlaySound
 #undef PlaySound
 #endif
 
+#include <cmath>
 #include "../../include/Components/ComponentSound.h"
 
 #include "../../include/Components/Components.h"
@@ -35,7 +34,17 @@ void ComponentSound::onUpdate()
 
 void ComponentSound::onEnd()
 {
-    Mix_Quit();
+    for (auto &v : voices) {
+        if (v.soundInitialized) ma_sound_uninit(&v.sound);
+        if (v.refInitialized)   ma_audio_buffer_ref_uninit(&v.ref);
+    }
+    if (musicSoundInitialized) ma_sound_uninit(&musicVoice);
+    if (musicRefInitialized)   ma_audio_buffer_ref_uninit(&musicRef);
+
+    if (engineInitialized) {
+        ma_engine_uninit(&engine);
+        engineInitialized = false;
+    }
 }
 
 void ComponentSound::postUpdate()
@@ -47,18 +56,19 @@ void ComponentSound::onSDLPollEvent(SDL_Event *e, bool &finish)
 {
 }
 
-void ComponentSound::InitSoundSystem() const
+void ComponentSound::InitSoundSystem()
 {
     LOG_MESSAGE("[Sound] Init Sound System...");
 
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
-        printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+    ma_result result = ma_engine_init(nullptr, &engine);
+    if (result != MA_SUCCESS) {
+        printf("miniaudio could not initialize engine! result=%d\n", (int)result);
+        return;
     }
+    engineInitialized = true;
 
-    Mix_AllocateChannels(32);
-    Mix_ReserveChannels(1);  // canal 0 reservado para UI hover (no roba auto-allocate)
-    Mix_VolumeMusic((int) SETUP->SOUND_VOLUME_MUSIC);
-    Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) SETUP->SOUND_VOLUME_FX);
+    fxVolumeScale    = SETUP->SOUND_VOLUME_FX / 128.0f;
+    musicVolumeScale = SETUP->SOUND_VOLUME_MUSIC / 128.0f;
 }
 
 void ComponentSound::LoadSoundsConfigFile()
@@ -95,102 +105,87 @@ void ComponentSound::LoadSoundsConfigFile()
     free(contentFile);
 }
 
-int ComponentSound::PlayChunk(Mix_Chunk *chunk, int channel, int times)
+void ComponentSound::PlayBuffer(SoundPackageItem* item, int channel, int times)
 {
-    if (!Components::get()->Sound()->isEnabled()) return -1;
+    if (!Components::get()->Sound()->isEnabled()) return;
+    if (!engineInitialized) return;
+    if (channel < 0 || channel >= MAX_CHANNELS) return;
 
-    if (chunk == nullptr) {
-        LOG_ERROR("[Sound] loading chunk playSound");
-        return -1;
-    }
-
-    const int resultPlaying = Mix_PlayChannel(channel, chunk, times);
-
-    if (resultPlaying < 0) {
+    if (item == nullptr || !item->loaded) {
         LOG_MESSAGE("No channel available for playSound...");
+        return;
     }
 
-    return resultPlaying;
-}
+    Voice &v = voices[channel];
+    if (v.soundInitialized) { ma_sound_uninit(&v.sound); v.soundInitialized = false; }
+    if (v.refInitialized)   { ma_audio_buffer_ref_uninit(&v.ref); v.refInitialized = false; }
 
-void ComponentSound::playMusicMix(Mix_Music *music, int loops = -1)
-{
-    Mix_PlayMusic(music, loops);
-}
+    if (ma_audio_buffer_ref_init(item->buffer.ref.format, item->buffer.ref.channels,
+                                  item->buffer.ref.pData, item->buffer.ref.sizeInFrames, &v.ref) != MA_SUCCESS) {
+        return;
+    }
+    v.refInitialized = true;
 
-void ComponentSound::fadeInMusic(Mix_Music *music, int loops, int ms)
-{
-    Mix_FadeInMusic(music, loops, ms);
+    if (ma_sound_init_from_data_source(&engine, (ma_data_source*)&v.ref,
+                                        MA_SOUND_FLAG_NO_SPATIALIZATION, nullptr, &v.sound) != MA_SUCCESS) {
+        ma_audio_buffer_ref_uninit(&v.ref);
+        v.refInitialized = false;
+        return;
+    }
+    v.soundInitialized = true;
+    v.item = item;
+
+    ma_sound_set_looping(&v.sound, times == -1 ? MA_TRUE : MA_FALSE);
+    ma_sound_set_volume(&v.sound, fxVolumeScale);
+    ma_sound_start(&v.sound);
 }
 
 void ComponentSound::StopMusic()
 {
-    Mix_HaltMusic();
+    if (musicSoundInitialized) ma_sound_stop(&musicVoice);
+    musicPausedFlag = false;
 }
 
 void ComponentSound::PauseMusic()
 {
-    if (Mix_PlayingMusic()) {
-        Mix_PauseMusic();
+    if (musicSoundInitialized && ma_sound_is_playing(&musicVoice)) {
+        ma_sound_stop(&musicVoice);
+        musicPausedFlag = true;
     }
 }
 
 void ComponentSound::ResumeMusic()
 {
-    if (Mix_PausedMusic()) {
-        Mix_ResumeMusic();
+    if (musicSoundInitialized && musicPausedFlag) {
+        ma_sound_start(&musicVoice);
+        musicPausedFlag = false;
     }
 }
 
 bool ComponentSound::isMusicPaused()
 {
-    return Mix_PausedMusic() != 0;
+    return musicPausedFlag;
 }
 
 void ComponentSound::StopChannel(int channel)
 {
-    Mix_HaltChannel(channel);
+    if (channel < 0 || channel >= MAX_CHANNELS) return;
+    Voice &v = voices[channel];
+    if (v.soundInitialized) ma_sound_stop(&v.sound);
 }
 
 float ComponentSound::getSoundDuration(const std::string& sound)
 {
-    auto chunk = soundPackage.getByLabel(sound);
+    auto* item = soundPackage.getByLabel(sound);
 
-    if (!chunk) {
+    if (!item || !item->loaded) {
         return 0.0;
     }
 
-    int frequency, channels;
-    Uint16 format;
+    ma_uint32 sampleRate = item->buffer.ref.sampleRate;
+    if (sampleRate == 0) return 0.0;
 
-    // Obtiene el formato actual de audio
-    if (Mix_QuerySpec(&frequency, &format, &channels) == 0) {
-        return 0.0; // No se pudo obtener el formato de audio
-    }
-
-    int bytesPerSample;
-    switch (format) {
-        case AUDIO_U8:
-        case AUDIO_S8:
-            bytesPerSample = 1;
-            break;
-        case AUDIO_U16SYS:
-        case AUDIO_S16SYS:
-            bytesPerSample = 2;
-            break;
-        case AUDIO_S32SYS:
-            bytesPerSample = 4;
-            break;
-        case AUDIO_F32SYS:
-            bytesPerSample = 4;
-            break;
-        default:
-            return 0.0; // Formato no soportado
-    }
-
-    // Calcula la duración en segundos
-    double totalSamples = chunk->alen / (bytesPerSample * channels);
-    return totalSamples / frequency;
+    return (float)item->buffer.ref.sizeInFrames / (float)sampleRate;
 }
 
 void ComponentSound::LoadSoundsFromFile(const std::string& filePath)
@@ -237,18 +232,42 @@ void ComponentSound::AddMusic(const std::string &soundFile, const std::string &l
 void ComponentSound::PlayMusic(const std::string& sound)
 {
     if (!Components::get()->Sound()->isEnabled()) return;
+    if (!engineInitialized) return;
 
-    playMusicMix(
-        soundPackage.getMusicByLabel(sound),
-        -1
-    );
+    auto* item = soundPackage.getByLabel(sound);
+    if (item == nullptr || !item->loaded) {
+        LOG_MESSAGE("[Sound] PlayMusic: '%s' not loaded", sound.c_str());
+        return;
+    }
+
+    if (musicSoundInitialized) { ma_sound_uninit(&musicVoice); musicSoundInitialized = false; }
+    if (musicRefInitialized)   { ma_audio_buffer_ref_uninit(&musicRef); musicRefInitialized = false; }
+
+    if (ma_audio_buffer_ref_init(item->buffer.ref.format, item->buffer.ref.channels,
+                                  item->buffer.ref.pData, item->buffer.ref.sizeInFrames, &musicRef) != MA_SUCCESS) {
+        return;
+    }
+    musicRefInitialized = true;
+
+    if (ma_sound_init_from_data_source(&engine, (ma_data_source*)&musicRef,
+                                        MA_SOUND_FLAG_NO_SPATIALIZATION, nullptr, &musicVoice) != MA_SUCCESS) {
+        ma_audio_buffer_ref_uninit(&musicRef);
+        musicRefInitialized = false;
+        return;
+    }
+    musicSoundInitialized = true;
+
+    ma_sound_set_looping(&musicVoice, MA_TRUE);
+    ma_sound_set_volume(&musicVoice, musicVolumeScale);
+    ma_sound_start(&musicVoice);
+    musicPausedFlag = false;
 }
 
 void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
 {
     if (!Components::get()->Sound()->isEnabled()) return;
 
-    PlayChunk(
+    PlayBuffer(
         soundPackage.getByLabel(sound),
         channel,
         times
@@ -257,12 +276,13 @@ void ComponentSound::PlaySound(const std::string& sound, int channel, int times)
 
 bool ComponentSound::isSoundPlaying(const std::string& label)
 {
-    Mix_Chunk* chunk = soundPackage.getByLabel(label);
-    if (!chunk) return false;
-    int numChannels = Mix_AllocateChannels(-1);
-    for (int ch = 0; ch < numChannels; ++ch) {
-        if (Mix_Playing(ch) && Mix_GetChunk(ch) == chunk)
+    auto* item = soundPackage.getByLabel(label);
+    if (!item || !item->loaded) return false;
+
+    for (auto &v : voices) {
+        if (v.soundInitialized && v.item == item && ma_sound_is_playing(&v.sound)) {
             return true;
+        }
     }
     return false;
 }
@@ -276,7 +296,8 @@ void ComponentSound::setMusicVolume(int v)
 
     LOG_MESSAGE("[Sound] setMusicVolume: %d", v);
     Config::get()->SOUND_VOLUME_MUSIC = static_cast<float>(v);
-    Mix_VolumeMusic(v);
+    musicVolumeScale = v / 128.0f;
+    if (musicSoundInitialized) ma_sound_set_volume(&musicVoice, musicVolumeScale);
 }
 
 void ComponentSound::setSoundsVolume(int v)
@@ -288,28 +309,50 @@ void ComponentSound::setSoundsVolume(int v)
 
     LOG_MESSAGE("[Sound] setSoundsVolume: %d", v);
     Config::get()->SOUND_VOLUME_FX = static_cast<float>(v);
-    Mix_Volume(Config::SoundChannels::SND_GLOBAL, v);
+    fxVolumeScale = v / 128.0f;
 }
 
 void ComponentSound::setChannelFrequency(int channel, int freq)
 {
-    // Mix_SetFrequency does not exist in SDL2_mixer — per-channel rate change unsupported
+    // Referencia 44100Hz -- misma que usa SoundPackage para decodificar todo el catalogo.
+    setChannelPitch(channel, freq / 44100.0f);
+}
+
+void ComponentSound::setChannelPitch(int channel, float pitch)
+{
+    if (!isEnabled()) return;
+    if (channel < 0 || channel >= MAX_CHANNELS) return;
+    Voice &v = voices[channel];
+    if (v.soundInitialized) ma_sound_set_pitch(&v.sound, pitch);
 }
 
 void ComponentSound::setChannelVolume(int channel, int vol)
 {
     if (!isEnabled()) return;
-    Mix_Volume(channel, vol);
+    if (channel < 0 || channel >= MAX_CHANNELS) return;
+    Voice &v = voices[channel];
+    if (v.soundInitialized) ma_sound_set_volume(&v.sound, (vol / 128.0f) * fxVolumeScale);
 }
 
 void ComponentSound::setChannelPosition(int channel, int angle, int distance)
 {
     if (!isEnabled()) return;
-    Mix_SetPosition(channel, angle, distance);
+    if (channel < 0 || channel >= MAX_CHANNELS) return;
+    Voice &v = voices[channel];
+    if (!v.soundInitialized) return;
+
+    // El volumen por distancia ya lo reduce Lua via setChannelVolume (ver miniaudio-migration.md)
+    // -- aqui solo se traduce el angulo (convencion SDL_mixer: 0=frente, 90=derecha,
+    // 180=detras, 270=izquierda) a pan estereo -1..1.
+    (void)distance;
+    float rad = angle * (3.14159265f / 180.0f);
+    ma_sound_set_pan(&v.sound, sinf(rad));
 }
 
 bool ComponentSound::isChannelPlaying(int channel)
 {
     if (!isEnabled()) return false;
-    return Mix_Playing(channel) != 0;
+    if (channel < 0 || channel >= MAX_CHANNELS) return false;
+    Voice &v = voices[channel];
+    return v.soundInitialized && ma_sound_is_playing(&v.sound);
 }

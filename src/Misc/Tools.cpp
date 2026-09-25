@@ -11,11 +11,13 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Mesh3DAnimation.h"
+#include "../../include/Render/Profiler.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <mutex>
 
 std::vector<std::string> Tools::split(const std::string &text, char sep)
 {
@@ -110,6 +112,13 @@ char *Tools::ReadFile(const std::string &name)
     fclose(fp);
 
     return file_str;
+}
+
+SDL_Surface* Tools::SafeIMGLoad(const std::string &path)
+{
+    static std::mutex imgLoadMutex;
+    std::lock_guard<std::mutex> lock(imgLoadMutex);
+    return IMG_Load(path.c_str());
 }
 
 bool Tools::getBit(unsigned char byte, int position) // position in range 0-7
@@ -327,6 +336,8 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
     GLuint framebuffer;
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(framebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 
     // Leer los píxeles de la textura al surface
@@ -334,6 +345,8 @@ bool Tools::saveTextureToFile(GLuint textureID, int width, int height, const cha
 
     // Restaurar el estado previo de OpenGL
     glBindFramebuffer(GL_FRAMEBUFFER, previousFramebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(previousFramebuffer);
     glDeleteFramebuffers(1, &framebuffer);
 
     // Invertir los píxeles verticalmente para que coincida con la orientación de la imagen guardada

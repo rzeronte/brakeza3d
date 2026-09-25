@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <string>
 #include <utility>
+#include <mutex>
 #include "cJSON.h"
 #include "../../sol/sol.hpp"
 #include "../3D/Vertex3D.h"
@@ -27,12 +28,19 @@ struct LUATypeInfo {
     std::string label;
 };
 
-static std::map<std::string, LUATypeInfo> LUADataTypesMapping = {
-    {"int", {LUADataType::INT, "int" }},
-    {"float", {LUADataType::FLOAT, "float" }},
-    {"string", {LUADataType::STRING, "string" }},
-    {"Vertex3D", {LUADataType::VERTEX3D, "vec3" }},
-};
+// LUADataTypesMapping es un set fijo de claves precargado en estatico (ver .cpp), pero se
+// consulta concurrentemente: ScriptLUA::AddDataType (invocado desde el constructor de ScriptLUA
+// durante Object3DSerializer::ApplyJsonToObject) corre en un worker thread del ThreadPool cuando
+// ThreadJobLoadObject::fnProcess deserializa un objeto con scripts, a la vez que el hilo principal
+// llama InitEnvironment/ReloadEnvironment/ReloadGlobals/applyTypeToEnvironment sobre otros scripts
+// ya en marcha. operator[] inserta si la clave no existe -- mutación concurrente de un std::map
+// corrompe el árbol (mismo patrón que GLSLTypeMapping, ver ShaderCustomOGLCodeTypes.h).
+// LUADataTypesMappingMutex + GetLUATypeInfo() serializan todo acceso; usar SIEMPRE estas dos en
+// vez de tocar LUADataTypesMapping directamente.
+extern std::map<std::string, LUATypeInfo> LUADataTypesMapping;
+extern std::mutex LUADataTypesMappingMutex;
+
+LUATypeInfo GetLUATypeInfo(const std::string& key);
 
 struct ScriptLUATypeData {
     ScriptLUATypeData(const char *name, const char *type, LUADataValue value)

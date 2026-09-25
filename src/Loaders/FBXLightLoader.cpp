@@ -13,11 +13,15 @@
 #include <fstream>
 #include <cstring>
 #include <vector>
+#include <algorithm>
 
 // ── FBX binary light-colour extractor ────────────────────────────────────────
 //
-// Assimp computes mColorDiffuse = Color × Intensity/100.
-// Blender exports Intensity ≈ 0, so every colour appears black.
+// Assimp's mColorDiffuse for an FBX light comes through as Color × Energy (Blender's raw
+// wattage, e.g. a 1000W red light gives (1000,0,0), confirmed empirically 2026-08-20) --
+// not a normalized 0-1 hue. This extractor recovers the pure hue directly from the FBX
+// binary's own Color property (independent of energy) so LoadLightsFromFile can derive hue
+// and brightness separately instead of using this possibly energy-scaled value as a colour.
 //
 // Fix: scan the raw FBX binary for P-records with name="Color" and type="Color"
 // (unique to light NodeAttributes — materials use "DiffuseColor", etc.)
@@ -135,8 +139,8 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
 
     LOG_MESSAGE("[FBXLightLoader] Found %d lights in '%s'", scene->mNumLights, fileName.c_str());
 
-    // Recover raw light colours from FBX binary (Blender exports Intensity≈0,
-    // making Assimp's mColorDiffuse = Color×0 = black).
+    // Recover raw (energy-independent) light hues from the FBX binary -- see comment above
+    // ExtractFBXLightColors for why al->mColorDiffuse alone isn't a usable colour.
     auto rawColors = ExtractFBXLightColors(fileName.c_str());
     LOG_MESSAGE("[FBXLightLoader] FBX binary: %zu light colors recovered", rawColors.size());
 
@@ -152,6 +156,28 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
     // so light positions match mesh vertices loaded by Assimp for the same file.
     aiMatrix4x4 globalInverse = scene->mRootNode->mTransformation;
     globalInverse.Inverse();
+
+    // Energía de referencia POR ARCHIVO, no una constante absoluta (2026-08-25):
+    // cada FBX exporta la "Intensity" de sus luces en la escala que le dio Blender al
+    // hornear ese archivo en concreto -- HALL.fbx mide ~20-110, pero LIGHTS.fbx (farolas
+    // de ciudad) mide ~1.3-2.9, dos órdenes de magnitud por debajo. Con un REFERENCE_ENERGY
+    // fijo calibrado para uno, el otro cae entero al suelo de brillo (comprobado: 42% de las
+    // luces de LIGHTS.fbx pegadas al mínimo 0.1). Usamos la mediana de energía de ESTE
+    // archivo como referencia: una luz "típica" del archivo sale a brillo ~1.0 sin importar
+    // en qué unidades exportó Blender, y las luces relativamente más/menos potentes dentro
+    // del mismo archivo se siguen diferenciando entre sí.
+    std::vector<float> fileEnergies;
+    fileEnergies.reserve(scene->mNumLights);
+    for (unsigned int i = 0; i < scene->mNumLights; i++) {
+        const aiColor3D& c = scene->mLights[i]->mColorDiffuse;
+        float e = std::max({c.r, c.g, c.b});
+        if (e > 0.001f) fileEnergies.push_back(e);
+    }
+    float fileReferenceEnergy = 100.0f;
+    if (!fileEnergies.empty()) {
+        std::nth_element(fileEnergies.begin(), fileEnergies.begin() + fileEnergies.size() / 2, fileEnergies.end());
+        fileReferenceEnergy = fileEnergies[fileEnergies.size() / 2];
+    }
 
     for (unsigned int i = 0; i < scene->mNumLights; i++) {
         const aiLight *al = scene->mLights[i];
@@ -169,37 +195,60 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
         // Apply the scene-level transform (same as the city mesh)
         glm::vec4 enginePos = modelMatrix * glm::vec4(localPos.x, localPos.y, localPos.z, 1.0f);
 
-        // Assimp sets mColorDiffuse = Color × Intensity/100.
-        // Blender may export Intensity near-zero, making mColorDiffuse very dark or black.
-        // Always prefer the raw FBX binary colour when available.
+        // Assimp sets mColorDiffuse = Color × Energy (Blender's raw wattage, NOT normalized) --
+        // confirmed empirically (a 1000W red Blender light comes through as (1000,0,0)). The pure
+        // hue (0-1, independent of energy) comes from the raw FBX binary Color property when
+        // available (ExtractFBXLightColors), since Assimp's own colour can be black for some
+        // Blender/export combinations. Brightness is derived separately below from whichever
+        // colour source's magnitude reflects the light's actual power.
+        // NOTA: al->mColorSpecular viene, en la práctica, IDÉNTICO a al->mColorDiffuse (mismo
+        // valor sin escalar por energía -- Blender no exporta un specular independiente para
+        // point/spot lights) -- por eso specular se deriva SIEMPRE de `diffuse` ya escalado más
+        // abajo, nunca de al->mColorSpecular directo (eso colaba el color crudo sin normalizar,
+        // p.ej. (1000,0,0), directo al shader -- origen real del "demasiado intensas").
         auto toVec4 = [](const aiColor3D& c) { return glm::vec4(c.r, c.g, c.b, 1.0f); };
-        glm::vec4 diffuse  = toVec4(al->mColorDiffuse);
-        glm::vec4 ambient  = toVec4(al->mColorAmbient);
-        glm::vec4 specular = toVec4(al->mColorSpecular);
+        glm::vec4 assimpDiffuse = toVec4(al->mColorDiffuse);
+        glm::vec4 ambient       = toVec4(al->mColorAmbient);
 
+        float rawMaxC = std::max({assimpDiffuse.r, assimpDiffuse.g, assimpDiffuse.b});
+
+        glm::vec3 hue;
         if (i < rawColors.size()) {
-            // Raw FBX color — not affected by Assimp's Color×Intensity/100 issue
-            diffuse = glm::vec4(rawColors[i], 1.0f);
+            hue = rawColors[i];
         } else {
-            // No raw color available: normalize Assimp's value (removes Intensity scaling)
-            // or fall back to white if truly black.
-            float maxC = std::max({diffuse.r, diffuse.g, diffuse.b});
-            if (maxC < 0.001f)
-                diffuse = glm::vec4(1.0f);
-            else if (maxC < 1.0f)
-                diffuse = glm::vec4(diffuse.r / maxC, diffuse.g / maxC, diffuse.b / maxC, 1.0f);
+            hue = (rawMaxC > 0.001f) ? glm::vec3(assimpDiffuse) / rawMaxC : glm::vec3(1.0f);
         }
+
+        // Brillo relativo, curva raíz cuadrada en vez de lineal (2026-08-20, recalibrado con
+        // datos reales): luces de interior en producción (HALL.fbx) miden ~20-110W de energía,
+        // MUY por debajo de las luces de prueba (500-1000W) usadas para calibrar el mapeo lineal
+        // original -- con esa escala TODAS las luces de HALL caían por debajo del suelo mínimo y
+        // se planchaban al mismo brillo (el "casi grises" reportado: sin distinción entre ellas).
+        // sqrt comprime el extremo alto (1000W no queda 10x más brillante que 100W, solo ~3x) y
+        // expande el extremo bajo (20W y 110W siguen siendo visualmente distintos entre sí, no
+        // ambos aplastados contra un suelo plano) -- más estable en un rango amplio de energías
+        // sin perder la diferencia relativa entre luces cercanas en potencia.
+        // fileReferenceEnergy (mediana de energía de ESTE archivo) reemplaza la constante fija --
+        // ver comentario junto a su cálculo, arriba del bucle.
+        constexpr float MIN_BRIGHTNESS = 0.1f;
+        constexpr float MAX_BRIGHTNESS = 3.0f;
+        float brightness = (rawMaxC > 0.001f)
+            ? std::clamp(std::sqrt(rawMaxC / fileReferenceEnergy), MIN_BRIGHTNESS, MAX_BRIGHTNESS)
+            : 1.0f;
+
+        glm::vec4 diffuse  = glm::vec4(hue * brightness, 1.0f);
+        glm::vec4 specular = diffuse;
         if (ambient.r  < 0.01f && ambient.g  < 0.01f && ambient.b  < 0.01f)
             ambient = glm::vec4(diffuse.r * 0.05f, diffuse.g * 0.05f, diffuse.b * 0.05f, 1.0f);
-        if (specular.r < 0.01f && specular.g < 0.01f && specular.b < 0.01f)
-            specular = diffuse;
 
-        // Guard against all-zero attenuation (would cause div-by-zero in shader).
-        float attConst = al->mAttenuationConstant;
-        float attLin   = al->mAttenuationLinear;
-        float attQuad  = al->mAttenuationQuadratic;
-        if (attConst == 0.f && attLin == 0.f && attQuad == 0.f)
-            attConst = 1.0f;
+        // Atenuación: SIEMPRE la tabla estable por defecto del motor (LightPointSerializer.cpp),
+        // no los coeficientes crudos del FBX -- el modelo de decaimiento de Blender/FBX no tiene
+        // término constante (constant=0), lo que dispara la atenuación casi a infinito muy cerca
+        // del foco (1/(0+0+quad*d²) en RenderCommons.glsl) y no tiene nada que ver con la escala
+        // que espera el motor. El brillo relativo ya lo aporta `brightness` de arriba.
+        float attConst = 1.0f;
+        float attLin   = 0.09f;
+        float attQuad  = 0.032f;
 
         Object3D *light = nullptr;
 
@@ -213,8 +262,15 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
                 break;
             }
             case aiLightSource_SPOT: {
-                float cutOff      = std::cos(al->mAngleInnerCone);
-                float outerCutOff = std::cos(al->mAngleOuterCone);
+                // al->mAngleInnerCone/mAngleOuterCone son el ángulo COMPLETO del cono (así lo
+                // exporta Blender vía spot_size/spot_blend -- verificado: outer coincide exacto
+                // con spot_size sin dividir). El shader (RenderCommons.glsl) compara cutOff contra
+                // dot(lightDir, -direction), que da el coseno del ÁNGULO DESDE EL EJE (medio-ángulo)
+                // -- los valores por defecto del motor para un LightSpot manual (LightSpotSerializer)
+                // ya son cosenos de medio-ángulo (0.9763/0.9659 = 12.5°/15°). Sin dividir entre 2 el
+                // cono renderizado salía con el doble de ancho del definido en Blender.
+                float cutOff      = std::cos(al->mAngleInnerCone * 0.5f);
+                float outerCutOff = std::cos(al->mAngleOuterCone * 0.5f);
 
                 auto *spot = new LightSpot(
                     ambient, diffuse, specular,

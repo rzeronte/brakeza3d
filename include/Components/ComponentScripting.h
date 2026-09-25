@@ -21,7 +21,10 @@ class ComponentScripting : public Component
     std::unordered_map<std::string, ScriptLUA*> scriptsByName;
 
     std::vector<Scene*> loadedScenes;
+    std::vector<Scene*> scenesPendingDelete;
     Project *currentProject = nullptr;
+
+    void retireScene(Scene *scene);
 
     sol::state lua;
 public:

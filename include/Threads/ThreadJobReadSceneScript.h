@@ -22,6 +22,7 @@ public:
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
+        if (scene != nullptr) scene->retainForJob();
     }
 
     void fnProcess()
@@ -64,6 +65,7 @@ public:
             cJSON_Delete(json);
             json = nullptr;
         }
+        if (scene != nullptr) scene->releaseFromJob();
     }
 };
 

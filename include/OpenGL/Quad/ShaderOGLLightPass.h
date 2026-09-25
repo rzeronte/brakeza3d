@@ -9,6 +9,8 @@ class ShaderOGLLightPass : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad 
 
     GLuint gPositionUniform = 0;
     GLuint gNormalUniform = 0;
+    GLuint gEmissionUniform = 0;
+    GLuint hasEmissionUniform = 0;
     GLuint viewPosUniform = 0;
     GLuint numPointLightsUniform = 0;
     GLuint numSpotLightsUniform = 0;
@@ -52,7 +54,9 @@ public:
         int numSpotLights,
         GLuint spotLightsShadowMapTexturesArray,
         int numSpotLightsShadowMaps,
-        GLuint fbo
+        GLuint fbo,
+        GLuint gEmission = 0,
+        bool hasEmission = false
     );
 
     void Destroy() override;

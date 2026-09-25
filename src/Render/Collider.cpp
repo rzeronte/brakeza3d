@@ -70,7 +70,7 @@ void Collider::setCollisionShape(CollisionShape collisionShape) {
 void Collider::RemoveCollisionObject()
 {
     if (collisionMode == GHOST && ghostObject != nullptr) {
-        LOG_MESSAGE("[Collider] Removing collider GHOST");
+        LOG_VERBOSE("[Collider] Removing collider GHOST");
         setCollisionMode(NONE);
         Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(ghostObject);
         ghostObject = nullptr;
@@ -78,7 +78,7 @@ void Collider::RemoveCollisionObject()
     }
 
     if (collisionMode == BODY && body != nullptr) {
-        LOG_MESSAGE("[Collider] Removing collider RIGIDBODY");
+        LOG_VERBOSE("[Collider] Removing collider RIGIDBODY");
         setCollisionMode(NONE);
         Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(body);
         body = nullptr;
@@ -86,7 +86,7 @@ void Collider::RemoveCollisionObject()
     }
 
     if (collisionMode == KINEMATIC && kinematicBody != nullptr) {
-        LOG_MESSAGE("[Collider] Removing collider KINEMATICBODY");
+        LOG_VERBOSE("[Collider] Removing collider KINEMATICBODY");
         setCollisionMode(NONE);
         Components::get()->Collisions()->getDynamicsWorld()->removeAction(characterController);
         Components::get()->Collisions()->getDynamicsWorld()->removeCollisionObject(kinematicBody);

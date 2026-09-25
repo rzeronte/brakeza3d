@@ -22,6 +22,7 @@ public:
     static bool isVertexInside(Vertex3D &v);
     static bool isAABBInFrustum(AABB3D *aabb);
     static bool isAABBVisibleInFrustum(AABB3D *aabb);
+    static bool isAABBVisibleInVP(AABB3D *aabb, const glm::mat4 &vp);
 };
 
 

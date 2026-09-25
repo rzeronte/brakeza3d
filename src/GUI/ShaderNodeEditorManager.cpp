@@ -1,6 +1,7 @@
 #include "../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Render/Image.h"
+#include "../../include/OpenGL/Base/ShaderBaseOpenGL.h"
 
 // Incluir todos los tipos de nodo
 #include "NodeTypes/UVCoordsNode.h"
@@ -1042,7 +1043,9 @@ void ShaderNodeEditorManager::RenderMesh(
     int vertexCount,
     const glm::mat4& model,
     const glm::mat4& view,
-    const glm::mat4& projection
+    const glm::mat4& projection,
+    GLuint indexBuffer,
+    GLsizei indexCount
 )
 {
     if (!m_ShaderProgram) return;
@@ -1111,7 +1114,7 @@ void ShaderNodeEditorManager::RenderMesh(
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
+    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, vertexCount);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

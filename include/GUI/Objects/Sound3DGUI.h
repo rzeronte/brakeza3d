@@ -64,7 +64,7 @@ public:
 
         // ── Status ─────────────────────────────────────────────────────────
         if (o->isPlaying)
-            ImGui::TextColored(ImVec4(0.3f,1.f,0.3f,1.f), "Playing  (ch %d)", o->channel);
+            ImGui::TextColored(ImVec4(0.3f,1.f,0.3f,1.f), "Playing");
         else
             ImGui::TextColored(ImVec4(0.6f,0.6f,0.6f,1.f), "Silent");
     }
@@ -72,15 +72,12 @@ public:
 private:
     static void reloadChunk(Sound3D* o)
     {
-        if (o->channel >= 0 && Mix_GetChunk(o->channel) == o->mixChunk)
-            Mix_HaltChannel(o->channel);
-        if (o->mixChunk) { Mix_FreeChunk(o->mixChunk); o->mixChunk = nullptr; }
-        o->channel   = -1;
-        o->isPlaying = false;
+        o->stopVoice();
+        if (o->bufferLoaded) { ma_audio_buffer_uninit(&o->buffer); o->bufferLoaded = false; }
+        if (o->pDecodedData) { ma_free(o->pDecodedData, nullptr); o->pDecodedData = nullptr; }
+
         if (!o->sourceFile.empty()) {
-            o->mixChunk = Mix_LoadWAV(o->sourceFile.c_str());
-            if (!o->mixChunk)
-                LOG_ERROR("[Sound3DGUI] Mix_LoadWAV failed: %s", Mix_GetError());
+            o->bufferLoaded = Sound3D::DecodeFile(o->sourceFile, o->buffer, o->pDecodedData);
         }
     }
 };

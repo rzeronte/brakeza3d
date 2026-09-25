@@ -35,6 +35,7 @@ uniform float alphaMax;
 uniform float positionNoise;
 uniform float velocityNoise;
 uniform float decelerationFactor;
+uniform float particleSizeScale;
 
 // Integer hash for GPU pseudo-random
 float hash(uint n) {
@@ -107,7 +108,7 @@ void main()
             float pz = (hash(ss + 2u) - 0.5) * positionNoise;
 
             // Random size
-            float sz = hash(ss + 3u) * 0.4 + 0.1;
+            float sz = (hash(ss + 3u) * 0.4 + 0.1) * particleSizeScale;
 
             particles[i].position = vec4(origin + vec3(px, py, pz), sz);
             particles[i].rotation = vec4(0.0);

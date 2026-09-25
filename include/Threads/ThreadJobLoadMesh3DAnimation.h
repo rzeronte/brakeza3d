@@ -4,6 +4,7 @@
 #include "ThreadJobBase.h"
 #include "../Brakeza.h"
 #include "../3D/Mesh3DAnimation.h"
+#include "../Cache/AnimationDataCache.h"
 #include <string>
 #include "../include/Serializers/Mesh3DSerializer.h"
 #include "../include/Serializers/Mesh3DAnimationSerializer.h"
@@ -29,14 +30,20 @@ public:
             return;
         }
 
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyGeometry");
-        Mesh3DAnimationSerializer::ApplyGeometryAnimationFromFile(mesh, json);
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyShadersFileRead");
-        Mesh3DSerializer::ApplyShadersFileRead(mesh, json);
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyShadersBackground");
-        Mesh3DSerializer::ApplyShadersBackground(mesh);
+        // Si otro worker está parseando este mismo FBX, no esperarle aquí dormido (ocuparía un
+        // worker ~4 s y bloquearía la carga de otros ficheros): aplazar y dejar que el ThreadPool
+        // reencole el job. Cuando vuelva, el fichero ya estará en AnimationDataCache (HIT).
+        // Si try_lock acierta se suelta enseguida: AssimpLoadAnimation lo vuelve a tomar.
+        auto keyLoadMutex = animationDataCache.getKeyLoadMutex(Mesh3DAnimationSerializer::ExtractFileModelPath(json));
+        if (!keyLoadMutex->try_lock()) {
+            deferred = true;
+            return;
+        }
+        keyLoadMutex->unlock();
 
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] Process END");
+        Mesh3DAnimationSerializer::ApplyGeometryAnimationFromFile(mesh, json);
+        Mesh3DSerializer::ApplyShadersFileRead(mesh, json);
+        Mesh3DSerializer::ApplyShadersBackground(mesh);
     }
 
     void fnCallback()
@@ -46,20 +53,13 @@ public:
             return;
         }
 
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step FillOGLBuffers");
         mesh->FillOGLBuffers();
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step FillAnimationBoneDataOGLBuffers");
         mesh->FillAnimationBoneDataOGLBuffers();
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step UpdateBonesFinalTransformations");
         mesh->UpdateBonesFinalTransformations(0);
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyCustomShadersMainThread");
         Mesh3DSerializer::ApplyCustomShadersMainThread(mesh);
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step ApplyCollider");
         Mesh3DSerializer::ApplyCollider(mesh, json);
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] step AddObject3D");
         Brakeza::get()->AddObject3D(mesh, mesh->getName());
 
-        LOG_MESSAGE("[ThreadJobLoadMesh3DAnimation] Callback END");
     }
 
     ~ThreadJobLoadMesh3DAnimation() {

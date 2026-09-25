@@ -33,6 +33,7 @@
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/Loaders/ProjectLoader.h"
 #include "../../../include/Loaders/SceneLoader.h"
+#include "../../../include/Loaders/FBXLightLoader.h"
 
 
 void GUIAddonMenu::Draw(GUIManager *gui)
@@ -176,6 +177,17 @@ void GUIAddonMenu::MenuAddObject()
     if (ImGui::MenuItem("SpotLight")) {
         LightSpotSerializer().MenuLoad("");
     }
+    ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT), GUIType::Sizes::ICON_SIZE_MENUS);
+    ImGui::SameLine();
+    if (ImGui::BeginMenu("From FBX file")) {
+        DrawItemsToLoad(setup->LIGHTS_FOLDER, Config::get()->MESH3D_EXT, IconObject::LIGHT_POINT, [](const std::string& path) {
+            auto lights = FBXLightLoader::LoadLightsFromFile(path);
+            for (auto* light : lights) {
+                Brakeza::get()->AddObject3D(light, light->getName());
+            }
+        });
+        ImGui::EndMenu();
+    }
     ImGui::SeparatorText("Emitters");
     ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
@@ -210,6 +222,16 @@ void GUIAddonMenu::MenuAddObject()
 void GUIAddonMenu::MenuVideo()
 {
     auto setup = Config::get();
+
+    ImGui::SeparatorText("Display");
+    ImGui::MenuItem("Fullscreen", "Alt+Enter", &setup->FULLSCREEN);
+    if (ImGui::IsItemEdited()) {
+        Components::get()->Window()->ToggleFullScreen();
+    }
+    ImGui::MenuItem("Exclusive fullscreen (bypass DWM)", nullptr, &setup->EXCLUSIVE_FULLSCREEN, setup->FULLSCREEN);
+    if (ImGui::IsItemEdited() && setup->FULLSCREEN) {
+        Components::get()->Window()->ToggleFullScreen();
+    }
 
     ImGui::SeparatorText("Framerate");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_VSYNC), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -390,6 +412,28 @@ void GUIAddonMenu::MenuIllumination()
         ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SUN_SHADOWS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Enable Sun shadows", nullptr, &setup->SHADOW_MAPPING_ENABLE_DIRECTIONAL_LIGHT);
     }
+
+    ImGui::SeparatorText("Scene lights file (FBX)");
+    ImGui::Text("Current: %s", SceneLoader::currentLightsFile.empty() ? "(none)" : SceneLoader::currentLightsFile.c_str());
+
+    ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    if (ImGui::BeginMenu("Assign from file...")) {
+        // MODELS_FOLDER (no LIGHTS_FOLDER) a propósito: los FBX de interiores llevan malla+luces
+        // en el MISMO fichero (assets/models/RTS/INTERIORS/<nombre>/), no una copia separada en
+        // assets/models/lights/ -- DrawItemsToLoad ya baja por subcarpetas, así que desde aquí se
+        // llega a cualquier FBX bajo assets/models/ sin duplicar ficheros.
+        DrawItemsToLoad(setup->MODELS_FOLDER, Config::get()->MESH3D_EXT, IconObject::LIGHT_POINT, [](const std::string& path) {
+            SceneLoader::ReimportLightsFile(path);
+        });
+        ImGui::EndMenu();
+    }
+
+    if (!SceneLoader::currentLightsFile.empty()) {
+        ImGui::SameLine();
+        if (ImGui::Button("Reimport")) SceneLoader::ReimportLightsFile(SceneLoader::currentLightsFile);
+        ImGui::SameLine();
+        if (ImGui::Button("Clear association")) SceneLoader::ReimportLightsFile("");
+    }
 }
 
 void GUIAddonMenu::MenuCamera()
@@ -514,23 +558,23 @@ void GUIAddonMenu::MenuSound()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_ENABLE_SYSTEM), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Global Sound System", nullptr, &setup->ENABLE_SOUND)) {
         if (!setup->ENABLE_SOUND) {
-            Mix_Volume(Config::SoundChannels::SND_GLOBAL, 0);
-            Mix_VolumeMusic(0);
+            Components::get()->Sound()->setSoundsVolume(0);
+            Components::get()->Sound()->setMusicVolume(0);
         } else {
-            Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_VOLUME_FX));
-            Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
+            Components::get()->Sound()->setSoundsVolume(static_cast<int>(setup->SOUND_VOLUME_FX));
+            Components::get()->Sound()->setMusicVolume(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
         }
     }
     ImGui::Separator();
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_MUSIC_VOLUME), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
-    if (ImGui::IsItemEdited()) { Mix_VolumeMusic(static_cast<int>(setup->SOUND_VOLUME_MUSIC)); }
+    if (ImGui::IsItemEdited()) { Components::get()->Sound()->setMusicVolume(static_cast<int>(setup->SOUND_VOLUME_MUSIC)); }
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_GLOBAL_CHANNEL_VOLUME), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_FX, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
     if (ImGui::IsItemEdited()) {
-        Mix_Volume(Config::SoundChannels::SND_GLOBAL, static_cast<int>(setup->SOUND_VOLUME_FX));
+        Components::get()->Sound()->setSoundsVolume(static_cast<int>(setup->SOUND_VOLUME_FX));
     }
 }
 
@@ -542,6 +586,8 @@ void GUIAddonMenu::MenuLogging()
     ImGui::MenuItem("Output to Console", nullptr, &setup->ENABLE_LOGGING_CONSOLE);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Output to STD", nullptr, &setup->ENABLE_LOGGING_STD);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    ImGui::MenuItem("Verbose (per-object)", nullptr, &setup->ENABLE_LOGGING_VERBOSE);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Observer AI", nullptr, &setup->OBSERVER_AI_ENABLED);
     ImGui::Separator();

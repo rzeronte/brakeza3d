@@ -4,6 +4,23 @@
 #include "../../include/Cache/ImageCache.h"
 #include "../../include/Misc/Logging.h"
 
+ModelData::~ModelData()
+{
+    for (auto& m : meshes) {
+        if (glIsBuffer(m.vertexBuffer))
+            glDeleteBuffers(1, &m.vertexBuffer);
+
+        if (glIsBuffer(m.uvBuffer))
+            glDeleteBuffers(1, &m.uvBuffer);
+
+        if (glIsBuffer(m.normalBuffer))
+            glDeleteBuffers(1, &m.normalBuffer);
+
+        if (glIsBuffer(m.indexBuffer))
+            glDeleteBuffers(1, &m.indexBuffer);
+    }
+}
+
 void ModelData::cloneInto(Mesh3D& target) const
 {
     LOG_MESSAGE("[ModelData] Cloning '%s' into Mesh3D '%s'", sourceFile.c_str(), target.getName().c_str());

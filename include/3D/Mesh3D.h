@@ -4,6 +4,8 @@
 
 #include <mutex>
 #include <atomic>
+#include <algorithm>
+#include <memory>
 #include <string>
 #include <assimp/scene.h>
 #include <glm/vec3.hpp>
@@ -22,6 +24,7 @@
 #include <BulletCollision/CollisionShapes/btCompoundShape.h>
 
 struct MaterialEntryData;
+struct ModelData;
 
 struct Mesh3DData {
     std::vector<Triangle *> modelTriangles;
@@ -31,12 +34,18 @@ struct Mesh3DData {
     std::vector<glm::vec3> normals;
     std::vector<glm::vec2> uvs;
 
-    GLuint vertexBuffer;
-    GLuint feedbackBuffer;
+    GLuint vertexBuffer = 0;
+    GLuint feedbackBuffer = 0;
     GLuint feedbackNormalBuffer = 0;
-    GLuint uvBuffer;
-    GLuint normalBuffer;
-    GLuint vertexBoneDataBuffer;
+    GLuint uvBuffer = 0;
+    GLuint normalBuffer = 0;
+    GLuint vertexBoneDataBuffer = 0;
+
+    // Fase 2.2: EBO para el pipeline estatico (Mesh3D sin transform feedback). indexBuffer==0
+    // significa "sin EBO" -- se sigue dibujando con glDrawArrays (mallas animadas, o instancias
+    // sin ModelData compartido que no hayan pasado por el nuevo camino de FillOGLBuffers).
+    GLuint indexBuffer = 0;
+    GLsizei indexCount = 0;
 
     int materialIndex;
 
@@ -63,6 +72,20 @@ protected:
     Mesh3DShaderChain* shaderChain = nullptr;
     mutable GLuint chainTempTexture = 0;
 
+    // Mantiene vivo el ModelData cacheado (y sus buffers de GPU compartidos, Fase 2.1 del
+    // plan de rendimiento) mientras esta instancia exista, independientemente de si
+    // ModelDataCache sigue reteniendolo o no (p.ej. tras pulsar "Clear Meshes" con la
+    // escena cargada). Vacio si la carga fallo o la instancia no vino de un fichero cacheado.
+    std::shared_ptr<ModelData> sharedModel;
+
+    // true cuando vertexBuffer/uvBuffer/normalBuffer (y, en Mesh3DAnimation, tambien
+    // vertexBoneDataBuffer) son propiedad de un recurso compartido (ModelData o
+    // AnimationData) y NO deben liberarse en ~Mesh3D() -- lo hace el destructor de ese
+    // recurso compartido cuando desaparece la ultima instancia que lo usa. Mesh3D la pone
+    // a true junto con sharedModel; Mesh3DAnimation la pone a true junto con su propio
+    // sharedAnimModel (Mesh3D no necesita conocer el tipo AnimationData).
+    bool sharedStaticGeometry = false;
+
     AABB3D aabb;
     Octree *octree = nullptr;
     Grid3D *grid = nullptr;
@@ -72,6 +95,11 @@ protected:
     bool sharedTextures = false;
     bool renderDefaultPipeline = true;
     bool frustumCullSubmeshes = false;
+
+    // Emisión sobre el diffuse (desactivada por defecto): el objeto se ve con el color de su
+    // textura sin depender de las luces. intensity 0..1 = mezcla entre iluminado y diffuse puro.
+    bool emissionEnabled = false;
+    float emissionIntensity = 1.0f;
 public:
 
 
@@ -146,6 +174,10 @@ public:
     [[nodiscard]] bool isRenderPipelineDefault() const                            { return renderDefaultPipeline; }
     [[nodiscard]] bool isFrustumCullSubmeshes() const                             { return frustumCullSubmeshes; }
     void setFrustumCullSubmeshes(bool value)                                      { frustumCullSubmeshes = value; }
+    [[nodiscard]] bool isEmissionEnabled() const                                  { return emissionEnabled; }
+    void setEmissionEnabled(bool value)                                           { emissionEnabled = value; }
+    [[nodiscard]] float getEmissionIntensity() const                              { return emissionIntensity; }
+    void setEmissionIntensity(float value)                                        { emissionIntensity = std::clamp(value, 0.0f, 1.0f); }
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;

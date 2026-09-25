@@ -36,7 +36,8 @@ class ShaderOGLOutline : public ShaderBaseOpenGL, public ShaderBaseOpenGLQuad
     void stencilOutlineMesh(
         GLuint vertexBuf, GLuint uvBuf, GLuint normalBuf, int count,
         const glm::mat4 &model, const Color &c, float thickness, bool clearFirst,
-        GLuint destFBO, const glm::vec3 &submeshCenter
+        GLuint destFBO, const glm::vec3 &submeshCenter,
+        GLuint indexBuffer = 0, GLsizei indexCount = 0
     );
     void blitToFBO(GLuint destFBO);
 

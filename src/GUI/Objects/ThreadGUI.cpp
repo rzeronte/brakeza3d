@@ -225,6 +225,18 @@ void ThreadGUI::MenuWorker(ThreadPool &pool, std::string title)
     }
     ImGui::SameLine();
 
+    // state.* solo se lee del pool una vez (arriba, "if (!state.initialized)") y luego vive como
+    // copia local editada por los sliders -- si algo cambia el pool por otra vía (p.ej. un
+    // proyecto RTS con su propio bloque "thread_pools" cargado DESPUÉS de que este panel ya
+    // inicializara su estado), los sliders se quedan mostrando el valor viejo indefinidamente,
+    // dando la falsa impresión de que el cambio no se aplicó. "Refresh" solo relee del pool
+    // (mismo truco que ya usa "Apply##resize" de arriba), sin tocar ningún valor real.
+    if (ImGui::Button("Refresh", ImVec2(90, 0)))
+        state.initialized = false;
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Re-read the values below from the pool (does not change anything).\nUse this after loading a project whose config may have changed these values.");
+    ImGui::SameLine();
+
     bool busy = (active + (int)pending) > 0;
     if (!busy) ImGui::BeginDisabled();
     if (ImGui::Button("Wait for All", ImVec2(140, 0)))

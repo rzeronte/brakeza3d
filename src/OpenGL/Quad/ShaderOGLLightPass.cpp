@@ -20,6 +20,8 @@ void ShaderOGLLightPass::LoadUniforms()
 {
     gPositionUniform = glGetUniformLocation(programID, "gPosition");
     gNormalUniform = glGetUniformLocation(programID, "gNormal");
+    gEmissionUniform = glGetUniformLocation(programID, "gEmission");
+    hasEmissionUniform = glGetUniformLocation(programID, "hasEmission");
     viewPosUniform = glGetUniformLocation(programID, "viewPos");
 
     numPointLightsUniform = glGetUniformLocation(programID, "numPointLights");
@@ -73,7 +75,9 @@ void ShaderOGLLightPass::render(
     int numSpotLights,
     GLuint spotLightsShadowMapTexturesArray,
     int numSpotLightsShadowMaps,
-    GLuint fbo
+    GLuint fbo,
+    GLuint gEmission,
+    bool hasEmission
 ) {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->ChangeOpenGLProgram(programID);
@@ -91,6 +95,8 @@ void ShaderOGLLightPass::render(
     setTextureUniform(materialTextureSpecularUniform, gAlbedoSpec, 3);
     setTextureArrayUniform(shadowMapArrayUniform, spotLightsShadowMapTexturesArray, 4);
     setTextureUniform(dirLightShadowMapTextureUniform, dirLightShadowMapTexture, 5);
+    setTextureUniform(gEmissionUniform, gEmission, 6);
+    setBoolUniform(hasEmissionUniform, hasEmission);
 
     setIntUniform(numSpotLightShadowMapsUniform, numSpotLightsShadowMaps);
     setBoolUniform(debugShadowMappingUniform, (Config::get()->SHADOW_MAPPING_DEBUG && Config::get()->ENABLE_SHADOW_MAPPING));

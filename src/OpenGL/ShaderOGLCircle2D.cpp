@@ -5,6 +5,7 @@
 #include "../../include/OpenGL/ShaderOGLCircle2D.h"
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLCircle2D::ShaderOGLCircle2D()
 :
@@ -93,6 +94,7 @@ void ShaderOGLCircle2D::renderCircle2D(
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
     glBindVertexArray(0);
 
     glDisable(GL_BLEND);

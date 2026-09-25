@@ -26,6 +26,7 @@ class ShaderOGLComputeParticles : public ShaderBaseCompute {
     GLuint uPositionNoise      = 0;
     GLuint uVelocityNoise      = 0;
     GLuint uDecelerationFactor = 0;
+    GLuint uParticleSizeScale  = 0;
 public:
     ShaderOGLComputeParticles();
     void LoadUniforms() override;

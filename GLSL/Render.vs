@@ -8,10 +8,12 @@ out vec3 Normal;
 out vec2 TexCoords;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
 uniform vec3 drawOffset;
+
+layout (std140) uniform CameraBlock {
+    mat4 projection;
+    mat4 view;
+};
 
 void main()
 {

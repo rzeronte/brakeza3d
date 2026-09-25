@@ -1,6 +1,8 @@
 #include "../../include/OpenGL/ShaderOGLComputeParticles.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/Render/Profiler.h"
+#include "../../include/Components/Components.h"
 
 ShaderOGLComputeParticles::ShaderOGLComputeParticles()
     : ShaderBaseCompute(Config::get()->SHADERS_FOLDER + "ParticleGPU.cs")
@@ -25,6 +27,7 @@ void ShaderOGLComputeParticles::LoadUniforms()
     uPositionNoise      = glGetUniformLocation(programID, "positionNoise");
     uVelocityNoise      = glGetUniformLocation(programID, "velocityNoise");
     uDecelerationFactor = glGetUniformLocation(programID, "decelerationFactor");
+    uParticleSizeScale  = glGetUniformLocation(programID, "particleSizeScale");
 }
 
 void ShaderOGLComputeParticles::simulate(
@@ -43,6 +46,8 @@ void ShaderOGLComputeParticles::simulate(
     }
 
     glUseProgram(programID);
+    Profiler::get()->incrementProgramChanges();
+    Components::get()->Render()->setLastProgramUsed(programID);
 
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
 
@@ -62,6 +67,7 @@ void ShaderOGLComputeParticles::simulate(
     setFloatUniform(uPositionNoise,      static_cast<float>(ctx.POSITION_NOISE));
     setFloatUniform(uVelocityNoise,      static_cast<float>(ctx.VELOCITY_NOISE));
     setFloatUniform(uDecelerationFactor, ctx.DECELERATION_FACTOR);
+    setFloatUniform(uParticleSizeScale,  ctx.PARTICLE_SIZE_SCALE);
 
     dispatch(NUM_GPU_PARTICLES / GPU_PARTICLES_WORK_GROUP);
 

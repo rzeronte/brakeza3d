@@ -11,15 +11,17 @@ class ThreadJobPathfinding : public ThreadJobBase
     Grid3D*     grid;
     std::string unitName;
     int gx1, gz1, gx2, gz2;
+    int requestGen;
 
     std::string encodedPath;
 
 public:
-    ThreadJobPathfinding(Grid3D* grid, const std::string& unitName, int gx1, int gz1, int gx2, int gz2)
+    ThreadJobPathfinding(Grid3D* grid, const std::string& unitName, int gx1, int gz1, int gx2, int gz2, int requestGen)
     :
         grid(grid),
         unitName(unitName),
-        gx1(gx1), gz1(gz1), gx2(gx2), gz2(gz2)
+        gx1(gx1), gz1(gz1), gx2(gx2), gz2(gz2),
+        requestGen(requestGen)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -58,6 +60,22 @@ public:
     {
         auto obj = Brakeza::get()->getObjectByName(unitName);
         if (obj == nullptr) return;
+
+        // Descartar si una petición MÁS RECIENTE para esta misma unidad ya se emitió (p.ej.
+        // pursueTarget() vuelve a pedir camino cada PURSUE_REPATH_INTERVAL mientras esta
+        // sigue en cola). Sin esto, si dos jobs quedan en vuelo para el mismo nombre y el más
+        // antiguo termina DESPUÉS del más nuevo, su ruta obsoleta (calculada desde una posición
+        // vieja de la unidad) sobrescribe pathWaypoints y la unidad "vuelve" a repetir el
+        // camino desde donde estaba hace varios segundos.
+        // pathReqGen se escribe desde Lua (Lua 5.2: todo número es double, nunca int),
+        // así que is<int>() es casi siempre false aquí — hay que aceptar también double.
+        sol::object currentGenObj = obj->getLocalScriptVar("pathReqGen");
+        if (currentGenObj.get_type() == sol::type::number) {
+            int currentGen = static_cast<int>(currentGenObj.as<double>());
+            if (currentGen != requestGen) {
+                return;
+            }
+        }
 
         auto& lua = Components::get()->Scripting()->getLua();
         if (encodedPath.empty()) {

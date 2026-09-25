@@ -1,5 +1,6 @@
 #include "../../include/OpenGL/ShaderOGLPoints.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLPoints::ShaderOGLPoints()
 :
@@ -45,12 +46,14 @@ void ShaderOGLPoints::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fb
             useFeedbackBuffer ? m.feedbackBuffer : m.vertexBuffer,
             m.vertices.size(),
             Color::green(),
-            fbo
+            fbo,
+            useFeedbackBuffer ? 0 : m.indexBuffer,
+            useFeedbackBuffer ? 0 : m.indexCount
         );
     }
 }
 
-void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int numberPoints, Color c, GLuint fbo) const
+void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int numberPoints, Color c, GLuint fbo, GLuint indexBuffer, GLsizei indexCount) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
 
@@ -72,7 +75,7 @@ void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int num
 
     setVAOAttributes(vertexBuffer);
 
-    glDrawArrays(GL_POINTS, 0, numberPoints);
+    DrawMeshGeometry(GL_POINTS, indexBuffer, indexCount, numberPoints);
 
     glDisableVertexAttribArray(0);
 

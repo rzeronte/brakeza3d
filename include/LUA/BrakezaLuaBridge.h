@@ -6,6 +6,7 @@
 #define BRAKEZA3D_LUAINTEGRATION_H
 
 #include "ObjectFactory.h"
+#include <iostream>
 #include "../../sol/sol.hpp"
 #include "../Cache/ImageCache.h"
 #include "../3D/Vertex3D.h"
@@ -86,17 +87,71 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<Object3D>(
         "Object3D",
         "addToPosition", &Object3D::AddToPosition,
-        "getPosition", static_cast<Vertex3D&(Object3D::*)()>(&Object3D::getPosition),
-        "setPosition", &Object3D::setPosition,
-        "setRotation", &Object3D::setRotation,
+        // getPosition/setPosition/setRotation blindados con isValidObjectPointer() por el mismo
+        // motivo que setBelongToScene/setEnabled/etc. (ver comentario grande más abajo): un
+        // script Lua que cachea un Object3D* (patrón eGetObj de PoliceAI.lua/FactionAI.lua) y lo
+        // sigue leyendo/escribiendo cada frame en un bucle de patrulla/movimiento expone MUCHO
+        // más una ventana de puntero colgante que una llamada puntual -- getPosition() se
+        // convierte de referencia a valor (Vertex3D por copia) para poder devolver un Vertex3D()
+        // por defecto sin desreferenciar nada cuando el puntero es inválido.
+        "getPosition", [](Object3D* obj) -> Vertex3D {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] getPosition() llamado sobre un objeto invalido (Lua)"); return Vertex3D(); }
+            return obj->getPosition();
+        },
+        "setPosition", [](Object3D* obj, const Vertex3D& p) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setPosition() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setPosition(p);
+        },
+        "setRotation", [](Object3D* obj, const M3& r) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setRotation() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setRotation(r);
+        },
         "getTypeObject", &Object3D::getTypeObject,
         "getName", &Object3D::getName,
         "getId", &Object3D::getId,
         "getRotation", &Object3D::getRotation,
-        "setBelongToScene", &Object3D::setBelongToScene,
-        "setEnabled", &Object3D::setEnabled,
-        "setRemoved", &Object3D::setRemoved,
-        "isRemoved", &Object3D::isRemoved,
+        // setBelongToScene/setEnabled/setRemoved/setSelectable/setAlphaEnabled/setEnableLights
+        // van todos via lambda con Object3D* + Brakeza::isValidObjectPointer(), NO puntero a
+        // miembro directo (&Object3D::metodo). Motivo: el binding por puntero a miembro no
+        // valida el "this" en absoluto -- y un simple obj==nullptr NO basta, porque un script
+        // Lua puede guardar un Object3D* que sobrevive a un reinicio de partida (removeAllObjects
+        // + delete diferido): el puntero NO es null, apunta a memoria ya liberada (y quiza
+        // reutilizada por otro objeto), así que == nullptr no lo detecta y ->isRemoved() sobre
+        // el mismo puntero desreferencia esa memoria -> el propio crash que se intenta evitar.
+        // isValidObjectPointer() solo compara el VALOR del puntero contra el registro de
+        // objetos vivos (Object3D::Object3D()/~Object3D()), nunca lo desreferencia -- es la
+        // UNICA comprobacion segura para un puntero que puede ser colgante. Ademas, TODOS los
+        // metodos con la firma exacta void(Object3D::*)(bool) comparten la misma instanciacion
+        // de plantilla de sol2 (sol::member_function_wrapper<void (Object3D::*)(bool),...>) y
+        // el compilador los pliega en el mismo bloque de codigo (identical code folding) --
+        // adr2line solo puede apuntar a UNO de ellos, así que hay que blindarlos TODOS o el
+        // crash simplemente reaparece en el siguiente metodo sin blindar. Confirmado: probar
+        // Object3D& (esperando que sol2 rechazase un self nulo en la conversion a referencia)
+        // NO funciona para el "self" implicito de una llamada a metodo (obj:metodo()) -- sol2
+        // no aplica esa validacion ahi. Solo un puntero + chequeo propio es fiable.
+        "setBelongToScene", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setBelongToScene() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setBelongToScene(v);
+        },
+        "setEnabled", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setEnabled() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setEnabled(v);
+        },
+        "setRemoved", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setRemoved() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setRemoved(v);
+        },
+        // isRemoved/getLocalScriptVar/setLocalScriptVar iban por puntero a miembro directo (sin
+        // pasar por isValidObjectPointer()) -- mismo problema que setBelongToScene/setEnabled/etc
+        // de arriba: un Object3D* colgante (sobrevive a un reinicio, memoria liberada y quizá
+        // reutilizada) NO es nullptr, así que ->isRemoved()/->getLocalScriptVar() desreferencian
+        // esa memoria igualmente. Crash real reproducido: Object3D::getLocalScriptVar (Object3D.h
+        // :123) leyendo luaEnvironment ya corrupto -> sol::basic_reference::push() -> access
+        // violation en lua_rawgeti (ver debug-native-crashes.md, técnica addr2line + slide).
+        "isRemoved", [](Object3D* obj) -> bool {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) return true;
+            return obj->isRemoved();
+        },
         "setName", &Object3D::setName,
         "getScale", &Object3D::getScale,
         "setScale", &Object3D::setScale,
@@ -107,9 +162,15 @@ inline void LUAIntegration(sol::state &lua)
         "AxisForward", &Object3D::forward,
         "AxisUp", &Object3D::up,
         "AxisRight", &Object3D::right,
-        "RemoveCollisionObject", &Object3D::RemoveCollisionObject,
+        "RemoveCollisionObject", [](Object3D* obj) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] RemoveCollisionObject() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->RemoveCollisionObject();
+        },
         "SleepCollider", &Object3D::SleepCollider,
-        "setCollisionsEnabled", &Object3D::setCollisionsEnabled,
+        "setCollisionsEnabled", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setCollisionsEnabled() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setCollisionsEnabled(v);
+        },
         "setCollisionGroupMask", [](Object3D* o, int group, int mask) { o->setCollisionGroupMask(group, mask); },
         "DisableSimulationCollider", &Object3D::DisableSimulationCollider,
         "EnableSimulationCollider", &Object3D::EnableSimulationCollider,
@@ -119,7 +180,10 @@ inline void LUAIntegration(sol::state &lua)
         "setSimpleShapeSize", [](Object3D* o, const Vertex3D& size) { o->setSimpleShapeSize(size); },
         "setCapsuleColliderSize", &Object3D::setCapsuleColliderSize,
         "moveCollider", &Object3D::moveCollider,
-        "isCollisionsEnabled", &Object3D::isCollisionsEnabled,
+        "isCollisionsEnabled", [](Object3D* obj) -> bool {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] isCollisionsEnabled() llamado sobre un objeto invalido (Lua)"); return false; }
+            return obj->isCollisionsEnabled();
+        },
         "setDrawOffset", &Object3D::setDrawOffset,
         "setupGhostCollider", &Object3D::SetupGhostCollider,
         "SetupRigidBodyCollider", &Object3D::SetupRigidBodyCollider,
@@ -143,10 +207,19 @@ inline void LUAIntegration(sol::state &lua)
         "setWalkingDirection", &Object3D::setWalkingDirection,
         "Jump", &Object3D::Jump,
         "onGround", &Object3D::onGround,
-        "getLocalScriptVar",  &Object3D::getLocalScriptVar,
-        "setLocalScriptVar",  &Object3D::setLocalScriptVar,
+        "getLocalScriptVar",  [](Object3D* obj, const char *varName) -> sol::object {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] getLocalScriptVar() llamado sobre un objeto invalido (Lua)"); return sol::lua_nil; }
+            return obj->getLocalScriptVar(varName);
+        },
+        "setLocalScriptVar",  [](Object3D* obj, const char *varName, sol::object value) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setLocalScriptVar() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setLocalScriptVar(varName, value);
+        },
         "isSelectable",       &Object3D::isSelectable,
-        "setSelectable",      &Object3D::setSelectable,
+        "setSelectable", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setSelectable() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setSelectable(v);
+        },
         "setHighlight",       &Object3D::setHighlight,
         "clearHighlight",     &Object3D::clearHighlight,
         "AttachScript", &Object3D::AttachScript,
@@ -168,9 +241,15 @@ inline void LUAIntegration(sol::state &lua)
         "getAlpha", &Object3D::getAlpha,
         "setAlpha", &Object3D::setAlpha,
         "isAlphaEnabled", &Object3D::isAlphaEnabled,
-        "setAlphaEnabled", &Object3D::setAlphaEnabled,
+        "setAlphaEnabled", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setAlphaEnabled() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setAlphaEnabled(v);
+        },
         "isEnableLights", &Object3D::isEnableLights,
-        "setEnableLights", &Object3D::setEnableLights,
+        "setEnableLights", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setEnableLights() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setEnableLights(v);
+        },
         "isEnabled", &Object3D::isEnabled,
         "setCcdMotionThreshold", &Object3D::setCcdMotionThreshold,
         "setCcdSweptSphereRadius", &Object3D::setCcdSweptSphereRadius,
@@ -218,19 +297,20 @@ inline void LUAIntegration(sol::state &lua)
     sol::base_classes, sol::bases<Component>(),
         "AddSound", &ComponentSound::AddSound,
         "AddMusic", &ComponentSound::AddMusic,
-        "setMusicVolume", [](ComponentSound*, int v) { ComponentSound::setMusicVolume(v); },
-        "setSoundsVolume", [](ComponentSound*, int v) { ComponentSound::setSoundsVolume(v); },
+        "setMusicVolume", &ComponentSound::setMusicVolume,
+        "setSoundsVolume", &ComponentSound::setSoundsVolume,
         "setAmbienceVolume", [](ComponentSound*, int percent) { Sound3D::ambienceVolumeScale = percent / 100.0f; },
         "PlaySound", &ComponentSound::PlaySound,
         "PlayMusic", &ComponentSound::PlayMusic,
-        "StopMusic", [](ComponentSound*) { ComponentSound::StopMusic(); },
-        "PauseMusic", [](ComponentSound*) { ComponentSound::PauseMusic(); },
-        "ResumeMusic", [](ComponentSound*) { ComponentSound::ResumeMusic(); },
-        "isMusicPaused", [](ComponentSound*) { return ComponentSound::isMusicPaused(); },
-        "StopChannel", [](ComponentSound*, int channel) { ComponentSound::StopChannel(channel); },
+        "StopMusic", &ComponentSound::StopMusic,
+        "PauseMusic", &ComponentSound::PauseMusic,
+        "ResumeMusic", &ComponentSound::ResumeMusic,
+        "isMusicPaused", &ComponentSound::isMusicPaused,
+        "StopChannel", &ComponentSound::StopChannel,
         "getSoundDuration", &ComponentSound::getSoundDuration,
         "LoadSoundsFromFile", &ComponentSound::LoadSoundsFromFile,
         "setChannelFrequency", &ComponentSound::setChannelFrequency,
+        "setChannelPitch", &ComponentSound::setChannelPitch,
         "setChannelVolume", &ComponentSound::setChannelVolume,
         "setChannelPosition", &ComponentSound::setChannelPosition,
         "isChannelPlaying", &ComponentSound::isChannelPlaying,
@@ -278,6 +358,13 @@ inline void LUAIntegration(sol::state &lua)
         "DrawImage2D",    &ComponentRender::DrawImage2D,
         "DrawImage2DToFB", &ComponentRender::DrawImage2DToFB,
         "DrawImage2DFromImage", &ComponentRender::DrawImage2DFromImage,
+        // Fuerza la carga+subida a GPU de una imagen sin dibujarla, para "calentar" el cache
+        // (ImageCache::getOrLoad es síncrono -- ver ComponentRender::getOrLoadImage) ANTES de que
+        // haga falta mostrarla de golpe (p.ej. fondos de pantalla de carga: precargarlos en el
+        // menú principal evita el tirón la primera vez que cada uno se dibuja de verdad).
+        "PreloadImage2D", [](ComponentRender* r, const std::string& path) {
+            r->getOrLoadImage(path);
+        },
         "setGlobalIlluminationDirection", &ComponentRender::setGlobalIlluminationDirection,
         "setGlobalIlluminationAmbient", &ComponentRender::setGlobalIlluminationAmbient,
         "setGlobalIlluminationDiffuse", &ComponentRender::setGlobalIlluminationDiffuse,
@@ -326,7 +413,13 @@ inline void LUAIntegration(sol::state &lua)
         "clearOutlineBatch",       &ComponentRender::clearOutlineBatch,
         "drawOutlineSubmeshBatch", &ComponentRender::drawOutlineSubmeshBatch,
         "flushOutlines",           &ComponentRender::flushOutlines,
-        "getSubmeshCenter",        &ComponentRender::getSubmeshCenter,
+        // getSubmeshCenter recibe un Object3D* desde Lua igual que los 6 setters de arriba --
+        // mismo riesgo de puntero colgante tras un reinicio de partida, mismo fix:
+        // isValidObjectPointer() en vez de (solo) obj==nullptr.
+        "getSubmeshCenter", [](ComponentRender& self, Object3D* obj, const std::string& submeshName) -> Vertex3D {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) return Vertex3D::zero();
+            return self.getSubmeshCenter(obj, submeshName);
+        },
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
         "getTextWriter",   &ComponentRender::getTextWriter,
@@ -475,17 +568,44 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<Brakeza>("Brakeza3D",
         "getDeltaTime", &Brakeza::getDeltaTime,
         "getDeltaTimeMicro",  &Brakeza::getDeltaTimeMicro,
+        "getDeltaTimeMS",  &Brakeza::getDeltaTimeMS,
         "getExecutionTime", &Brakeza::getExecutionTime,
         "uniqueObjectLabel", &Brakeza::UniqueObjectLabel,
         "Shutdown", &Brakeza::Shutdown,
+        "requestExit", [](Brakeza& b, sol::object codeArg) {
+            int code = (codeArg.valid() && codeArg.get_type() == sol::type::number) ? codeArg.as<int>() : 0;
+            b.requestExit(code);
+        },
+        // Lee un parámetro declarado por el proyecto en su sección "cli_params" (assets/projects/*.json),
+        // resuelto contra --set key=value. El motor no sabe qué significa 'key' -- solo tipo/default.
+        "getCliParam", [](Brakeza& b, const std::string& key) -> sol::object {
+            auto it = Config::get()->cliParams.find(key);
+            if (it == Config::get()->cliParams.end()) return sol::nil;
+            auto &lua = Components::get()->Scripting()->getLua();
+            switch (it->second.type) {
+                case Config::CliParamValue::Type::Bool:   return sol::make_object(lua, it->second.b);
+                case Config::CliParamValue::Type::Number: return sol::make_object(lua, it->second.n);
+                default:                                  return sol::make_object(lua, it->second.s);
+            }
+        },
         "AddObject3D",  &Brakeza::AddObject3D,
         "getObjectByName",    &Brakeza::getObjectByName,
         "getObjectById",      &Brakeza::getObjectById,
         "getObjectAtScreen",  &Brakeza::getObjectAtScreen,
         "removeAllObjects",      &Brakeza::removeAllObjects,
         "getPendingJobsCount",   &Brakeza::getPendingJobsCount,
+        "cancelPendingJobs",     &Brakeza::cancelPendingJobs,
         "getMesh3DAnimationByName", [](Brakeza* b, const std::string& name) -> Mesh3DAnimation* {
             return dynamic_cast<Mesh3DAnimation*>(b->getObjectByName(name));
+        },
+        // "this" en un script de objeto se guarda con tipo estático Object3D* (ver
+        // Object3D::ReloadScriptsEnvironment) -- Lua lo expone siempre con el usertype base, sin
+        // los métodos propios de la subclase real (p.ej. Image3DAnimation::setSize), aunque el
+        // objeto en memoria SÍ sea de ese tipo. Mismo patrón que getMesh3DAnimationByName: el
+        // dynamic_cast explícito aquí da a sol2 el tipo estático correcto para exponer la API
+        // completa de Image3DAnimation.
+        "getImage3DAnimationByName", [](Brakeza* b, const std::string& name) -> Image3DAnimation* {
+            return dynamic_cast<Image3DAnimation*>(b->getObjectByName(name));
         },
         "getProjectileByName", [](Brakeza* b, const std::string& name) -> Projectile* {
             return dynamic_cast<Projectile*>(b->getObjectByName(name));
@@ -578,15 +698,30 @@ inline void LUAIntegration(sol::state &lua)
             [](Grid3D& g, const std::string& path, int threshold)                   { g.fillGrid3DFromImage(path, threshold); },
             [](Grid3D& g, const std::string& path, int threshold, bool fz, bool fx) { g.fillGrid3DFromImage(path, threshold, fz, fx); }
         ),
+        "fillCostFromImage", sol::overload(
+            [](Grid3D& g, const std::string& path, int threshold, float cost)                   { g.fillCostFromImage(path, threshold, cost); },
+            [](Grid3D& g, const std::string& path, int threshold, float cost, bool fz, bool fx) { g.fillCostFromImage(path, threshold, cost, fz, fx); }
+        ),
+        // cells: tabla plana {x1, z1, x2, z2, ...} -- un único vector nuevo por llamada (copy-on-write).
+        "setCellsCost", [](Grid3D& g, const sol::table& cells, float cost) {
+            std::vector<std::pair<int,int>> list;
+            const size_t n = cells.size();
+            list.reserve(n / 2);
+            for (size_t i = 1; i + 1 <= n; i += 2) {
+                list.emplace_back(cells.get<int>(i), cells.get<int>(i + 1));
+            }
+            g.setCellsCost(list, cost);
+        },
+        "getCellCost", &Grid3D::getCellCost,
         "drawDebug", sol::overload(
             [](Grid3D& g)              { g.drawDebug(); },
             [](Grid3D& g, Color color) { g.drawDebug(color); }
         ),
         "isCellWalkable", &Grid3D::isCellWalkable,
         "snapToWalkable", &Grid3D::snapToWalkable,
-        "requestPath", [](Grid3D& g, const std::string& unitName, int gx1, int gz1, int gx2, int gz2) {
+        "requestPath", [](Grid3D& g, const std::string& unitName, int gx1, int gz1, int gx2, int gz2, int requestGen) {
             Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
-                std::make_shared<ThreadJobPathfinding>(&g, unitName, gx1, gz1, gx2, gz2)
+                std::make_shared<ThreadJobPathfinding>(&g, unitName, gx1, gz1, gx2, gz2, requestGen)
             );
         }
     );
@@ -601,6 +736,10 @@ inline void LUAIntegration(sol::state &lua)
         "getGrid3D", &Mesh3D::getGrid3D,
         "isRenderPipelineDefault", &Mesh3D::isRenderPipelineDefault,
         "setRenderPipelineDefault", &Mesh3D::setRenderPipelineDefault,
+        "isEmissionEnabled", &Mesh3D::isEmissionEnabled,
+        "setEmissionEnabled", &Mesh3D::setEmissionEnabled,
+        "getEmissionIntensity", &Mesh3D::getEmissionIntensity,
+        "setEmissionIntensity", &Mesh3D::setEmissionIntensity,
         "getMeshCount", [](Mesh3D& m) -> int {
             return (int)m.getModelTextures().size();
         },
@@ -608,6 +747,11 @@ inline void LUAIntegration(sol::state &lua)
             auto& textures = m.getModelTextures();
             if (meshIdx < 0 || meshIdx >= (int)textures.size()) return;
             textures[meshIdx] = imageCache.getOrLoad(FilePath::ImageFile(path));
+        },
+        "getDiffuseTextureFile", [](Mesh3D& m, int meshIdx) -> std::string {
+            auto& textures = m.getModelTextures();
+            if (meshIdx < 0 || meshIdx >= (int)textures.size() || textures[meshIdx] == nullptr) return "";
+            return std::string(textures[meshIdx]->getFileName().c_str());
         }
     );
 
@@ -657,7 +801,10 @@ inline void LUAIntegration(sol::state &lua)
     sol::base_classes, sol::bases<Object3D>(),
         "CreateAnimation", &Image3DAnimation::CreateAnimation,
         "setAnimation", &Image3DAnimation::setAnimation,
-        "UpdateBillboardSize", &Image3DAnimation::UpdateBillboardSize
+        "UpdateBillboardSize", &Image3DAnimation::UpdateBillboardSize,
+        "setTowardsCamera", &Image3DAnimation::setTowardsCamera,
+        "setSize", &Image3DAnimation::setSize,
+        "setRenderFB", &Image3DAnimation::setRenderFB
     );
 
     lua.new_usertype<Image3DAnimation360>("BillboardAnimation8Directions",
@@ -816,6 +963,7 @@ inline void LUAIntegration(sol::state &lua)
         "POSITION_NOISE", &ParticlesContext::POSITION_NOISE,
         "VELOCITY_NOISE", &ParticlesContext::VELOCITY_NOISE,
         "DECELERATION_FACTOR", &ParticlesContext::DECELERATION_FACTOR,
+        "PARTICLE_SIZE_SCALE", &ParticlesContext::PARTICLE_SIZE_SCALE,
         "defaultParticlesContext", &ParticlesContext::defaultParticlesContext
     );
 
@@ -842,7 +990,15 @@ inline void LUAIntegration(sol::state &lua)
         "removeAttachedLight", &ParticleEmitter::removeAttachedLight,
         "getAttachedLight", &ParticleEmitter::getAttachedLight,
         "getContext",      [](ParticleEmitter& e) -> ParticlesContext& { return e.getContextPointer(); },
-        "detach",          &ParticleEmitter::detach,
+        // detach iba por puntero a miembro directo (mismo problema que Object3D::isRemoved/
+        // getLocalScriptVar de arriba): un ParticleEmitter* colgante que sobrevive a un reinicio
+        // en una var de script Lua no es nullptr, ->detach() escribe igual sobre memoria ya
+        // liberada. Crash real reproducido: ParticleEmitter::detach (ParticleEmitter.cpp:97)
+        // escribiendo followTarget=nullptr sobre un puntero ya inválido.
+        "detach", [](ParticleEmitter* obj, float fadeTime) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[ParticleEmitter] detach() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->detach(fadeTime);
+        },
         "setFollowTarget", &ParticleEmitter::setFollowTarget,
         "getFollowTarget", &ParticleEmitter::getFollowTarget
     );

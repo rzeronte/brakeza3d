@@ -80,14 +80,17 @@ void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
     static bool initialized = false;
     if (!initialized) {
         // PRIMERO: Llenar todos los strings
-        for (const auto& [glslType, info] : GLSLTypeMapping) {
-            allGlslTypes.push_back(glslType);
-            allLabels.push_back(info.label);
+        {
+            std::lock_guard<std::mutex> lock(GLSLTypeMappingMutex);
+            for (const auto& [glslType, info] : GLSLTypeMapping) {
+                allGlslTypes.push_back(glslType);
+                allLabels.push_back(info.label);
 
-            if (info.type != ShaderOpenGLCustomDataType::DIFFUSE &&
-                info.type != ShaderOpenGLCustomDataType::SPECULAR) {
-                postprocessingGlslTypes.push_back(glslType);
-                postprocessingLabels.push_back(info.label);
+                if (info.type != ShaderOpenGLCustomDataType::DIFFUSE &&
+                    info.type != ShaderOpenGLCustomDataType::SPECULAR) {
+                    postprocessingGlslTypes.push_back(glslType);
+                    postprocessingLabels.push_back(info.label);
+                }
             }
         }
 
@@ -129,16 +132,19 @@ std::vector<std::string> ShadersGUI::GetDataTypeItems(EditableOpenShaderFile &fi
 {
     std::vector<std::string> items;
 
-    for (const auto& t : GLSLTypeMapping) {
-        if (file.getShader()->getType() == SHADER_POSTPROCESSING) {
-            auto typeEnum = t.second.type;
-            if (typeEnum == ShaderOpenGLCustomDataType::DIFFUSE ||
-                typeEnum == ShaderOpenGLCustomDataType::SPECULAR) {
-                continue;
-                }
-        }
+    {
+        std::lock_guard<std::mutex> lock(GLSLTypeMappingMutex);
+        for (const auto& t : GLSLTypeMapping) {
+            if (file.getShader()->getType() == SHADER_POSTPROCESSING) {
+                auto typeEnum = t.second.type;
+                if (typeEnum == ShaderOpenGLCustomDataType::DIFFUSE ||
+                    typeEnum == ShaderOpenGLCustomDataType::SPECULAR) {
+                    continue;
+                    }
+            }
 
-        items.push_back(t.second.label);
+            items.push_back(t.second.label);
+        }
     }
 
     return items;
@@ -162,7 +168,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
         auto type = &file.getShader()->dataTypes[i];
 
         // Verificar si el tipo es interno
-        auto dataType = GLSLTypeMapping[type->type].type;
+        auto dataType = GetGLSLTypeInfo(type->type).type;
         bool isInternal = dataType == ShaderOpenGLCustomDataType::DELTA_TIME ||
                           dataType == ShaderOpenGLCustomDataType::EXECUTION_TIME ||
                           dataType == ShaderOpenGLCustomDataType::DEPTH ||
@@ -173,7 +179,7 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
 
         // Solo calcular ancho si NO es interno
         if (!isInternal) {
-            std::string label = std::to_string(i + 1) + ") " + type->name + " (" + GLSLTypeMapping[type->type].label + ")";
+            std::string label = std::to_string(i + 1) + ") " + type->name + " (" + GetGLSLTypeInfo(type->type).label + ")";
             float labelWidth = ImGui::CalcTextSize(label.c_str()).x;
             maxLabelWidth = ImMax(maxLabelWidth, labelWidth);
         }
@@ -201,10 +207,10 @@ void ShadersGUI::DrawShaderConfigVarsTable(EditableOpenShaderFile &file)
         ImGui::SameLine();
 
         // Tipo
-        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%s)", GLSLTypeMapping[type->type].label.c_str());
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%s)", GetGLSLTypeInfo(type->type).label.c_str());
 
         // Verificar si el tipo es interno (sin control editable)
-        auto dataType = GLSLTypeMapping[type->type].type;
+        auto dataType = GetGLSLTypeInfo(type->type).type;
         bool isInternal = dataType == ShaderOpenGLCustomDataType::DELTA_TIME ||
                           dataType == ShaderOpenGLCustomDataType::EXECUTION_TIME ||
                           dataType == ShaderOpenGLCustomDataType::DEPTH ||

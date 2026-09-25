@@ -4,6 +4,7 @@
 #include "3D/Vertex3D.h"
 #include "Misc/ScriptLUA.h"
 #include <GL/glew.h>
+#include <map>
 
 class Config {
 
@@ -39,6 +40,7 @@ public:
     std::string VIDEOS_FOLDER         = ASSETS_FOLDER + "videos/";
     std::string SOUNDS_FOLDER         = ASSETS_FOLDER + "sounds/";
     std::string MODELS_FOLDER         = ASSETS_FOLDER + "models/";
+    std::string LIGHTS_FOLDER         = MODELS_FOLDER + "lights/";
     std::string ANIMATIONS_FOLDER     = ASSETS_FOLDER + "animations/";
     std::string TEMPLATES_FOLDER      = ASSETS_FOLDER + "templates/";
     std::string FONTS_FOLDER          = ASSETS_FOLDER + "fonts/";
@@ -107,7 +109,16 @@ public:
     bool ENABLE_SOUND = true;
     bool ENABLE_LOGGING_CONSOLE = true;
     bool ENABLE_LOGGING_STD = true;
-    bool OBSERVER_AI_ENABLED = false;
+    // Logs por objeto de alta frecuencia (destructores de Object3D/Mesh3D/Collider). Apagado por
+    // defecto: al volver al menú se destruyen ~1000 objetos y 2-3 líneas por objeto con
+    // std::endl congelaban ~1 s el frame. Activar al perseguir un crash (el SEH handler imprime
+    // la dirección y el log de ~Object3D la cruza con el objeto destruido).
+    bool ENABLE_LOGGING_VERBOSE = false;
+    // TEMPORAL (2026-08-26): activado por defecto para capturar brakeza_events.jsonl durante el
+    // crash "attempt to index a number value" al arrancar con autoload -- PlayLUAScripts() corre
+    // ANTES de que EngineObserver::init() se llamara antes de este cambio, así que sin esto el
+    // log quedaba vacío justo en la ventana donde revienta. Revertir a false una vez localizado.
+    bool OBSERVER_AI_ENABLED = true;
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;
     bool ENABLE_IMGUI_STATUSBAR = true;
@@ -163,6 +174,12 @@ public:
 
     bool DRAW_LIGHTS_DIRECTION = false;
     bool FULLSCREEN = false;
+    // FULLSCREEN a secas siempre usó SDL_WINDOW_FULLSCREEN_DESKTOP ("borderless") -- la ventana
+    // sigue compuesta por DWM en Windows, que puede imponer su propio ritmo de presentación por
+    // encima de lo que pida la app (vsync real u OFF). EXCLUSIVE_FULLSCREEN activa
+    // SDL_WINDOW_FULLSCREEN de verdad (fuera de DWM) para poder comparar y descartar esa
+    // interferencia. Solo tiene efecto si FULLSCREEN también está a true.
+    bool EXCLUSIVE_FULLSCREEN = false;
     bool DRAW_FPS_RENDER = true;
 
     float FRUSTUM_CLIPPING_DISTANCE = 0.00075f;
@@ -177,7 +194,7 @@ public:
     float SHADOW_MAPPING_FRUSTUM_SIZE = 30.0f;
     int SHADOW_MAP_RESOLUTION = 2048;
     int SHADOW_MAPPING_PCF_KERNEL_SIZE = 2;
-    glm::vec3 SHADOW_MAPPING_FOCUS = glm::vec3(512.0f, 0.0f, 512.0f);
+    glm::vec3 SHADOW_MAPPING_FOCUS = glm::vec3(0.0f, 0.0f, 0.0f);
 
     // SpriteDirectional3D Default size
     float BILLBOARD_WIDTH_DEFAULT = 100.f;
@@ -328,7 +345,21 @@ public:
     struct LineCommandOptions {
         bool autoload = false;
         std::string project;
+        float exitAfterSeconds = 0.0f; // <= 0 => disabled. Generic watchdog, no project semantics.
+        std::map<std::string, std::string> rawParams; // from repeated --set key=value, unvalidated
     };
+
+    // Resolved value of one project-declared "cli_params" entry (assets/projects/*.json).
+    // The engine only knows name/type/default here -- it never interprets what the name means,
+    // that lives entirely in the project's own Lua (see AutoRun.lua in the RTS project).
+    struct CliParamValue {
+        enum class Type { String, Bool, Number } type = Type::String;
+        std::string s;
+        bool b = false;
+        double n = 0;
+    };
+
+    std::map<std::string, CliParamValue> cliParams;
 };
 
 #endif //SDL2_3D_ENGINE_ENGINESETUP_H

@@ -78,6 +78,8 @@ public:
             if (loadRenderSettings) SceneLoader::LoadADSSettings(json);
         }
 
+        SceneLoader::LoadLightsFileAssociation(json, scene);
+
         auto objects = cJSON_GetObjectItemCaseSensitive(json, "objects");
 
         int objectCount = 0;

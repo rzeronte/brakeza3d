@@ -16,8 +16,10 @@ void main()
     vec2 screenUV = gl_FragCoord.xy / screenSize;
     vec3 fragPos  = texture(gPosition, screenUV).rgb;
 
-    // Si hay geometría en este píxel y está por encima del plano del círculo → el personaje tapa al círculo
-    if (dot(fragPos, fragPos) > 0.001 && fragPos.y > circleWorldY + 0.05) {
+    // Si hay geometría en este píxel y está por encima del plano del círculo → el personaje tapa al círculo.
+    // Tolerancia amplia para que el relieve normal del terreno no oculte anillos de radio grande
+    // (a mayor radio, más terreno con desnivel cruza el círculo); solo oclusores reales (edificios, colinas) lo tapan.
+    if (dot(fragPos, fragPos) > 0.001 && fragPos.y > circleWorldY + 2.0) {
         discard;
     }
 

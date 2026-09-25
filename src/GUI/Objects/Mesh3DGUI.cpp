@@ -12,6 +12,10 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
         if (ImGui::TreeNodeEx("Mesh render options", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
             ImGui::Checkbox("Render default pipeline", &o->renderDefaultPipeline);
             ImGui::Checkbox("Frustum cull submeshes", &o->frustumCullSubmeshes);
+            ImGui::Checkbox("Emission", &o->emissionEnabled);
+            if (!o->emissionEnabled) ImGui::BeginDisabled();
+            ImGui::SliderFloat("Emission intensity", &o->emissionIntensity, 0.0f, 1.0f);
+            if (!o->emissionEnabled) ImGui::EndDisabled();
             ImGui::TreePop();
         }
         ImGui::Separator();
@@ -83,8 +87,9 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             ImGui::Separator();
             ImGui::Spacing();
 
-            if (ImGui::BeginTable("TexturesTable", 1, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            if (ImGui::BeginTable("TexturesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp)) {
                 ImGui::TableSetupColumn("Textures");
+                ImGui::TableSetupColumn("Path");
                 ImGui::TableHeadersRow();
 
                 for (auto &m : o->modelTextures) {
@@ -94,6 +99,9 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                     float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, m->width());
                     float height = fixedWidth * ((float) m->height() / (float) m->width());
                     ImGui::Image(m->getOGLImTexture(), ImVec2(fixedWidth, height));
+
+                    ImGui::TableNextColumn();
+                    ImGui::TextWrapped("%s", m->getFileName().c_str());
                 }
 
                 ImGui::EndTable();

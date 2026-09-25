@@ -145,9 +145,14 @@ void ParticleEmitter::Draw()
             ParticlesContainer[particleIndex].r = rand() % 256;
             ParticlesContainer[particleIndex].g = rand() % 256;
             ParticlesContainer[particleIndex].b = rand() % 256;
-            ParticlesContainer[particleIndex].a = Tools::random(context.MIN_ALPHA, context.MAX_ALPHA);
+            // "weight" (sin otro uso en este struct) guarda el alpha de nacimiento; el alpha
+            // real por frame se recalcula en el bucle de simulación de abajo multiplicando por
+            // lifeRatio, para que la partícula se desvanezca al morir en vez de desaparecer de
+            // golpe (mismo lifeRatio que ya usan r/g/b).
+            ParticlesContainer[particleIndex].weight = static_cast<float>(Tools::random(context.MIN_ALPHA, context.MAX_ALPHA));
+            ParticlesContainer[particleIndex].a = static_cast<unsigned char>(ParticlesContainer[particleIndex].weight);
 
-            ParticlesContainer[particleIndex].size = (rand()%1000)/2000.0f + 0.1f;
+            ParticlesContainer[particleIndex].size = ((rand()%1000)/2000.0f + 0.1f) * context.PARTICLE_SIZE_SCALE;
         }
     }
 
@@ -180,6 +185,7 @@ void ParticleEmitter::Draw()
                 p.r = colorFrom.r * 255 * lifeRatio + colorTo.r * 255 * (1 - lifeRatio);
                 p.g = colorFrom.g * 255 * lifeRatio + colorTo.g * 255 * (1 - lifeRatio);
                 p.b = colorFrom.b * 255 * lifeRatio + colorTo.b * 255 * (1 - lifeRatio);
+                p.a = static_cast<unsigned char>(p.weight * lifeRatio);
 
                 // Fill the GPU buffer
                 g_particule_position_size_data[4*ParticlesCount+0] = p.pos.x;

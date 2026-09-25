@@ -5,6 +5,7 @@
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
 #include "../../include/3D/Object3D.h"
+#include "../../include/Render/Profiler.h"
 
 struct GCVertex { float x, y, z, u, v; };
 
@@ -90,7 +91,7 @@ void ShaderOGLGroundCircle::draw(Object3D* obj, const Color& color, float radius
     setMat4Uniform(modelUniform,        model);
     setMat4Uniform(viewUniform,         camera->getGLMMat4ViewMatrix());
     setMat4Uniform(projectionUniform,   camera->getGLMMat4ProjectionMatrix());
-    setVec4Uniform(colorUniform,        glm::vec4(color.toGLM(), 1.0f));
+    setVec4Uniform(colorUniform,        glm::vec4(color.toGLM(), color.a));
     setFloatUniform(thicknessUniform,    thickness);
     setVec2Uniform(screenSizeUniform,    glm::vec2(screenW, screenH));
     setFloatUniform(circleWorldYUniform, pos.y);
@@ -107,6 +108,7 @@ void ShaderOGLGroundCircle::draw(Object3D* obj, const Color& color, float radius
     glDisable(GL_DEPTH_TEST);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
 
     glBindVertexArray(0);
 

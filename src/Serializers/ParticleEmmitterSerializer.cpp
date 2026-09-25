@@ -31,6 +31,7 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(contextParticles, "POSITION_NOISE", light->getContextPointer().POSITION_NOISE);
     cJSON_AddNumberToObject(contextParticles, "VELOCITY_NOISE", light->getContextPointer().VELOCITY_NOISE);
     cJSON_AddNumberToObject(contextParticles, "DECELERATION_FACTOR", light->getContextPointer().DECELERATION_FACTOR);
+    cJSON_AddNumberToObject(contextParticles, "PARTICLE_SIZE_SCALE", light->getContextPointer().PARTICLE_SIZE_SCALE);
     cJSON_AddItemToObject(root, "context", contextParticles);
 
     cJSON_AddItemToObject(root, "colorFrom", ToolsJSON::ColorToJSON(light->getColorFrom()));
@@ -99,6 +100,7 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     Object3DSerializer().ApplyJsonToObject(json, o);
 
     auto contextJSON = cJSON_GetObjectItemCaseSensitive(json, "context");
+    auto sizeScaleItem = cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLE_SIZE_SCALE");
     ParticlesContext context(
         static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "GRAVITY")->valuedouble),
         static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLES_BY_SECOND")->valuedouble),
@@ -110,7 +112,8 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_ALPHA")->valueint,
         cJSON_GetObjectItemCaseSensitive(contextJSON, "POSITION_NOISE")->valueint,
         cJSON_GetObjectItemCaseSensitive(contextJSON, "VELOCITY_NOISE")->valueint,
-        static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "DECELERATION_FACTOR")->valuedouble)
+        static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "DECELERATION_FACTOR")->valuedouble),
+        sizeScaleItem ? static_cast<float>(sizeScaleItem->valuedouble) : 1.0f  // escenas antiguas no tienen este campo
     );
 
     emitter->setContext(context);

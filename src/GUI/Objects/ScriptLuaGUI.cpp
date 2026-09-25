@@ -194,7 +194,7 @@ void ScriptLuaGUI::DrawTypeImGuiControl(ScriptLUATypeData &type, bool showName, 
 
     bool changed = false;
 
-    switch (LUADataTypesMapping[type.type].type) {
+    switch (GetLUATypeInfo(type.type).type) {
         case LUADataType::INT: {
             int valueInt = std::get<int>(type.value);
             if (ImGui::InputInt(label.c_str(), &valueInt)) {
@@ -466,7 +466,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
     float maxLabelWidth = 0.0f;
     for (int i = 0; i < (int)shader->dataTypes.size(); i++) {
         auto type = &shader->dataTypes[i];
-        std::string label = std::to_string(i + 1) + ") " + type->name + " (" + LUADataTypesMapping[type->type].label + ")";
+        std::string label = std::to_string(i + 1) + ") " + type->name + " (" + GetLUATypeInfo(type->type).label + ")";
         float labelWidth = ImGui::CalcTextSize(label.c_str()).x;
         maxLabelWidth = ImMax(maxLabelWidth, labelWidth);
     }
@@ -494,7 +494,7 @@ void ScriptLuaGUI::DrawScriptConfigVarsTable(EditableOpenScriptFile &file)
         ImGui::SameLine();
 
         // Tipo
-        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%s)", LUADataTypesMapping[type->type].label.c_str());
+        ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "(%s)", GetLUATypeInfo(type->type).label.c_str());
 
         // Posicionar el control en la posición calculada
         ImGui::SameLine(leftSideWidth);

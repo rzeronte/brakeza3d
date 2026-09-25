@@ -128,7 +128,9 @@ public:
         int vertexCount,
         const glm::mat4& model,
         const glm::mat4& view,
-        const glm::mat4& projection
+        const glm::mat4& projection,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
     );
 
     void RenderShaderDebugPanel();

@@ -47,6 +47,13 @@ public:
     static std::string ImGuiUnique(const std::string &text);
     static std::string ExtractJsonStringFieldFromDisk(const std::string &path, const std::string &field);
     static std::string NormalizePath(std::string path);
+
+    // Envuelve IMG_Load con un mutex global. El motor carga imágenes desde varios worker threads
+    // a la vez (PoolCompute y PoolImages tienen 4 hilos cada uno) y SDL2_image/libpng en este
+    // build no es seguro frente a llamadas concurrentes desde distintos hilos — bajo carga
+    // (varias animaciones/efectos cargando a la vez) IMG_Load devolvía null de forma intermitente
+    // incluso para PNGs válidos. Usar SIEMPRE esta función en vez de IMG_Load directamente.
+    static SDL_Surface* SafeIMGLoad(const std::string &path);
 };
 
 #endif //SDL2_3D_ENGINE_TOOLS_H

@@ -62,6 +62,8 @@ struct OpenGLGBuffer {
     GLuint positions = 0;
     GLuint normals = 0;
     GLuint albedo = 0;
+    GLuint emission = 0;   // COLOR_ATTACHMENT3: rgb = color emitido, a = intensidad. Solo se escribe
+                           // (y se limpia) en frames con Mesh3D emisivos, ver ComponentRender::FlushEmissiveQueue
     GLuint depth = 0;
 };
 

@@ -3,6 +3,7 @@
 #include "../../include/Render/TextureAnimated.h"
 #include <SDL_image.h>
 #include "../../include/Misc/Logging.h"
+#include "../../include/Misc/Tools.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/TextureAnimatedAnimationGUI.h"
 
@@ -42,7 +43,7 @@ TextureAnimated::TextureAnimated(const std::string& spriteSheetFile, int spriteW
     currentspriteHeight(spriteHeight)
 {
     LOG_MESSAGE("Loading sheet: %s", spriteSheetFile.c_str());
-    spriteSheetSurface = IMG_Load(spriteSheetFile.c_str());
+    spriteSheetSurface = Tools::SafeIMGLoad(spriteSheetFile);
 }
 
 void TextureAnimated::LoadCurrentSetup()
@@ -58,6 +59,20 @@ void TextureAnimated::Apply(const std::string& spriteSheetFile, int spriteWidth,
 
     currentSpriteWidth = spriteWidth;
     currentspriteHeight = spriteHeight;
+
+    // IMG_Load puede devolver null (archivo corrupto, formato no soportado, ruta incorrecta) sin
+    // que el constructor lo compruebe. Sin este guard, spriteSheetSurface->h de la línea de abajo
+    // es un null pointer dereference — crash nativo 0xC0000005 en vez de un error controlado
+    // (mismo caso que ThreadJobLoadImage::fnCallback ya cubre para el otro camino de carga).
+    if (spriteSheetSurface == nullptr) {
+        LOG_ERROR("[TextureAnimated] Apply: spriteSheetSurface is null for '%s', skipping", spriteSheetFile.c_str());
+        // Mantener el invariante numberFramesToLoad == frames.size(): frames queda vacío (por el
+        // DeleteFrames() de arriba) así que numberFramesToLoad también debe quedar en 0. Sin esto,
+        // getNumFrames() seguía devolviendo el valor pedido (p.ej. 24) con frames vacío, y
+        // nextFrame()/getCurrentFrame() indexaban un vector vacío más adelante — segundo crash.
+        numberFramesToLoad = 0;
+        return;
+    }
 
     const int numRows = spriteSheetSurface->h / spriteHeight;
     const int numColumns = spriteSheetSurface->w / spriteWidth;
@@ -98,7 +113,8 @@ int TextureAnimated::getNumFrames() const
 
 Image *TextureAnimated::getCurrentFrame() const
 {
-    return this->frames[currentFrame];
+    if (frames.empty()) return nullptr;
+    return this->frames[currentFrame % frames.size()];
 }
 
 void TextureAnimated::nextFrame()

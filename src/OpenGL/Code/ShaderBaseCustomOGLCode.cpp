@@ -10,6 +10,7 @@
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Render/Profiler.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
@@ -58,7 +59,7 @@ void ShaderBaseCustomOGLCode::DrawTypeImGuiControl(ShaderOGLCustomType &type, bo
 {
     ImGui::PushID(std::string(type.name + type.type).c_str());
 
-    auto& info = GLSLTypeMapping[type.type];
+    auto info = GetGLSLTypeInfo(type.type);
     // Si showName es false, usar ## para ocultar el label
     auto label = showName ? Tools::ImGuiUnique(type.name) : std::string("##") + type.name;
 
@@ -110,7 +111,7 @@ int ShaderBaseCustomOGLCode::CountTypesByFilter(const std::vector<ShaderOGLCusto
     int count = 0;
 
     for (const auto& type : types) {
-        ShaderOpenGLCustomDataType dataType = GLSLTypeMapping[type.type].type;
+        ShaderOpenGLCustomDataType dataType = GetGLSLTypeInfo(type.type).type;
 
         // Verificar si el tipo está en el array de filtros
         for (const auto& filterType : filterTypes) {
@@ -126,7 +127,7 @@ int ShaderBaseCustomOGLCode::CountTypesByFilter(const std::vector<ShaderOGLCusto
 
 void ShaderBaseCustomOGLCode::DrawTypeInternalImGuiControl(const ShaderOGLCustomType &type)
 {
-    switch (GLSLTypeMapping[type.type].type) {
+    switch (GetGLSLTypeInfo(type.type).type) {
         case ShaderOpenGLCustomDataType::DELTA_TIME: {
             ImGui::TableNextRow();
 
@@ -273,7 +274,7 @@ void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *s
             int j = 0;
 
             for (auto &type: dataTypes) {
-                switch (GLSLTypeMapping[type.type].type) {
+                switch (GetGLSLTypeInfo(type.type).type) {
                     case ShaderOpenGLCustomDataType::DEPTH: {
                         auto globalTexture = Components::get()->Window()->getGBuffer().depth;
                         DrawTextureRow(type.name.c_str(),
@@ -357,11 +358,19 @@ void ShaderBaseCustomOGLCode::DrawImGuiProperties(const Image *diffuse, Image *s
 void ShaderBaseCustomOGLCode::Destroy()
 {
     glDeleteFramebuffers(1, &resultFramebuffer);
+
     if (internalTextureOwned) {
         glDeleteTextures(1, &internalTexture);
         internalTexture = 0;
+        CreateFramebuffer();
+    } else {
+        // internalTexture is borrowed from another stage of the chain (re-wired every frame via
+        // setInternalTexture(), see Render()) -- must not delete it here (not ours) and must not
+        // allocate a throwaway replacement either: CreateFramebuffer() would always mark it owned
+        // and generate a brand-new texture that Render() immediately discards next frame by
+        // re-borrowing the real one, leaking one full-resolution texture per resize event.
+        glGenFramebuffers(1, &resultFramebuffer);
     }
-    CreateFramebuffer();
 }
 
 bool ShaderBaseCustomOGLCode::existDataType(const char *name, const char *type) const
@@ -429,7 +438,7 @@ void ShaderBaseCustomOGLCode::overrideDataTypesFromJSON(const cJSON *typesJSON)
         if (existDataType(name, type)) {
             for (auto &dt : dataTypes) {
                 if (dt.name == name && dt.type == type) {
-                    switch (GLSLTypeMapping[type].type) {
+                    switch (GetGLSLTypeInfo(type).type) {
                         case ShaderOpenGLCustomDataType::INT:
                             dt.value = value->valueint;
                             break;
@@ -473,7 +482,7 @@ void ShaderBaseCustomOGLCode::addDataType(const char *name, const char *type, cJ
 {
     ShaderOpenGLCustomDataValue LUAValue;
 
-    switch (GLSLTypeMapping[type].type) {
+    switch (GetGLSLTypeInfo(type).type) {
         case ShaderOpenGLCustomDataType::INT: {
             LUAValue = value->valueint;
             break;
@@ -564,7 +573,7 @@ void ShaderBaseCustomOGLCode::postUpdate(GLuint outputFBO, GLuint inputTexture)
 void ShaderBaseCustomOGLCode::setDataTypesUniforms()
 {
     for (auto type: dataTypes) {
-        switch (GLSLTypeMapping[type.type].type) {
+        switch (GetGLSLTypeInfo(type.type).type) {
             case ShaderOpenGLCustomDataType::INT: {
                 const int value = std::get<int>(type.value);
                 setInt(type.name, value);
@@ -651,7 +660,7 @@ void ShaderBaseCustomOGLCode::AddDataTypeEmpty(const char *name, const char *typ
 {
     ShaderOpenGLCustomDataValue typeValue;
 
-    switch (GLSLTypeMapping[type].type) {
+    switch (GetGLSLTypeInfo(type).type) {
         case ShaderOpenGLCustomDataType::INT: {
             LOG_MESSAGE("[ShaderBaseCustomOGLCode] Added INT type: %s => %s", name, type);
             typeValue = 0;
@@ -797,7 +806,7 @@ cJSON *ShaderBaseCustomOGLCode::getTypesJSON() const
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (GLSLTypeMapping[dataType.type].type) {
+        switch (GetGLSLTypeInfo(dataType.type).type) {
             case ShaderOpenGLCustomDataType::INT: {
                 auto valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);
@@ -933,6 +942,8 @@ void ShaderBaseCustomOGLCode::CreateFramebuffer()
 {
     glGenFramebuffers(1, &resultFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, resultFramebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(resultFramebuffer);
 
     auto window = Components::get()->Window();
     int w = window->getWidthRender();
@@ -945,6 +956,8 @@ void ShaderBaseCustomOGLCode::CreateFramebuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, internalTexture, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 
     internalTextureOwned = true;
 }
@@ -958,7 +971,7 @@ void ShaderBaseCustomOGLCode::setInternalTexture(GLuint value)
 
 bool ShaderBaseCustomOGLCode::IsCustomUniform(const ShaderOGLCustomType &type)
 {
-    auto dataType = GLSLTypeMapping[type.type].type;
+    auto dataType = GetGLSLTypeInfo(type.type).type;
 
     return dataType == ShaderOpenGLCustomDataType::INT ||
            dataType == ShaderOpenGLCustomDataType::FLOAT ||

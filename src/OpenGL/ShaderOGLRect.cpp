@@ -4,6 +4,7 @@
 #include "../../include/OpenGL/ShaderOGLRect.h"
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLRect::ShaderOGLRect()
 :
@@ -78,6 +79,7 @@ void ShaderOGLRect::renderRect(int x, int y, int w, int h, int worldW, int world
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
     glBindVertexArray(0);
 
     glDisable(GL_BLEND);

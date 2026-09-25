@@ -26,6 +26,8 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
     cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());
     cJSON_AddBoolToObject(root, "renderDefaultPipeline", mesh->isRenderPipelineDefault());
     cJSON_AddBoolToObject(root, "frustumCullSubmeshes", mesh->isFrustumCullSubmeshes());
+    cJSON_AddBoolToObject(root, "emissionEnabled", mesh->isEmissionEnabled());
+    cJSON_AddNumberToObject(root, "emissionIntensity", mesh->getEmissionIntensity());
 
     // Shaders
     cJSON *effectsArrayJSON = cJSON_CreateArray();
@@ -60,6 +62,11 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     if (renderDefaultItem) mesh->setRenderPipelineDefault(renderDefaultItem->valueint);
     auto *frustumCullItem = cJSON_GetObjectItemCaseSensitive(json, "frustumCullSubmeshes");
     if (frustumCullItem) mesh->setFrustumCullSubmeshes(frustumCullItem->valueint);
+    // Opcionales: escenas anteriores a la emisión no los tienen -> se quedan los defaults (false / 1.0)
+    auto *emissionEnabledItem = cJSON_GetObjectItemCaseSensitive(json, "emissionEnabled");
+    if (emissionEnabledItem) mesh->setEmissionEnabled(cJSON_IsTrue(emissionEnabledItem));
+    auto *emissionIntensityItem = cJSON_GetObjectItemCaseSensitive(json, "emissionIntensity");
+    if (emissionIntensityItem) mesh->setEmissionIntensity((float) emissionIntensityItem->valuedouble);
 }
 
 Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
@@ -219,6 +226,8 @@ Mesh3D* Mesh3DSerializer::CloneMesh3D(Mesh3D* src)
     dst->setEnableLights(src->isEnableLights());
     dst->setRenderPipelineDefault(src->isRenderPipelineDefault());
     dst->setFrustumCullSubmeshes(src->isFrustumCullSubmeshes());
+    dst->setEmissionEnabled(src->isEmissionEnabled());
+    dst->setEmissionIntensity(src->getEmissionIntensity());
 
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
         std::make_shared<ThreadJobLoadMesh3D>(dst, json));

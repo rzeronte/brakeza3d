@@ -16,7 +16,7 @@ public:
     void LoadUniforms() override;
 
     void renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint fbo);
-    void render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo) const;
+    void render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo, GLuint indexBuffer = 0, GLsizei indexCount = 0) const;
     void Destroy() override;
 };
 
