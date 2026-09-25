@@ -4,6 +4,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Render/ParticlesContext.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLGPUParticles::ShaderOGLGPUParticles()
     : ShaderBaseOpenGL(
@@ -50,6 +51,7 @@ void ShaderOGLGPUParticles::render(
 
     glUseProgram(programID);
     Components::get()->Render()->setLastProgramUsed(programID);
+    Profiler::get()->incrementProgramChanges();
 
     glBindVertexArray(VAO);
 
@@ -99,6 +101,7 @@ void ShaderOGLGPUParticles::render(
     glVertexAttribDivisor(5, 1);
 
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, numParticles);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLE_STRIP, 4, numParticles);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

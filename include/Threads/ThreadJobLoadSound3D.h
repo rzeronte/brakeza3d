@@ -32,11 +32,7 @@ public:
     void fnCallback()
     {
         if (!sound->sourceFile.empty()) {
-            sound->mixChunk = Mix_LoadWAV(sound->sourceFile.c_str());
-            if (!sound->mixChunk) {
-                LOG_ERROR("[ThreadJobLoadSound3D] Mix_LoadWAV failed for '%s': %s",
-                          sound->sourceFile.c_str(), Mix_GetError());
-            }
+            sound->bufferLoaded = Sound3D::DecodeFile(sound->sourceFile, sound->buffer, sound->pDecodedData);
         }
 
         Brakeza::get()->AddObject3D(sound, sound->getName());

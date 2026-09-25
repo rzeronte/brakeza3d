@@ -20,7 +20,7 @@
 #include "../Threads/ThreadJobLoadImage2D.h"
 #include "../Threads/ThreadJobLoadImage2DAnimation.h"
 #include "../Threads/ThreadJobLoadImage3D.h"
-#include "../Threads/ThreadJobLoadImage3DAnimation.h"
+#include "../Threads/ThreadJobRegisterImage3DAnimation.h"
 #include "../Threads/ThreadJobLoadImage3DAnimation360.h"
 #include "../Threads/ThreadJobLoadLightPoint.h"
 #include "../Threads/ThreadJobLoadLightSpot.h"
@@ -88,11 +88,15 @@ Image3DAnimation* ObjectFactory::CreateImage3DAnimation(const std::string &file,
     auto *o = new Image3DAnimation(position, width, height);
     o->setName(Brakeza::UniqueObjectLabel("Image3DAnimation"));
 
-    o->CreateAnimation(file,sw,sh,frames,fps);
+    // Reutiliza el sprite sheet ya cargado/recortado en TextureAnimatedCache (misma
+    // clave sprite+sw+sh+frames+fps) en vez de recargarlo de disco por instancia — ver
+    // WeaponFX.lua, que crea decenas de estas por combate. AddObject3D se difiere igual
+    // que en los demás factories, para no mutar la lista de objetos mid-frame.
+    o->CreateAnimationFromCache(file, (int) sw, (int) sh, frames, fps);
     o->setAnimation(0);
+    o->UpdateBillboardSize();
 
-    auto json = JSONSerializerRegistry::instance().serialize(o);
-    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadImage3DAnimation>(o, json));
+    Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobRegisterImage3DAnimation>(o));
 
     return o;
 }

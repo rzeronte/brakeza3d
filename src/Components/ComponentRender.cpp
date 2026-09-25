@@ -1,5 +1,6 @@
 #include "imgui.h"
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include "../../include/3D/Vector3D.h"
 #include "../../include/Components/ComponentRender.h"
@@ -12,6 +13,8 @@
 #include "../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
 #include "../../include/OpenGL/Nodes/ShaderNodesPostProcessing.h"
 #include <limits>
+#include <unordered_map>
+#include <iostream>
 #include "../../include/Render/Profiler.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/3D/LightPoint.h"
@@ -85,6 +88,7 @@ void ComponentRender::onStart()
     textWriter->setGlyphAtlas(glyphAtlas);
 
     RegisterShaders();
+    CreateCameraUBO();
 
     uiManager = new UIManager();
     uiManager->init(this, Config::get()->UI_WIDGETS_FOLDER);
@@ -159,21 +163,22 @@ void ComponentRender::preUpdate()
     UpdateFPS();
 }
 
-void ComponentRender::DrawFPS() const
-{
-    textWriter->WriteTextTTFAutoSize(10, 10, std::to_string(getFps()).c_str(), Color::white(), 1.0f);
-}
-
 void ComponentRender::onUpdate()
 {
     if (!isEnabled()) return;
 
-    shaders.shaderOGLRender->CreateUBOFromLights();
+    // Fase 3: un solo snapshot de escena para las dos cosas que lo necesitan aquí (extracción de
+    // luces + scripts/GBuffer) -- antes cada una hacía su propio copySceneObjects(). Seguro
+    // porque no corre nada entre medias que añada/quite objetos de la escena.
+    auto sceneObjects = Brakeza::get()->copySceneObjects();
+
+    shaders.shaderOGLRender->CreateUBOFromLights(sceneObjects);
+    UpdateCameraUBO();
 
     auto numSpotLights = shaders.shaderOGLRender->getNumSpotLights();
 
     selection.update();
-    onUpdateSceneObjects();
+    onUpdateSceneObjects(sceneObjects);
 
     if (Brakeza::get()->GUI()->isWindowOpen(GUIType::DEPTH_LIGHTS_MAPS)) {
         shaders.shaderShadowPassDebugLight->CreateFramebuffer();
@@ -188,13 +193,24 @@ void ComponentRender::onUpdate()
 
 void ComponentRender::postUpdate()
 {
+    Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "Transparencies");
+    Profiler::get()->StartGpuMeasure("Transparencies");
     auto sceneObjects = Brakeza::get()->copySceneObjects();
 
+    // Fase 1.1.1: este bucle también dibuja vía ShaderOGLRenderForward (objetos transparentes),
+    // que comparte la misma caché de estado GL que el bucle de GBuffer -- invalidar antes (por si
+    // RunShadowPass()/LightPass(), que corren entre medias, tocaron algo) y restaurar a un estado
+    // conocido al salir, ya que justo después vienen FlipBuffersToGlobal()/
+    // PostProcessingShadersChain() (FogOfWar incluido), que no participan de la caché.
+    InvalidateRenderStateCache();
     for (auto &o: sceneObjects) {
         if (!o->isEnabled()) continue;
         if (!isInFrustum(o)) continue;
         o->postUpdate();
     }
+    RestoreDefaultRenderState();
+    Profiler::get()->EndGpuMeasure("Transparencies");
+    Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "Transparencies");
 
     RenderAvatars();
     textWriter->flushTextBatchToFB("foreground");
@@ -407,11 +423,9 @@ bool ComponentRender::isInFrustum(const Object3D *o, float radiusOverride)
     return true;
 }
 
-void ComponentRender::onUpdateSceneObjects()
+void ComponentRender::onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects)
 {
-    auto sceneObjects = Brakeza::get()->copySceneObjects();
-
-    sortFrameTime += Brakeza::get()->getDeltaTimeMicro();
+    sortFrameTime += Brakeza::get()->getDeltaTimeMS();
     if (sortFrameTime >= Config::get()->SORT_OBJECTS_INTERVAL_MS) {
         std::sort(sceneObjects.begin(), sceneObjects.end(), compareDistances);
         sortFrameTime -= Config::get()->SORT_OBJECTS_INTERVAL_MS;
@@ -429,6 +443,16 @@ void ComponentRender::onUpdateSceneObjects()
 
     // Pasada 2: render solo para objetos visibles (scripts ya ejecutados, no se repiten)
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "GBuffer");
+    Profiler::get()->StartGpuMeasure("GBuffer");
+    // Fase 1.1.1: Deferred/Forward comparten una caché de estado GL (ApplyBlend/ApplyDepthTest/...)
+    // dentro de este bucle -- invalidar aquí para no fiarnos de lo que dejara el frame anterior
+    // (o cualquier otro paso), y restaurar a un estado por defecto conocido al salir para que
+    // RunShadowPass()/LightPass(), que no participan de la caché, sigan viendo lo mismo que veían
+    // antes de esta optimización.
+    // onUpdateSceneObjects() es static (sin `this`) -- pasar por la instancia, como ya hace
+    // el resto del motor (ChangeOpenGLFramebuffer/ChangeOpenGLProgram) para llamar a métodos
+    // no estáticos de ComponentRender desde aquí.
+    Components::get()->Render()->InvalidateRenderStateCache();
     int visible = 0, culled = 0;
     for (const auto &o: sceneObjects) {
         if (!o->isEnabled()) continue;
@@ -438,16 +462,41 @@ void ComponentRender::onUpdateSceneObjects()
         ++visible;
         o->onUpdate();
     }
+    // Fase 3 (Etapa 1): los Mesh3D estáticos/Deferred se encolaron durante el bucle de arriba
+    // (Mesh3D::onUpdate() -> EnqueueOpaque) en vez de dibujarse al instante -- se dibujan todos
+    // aquí, ordenados. RestoreDefaultRenderState() se mueve a DESPUÉS del flush a propósito: es
+    // el flush quien hace ahora el último draw antes de RunShadowPass()/LightPass(), no el
+    // último objeto del bucle.
+    Components::get()->Render()->FlushOpaqueQueue();
+    // Los custom shaders de objeto (WaterRTS, etc.) van DESPUES del flush opaco a propósito: si
+    // corrieran entrelazados por objeto (como antes de Fase 3), el flush opaco -- que se ejecuta
+    // una sola vez al final para TODOS los objetos -- repintaría encima el material sin animar de
+    // cualquier objeto procesado antes que el último de sceneObjects (visible como una "capa"
+    // blanca estática y sin desplazar por encima del agua animada).
+    Components::get()->Render()->FlushObjectShaderQueue();
+    // Emisivos SIEMPRE los últimos en escribir el G-Buffer -- ver comentario de FlushEmissiveQueue.
+    Components::get()->Render()->FlushEmissiveQueue();
+    Components::get()->Render()->RestoreDefaultRenderState();
+    // Fase 4b: picking (MOUSE_CLICK_SELECT_OBJECT3D) se encoló igual que el G-Buffer -- se dibuja
+    // aquí, agrupado. Va después de RestoreDefaultRenderState() a propósito: escribe en su propio
+    // FBO (picking, no el GBuffer) fijando su propio estado GL de forma incondicional en cada
+    // draw, así que el orden respecto al resto de este bloque no cambia el resultado.
+    Components::get()->Render()->FlushPickingQueue();
     lastFrameVisible = visible;
     lastFrameCulled  = culled;
+    Profiler::get()->EndGpuMeasure("GBuffer");
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "GBuffer");
 }
 
 void ComponentRender::UpdateFPS()
 {
-    if (!Config::get()->DRAW_FPS_RENDER) return;
-
-    frameTime += Brakeza::get()->getDeltaTimeMicro();
+    // DRAW_FPS_RENDER solo debe controlar si se DIBUJA el contador (ver StatusBarGUI::
+    // DrawFPSCounter), no si se CALCULA -- antes, desactivar "Show FPS" en el menú ImGui del
+    // editor congelaba también el contador in-game del RTS (HUDManager.lua -> render:getFps()),
+    // que depende de este mismo `fps` pero se activa con un toggle propio (RTSConfig.showFPS)
+    // sin ninguna relación con DRAW_FPS_RENDER. El cálculo es un incremento + comparación por
+    // frame, coste nulo -- no hay motivo para condicionarlo.
+    frameTime += Brakeza::get()->getDeltaTimeMS();
     ++fpsFrameCounter;
 
     if (frameTime >= 1000.0f) {
@@ -462,6 +511,31 @@ void ComponentRender::DeleteRemovedObjects()
 {
     auto &sceneObjects = Brakeza::get()->getSceneObjects();
     auto lock = Brakeza::get()->uniqueLockObjects();
+
+    // Fase 1: liberar de verdad lo que quedó pendiente del frame anterior. Diferir el delete
+    // real un frame completo evita un use-after-free conocido: este método corre en
+    // ComponentRender::preUpdate(), que se ejecuta ANTES del onUpdate() de este mismo frame
+    // (Render es el último componente en preUpdate, Scripting es el segundo en onUpdate).
+    // Sin este retraso, un objeto marcado removed=true durante el onUpdate() del frame N se
+    // borraba aquí mismo al principio del frame N+1, justo antes de que el onUpdate() de ESE
+    // frame corriera — dejando sin ninguna ventana segura a cualquier otro objeto que guarde un
+    // puntero crudo hacia él (p.ej. ParticleEmitter::followTarget / attachedLight, que llaman
+    // ->isRemoved() cada frame para saber si deben soltar la referencia).
+    if (!pendingDeleteObjects.empty()) {
+        // Una sola línea de resumen en vez de 2-3 por objeto (esas van ahora a LOG_VERBOSE).
+        const auto t0 = std::chrono::steady_clock::now();
+        const size_t count = pendingDeleteObjects.size();
+        for (Object3D *object : pendingDeleteObjects) {
+            delete object;
+        }
+        pendingDeleteObjects.clear();
+        const double ms = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - t0).count();
+        LOG_MESSAGE("[Render] Deleted %zu removed objects in %.1f ms", count, ms);
+    }
+
+    // Fase 2: los recién marcados removed=true salen ya de sceneObjects y del índice por nombre
+    // (para que Brakeza:getObjectByName siga devolviendo nil de inmediato, como ya asumen los
+    // scripts Lua), pero el delete se pospone a la Fase 1 de la PRÓXIMA llamada.
     sceneObjects.erase(
         std::remove_if(
             sceneObjects.begin(),
@@ -472,7 +546,7 @@ void ComponentRender::DeleteRemovedObjects()
                         render->removeFromSelection(object);
                     }
                     Brakeza::get()->removeObjectFromIndex(object);
-                    delete object;
+                    pendingDeleteObjects.push_back(object);
                     return true;
                 }
                 return false;
@@ -543,12 +617,14 @@ void ComponentRender::AddShaderToScene(ShaderBaseCustom *shader)
 void ComponentRender::PostProcessingShadersChain()
 {
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
+    Profiler::get()->StartGpuMeasure("PostProcessingShadersChain");
 
     auto window = Components::get()->Window();
     auto w = window->getWidthRender();
     auto h = window->getHeightRender();
 
     if (w <= 0 || h <= 0) {
+        Profiler::get()->EndGpuMeasure("PostProcessingShadersChain");
         Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
         return;
     }
@@ -558,6 +634,7 @@ void ComponentRender::PostProcessingShadersChain()
             window->getSceneTexture(), 0, 0, w, h, w, h, 1, true,
             window->getGlobalFramebuffer()
         );
+        Profiler::get()->EndGpuMeasure("PostProcessingShadersChain");
         Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
         return;
     }
@@ -572,6 +649,7 @@ void ComponentRender::PostProcessingShadersChain()
         window->getGlobalFramebuffer()
     );
 
+    Profiler::get()->EndGpuMeasure("PostProcessingShadersChain");
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
 }
 
@@ -1004,6 +1082,7 @@ void ComponentRender::setLastProgramUsed(GLuint value)
 
 void ComponentRender::ChangeOpenGLFramebuffer(GLuint framebuffer)
 {
+    if (framebuffer == lastFrameBufferUsed) return;
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
     setLastFrameBufferUsed(framebuffer);
     Profiler::get()->incrementFboChanges();
@@ -1011,9 +1090,410 @@ void ComponentRender::ChangeOpenGLFramebuffer(GLuint framebuffer)
 
 void ComponentRender::ChangeOpenGLProgram(GLuint programID)
 {
+    if (programID == lastProgramUsed) return;
     glUseProgram(programID);
     setLastProgramUsed(programID);
     Profiler::get()->incrementProgramChanges();
+}
+
+void ComponentRender::ApplyDepthTest(bool value)
+{
+    if (rsValid && rsDepthTest == value) return;
+    value ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+    rsDepthTest = value;
+}
+
+void ComponentRender::ApplyDepthFunc(GLenum value)
+{
+    if (rsValid && rsDepthFunc == value) return;
+    glDepthFunc(value);
+    rsDepthFunc = value;
+}
+
+void ComponentRender::ApplyDepthMask(bool value)
+{
+    if (rsValid && rsDepthMask == value) return;
+    glDepthMask(value ? GL_TRUE : GL_FALSE);
+    rsDepthMask = value;
+}
+
+void ComponentRender::ApplyBlend(bool value)
+{
+    if (rsValid && rsBlend == value) return;
+    value ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
+    rsBlend = value;
+}
+
+void ComponentRender::ApplyBlendFunc(GLenum src, GLenum dst)
+{
+    if (rsValid && rsBlendSrc == src && rsBlendDst == dst) return;
+    glBlendFunc(src, dst);
+    rsBlendSrc = src;
+    rsBlendDst = dst;
+}
+
+void ComponentRender::ApplyCulling(bool value)
+{
+    if (rsValid && rsCull == value) return;
+    value ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+    rsCull = value;
+}
+
+void ComponentRender::InvalidateRenderStateCache()
+{
+    rsValid = false;
+}
+
+// Fuerza el estado "por defecto" incondicionalmente (sin consultar la caché) y deja la caché
+// reflejándolo. Se llama al SALIR de un bucle cacheado (GBuffer, transparencias) para que
+// cualquier paso no migrado que corra después (ShadowPass, LightPass, PostProcessingShadersChain
+// -- FogOfWar incluido) reciba exactamente el mismo estado que recibía antes de esta caché,
+// sin importar qué RenderSettings tuviera el último objeto dibujado.
+void ComponentRender::RestoreDefaultRenderState()
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
+    glEnable(GL_CULL_FACE);
+
+    rsBlend = true;
+    rsBlendSrc = GL_SRC_ALPHA;
+    rsBlendDst = GL_ONE_MINUS_SRC_ALPHA;
+    rsDepthTest = true;
+    rsDepthFunc = GL_LESS;
+    rsDepthMask = true;
+    rsCull = true;
+    rsValid = true;
+}
+
+// Fase 3 (Etapa 1 estático + Etapa 2 animado): un RenderQueueEntry por submesh visible, en vez
+// de dibujar al instante como hacía ShaderOGLRenderDeferred::renderMesh(). useFeedbackBuffer=true
+// (Mesh3DAnimation) ya NO usa feedbackBuffer aquí (Fase 1 de instancing con skinning, ver
+// .claude/plans) -- ver el comentario dentro de la función. indexBuffer/indexCount se fuerzan a 0
+// para unidades animadas porque su geometría quedó fuera del EBO deduplicado en Fase 2.2.
+void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
+{
+    // useFeedbackBuffer==true solo lo pasa Mesh3DAnimation::onUpdate() -- se reutiliza como señal
+    // de "esto es una unidad animada" para el camino de instancing con skinning (Fase 1, ver
+    // .claude/plans): en vez del feedbackBuffer horneado por-instancia (que bloqueaba el batching
+    // porque nunca coincide entre instancias), se encola el vertexBuffer COMPARTIDO (bind-pose,
+    // Fase 2.1) más las matrices de huesos de este frame, ya calculadas por UpdateOpenGLBones()
+    // (que corre antes en Mesh3DAnimation::onUpdate(), sin coste CPU nuevo aquí). feedbackBuffer
+    // sigue existiendo y sigue usándose sin cambios para picking/shadow/modos debug.
+    auto* anim = useFeedbackBuffer ? dynamic_cast<Mesh3DAnimation*>(o) : nullptr;
+
+    // Emisión desactivada por defecto: solo los Mesh3D que la activen explícitamente van a la cola
+    // emisiva (ver FlushEmissiveQueue); el resto sigue exactamente el camino de siempre.
+    const bool emissive = o->isEmissionEnabled() && o->getEmissionIntensity() > 0.0f;
+    auto &queue = emissive ? emissiveQueue : opaqueQueue;
+
+    const auto& textures = o->getModelTextures();
+    const auto& specTextures = o->getModelSpecularTextures();
+    const auto& meshData = o->getMeshData();
+    for (size_t meshIdx = 0; meshIdx < meshData.size(); meshIdx++) {
+        const auto& m = meshData[meshIdx];
+        if (!m.visibleInFrustum) continue;
+        if (m.materialIndex < 0 || (size_t)m.materialIndex >= textures.size() ||
+            (size_t)m.materialIndex >= specTextures.size()) continue;
+        auto* tex = textures[m.materialIndex];
+        auto* specTex = specTextures[m.materialIndex];
+        if (!tex || !specTex) continue;
+
+        RenderQueueEntry entry;
+        entry.o = o;
+        entry.texId = tex->getOGLTextureID();
+        entry.specTexId = specTex->getOGLTextureID();
+        entry.vertexBuffer = m.vertexBuffer;
+        entry.uvBuffer = m.uvBuffer;
+        entry.normalBuffer = m.normalBuffer;
+        entry.size = static_cast<int>(m.vertices.size());
+        entry.alpha = o->getAlpha();
+        entry.emission = emissive ? o->getEmissionIntensity() : 0.0f;
+        entry.fbo = fbo;
+        entry.indexBuffer = anim ? 0 : m.indexBuffer;
+        entry.indexCount = anim ? 0 : m.indexCount;
+        if (anim) {
+            const auto& boneCache = anim->getBoneTransformCache(meshIdx);
+            // Un submesh sin huesos (adjunto estático a un esqueleto animado) no necesita
+            // skinning -- se deja isSkinned=false y cae al camino normal (sin cambios visuales,
+            // evita un renderInstancedSkinned con bonesPerInstance<=0 que no dibujaría nada).
+            if (!boneCache.empty()) {
+                entry.isSkinned = true;
+                entry.vertexBoneDataBuffer = m.vertexBoneDataBuffer;
+                entry.boneMatrices = &boneCache;
+                entry.boneCount = static_cast<int>(boneCache.size());
+            }
+        }
+        queue.push_back(entry);
+    }
+}
+
+// Ordena por (vertexBuffer, texId) -- ya agrupa por modelo/material gracias a la geometría GPU
+// compartida de Fase 2.1 (misma malla = mismo vertexBuffer) -- y dibuja llamando a
+// ShaderOGLRenderDeferred::render() con los mismos argumentos que ya recibía antes de esta cola.
+void ComponentRender::DrawRenderQueue(std::vector<RenderQueueEntry> &queue)
+{
+    std::sort(queue.begin(), queue.end(), [](const RenderQueueEntry &a, const RenderQueueEntry &b) {
+        if (a.vertexBuffer != b.vertexBuffer) return a.vertexBuffer < b.vertexBuffer;
+        return a.texId < b.texId;
+    });
+
+    // Fase 4: runs consecutivos (tras el sort de arriba) que comparten todo salvo la matriz de
+    // modelo se dibujan con UNA llamada instanciada en vez de una por entrada. alpha/drawOffset
+    // entran en la comparación a propósito -- si difieren, esos objetos simplemente no se
+    // agrupan y siguen su camino individual de siempre, ningún objeto pierde su valor real.
+    // Fase 1 (instancing con skinning): isSkinned/vertexBoneDataBuffer/boneCount también entran
+    // en la comparación -- agrupar animación exige además mismo esqueleto (implícito por
+    // vertexBuffer igual, pero se verifica explícito por seguridad).
+    auto sameBatch = [](const RenderQueueEntry &a, const RenderQueueEntry &b) {
+        return a.vertexBuffer == b.vertexBuffer && a.uvBuffer == b.uvBuffer &&
+               a.normalBuffer == b.normalBuffer && a.texId == b.texId &&
+               a.specTexId == b.specTexId && a.indexBuffer == b.indexBuffer &&
+               a.indexCount == b.indexCount && a.fbo == b.fbo && a.alpha == b.alpha &&
+               a.o->getDrawOffset() == b.o->getDrawOffset() &&
+               a.isSkinned == b.isSkinned && a.vertexBoneDataBuffer == b.vertexBoneDataBuffer &&
+               a.boneCount == b.boneCount && a.emission == b.emission;
+    };
+
+    auto* deferred = getShaderOGLRenderDeferred();
+    size_t i = 0;
+    while (i < queue.size()) {
+        size_t j = i + 1;
+        while (j < queue.size() && sameBatch(queue[i], queue[j])) ++j;
+
+        const auto &first = queue[i];
+        if (first.isSkinned) {
+            // Las entradas skinned van SIEMPRE por el camino instanciado, incluso un run de
+            // tamaño 1 -- el feedbackBuffer horneado por-instancia ya no se usa aquí, así que no
+            // hay un "render() sin skinning" válido para esta rama (ver ComponentRender::
+            // EnqueueOpaque). gl_InstanceID vale 0 igual con un solo elemento en el TBO.
+            std::vector<glm::mat4> models;
+            std::vector<glm::mat4> allBoneMatrices;
+            models.reserve(j - i);
+            allBoneMatrices.reserve((j - i) * first.boneCount);
+            for (size_t k = i; k < j; k++) {
+                models.push_back(queue[k].o->getModelMatrix());
+                const auto &bones = *queue[k].boneMatrices;
+                allBoneMatrices.insert(allBoneMatrices.end(), bones.begin(), bones.end());
+            }
+            deferred->renderInstancedSkinned(
+                first.texId, first.specTexId, first.vertexBuffer, first.uvBuffer, first.normalBuffer,
+                first.vertexBoneDataBuffer, first.size, first.alpha, first.o->getDrawOffset(), first.fbo,
+                first.boneCount, models, allBoneMatrices, first.emission
+            );
+        } else if (j - i == 1) {
+            deferred->render(
+                first.o, first.texId, first.specTexId, first.vertexBuffer, first.uvBuffer, first.normalBuffer,
+                first.size, first.alpha, first.fbo, first.indexBuffer, first.indexCount, first.emission
+            );
+        } else {
+            std::vector<glm::mat4> models;
+            models.reserve(j - i);
+            for (size_t k = i; k < j; k++) models.push_back(queue[k].o->getModelMatrix());
+            deferred->renderInstanced(
+                first.texId, first.specTexId, first.vertexBuffer, first.uvBuffer, first.normalBuffer,
+                first.size, first.alpha, first.o->getDrawOffset(), first.fbo, first.indexBuffer, first.indexCount,
+                models, first.emission
+            );
+        }
+        i = j;
+    }
+
+    queue.clear();
+}
+
+void ComponentRender::FlushOpaqueQueue()
+{
+    DrawRenderQueue(opaqueQueue);
+}
+
+// Último escritor del G-Buffer del frame (va después de FlushObjectShaderQueue). Sin Mesh3D
+// emisivos no hace nada: el G-Buffer se queda con sus 3 draw buffers de siempre y LightPass()
+// no lee gEmission -- coste cero. Con emisivos: activa el 4º draw buffer, lo limpia a 0 (el
+// resto de la escena queda sin emisión), dibuja solo los emisivos y restaura los 3 de siempre.
+void ComponentRender::FlushEmissiveQueue()
+{
+    emissionUsedThisFrame = !emissiveQueue.empty();
+    if (!emissionUsedThisFrame) return;
+
+    // Bind explícito, no ChangeOpenGLFramebuffer(): glDrawBuffers es estado DEL FBO enlazado y la
+    // caché de lastFrameBufferUsed puede estar desfasada tras los custom shaders de objeto.
+    const auto &gBuffer = Components::get()->Window()->getGBuffer();
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
+    setLastFrameBufferUsed(gBuffer.FBO);
+
+    static const GLenum withEmission[4] = {
+        GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
+    };
+    glDrawBuffers(4, withEmission);
+    static const GLfloat zero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    glClearBufferfv(GL_COLOR, 3, zero);   // índice 3 = 4º draw buffer = gBuffer.emission
+
+    DrawRenderQueue(emissiveQueue);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);   // mismo motivo que arriba
+    setLastFrameBufferUsed(gBuffer.FBO);
+    glDrawBuffers(3, withEmission);
+}
+
+// El G-Buffer del pase opaco (FlushOpaqueQueue) y el de los custom shaders de objeto (WaterRTS,
+// etc.) se dibujan ahora en dos pasadas separadas por objeto (ver Mesh3D::onUpdate) -- este objeto
+// solo se encola aquí, se dibuja en FlushObjectShaderQueue() DESPUES de FlushOpaqueQueue() para
+// que su escritura (con vértices ya desplazados por su propio vertex shader) sea la que quede, y
+// no al revés.
+void ComponentRender::EnqueueObjectShaders(Mesh3D *o)
+{
+    objectShaderQueue.push_back(o);
+}
+
+// Ver comentario de EnqueueObjectShaders. Nada que agrupar/instanciar aquí -- cada Mesh3D con
+// custom shaders tiene su propia shaderChain (ping-pong FBOs por instancia), no comparte estado
+// con las demás entradas de la cola.
+void ComponentRender::FlushObjectShaderQueue()
+{
+    for (auto* o : objectShaderQueue) {
+        o->RunObjectShaders();
+    }
+    objectShaderQueue.clear();
+}
+
+// Fase 4b: mismo criterio que EnqueueOpaque, pero para el pase de picking (ShaderOGLColor).
+// MOUSE_CLICK_SELECT_OBJECT3D suele estar activo permanentemente (hover picking) -- antes esto
+// dibujaba cada submesh al instante, uno por objeto y frame; ahora se encola y se vacía junto al
+// resto en FlushPickingQueue().
+void ComponentRender::EnqueuePicking(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
+{
+    // Mismo mecanismo que EnqueueOpaque (Fase 1): useFeedbackBuffer==true solo lo pasa
+    // Mesh3DAnimation::onUpdate(), señal de "unidad animada" para el picking instanciado con
+    // skinning vía TBO (Fase 2) en vez de un feedbackBuffer por-instancia.
+    auto* anim = useFeedbackBuffer ? dynamic_cast<Mesh3DAnimation*>(o) : nullptr;
+
+    const auto& meshData = o->getMeshData();
+    for (size_t meshIdx = 0; meshIdx < meshData.size(); meshIdx++) {
+        const auto& m = meshData[meshIdx];
+        if (!m.visibleInFrustum) continue;
+
+        PickingQueueEntry entry;
+        entry.o = o;
+        entry.vertexBuffer = m.vertexBuffer;
+        entry.uvBuffer = m.uvBuffer;
+        entry.normalBuffer = m.normalBuffer;
+        entry.size = static_cast<int>(m.vertices.size());
+        // Unidades animadas: color de picking a nivel de OBJETO (getPickingColor()), no de
+        // submesh -- mismo mecanismo que usaba el código antiguo (renderMesh con
+        // getPickingColor()). submeshPickingColor (AnimationData::cloneInto) no está
+        // garantizado no-cero para todas las instancias/submeshes animados -- un id=0 ahí se
+        // interpreta como "nada" en el framebuffer de picking y la unidad queda inseleccionable
+        // para siempre. Mesh3D estático sigue usando submeshPickingColor, que sí es fiable.
+        entry.color = anim ? o->getPickingColor().toGLM() : m.submeshPickingColor.toGLM();
+        entry.fbo = fbo;
+        entry.indexBuffer = anim ? 0 : m.indexBuffer;
+        entry.indexCount = anim ? 0 : m.indexCount;
+        if (anim) {
+            const auto& boneCache = anim->getBoneTransformCache(meshIdx);
+            if (!boneCache.empty()) {
+                entry.isSkinned = true;
+                entry.vertexBoneDataBuffer = m.vertexBoneDataBuffer;
+                entry.boneMatrices = &boneCache;
+                entry.boneCount = static_cast<int>(boneCache.size());
+            }
+        }
+        pickingQueue.push_back(entry);
+    }
+}
+
+// Ordena por vertexBuffer -- mismo motivo que en el opaco: misma malla compartida (Fase 2.1) =
+// mismo vertexBuffer. El color NO entra en la comparación de batch (a diferencia de texId/alpha
+// en FlushOpaqueQueue): es el dato POR-INSTANCIA que sube junto a la matriz de modelo para poder
+// distinguir qué objeto concreto fue pulsado -- nunca se pierde, cada instancia sigue llevando el
+// suyo aunque se dibuje en el mismo draw instanciado que otras.
+void ComponentRender::FlushPickingQueue()
+{
+    std::sort(pickingQueue.begin(), pickingQueue.end(), [](const PickingQueueEntry &a, const PickingQueueEntry &b) {
+        return a.vertexBuffer < b.vertexBuffer;
+    });
+
+    auto sameBatch = [](const PickingQueueEntry &a, const PickingQueueEntry &b) {
+        return a.vertexBuffer == b.vertexBuffer && a.uvBuffer == b.uvBuffer &&
+               a.normalBuffer == b.normalBuffer && a.indexBuffer == b.indexBuffer &&
+               a.indexCount == b.indexCount && a.fbo == b.fbo &&
+               a.isSkinned == b.isSkinned && a.vertexBoneDataBuffer == b.vertexBoneDataBuffer &&
+               a.boneCount == b.boneCount;
+    };
+
+    auto* colorShader = getShaders()->shaderOGLColor;
+    size_t i = 0;
+    while (i < pickingQueue.size()) {
+        size_t j = i + 1;
+        while (j < pickingQueue.size() && sameBatch(pickingQueue[i], pickingQueue[j])) ++j;
+
+        const auto &first = pickingQueue[i];
+        if (first.isSkinned) {
+            // Igual que en FlushOpaqueQueue (Fase 1): las entradas skinned van siempre por el
+            // camino instanciado, incluso un run de tamaño 1.
+            std::vector<glm::mat4> models;
+            std::vector<glm::vec3> colors;
+            std::vector<glm::mat4> allBoneMatrices;
+            models.reserve(j - i);
+            colors.reserve(j - i);
+            allBoneMatrices.reserve((j - i) * first.boneCount);
+            for (size_t k = i; k < j; k++) {
+                models.push_back(pickingQueue[k].o->getModelMatrix());
+                colors.push_back(pickingQueue[k].color);
+                const auto &bones = *pickingQueue[k].boneMatrices;
+                allBoneMatrices.insert(allBoneMatrices.end(), bones.begin(), bones.end());
+            }
+            colorShader->RenderColorInstancedSkinned(
+                first.vertexBuffer, first.uvBuffer, first.normalBuffer, first.vertexBoneDataBuffer,
+                first.size, first.fbo, first.boneCount, models, colors, allBoneMatrices
+            );
+        } else if (j - i == 1) {
+            colorShader->RenderColor(
+                first.o->getModelMatrix(), first.vertexBuffer, first.uvBuffer, first.normalBuffer,
+                first.size, Color(first.color.r, first.color.g, first.color.b, 1.0f), false, first.fbo,
+                first.indexBuffer, first.indexCount
+            );
+        } else {
+            std::vector<glm::mat4> models;
+            std::vector<glm::vec3> colors;
+            models.reserve(j - i);
+            colors.reserve(j - i);
+            for (size_t k = i; k < j; k++) {
+                models.push_back(pickingQueue[k].o->getModelMatrix());
+                colors.push_back(pickingQueue[k].color);
+            }
+            colorShader->RenderColorInstanced(
+                first.vertexBuffer, first.uvBuffer, first.normalBuffer, first.size,
+                first.fbo, first.indexBuffer, first.indexCount, models, colors
+            );
+        }
+        i = j;
+    }
+
+    if (!pickingQueue.empty()) InvalidateRenderStateCache();
+    pickingQueue.clear();
+}
+
+void ComponentRender::CreateCameraUBO()
+{
+    // projection + view, 2 mat4 (64 bytes c/u, alineado a 16 en std140) = 128 bytes, sin huecos.
+    glGenBuffers(1, &cameraUBO);
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), nullptr, GL_DYNAMIC_DRAW);
+    glBindBufferBase(GL_UNIFORM_BUFFER, 3, cameraUBO);
+}
+
+void ComponentRender::UpdateCameraUBO() const
+{
+    auto camera = Components::get()->Camera();
+    glm::mat4 projection = camera->getGLMMat4ProjectionMatrix();
+    glm::mat4 view = camera->getGLMMat4ViewMatrix();
+
+    glBindBuffer(GL_UNIFORM_BUFFER, cameraUBO);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &projection[0][0]);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &view[0][0]);
 }
 
 void ComponentRender::resizeShadersFramebuffers() const
@@ -1073,12 +1553,105 @@ void ComponentRender::resizeShadersFramebuffers() const
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+void ComponentRender::BuildDedupedStaticGeometry(
+    const std::vector<glm::vec4> &vertices,
+    const std::vector<glm::vec3> &normals,
+    const std::vector<glm::vec2> &uvs,
+    GLuint &outVertexBuffer,
+    GLuint &outUvBuffer,
+    GLuint &outNormalBuffer,
+    GLuint &outIndexBuffer,
+    GLsizei &outIndexCount
+)
+{
+    // Fase 2.2: el stream de entrada esta "expandido" (Assimp se importa sin
+    // aiProcess_JoinIdenticalVertices, ver Mesh3D::AssimpLoadGeometryFromFile), asi que suele
+    // haber vertices con posicion+uv+normal IDENTICOS repetidos en varias caras. Los deduplicamos
+    // aqui por comparacion exacta (mismos floats, no aproximada) y generamos un EBO que preserva
+    // el mismo orden/cantidad de triangulos que antes tenia glDrawArrays.
+    struct VertexKey {
+        glm::vec4 position;
+        glm::vec3 normal;
+        glm::vec2 uv;
+        bool operator==(const VertexKey &o) const {
+            return position == o.position && normal == o.normal && uv == o.uv;
+        }
+    };
+    struct VertexKeyHash {
+        size_t operator()(const VertexKey &k) const {
+            std::hash<float> h;
+            size_t seed = 0;
+            auto combine = [&](float f) { seed ^= h(f) + 0x9e3779b9u + (seed << 6) + (seed >> 2); };
+            combine(k.position.x); combine(k.position.y); combine(k.position.z); combine(k.position.w);
+            combine(k.normal.x); combine(k.normal.y); combine(k.normal.z);
+            combine(k.uv.x); combine(k.uv.y);
+            return seed;
+        }
+    };
+
+    std::vector<glm::vec4> dedupVertices;
+    std::vector<glm::vec3> dedupNormals;
+    std::vector<glm::vec2> dedupUvs;
+    std::vector<GLuint> indices;
+    indices.reserve(vertices.size());
+    dedupVertices.reserve(vertices.size());
+    dedupNormals.reserve(vertices.size());
+    dedupUvs.reserve(vertices.size());
+
+    std::unordered_map<VertexKey, GLuint, VertexKeyHash> lookup;
+    lookup.reserve(vertices.size());
+
+    for (size_t i = 0; i < vertices.size(); i++) {
+        VertexKey key{vertices[i], normals[i], uvs[i]};
+        auto it = lookup.find(key);
+        if (it != lookup.end()) {
+            indices.push_back(it->second);
+            continue;
+        }
+        auto newIndex = static_cast<GLuint>(dedupVertices.size());
+        dedupVertices.push_back(vertices[i]);
+        dedupNormals.push_back(normals[i]);
+        dedupUvs.push_back(uvs[i]);
+        lookup.emplace(key, newIndex);
+        indices.push_back(newIndex);
+    }
+
+    glGenBuffers(1, &outVertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, outVertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(dedupVertices.size() * sizeof(glm::vec4)), dedupVertices.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &outUvBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, outUvBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(dedupUvs.size() * sizeof(glm::vec2)), dedupUvs.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &outNormalBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, outNormalBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(dedupNormals.size() * sizeof(glm::vec3)), dedupNormals.data(), GL_STATIC_DRAW);
+
+    glGenBuffers(1, &outIndexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, outIndexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizeiptr>(indices.size() * sizeof(GLuint)), indices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    outIndexCount = static_cast<GLsizei>(indices.size());
+}
+
 void ComponentRender::FillOGLBuffers(std::vector<Mesh3DData> &meshes, bool withFeedbackBuffers)
 {
     for (auto &m: meshes) {
         if (m.vertices.empty() || m.uvs.empty() || m.normals.empty()) {
             LOG_ERROR("[FillOGLBuffers] mesh with empty geometry (vertices=%zu uvs=%zu normals=%zu) — skipped",
                 m.vertices.size(), m.uvs.size(), m.normals.size());
+            continue;
+        }
+
+        if (!withFeedbackBuffers) {
+            // Pipeline estatico (sin transform feedback): EBO deduplicado, Fase 2.2.
+            BuildDedupedStaticGeometry(
+                m.vertices, m.normals, m.uvs,
+                m.vertexBuffer, m.uvBuffer, m.normalBuffer,
+                m.indexBuffer, m.indexCount
+            );
             continue;
         }
 
@@ -1094,17 +1667,16 @@ void ComponentRender::FillOGLBuffers(std::vector<Mesh3DData> &meshes, bool withF
         glBindBuffer(GL_ARRAY_BUFFER, m.normalBuffer);
         glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(m.normals.size() * sizeof(glm::vec3)), m.normals.data(), GL_STATIC_DRAW);
 
-        if (withFeedbackBuffers) {
-            glGenBuffers(1, &m.feedbackBuffer);
-            glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);
-            glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.vertices.size() * sizeof(glm::vec4)), m.vertices.data(), GL_DYNAMIC_COPY);
+        // Solo se llega aqui con withFeedbackBuffers == true (el caso false hizo continue arriba).
+        glGenBuffers(1, &m.feedbackBuffer);
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.vertices.size() * sizeof(glm::vec4)), m.vertices.data(), GL_DYNAMIC_COPY);
 
-            glGenBuffers(1, &m.feedbackNormalBuffer);
-            glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackNormalBuffer);
-            glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.normals.size() * sizeof(glm::vec3)), m.normals.data(), GL_DYNAMIC_COPY);
+        glGenBuffers(1, &m.feedbackNormalBuffer);
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackNormalBuffer);
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.normals.size() * sizeof(glm::vec3)), m.normals.data(), GL_DYNAMIC_COPY);
 
-            glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
-        }
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
     }
 }
 
@@ -1129,8 +1701,10 @@ void ComponentRender::ClearShadowMaps() const
 void ComponentRender::RunShadowPass() const
 {
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "ShadowPass");
+    Profiler::get()->StartGpuMeasure("ShadowPass");
 
     if (!Config::get()->ENABLE_SHADOW_MAPPING || !Config::get()->ENABLE_LIGHTS) {
+        Profiler::get()->EndGpuMeasure("ShadowPass");
         Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "ShadowPass");
         return;
     }
@@ -1144,7 +1718,7 @@ void ComponentRender::RunShadowPass() const
         if (!obj->isEnabled()) continue;
 
         if (auto* anim = dynamic_cast<Mesh3DAnimation*>(obj)) {
-            if (anim->isEnableLights())
+            if (anim->isEnableLights() && anim->getRenderSettings().shadowMap)
                 casters.push_back(anim);
             continue;
         }
@@ -1155,20 +1729,43 @@ void ComponentRender::RunShadowPass() const
     }
 
     if (!casters.empty()) {
-        shadowPass->renderSceneDirectionalLight(casters, shaderRender->getDirectionalLight());
+        // AABB mundial por submesh, calculado una vez por caster/frame y reutilizado
+        // para cullear contra el frustum de CADA luz (direccional y cada spot), en vez
+        // del frustum de cámara: un caster fuera de cámara puede seguir proyectando
+        // sombra sobre algo visible, así que la cámara no es el frustum correcto aquí.
+        std::vector<std::vector<AABB3D>> casterSubmeshWorldAabbs;
+        casterSubmeshWorldAabbs.reserve(casters.size());
+        for (auto* mesh : casters) {
+            glm::mat4 model = mesh->getModelMatrix();
+            std::vector<AABB3D> submeshAabbs;
+            submeshAabbs.reserve(mesh->getMeshData().size());
+            for (const auto& m : mesh->getMeshData()) {
+                AABB3D worldAabb;
+                for (int i = 0; i < 8; i++) {
+                    glm::vec4 wp = model * glm::vec4(m.localAabb.vertices[i].toGLM(), 1.0f);
+                    worldAabb.vertices[i] = Vertex3D(wp.x / wp.w, wp.y / wp.w, wp.z / wp.w);
+                }
+                submeshAabbs.push_back(worldAabb);
+            }
+            casterSubmeshWorldAabbs.push_back(std::move(submeshAabbs));
+        }
+
+        shadowPass->renderSceneDirectionalLight(casters, casterSubmeshWorldAabbs, shaderRender->getDirectionalLight());
 
         const auto& spotLights = shaderRender->getShadowMappingSpotLights();
         for (int i = 0; i < static_cast<int>(spotLights.size()); i++) {
-            shadowPass->renderSceneSpotLight(casters, spotLights[i], i);
+            shadowPass->renderSceneSpotLight(casters, casterSubmeshWorldAabbs, spotLights[i], i);
         }
     }
 
+    Profiler::get()->EndGpuMeasure("ShadowPass");
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "ShadowPass");
 }
 
 void ComponentRender::LightPass() const
 {
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
+    Profiler::get()->StartGpuMeasure("LightPass");
 
     auto window = Components::get()->Window();
     auto gBuffer = window->getGBuffer();
@@ -1191,16 +1788,20 @@ void ComponentRender::LightPass() const
             shaders.shaderOGLRender->getNumSpotLights(),
             shaders.shaderShadowPass->getSpotLightsShadowMapArrayTextures(),
             (int) shaders.shaderOGLRender->getShadowMappingSpotLights().size(),
-            globalBuffer.sceneFBO
+            globalBuffer.sceneFBO,
+            gBuffer.emission,
+            emissionUsedThisFrame
         );
     }
 
+    Profiler::get()->EndGpuMeasure("LightPass");
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
 }
 
 void ComponentRender::FlipBuffersToGlobal() const
 {
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
+    Profiler::get()->StartGpuMeasure("FlipBuffersToGlobal");
 
     auto window = Components::get()->Window();
     auto gBuffer = window->getGBuffer();
@@ -1223,6 +1824,7 @@ void ComponentRender::FlipBuffersToGlobal() const
 
     Components::get()->Collisions()->DrawDebugCache();
 
+    Profiler::get()->EndGpuMeasure("FlipBuffersToGlobal");
     Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
 }
 

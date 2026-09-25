@@ -8,6 +8,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "../../../include/OpenGL/Base/ShaderBaseOpenGLQuad.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Render/Profiler.h"
 
 
 void ShaderBaseOpenGLQuad::SetupQuadUniforms(GLuint programID)
@@ -96,6 +97,7 @@ void ShaderBaseOpenGLQuad::DrawQuad() const
 {
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
     glBindVertexArray(0);
 }
 

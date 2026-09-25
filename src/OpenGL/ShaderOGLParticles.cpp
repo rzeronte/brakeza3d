@@ -2,6 +2,7 @@
 #include "../../include/OpenGL/ShaderOGLParticles.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLParticles::ShaderOGLParticles()
 :
@@ -99,6 +100,7 @@ void ShaderOGLParticles::render(
     glVertexAttribDivisor(2, 1); // color: one per quad                                  -> 1
 
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particlesCount);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLE_STRIP, 4, particlesCount);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

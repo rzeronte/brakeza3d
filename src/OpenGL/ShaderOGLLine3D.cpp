@@ -5,6 +5,7 @@
 #include "../include/OpenGL/ShaderOGLLine3D.h"
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLLine3D::ShaderOGLLine3D()
 :
@@ -79,6 +80,7 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     glLineWidth(1.0f);
     glDrawArrays(GL_LINES, 0, static_cast<GLint>(vertices.size()));
+    Profiler::get()->incrementDrawCall(GL_LINES, static_cast<GLint>(vertices.size()));
 
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);

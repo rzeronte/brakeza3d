@@ -13,6 +13,8 @@
 #include "../Render/Image.h"
 #include "../Render/Triangle3D.h"
 #include "../Render/TextWriter.h"
+#include "../Render/RenderQueueEntry.h"
+#include "../Render/PickingQueueEntry.h"
 #include "../Render/GlyphAtlas.h"
 #include "../Render/SelectionManager.h"
 #include "../Loaders/ProjectLoader.h"
@@ -85,6 +87,48 @@ class ComponentRender : public Component
     GLuint lastFrameBufferUsed = 0;
     GLuint lastProgramUsed = 0;
 
+    // Caché de estado GL compartida SOLO entre ShaderOGLRenderDeferred/Forward (los dos que
+    // dibujan por submesh, cientos/miles de veces por frame -- ver Fase 1.1.1 del plan de
+    // rendimiento). rsValid=false fuerza el próximo Apply* a emitir la llamada GL real sin
+    // fiarse del valor cacheado -- se pone a false en cada frontera real (antes del bucle de
+    // GBuffer, antes del de transparencias) para no heredar estado de otro paso/frame.
+    bool rsValid     = false;
+    bool rsDepthTest = true;
+    bool rsDepthMask = true;
+    bool rsBlend     = true;
+    bool rsCull      = true;
+    GLenum rsDepthFunc = GL_LESS;
+    GLenum rsBlendSrc  = GL_SRC_ALPHA;
+    GLenum rsBlendDst  = GL_ONE_MINUS_SRC_ALPHA;
+
+    // Fase 3 (Etapa 1): cola de opacos, solo Mesh3D estático/Deferred por ahora. Se vacía al
+    // principio de la Pasada 2 de onUpdateSceneObjects() y se consume (ordenada) al final de esa
+    // misma pasada -- nunca sobrevive entre frames, no hace falta limpiarla en ningún otro sitio.
+    std::vector<RenderQueueEntry> opaqueQueue;
+
+    // Mesh3D con emisión activa: se dibujan en el G-Buffer DESPUÉS de todo lo demás (opacos y
+    // custom shaders de objeto), con el 4º draw buffer (gBuffer.emission) activado solo para ellos.
+    // Al ser los últimos, el depth test garantiza que solo escriben emisión donde son lo más
+    // cercano -- nadie puede taparlos después dejando emisión obsoleta en ese píxel.
+    std::vector<RenderQueueEntry> emissiveQueue;
+    bool emissionUsedThisFrame = false;   // lo lee LightPass() para saltarse la lectura de gEmission
+
+    // Fase 4b: misma idea que opaqueQueue pero para el pase de picking (ShaderOGLColor). Mismo
+    // ciclo de vida -- vive solo dentro de un frame.
+    std::vector<PickingQueueEntry> pickingQueue;
+
+    // Mesh3D con custom shaders (p.ej. WaterRTS) deben escribir su G-Buffer DESPUES del pase
+    // opaco normal, no entrelazados objeto-a-objeto -- si no, un objeto que se procesa antes que
+    // otros en sceneObjects pinta su shader custom y luego FlushOpaqueQueue() (al final de la
+    // pasada) lo repinta encima con el material por defecto sin animar. Mismo ciclo de vida que
+    // opaqueQueue/pickingQueue -- vive solo dentro de un frame.
+    std::vector<Mesh3D*> objectShaderQueue;
+
+    // CameraBlock UBO (binding point 3; 0-2 los usan los UBOs de luces de ShaderOGLRenderForward).
+    // Compartido por GBuffer/Render/Color: se rellena UNA vez por frame en vez de subir
+    // projection/view como uniforms sueltos en cada draw.
+    GLuint cameraUBO = 0;
+
     SelectionManager selection;
 
     TextWriter *textWriter = nullptr;
@@ -111,7 +155,6 @@ public:
 
     void onStart() override;
     void preUpdate() override;
-    void DrawFPS() const;
     void onUpdate() override;
     void postUpdate() override;
     void onEnd() override;
@@ -186,6 +229,24 @@ public:
     void setLastProgramUsed(GLuint value);
     void ChangeOpenGLFramebuffer(GLuint);
     void ChangeOpenGLProgram(GLuint);
+    void ApplyDepthTest(bool value);
+    void ApplyDepthFunc(GLenum value);
+    void ApplyDepthMask(bool value);
+    void ApplyBlend(bool value);
+    void ApplyBlendFunc(GLenum src, GLenum dst);
+    void ApplyCulling(bool value);
+    void InvalidateRenderStateCache();
+    void RestoreDefaultRenderState();
+    void EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);
+    void FlushOpaqueQueue();
+    void FlushEmissiveQueue();
+    void DrawRenderQueue(std::vector<RenderQueueEntry> &queue);
+    void EnqueuePicking(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);
+    void FlushPickingQueue();
+    void EnqueueObjectShaders(Mesh3D *o);
+    void FlushObjectShaderQueue();
+    void CreateCameraUBO();
+    void UpdateCameraUBO() const;
     void resizeShadersFramebuffers() const;
     void ClearShadowMaps() const;
     void LightPass() const;
@@ -224,8 +285,18 @@ public:
     static bool compareDistances(const Object3D *obj1, const Object3D *obj2);
     static void PostProcessingShadersChain();
     static void FillOGLBuffers(std::vector<Mesh3DData> &meshes, bool withFeedbackBuffers = false);
+    static void BuildDedupedStaticGeometry(
+        const std::vector<glm::vec4> &vertices,
+        const std::vector<glm::vec3> &normals,
+        const std::vector<glm::vec2> &uvs,
+        GLuint &outVertexBuffer,
+        GLuint &outUvBuffer,
+        GLuint &outNormalBuffer,
+        GLuint &outIndexBuffer,
+        GLsizei &outIndexCount
+    );
     static void DeleteRemovedObjects();
-    static void onUpdateSceneObjects();
+    static void onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects);
     static void updateFrustum();
     static bool isInFrustum(const Object3D *o, float radiusOverride = -1.0f);
     static void MakeScreenShot(std::string filename = "");
@@ -236,6 +307,13 @@ public:
     inline static int lastFrameCulled  = 0;
     inline static int lastFrameLightsVisible = 0;
     inline static int lastFrameLightsCulled  = 0;
+
+    // Objetos marcados removed=true en un frame anterior: sacados ya de sceneObjects/index,
+    // pero con el delete real diferido un frame (ver DeleteRemovedObjects). Deja una ventana
+    // completa de onUpdate() para que cualquier otro objeto con un puntero crudo hacia este
+    // (p.ej. ParticleEmitter::followTarget) pueda ver isRemoved()==true en memoria todavía
+    // válida y soltar su referencia antes del delete.
+    inline static std::vector<Object3D*> pendingDeleteObjects;
 
     void clearEngineCache();
 };

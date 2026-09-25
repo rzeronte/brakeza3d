@@ -16,6 +16,22 @@ struct Measure {
     const int MAX_HISTORY = 120;
 };
 
+// GL_TIME_ELAPSED nunca se lee en el mismo frame en que se emite (sincronizaria CPU/GPU).
+// Cada pase tiene su propio anillo de query objects: al reutilizar un slot (RING_SIZE frames
+// despues) el resultado de esa vuelta anterior ya esta listo casi siempre, sin bloquear nunca
+// (si no lo esta todavia, simplemente se descarta esa muestra y se reintenta el siguiente ciclo).
+struct GpuMeasure {
+    static constexpr int RING_SIZE = 4;
+    GLuint queryIds[RING_SIZE] = {0, 0, 0, 0};
+    bool queryPending[RING_SIZE] = {false, false, false, false};
+    int currentSlot = 0;
+    double lastGpuMs = 0.0;
+    std::vector<float> gpuTimeHistory;
+    const int MAX_HISTORY = 120;
+};
+
+using GpuMeasuresMap = std::unordered_map<std::string, GpuMeasure>;
+
 namespace ProfilerConstants {
     constexpr const char* SUFFIX_PRE = "_pre";
     constexpr const char* SUFFIX_UPDATE = "_update";
@@ -30,9 +46,11 @@ class Profiler
 
     MeasuresMap componentMeasures;
     MeasuresMap scriptMeasures;
+    GpuMeasuresMap gpuMeasures;
 
     bool enable = false;
     bool scriptDetailEnabled = false;
+    bool gpuTimingEnabled = false;
 
     Measure measureFrameTime;
 
@@ -42,6 +60,12 @@ class Profiler
     int lastProgramChanges = 0;
     bool countFboSwitches     = false;
     bool countProgramSwitches = false;
+
+    int drawCalls = 0;
+    int triangles = 0;
+    int lastDrawCalls = 0;
+    int lastTriangles = 0;
+    bool countDrawCalls = false;
 
 public:
     Profiler() = default;
@@ -70,8 +94,14 @@ public:
     void setScriptDetailEnabled(bool v);
     void incrementFboChanges();
     void incrementProgramChanges();
+    void incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCount = 1);
+    [[nodiscard]] int getLastDrawCalls() const;
+    [[nodiscard]] int getLastTriangles() const;
     [[nodiscard]] MeasuresMap& getComponentMeasures();
     [[nodiscard]] MeasuresMap& getScriptMeasures();
+    [[nodiscard]] GpuMeasuresMap& getGpuMeasures();
+    [[nodiscard]] bool isGpuTimingEnabled() const;
+    void setGpuTimingEnabled(bool v);
     [[nodiscard]] int getNumberOfImages() const;
     [[nodiscard]] int getMemoryImageUsage() const;
     [[nodiscard]] float getMemoryImageUsageKB() const;
@@ -79,9 +109,14 @@ public:
     static void InitMeasure(MeasuresMap &map, const std::string & label);
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);
+    void StartGpuMeasure(const std::string& name);
+    void EndGpuMeasure(const std::string& name);
     static void DrawBreakDownComponent(Measure &pre, Measure &update, Measure &post, double total, float height);
     static double Ticks();
     static float AverageHistory(const Measure &m);
+    static float AverageGpuHistory(const GpuMeasure &m);
+    static float PercentileHistory(const std::vector<float> &history, float percentile);
+    std::string ExportFrameStatsCSV() const;
     static Profiler *get();
 };
 

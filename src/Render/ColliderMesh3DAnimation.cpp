@@ -17,7 +17,7 @@ void AssimpAnimationService::UpdateOpenGLBones(std::vector<Mesh3DData> &meshes)
     std::vector transformations(MAX_BONES, glm::mat4(0));
 
     for (int i = 0; i < (int) boneInfo.size(); i++) {
-        transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
+        transformations[i] = Tools::aiMat4toGLMMat4(boneInfo[i].WorldTransform);
     }
 
     for (auto &m: meshes) {
@@ -198,11 +198,12 @@ void AssimpAnimationService::LoadMeshBones(int meshId, aiMesh *mesh, std::vector
 
             boneMapping[BoneName] = BoneIndex;
 
-            boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
         } else {
             BoneIndex = (int) boneMapping[BoneName];
         }
+
+        boneInfo[BoneIndex].BoneOffsetByMesh[meshId] = mesh->mBones[i]->mOffsetMatrix;
 
         for (int j = 0; j < (int) mesh->mBones[i]->mNumWeights; j++) {
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
@@ -281,7 +282,7 @@ void AssimpAnimationService::ReadNodeHierarchy(float AnimationTime, const aiNode
 
     if (boneMapping.find(NodeName) != boneMapping.end()) {
         unsigned int BoneIndex = boneMapping[NodeName];
-        boneInfo[BoneIndex].FinalTransformation = globalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
+        boneInfo[BoneIndex].WorldTransform = globalInverseTransform * GlobalTransformation;
     }
 
     for (unsigned int i = 0; i < pNode->mNumChildren; i++) {
@@ -336,7 +337,7 @@ void AssimpAnimationService::updateForBone(Vertex3D &V, int meshID, int vertexID
         int boneId = boneData.IDs[n];
         float weight = boneData.Weights[n];
         //LOG_MESSAGE("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
-        BoneTransform += Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation) * weight;
+        BoneTransform += Tools::aiMat4toGLMMat4(boneInfo[boneId].WorldTransform) * weight;
     }
 
     V = Vertex3D::fromGLM(BoneTransform * V.toGLM4());
@@ -420,22 +421,14 @@ void AssimpAnimationService::CalcInterpolatedScaling(aiVector3D &Out, float Anim
 
 void AssimpAnimationService::drawBones(Object3D *o, aiNode *node, Vertex3D *lastBonePosition)
 {
-    std::vector<aiMatrix4x4> Transforms;
-    Transforms.resize(numBones);
-    for (int i = 0; i < numBones; i++) {
-        Transforms[i] = boneInfo[i].FinalTransformation;
-    }
-
     int idCurrentNode;
 
     if (boneMapping.find(node->mName.C_Str()) != boneMapping.end()) {
         idCurrentNode = boneMapping[node->mName.C_Str()];
 
-        aiMatrix4x4 mOffset = boneInfo[idCurrentNode].BoneOffset;
-        aiMatrix4x4 mT = Transforms[idCurrentNode];
+        aiMatrix4x4 mT = boneInfo[idCurrentNode].WorldTransform;
         aiVector3D aBonePosition;
 
-        aBonePosition = mOffset.Inverse() * aBonePosition;
         aBonePosition = mT * aBonePosition;
 
         Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);

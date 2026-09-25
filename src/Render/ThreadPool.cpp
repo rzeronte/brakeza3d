@@ -50,6 +50,7 @@ ThreadPool::ThreadPool(size_t numThreads)
     stop(false),
     activeTasks(0),
     cont(0),
+    epoch(0),
     maxCallbacksPerFrame(150),
     maxConcurrentTasks(4),
     maxEnqueuedTasks(4096),
@@ -83,6 +84,11 @@ void ThreadPool::enqueue(std::shared_ptr<ThreadJobBase> job) {
 }
 
 void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> job) {
+    // Generacion vigente en el momento de encolar. Si un cancelPending() avanza epoch mientras
+    // este job ya estaba EN EJECUCION (no cancelable por la cola), su callback se descarta solo
+    // en vez de tocar un Object3D/estado Lua que el restart ya invalido -- ver ThreadPool.h.
+    const uint64_t jobEpoch = epoch.load();
+
     {
         std::unique_lock<std::mutex> lock(queueMutex);
 
@@ -94,11 +100,42 @@ void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> jo
             return;
         }
 
-        // Crear wrapper job que ejecuta function en worker thread
-        // y encola callback para main thread
-        auto workerJob = std::make_shared<ThreadJobBase>(
-            job->function,
-            [this, job]() {
+        tasks.push(makeMainThreadCallbackWrapper(job, jobEpoch));
+    }
+    condition.notify_one();
+}
+
+std::shared_ptr<ThreadJobBase> ThreadPool::makeMainThreadCallbackWrapper(
+    std::shared_ptr<ThreadJobBase> job, uint64_t jobEpoch)
+{
+    // Compartido entre function y callback del wrapper: si el job se aplaza, el callback del
+    // wrapper (que spawnWorkers ejecuta justo después de function) no debe encolar nada.
+    auto wasDeferred = std::make_shared<bool>(false);
+
+    return std::make_shared<ThreadJobBase>(
+            [this, job, jobEpoch, wasDeferred]() {
+                job->function();
+
+                if (job->deferred) {
+                    // El job no podía avanzar sin bloquear este worker (otro hilo carga el mismo
+                    // recurso). Se reencola al final para que el worker quede libre para otro
+                    // trabajo. Pausa corta para no girar en vacío si solo quedan aplazados.
+                    job->deferred = false;
+                    *wasDeferred = true;
+                    if (jobEpoch != epoch.load()) return; // escena reiniciada: descartar
+                    std::this_thread::sleep_for(std::chrono::milliseconds(2));
+                    {
+                        std::unique_lock<std::mutex> lock(queueMutex);
+                        if (jobEpoch != epoch.load()) return;
+                        tasks.push(makeMainThreadCallbackWrapper(job, jobEpoch));
+                    }
+                    condition.notify_one();
+                }
+            },
+            [this, job, jobEpoch, wasDeferred]() {
+                if (*wasDeferred) return;             // reencolado, su callback llegará más tarde
+                if (jobEpoch != epoch.load()) return; // escena ya reiniciada, descartar
+
                 std::unique_lock<std::mutex> callbackLock(callbackMutex);
 
                 if (mainThreadCallbacks.size() >= maxEnqueuedCallbacks) {
@@ -107,15 +144,12 @@ void ThreadPool::enqueueWithMainThreadCallback(std::shared_ptr<ThreadJobBase> jo
                     return;
                 }
 
-                mainThreadCallbacks.push([job]() {
+                mainThreadCallbacks.push([this, job, jobEpoch]() {
+                    if (jobEpoch != epoch.load()) return; // comprobacion final justo antes de ejecutar
                     job->callback();
                 });
             }
         );
-
-        tasks.push(workerJob);
-    }
-    condition.notify_one();
 }
 
 void ThreadPool::processMainThreadCallbacks() {
@@ -167,6 +201,20 @@ int ThreadPool::getActiveTasks() const {
 void ThreadPool::waitAll() {
     while (getPendingTasks() > 0 || getActiveTasks() > 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+}
+
+void ThreadPool::cancelPending() {
+    epoch.fetch_add(1);
+    {
+        std::unique_lock<std::mutex> lock(queueMutex);
+        std::queue<std::shared_ptr<ThreadJobBase>> empty;
+        std::swap(tasks, empty);
+    }
+    {
+        std::unique_lock<std::mutex> lock(callbackMutex);
+        std::queue<std::function<void()>> empty;
+        std::swap(mainThreadCallbacks, empty);
     }
 }
 

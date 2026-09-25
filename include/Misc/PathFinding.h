@@ -8,6 +8,7 @@
 #include <cmath>
 #include <algorithm>
 #include <tuple>
+#include <memory>
 
 struct PathfindingNode {
     int x, y, z;
@@ -30,6 +31,10 @@ class PathFinding {
 private:
     int width, height, depth;
     std::vector<std::vector<std::vector<bool>>> grid;
+    // Coste multiplicador por celda (>= 1.0, índice (x*height + y)*depth + z). nullptr = todas 1.0.
+    // Compartido e inmutable: Grid3D lo sustituye entero (copy-on-write) y cada computePath()
+    // se queda con su propia referencia, así los hilos de pathfinding nunca leen a medio escribir.
+    std::shared_ptr<const std::vector<float>> cellCost;
     std::vector<std::tuple<int, int, int>> directions = {
             {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1},
             {1, 1, 0}, {-1, -1, 0}, {1, -1, 0}, {-1, 1, 0},
@@ -50,6 +55,11 @@ public:
     PathFinding(int w, int h, int d) : width(w), height(h), depth(d)
     {
         grid.resize(w, std::vector<std::vector<bool>>(h, std::vector<bool>(d, false)));
+    }
+
+    void setCellCost(std::shared_ptr<const std::vector<float>> costs)
+    {
+        cellCost = std::move(costs);
     }
 
     void setObstacle(int x, int y, int z)
@@ -113,6 +123,8 @@ public:
                         (dy != 0 && dz != 0) ||
                         (dx != 0 && dz != 0)
                     ) ? 1.414f : 1.0f;
+                    // Costes >= 1: la heurística euclídea sigue siendo admisible.
+                    if (cellCost) movementCost *= (*cellCost)[(nx * height + ny) * depth + nz];
 
                     float gNew = current->g + movementCost;
                     float hNew = heuristic(nx, ny, nz, x2, y2, z2);

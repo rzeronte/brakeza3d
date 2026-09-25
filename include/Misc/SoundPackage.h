@@ -4,27 +4,32 @@
 
 #include <vector>
 #include <string>
-#include <SDL2/SDL_mixer.h>
+#include "miniaudio.h"
 
 typedef enum {
     SOUND, MUSIC
 } SoundPackageItemType;
 
+// buffer: PCM decodificado una vez en memoria (ma_audio_buffer no copia pDecodedData,
+// solo lo referencia -- ver SoundPackage::addItem). loaded=false si el decode fallo
+// (buffer.ref queda a cero, pData=nullptr) -- getByLabel() sigue devolviendo el item
+// (igual que antes con un Mix_Chunk nulo) para que el caller decida cómo fallar.
 struct SoundPackageItem {
     std::string label;
-    Mix_Music *music;
-    Mix_Chunk *sound;
     SoundPackageItemType type;
+    ma_audio_buffer buffer{};
+    void* pDecodedData = nullptr;
+    bool  loaded = false;
 };
 
 class SoundPackage {
     std::vector<SoundPackageItem *> items;
 public:
+    ~SoundPackage();
+
     void addItem(const std::string &srcSound, std::string label, SoundPackageItemType type);
 
-    Mix_Chunk *getByLabel(const std::string &label);
-
-    Mix_Music *getMusicByLabel(const std::string &label);
+    SoundPackageItem *getByLabel(const std::string &label);
 };
 
 

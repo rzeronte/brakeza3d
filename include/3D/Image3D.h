@@ -47,6 +47,7 @@ public:
     void setSource(const std::string &source);
 
     void setHeight(float value);
+    void setTowardsCamera(bool value);
     void FillBuffers();
     void setImage(Image *value);
     void ShadowMappingPass();

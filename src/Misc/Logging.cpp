@@ -3,6 +3,11 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Render/EngineObserver.h"
 
+bool Logging::IsVerbose()
+{
+    return Config::get()->ENABLE_LOGGING_VERBOSE;
+}
+
 void Logging::Message(const char *message, ...)
 {
     va_list args;

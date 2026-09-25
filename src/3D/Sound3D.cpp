@@ -10,6 +10,31 @@
 
 float Sound3D::ambienceVolumeScale = 1.0f;
 
+bool Sound3D::DecodeFile(const std::string& srcFile, ma_audio_buffer& outBuffer, void*& outData)
+{
+    ma_decoder_config cfg = ma_decoder_config_init(ma_format_f32, 2, 44100);
+    ma_uint64 frameCount  = 0;
+    void*     pData       = nullptr;
+
+    ma_result result = ma_decode_file(srcFile.c_str(), &cfg, &frameCount, &pData);
+    if (result != MA_SUCCESS) {
+        LOG_ERROR("[Sound3D] ma_decode_file failed for '%s': result=%d", srcFile.c_str(), (int)result);
+        return false;
+    }
+
+    ma_audio_buffer_config bufferConfig = ma_audio_buffer_config_init(cfg.format, cfg.channels, frameCount, pData, nullptr);
+    bufferConfig.sampleRate = cfg.sampleRate;
+
+    if (ma_audio_buffer_init(&bufferConfig, &outBuffer) != MA_SUCCESS) {
+        LOG_ERROR("[Sound3D] ma_audio_buffer_init failed for '%s'", srcFile.c_str());
+        ma_free(pData, nullptr);
+        return false;
+    }
+
+    outData = pData;
+    return true;
+}
+
 Sound3D::Sound3D()
 {
     renderSettings.frustumCulling = false;
@@ -17,18 +42,20 @@ Sound3D::Sound3D()
 
 Sound3D::~Sound3D()
 {
-    if (channel >= 0 && Mix_GetChunk(channel) == mixChunk) {
-        Mix_HaltChannel(channel);
+    stopVoice();
+    if (bufferLoaded) {
+        ma_audio_buffer_uninit(&buffer);
+        bufferLoaded = false;
     }
-    if (mixChunk) {
-        Mix_FreeChunk(mixChunk);
-        mixChunk = nullptr;
+    if (pDecodedData) {
+        ma_free(pDecodedData, nullptr);
+        pDecodedData = nullptr;
     }
 }
 
 void Sound3D::onUpdate()
 {
-    if (!mixChunk) return;
+    if (!bufferLoaded) return;
 
     auto* cam = Components::get()->Camera()->getCamera();
     Vertex3D camPos = cam->getPosition();
@@ -41,22 +68,34 @@ void Sound3D::onUpdate()
         float t = (dist - innerRadius) / (outerRadius - innerRadius);
         vol = static_cast<int>(baseVolume * (1.0f - t));
     }
-    vol = static_cast<int>(vol * ambienceVolumeScale);
+    float volScaled = (vol / 128.0f) * ambienceVolumeScale;
 
-    bool channelOwned = (channel >= 0 && Mix_GetChunk(channel) == mixChunk);
+    if (volScaled > 0.0f) {
+        if (!voiceInitialized) {
+            auto* engine = Components::get()->Sound()->getEngine();
 
-    if (vol > 0) {
-        if (!channelOwned) {
-            channel   = Mix_PlayChannel(-1, mixChunk, loop ? -1 : 0);
-            isPlaying = (channel >= 0);
+            if (ma_audio_buffer_ref_init(buffer.ref.format, buffer.ref.channels,
+                                          buffer.ref.pData, buffer.ref.sizeInFrames, &ref) == MA_SUCCESS) {
+                refInitialized = true;
+
+                if (ma_sound_init_from_data_source(engine, (ma_data_source*)&ref,
+                                                    MA_SOUND_FLAG_NO_SPATIALIZATION, nullptr, &voice) == MA_SUCCESS) {
+                    voiceInitialized = true;
+                    ma_sound_set_looping(&voice, loop ? MA_TRUE : MA_FALSE);
+                    ma_sound_set_volume(&voice, volScaled);
+                    ma_sound_start(&voice);
+                    isPlaying = true;
+                } else {
+                    ma_audio_buffer_ref_uninit(&ref);
+                    refInitialized = false;
+                }
+            }
         } else {
-            Mix_Volume(channel, vol);
+            ma_sound_set_volume(&voice, volScaled);
         }
     } else {
-        if (channelOwned) {
-            Mix_HaltChannel(channel);
-            channel   = -1;
-            isPlaying = false;
+        if (voiceInitialized) {
+            stopVoice();
         }
     }
 

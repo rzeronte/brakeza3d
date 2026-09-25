@@ -73,7 +73,22 @@ public:
     [[nodiscard]] const FilePath::FragmentShaderFile& getFragmentFilename() const;
 
     static void setVAOAttributes(GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer);
+
+    // Instancing de unidades animadas (Fase 1/2): BoneIDs/Weights de VertexBoneData
+    // (Mesh3DAnimation.h) como atributos por-vértice, mismo layout que ya usa
+    // ShaderOGLBonesTransforms::setVAOAttributes para su pase de transform feedback -- reutilizado
+    // por G-Buffer (locations 7/8, libres ahí) y picking (locations 8/9, la 7 ya la ocupa
+    // aInstanceColor en GLSL/Color.vs) -- de ahí que las locations sean parámetro y no fijas.
+    static void setVAOBoneAttributes(GLuint vertexBoneDataBuffer, int boneIdsLocation = 7, int weightsLocation = 8);
+
     void ReadShaderFiles(const FilePath::VertexShaderFile &vertexFilename, const FilePath::FragmentShaderFile &fragmentFilename);
+
+    // Fase 2.2: dibuja con el EBO deduplicado cuando hay uno (indexBuffer != 0, geometria
+    // estatica compartida) o cae de vuelta a glDrawArrays (mallas animadas / sin ModelData
+    // compartido, indexBuffer == 0) -- unico punto que decide entre las dos rutas, para no
+    // repetir el mismo `if` en cada shader.
+    static void DrawMeshGeometry(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount);
+    static void DrawMeshGeometryInstanced(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, GLsizei instanceCount);
 
 private:
     [[nodiscard]] GLint getUniformLocation(const std::string &name) const;

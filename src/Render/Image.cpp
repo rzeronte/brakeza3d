@@ -59,7 +59,7 @@ void Image::CreateSDLTexture()
 
 void Image::LoadSDLSurface()
 {
-    surface = IMG_Load(fileName.c_str());
+    surface = Tools::SafeIMGLoad(fileName);
 }
 
 void Image::setImage(const FilePath::ImageFile &filename)

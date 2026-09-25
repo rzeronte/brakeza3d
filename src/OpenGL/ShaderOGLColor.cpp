@@ -5,6 +5,7 @@
 
 #include "../../include/OpenGL/ShaderOGLColor.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLColor::ShaderOGLColor()
 :
@@ -23,10 +24,40 @@ void ShaderOGLColor::PrepareMainThread()
     glBindVertexArray(VertexArrayID);
     LoadUniforms();
     CreateBuffer();
+
+    // Fase 4b (picking): attributes 3-6 (mat4 aInstanceModel), mismo patrón que
+    // ShaderOGLRenderDeferred -- configurado una sola vez aquí, RenderColorInstanced() solo
+    // respecifica el contenido en cada batch.
+    glGenBuffers(1, &instanceModelBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceModelBuffer);
+    for (int i = 0; i < 4; i++) {
+        glEnableVertexAttribArray(3 + i);
+        glVertexAttribPointer(3 + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+            reinterpret_cast<void*>(sizeof(glm::vec4) * i));
+        glVertexAttribDivisor(3 + i, 1);
+    }
+
+    // attribute 7 (vec3 aInstanceColor) -- color de picking por instancia.
+    glGenBuffers(1, &instanceColorBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, instanceColorBuffer);
+    glEnableVertexAttribArray(7);
+    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glVertexAttribDivisor(7, 1);
+
+    // Picking instanciado con skinning (Fase 2): TBO con las matrices de huesos del batch,
+    // leído en GLSL/Color.vs como samplerBuffer. glTexBuffer() solo hace falta una vez.
+    glGenBuffers(1, &boneMatrixBuffer);
+    glGenTextures(1, &boneMatrixTexture);
+    glBindTexture(GL_TEXTURE_BUFFER, boneMatrixTexture);
+    glBindBuffer(GL_TEXTURE_BUFFER, boneMatrixBuffer);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, boneMatrixBuffer);
 }
 
 void ShaderOGLColor::LoadUniforms()
 {
+    // projection/view ya no son uniforms sueltos: se leen de CameraBlock (binding 3),
+    // relleno una vez por frame en ComponentRender::UpdateCameraUBO().
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "CameraBlock"), 3);
 }
 
 void ShaderOGLColor::renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const
@@ -41,24 +72,9 @@ void ShaderOGLColor::renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &
             static_cast<int>(mm.vertices.size()),
             color,
             clearFramebuffer,
-            fbo
-        );
-    }
-}
-
-void ShaderOGLColor::renderMeshWithSubmeshColors(Mesh3D* m, bool useFeedbackBuffer, bool clearFramebuffer, GLuint fbo) const
-{
-    for (const auto& mm : m->getMeshData()) {
-        if (!mm.visibleInFrustum) continue;
-        RenderColor(
-            m->getModelMatrix(),
-            useFeedbackBuffer ? mm.feedbackBuffer : mm.vertexBuffer,
-            mm.uvBuffer,
-            useFeedbackBuffer ? mm.feedbackNormalBuffer : mm.normalBuffer,
-            static_cast<int>(mm.vertices.size()),
-            mm.submeshPickingColor,
-            clearFramebuffer,
-            fbo
+            fbo,
+            useFeedbackBuffer ? 0 : mm.indexBuffer,
+            useFeedbackBuffer ? 0 : mm.indexCount
         );
     }
 }
@@ -71,7 +87,9 @@ void ShaderOGLColor::RenderColor(
     int size,
     const Color &c,
     bool clearFBO,
-    GLuint fbo
+    GLuint fbo,
+    GLuint indexBuffer,
+    GLsizei indexCount
 ) const
 {
     auto render = Components::get()->Render();
@@ -92,20 +110,150 @@ void ShaderOGLColor::RenderColor(
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
 
-    auto camera = Components::get()->Camera();
-
-    setMat4("projection", camera->getGLMMat4ProjectionMatrix());
-    setMat4("view", camera->getGLMMat4ViewMatrix());
+    // projection/view: CameraBlock (binding 3), no hace falta subirlas aqui.
+    setBool("useInstancing", false);
+    setBool("useSkinning", false);
     setMat4("model", modelView);
     setVec3("color", c.toGLM());
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    glDrawArrays(GL_TRIANGLES, 0,  size );
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    render->ChangeOpenGLFramebuffer(0);
+}
+
+// Fase 4b: dibuja un run de 2+ submeshes de picking que comparten geometria (ver
+// ComponentRender::FlushPickingQueue) con UNA sola llamada instanciada. A diferencia del opaco,
+// el color NO se comparte -- es precisamente el dato por-instancia que distingue que objeto
+// concreto fue pulsado, así que viaja en instanceColors paralelo a instanceModels.
+void ShaderOGLColor::RenderColorInstanced(
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
+    int size,
+    GLuint fbo,
+    GLuint indexBuffer,
+    GLsizei indexCount,
+    const std::vector<glm::mat4> &instanceModels,
+    const std::vector<glm::vec3> &instanceColors
+) const
+{
+    if (instanceModels.empty()) return;
+
+    auto render = Components::get()->Render();
+    render->ChangeOpenGLFramebuffer(fbo);
+    render->ChangeOpenGLProgram(programID);
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidthRender(), window->getHeightRender());
+
+    glBindVertexArray(VertexArrayID);
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+
+    setBool("useInstancing", true);
+    setBool("useSkinning", false);
+
+    setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceModelBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instanceModels.size() * sizeof(glm::mat4)),
+        instanceModels.data(), GL_DYNAMIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceColorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instanceColors.size() * sizeof(glm::vec3)),
+        instanceColors.data(), GL_DYNAMIC_DRAW);
+
+    DrawMeshGeometryInstanced(GL_TRIANGLES, indexBuffer, indexCount, size, static_cast<GLsizei>(instanceModels.size()));
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    render->ChangeOpenGLFramebuffer(0);
+}
+
+// Fase 2: picking instanciado con skinning -- mismo cuerpo que RenderColorInstanced(), salvo que
+// la geometria viene de vertexBuffer/vertexBoneDataBuffer COMPARTIDOS (bind-pose) y el skinning se
+// aplica en GLSL/Color.vs leyendo boneMatrixBuffer/Texture (TBO) indexado por gl_InstanceID. Se usa
+// siempre para entradas skinned, incluso un batch de tamaño 1 (ver ComponentRender::FlushPickingQueue).
+void ShaderOGLColor::RenderColorInstancedSkinned(
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
+    GLuint vertexBoneDataBuffer,
+    int size,
+    GLuint fbo,
+    int bonesPerInstance,
+    const std::vector<glm::mat4> &instanceModels,
+    const std::vector<glm::vec3> &instanceColors,
+    const std::vector<glm::mat4> &allBoneMatrices
+) const
+{
+    if (instanceModels.empty() || bonesPerInstance <= 0) return;
+
+    auto render = Components::get()->Render();
+    render->ChangeOpenGLFramebuffer(fbo);
+    render->ChangeOpenGLProgram(programID);
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidthRender(), window->getHeightRender());
+
+    glBindVertexArray(VertexArrayID);
+
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+
+    setBool("useInstancing", true);
+    setBool("useSkinning", true);
+    setInt("bonesPerInstance", bonesPerInstance);
+    setInt("boneMatrices", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_BUFFER, boneMatrixTexture);
+
+    setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
+    setVAOBoneAttributes(vertexBoneDataBuffer, 8, 9);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceModelBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instanceModels.size() * sizeof(glm::mat4)),
+        instanceModels.data(), GL_DYNAMIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, instanceColorBuffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instanceColors.size() * sizeof(glm::vec3)),
+        instanceColors.data(), GL_DYNAMIC_DRAW);
+
+    glBindBuffer(GL_TEXTURE_BUFFER, boneMatrixBuffer);
+    glBufferData(GL_TEXTURE_BUFFER, static_cast<GLsizeiptr>(allBoneMatrices.size() * sizeof(glm::mat4)),
+        allBoneMatrices.data(), GL_DYNAMIC_DRAW);
+
+    // indexBuffer=0: geometria animada nunca paso por el EBO deduplicado -- siempre glDrawArraysInstanced.
+    DrawMeshGeometryInstanced(GL_TRIANGLES, 0, 0, size, static_cast<GLsizei>(instanceModels.size()));
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(8);
+    glDisableVertexAttribArray(9);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_BUFFER, 0);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -135,6 +283,8 @@ void ShaderOGLColor::CreateBuffer()
     }
     glGenFramebuffers(1, &framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(framebuffer);
 
     const int w = Components::get()->Window()->getWidthRender();
     const int h = Components::get()->Window()->getHeightRender();
@@ -171,6 +321,8 @@ void ShaderOGLColor::CreateBuffer()
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 }
 
 GLuint ShaderOGLColor::getFramebuffer() const

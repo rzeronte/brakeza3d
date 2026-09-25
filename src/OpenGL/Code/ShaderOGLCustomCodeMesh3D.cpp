@@ -6,6 +6,7 @@
 #include "../../../include/Components/Components.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
+#include "../../../include/Render/Profiler.h"
 
 ShaderOGLCustomCodeMesh3D::ShaderOGLCustomCodeMesh3D(Mesh3D* mesh, const std::string &label, const std::string &typesFile, const std::string &vsFile, const std::string &fsFile)
 :
@@ -60,7 +61,9 @@ void ShaderOGLCustomCodeMesh3D::Render(GLuint fbo, GLuint texture)
             m.feedbackBuffer,
             m.vertices.size(),
             mesh->getAlpha(),
-            fbo
+            fbo,
+            m.indexBuffer,
+            m.indexCount
         );
     }
 }
@@ -75,11 +78,27 @@ void ShaderOGLCustomCodeMesh3D::renderMesh(
     GLuint feedbackBuffer,
     int size,
     float alpha,
-    GLuint fbo
+    GLuint fbo,
+    GLuint indexBuffer,
+    GLsizei indexCount
 )
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->ChangeOpenGLProgram(programID);
+
+    // Este shader escribe G-Buffer (gPosition/gNormal/gAlbedo) via MRT -- necesita el mismo
+    // estado opaco que ShaderOGLRenderDeferred::render(), fijado aqui de forma incondicional en
+    // vez de heredar lo que dejara el draw anterior del frame. Antes "funcionaba por accidente"
+    // porque el pase de picking (MOUSE_CLICK_SELECT_OBJECT3D) se dibujaba justo antes, por objeto,
+    // y dejaba exactamente este estado -- al diferir picking a un flush por lotes al final del
+    // frame (Fase 4b) ese acoplamiento implicito desaparecio, y objetos con shader de objeto tipo
+    // WaterRTS heredaban blend/depth de lo ultimo que hubiera corrido antes (p.ej. post-processing
+    // del frame anterior) en vez de un estado opaco correcto.
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);
+    glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 
     glBindVertexArray(VertexArrayID);
 
@@ -104,7 +123,7 @@ void ShaderOGLCustomCodeMesh3D::renderMesh(
         glBeginTransformFeedback(GL_TRIANGLES);
     }
 
-    glDrawArrays(GL_TRIANGLES, 0, size);
+    DrawMeshGeometry(GL_TRIANGLES, hasFeedback ? 0 : indexBuffer, indexCount, size);
 
     if (hasFeedback) {
         glEndTransformFeedback();
@@ -126,7 +145,7 @@ void ShaderOGLCustomCodeMesh3D::renderMesh(
 void ShaderOGLCustomCodeMesh3D::setShaderSystemUniforms(GLuint diffuse, GLuint specular)
 {
     for (auto type: dataTypes) {
-        switch (GLSLTypeMapping[type.type].type) {
+        switch (GetGLSLTypeInfo(type.type).type) {
             case ShaderOpenGLCustomDataType::DIFFUSE: {
                 setTexture(type.name, diffuse, numTextures);
                 IncreaseNumberTextures();

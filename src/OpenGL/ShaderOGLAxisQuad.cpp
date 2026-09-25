@@ -4,6 +4,7 @@
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
 #include "../../include/3D/Object3D.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLAxisQuad::ShaderOGLAxisQuad()
 :
@@ -103,6 +104,7 @@ void ShaderOGLAxisQuad::drawImpl(const glm::vec3& pos,
     glDisable(GL_DEPTH_TEST);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
 
     glBindVertexArray(0);
 

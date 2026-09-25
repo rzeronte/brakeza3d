@@ -177,15 +177,15 @@ void StatusBarGUI::DrawScriptsStatus()
 void StatusBarGUI::DrawProjectStatus()
 {
     auto project = Components::get()->Scripting()->getCurrentProject();
-    auto label = project != nullptr ? project->getFilePath().c_str() : "Unknown";
-    DrawIconWithText(IconGUI::PROJECT_FILE, label);
+    std::string label = project != nullptr ? project->getFilePath() : "Unknown";
+    DrawIconWithText(IconGUI::PROJECT_FILE, label.c_str());
 }
 
 void StatusBarGUI::DrawSceneStatus()
 {
     auto scene = Components::get()->Scripting()->getCurrentScene();
-    auto label = scene != nullptr ? scene->getFilePath().c_str() : "Unknown";
-    DrawIconWithText(IconGUI::SCENE_FILE, label);
+    std::string label = scene != nullptr ? scene->getFilePath() : "Unknown";
+    DrawIconWithText(IconGUI::SCENE_FILE, label.c_str());
 }
 
 void StatusBarGUI::DrawIconWithText(GUIType::Sheet icon, const char* text)
@@ -262,13 +262,13 @@ void StatusBarGUI::DrawRightAlignedItems(GUIAddonResourceHub* resourceHub)
 
     // Ejemplo: Scene + Project
     auto scene = Components::get()->Scripting()->getCurrentScene();
-    auto sceneLabel = scene != nullptr ? scene->getFilePath().c_str() : "None";
-    totalWidth += CalculateItemWidth(IconGUI::SCENE_FILE, sceneLabel);
+    std::string sceneLabel = scene != nullptr ? scene->getFilePath() : "None";
+    totalWidth += CalculateItemWidth(IconGUI::SCENE_FILE, sceneLabel.c_str());
     totalWidth += separatorWidth;
 
     auto project = Components::get()->Scripting()->getCurrentProject();
-    auto projectLabel = project != nullptr ? project->getFilePath().c_str() : "None";
-    totalWidth += CalculateItemWidth(IconGUI::PROJECT_FILE, projectLabel);
+    std::string projectLabel = project != nullptr ? project->getFilePath() : "None";
+    totalWidth += CalculateItemWidth(IconGUI::PROJECT_FILE, projectLabel.c_str());
 
     // Posicionar cursor a la derecha
     float availableWidth = ImGui::GetContentRegionAvail().x;

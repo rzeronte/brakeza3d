@@ -1,5 +1,8 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include <algorithm>
+#include <atomic>
+#include <thread>
 #include "../imgui/imgui.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
@@ -15,16 +18,29 @@
 
 Brakeza *Brakeza::instance = nullptr;
 
+namespace {
+    // Workers del pool de cómputo (carga de modelos/animaciones con Assimp). Antes fijo a 4 en una
+    // CPU de 12 hilos: la carga de la partida esperaba en cola con núcleos libres (ver
+    // .claude/memory/loading-profile-report.md). Se dejan 2 hilos al principal/driver, y tope 8:
+    // cada parseo de un FBX de personaje (~32 MB) ocupa bastante memoria mientras dura.
+    size_t computeWorkerCount()
+    {
+        const unsigned hw = std::thread::hardware_concurrency();
+        if (hw == 0) return 4;
+        return std::clamp<size_t>(hw > 2 ? hw - 2 : 1, 4, 8);
+    }
+}
+
 Brakeza::Brakeza()
 :
-    pool(4),
+    pool(computeWorkerCount()),
     poolImages(4)
 {
     componentsManager =
         Components::get();
 
     pool.setMaxCallbacksPerFrame(8);
-    pool.setMaxConcurrentTasks(4);
+    pool.setMaxConcurrentTasks(computeWorkerCount());
 
     poolImages.setMaxCallbacksPerFrame(8);
     poolImages.setMaxConcurrentTasks(4);
@@ -67,8 +83,13 @@ void Brakeza::PreMainLoop()
     GUI::ShowLoadTime("Time until components initialization", timer);
 
     OnStartComponents();             // Starting componentes
-    AutoLoadProjectOrContinue();     // Parse CLI options
+
+    // EngineObserver::init() ANTES de AutoLoadProjectOrContinue(): con autoload, esa llamada ya
+    // dispara ProjectLoader::LoadProject + PlayLUAScripts() (onStart de TODOS los scripts) -- si
+    // init() corría después (como antes de este cambio), un crash durante esa carga ocurría con
+    // eventsFile todavía sin abrir y brakeza_events.jsonl quedaba vacío, inútil para diagnosticar.
     EngineObserver::init(Config::get()->ROOT_FOLDER);
+    AutoLoadProjectOrContinue();     // Parse CLI options
 
     // Profiler tags
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
@@ -116,6 +137,12 @@ void Brakeza::MainLoop()
     GUI::ShowLoadTime("Time until main loop starts", timer);
 
     while (!Config::get()->EXIT) {
+        if (cliOptions.exitAfterSeconds > 0.0f && executionTime >= cliOptions.exitAfterSeconds) {
+            LOG_MESSAGE("[Brakeza] --exit-after %.1fs reached, shutting down", cliOptions.exitAfterSeconds);
+            requestExit(2); // 2 = watchdog timeout, distinguishable from a project-driven requestExit()
+            break;
+        }
+
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::frameCount++;
 
         Profiler::get()->ResetTotalFrameTime();                              // Reset profiler measures
@@ -252,9 +279,17 @@ void Brakeza::PostUpdateComponents() const
 
 void Brakeza::onEndComponents() const
 {
-    for (const auto &o : objects)
-        delete o;
-
+    // Deliberately NOT deleting `objects` here. This function only runs once, right after
+    // the main loop exits on Config::EXIT -- i.e. exclusively on a full app quit (Shutdown()
+    // is the only thing that sets EXIT), never on in-scene transitions (those go through
+    // removeAllObjects(), a completely separate deferred-removal path). exit(0) below tears
+    // down the whole process anyway, so the OS reclaims GPU/audio/heap memory regardless of
+    // whether we free it ourselves first. Deleting every live Object3D individually used to
+    // do a per-object Bullet removeCollisionObject() (O(n) linear search each, O(n^2) total)
+    // plus unbatched glDeleteBuffers/glDeleteTextures/logging per mesh -- with a busy RTS
+    // scene (units/buildings/civilians/traffic/emitters) that made "Quit to desktop" take
+    // several seconds. Component::onEnd() below still runs (cheap: closes the audio device
+    // and destroys the window/renderer) so the app closes visibly clean.
     for (Component*& component : componentsManager->getComponents())
         component->onEnd();
 
@@ -262,7 +297,7 @@ void Brakeza::onEndComponents() const
 
     SDL_Quit();
     std::cout << "Exiting... good bye! ;)" << std::endl;
-    exit(0);
+    exit(exitCode);
 }
 
 void Brakeza::AutoLoadProjectOrContinue() const
@@ -272,6 +307,11 @@ void Brakeza::AutoLoadProjectOrContinue() const
         ProjectLoader::LoadProject(Config::get()->PROJECTS_FOLDER + cliOptions.project);
         printf("[Brakeza] ProjectLoader::LoadProject DONE\n"); fflush(stdout);
         Config::get()->ENABLE_IMGUI = false;
+        // Autoload runs have no ImGui/in-app console to look at, so mirror LOG_MESSAGE/Lua
+        // print() (routed through Logging::Message) to stdout instead of the default
+        // interactive-mode behaviour (silent after startup, GUI console only) -- otherwise a
+        // headless/CI run (see tools/run_scenario.ps1) produces no visible output at all.
+        Config::get()->ENABLE_LOGGING_STD = true;
         printf("[Brakeza] PlayLUAScripts START\n"); fflush(stdout);
         componentsManager->Scripting()->PlayLUAScripts();
         printf("[Brakeza] PlayLUAScripts DONE\n"); fflush(stdout);
@@ -290,7 +330,13 @@ void Brakeza::onUpdateSDLPollEventComponents(SDL_Event *event) const
 
 unsigned int Brakeza::getNextUniqueObjectId()
 {
-    static unsigned int counter = 0;
+    // atomic: AnimationData::cloneInto/ModelData::cloneInto llaman a esto desde
+    // ThreadJobLoadMesh3DAnimation::fnProcess() (worker thread, hasta 4 en paralelo,
+    // ver Brakeza::pool.setMaxConcurrentTasks(4)) cuando varios civiles spawnean a la vez
+    // y comparten el mismo FBX de animacion en cache (cache-HIT -> clone). Un
+    // 'static unsigned int' + '++' sin atomic es una data race real (UB) que puede hacer
+    // que dos objetos distintos acaben con el mismo id.
+    static std::atomic<unsigned int> counter{0};
     return ++counter;
 }
 
@@ -350,6 +396,11 @@ bool Brakeza::ReadArgs(int argc, char **argv)
 
     options.add_options()
         ("p,project", "Project file", cxxopts::value<std::string>())
+        ("set", "Generic key=value CLI param, repeatable. Meaning is defined entirely by the "
+                "loaded project's own 'cli_params' declaration -- the engine never interprets it.",
+                cxxopts::value<std::vector<std::string>>())
+        ("exit-after", "Force-quit N seconds after startup (safety watchdog for headless/automated runs)",
+                cxxopts::value<float>())
         ("h,help", "Help")
     ;
 
@@ -366,6 +417,21 @@ bool Brakeza::ReadArgs(int argc, char **argv)
         cliOptions.autoload = true;
         cliOptions.project = result["p"].as<std::string>();
         LOG_MESSAGE("[Brakeza] Autoload project: %s", cliOptions.project.c_str());
+    }
+
+    cliOptions.exitAfterSeconds = result.count("exit-after") ? result["exit-after"].as<float>() : 0.0f;
+
+    cliOptions.rawParams.clear();
+    if (result.count("set")) {
+        for (auto &kv : result["set"].as<std::vector<std::string>>()) {
+            auto pos = kv.find('=');
+            if (pos == std::string::npos) {
+                LOG_WARNING("[Brakeza] --set ignored, expected key=value: '%s'", kv.c_str());
+                continue;
+            }
+            cliOptions.rawParams[kv.substr(0, pos)] = kv.substr(pos + 1);
+            LOG_MESSAGE("[Brakeza] --set %s=%s", kv.substr(0, pos).c_str(), kv.substr(pos + 1).c_str());
+        }
     }
 
     return false;

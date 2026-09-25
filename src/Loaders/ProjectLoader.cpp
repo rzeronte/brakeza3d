@@ -9,6 +9,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/FileSystemGUI.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include <set>
 
 
 void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
@@ -75,7 +76,7 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution") != nullptr) {
         auto resolutionJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution");
 
-        Components::get()->Window()->setRendererSize(
+        Components::get()->Window()->setInitialRendererSize(
             cJSON_GetObjectItemCaseSensitive(resolutionJSON, "width")->valueint,
             cJSON_GetObjectItemCaseSensitive(resolutionJSON, "height")->valueint
         );
@@ -93,8 +94,8 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
         auto soundJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "sound");
         Config::get()->SOUND_VOLUME_MUSIC = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_music")->valuedouble;
         Config::get()->SOUND_VOLUME_FX = cJSON_GetObjectItemCaseSensitive(soundJSON, "volume_fx")->valuedouble;
-        Mix_Volume(Config::SoundChannels::SND_GLOBAL, (int) Config::get()->SOUND_VOLUME_FX);
-        Mix_VolumeMusic((int) Config::get()->SOUND_VOLUME_MUSIC);
+        Components::get()->Sound()->setSoundsVolume((int) Config::get()->SOUND_VOLUME_FX);
+        Components::get()->Sound()->setMusicVolume((int) Config::get()->SOUND_VOLUME_MUSIC);
     }
 
     // thread pools
@@ -123,6 +124,58 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 
         applyPool(Brakeza::get()->PoolCompute(), cJSON_GetObjectItemCaseSensitive(poolsJSON, "compute"), "compute");
         applyPool(Brakeza::get()->PoolImages(),  cJSON_GetObjectItemCaseSensitive(poolsJSON, "images"),  "images");
+    }
+
+    // cli_params — parámetros que ESTE proyecto declara aceptar por línea de comandos
+    // (--set key=value, ver Brakeza::ReadArgs). El motor solo lee nombre/tipo/default aquí;
+    // qué significa cada uno (p.ej. "scenario") vive por completo en el Lua del proyecto
+    // (ver AutoRun.lua en el RTS), nunca en este fichero.
+    Config::get()->cliParams.clear();
+    if (cJSON_GetObjectItemCaseSensitive(contentJSON, "cli_params") != nullptr) {
+        const auto &rawParams = Brakeza::get()->getCliOptions().rawParams;
+        std::set<std::string> declaredNames;
+
+        cJSON *paramJSON;
+        cJSON_ArrayForEach(paramJSON, cJSON_GetObjectItemCaseSensitive(contentJSON, "cli_params")) {
+            cJSON *nameItem = cJSON_GetObjectItemCaseSensitive(paramJSON, "name");
+            cJSON *typeItem = cJSON_GetObjectItemCaseSensitive(paramJSON, "type");
+            if (!nameItem || !cJSON_IsString(nameItem)) continue;
+
+            std::string name = nameItem->valuestring;
+            std::string type = (typeItem && cJSON_IsString(typeItem)) ? typeItem->valuestring : "string";
+            declaredNames.insert(name);
+
+            cJSON *defItem = cJSON_GetObjectItemCaseSensitive(paramJSON, "default");
+            auto rawIt = rawParams.find(name);
+            bool provided = rawIt != rawParams.end();
+
+            Config::CliParamValue value;
+            if (type == "bool") {
+                value.type = Config::CliParamValue::Type::Bool;
+                value.b = provided ? (rawIt->second == "true" || rawIt->second == "1")
+                                    : (defItem && cJSON_IsBool(defItem) && cJSON_IsTrue(defItem));
+            } else if (type == "number") {
+                value.type = Config::CliParamValue::Type::Number;
+                value.n = provided ? atof(rawIt->second.c_str())
+                                    : (defItem && cJSON_IsNumber(defItem) ? defItem->valuedouble : 0.0);
+            } else {
+                value.type = Config::CliParamValue::Type::String;
+                value.s = provided ? rawIt->second
+                                    : (defItem && cJSON_IsString(defItem) ? defItem->valuestring : "");
+            }
+
+            Config::get()->cliParams[name] = value;
+            if (provided) {
+                LOG_MESSAGE("[ProjectLoader] cli_param '%s' = '%s' (via --set)", name.c_str(), rawIt->second.c_str());
+            }
+        }
+
+        // Aviso (no bloqueante) si llegó un --set que este proyecto no declara -- suele ser un typo.
+        for (auto &kv : rawParams) {
+            if (!declaredNames.count(kv.first)) {
+                LOG_WARNING("[ProjectLoader] --set '%s' no está declarado en cli_params de este proyecto, se ignora", kv.first.c_str());
+            }
+        }
     }
 
     Components::get()->Scripting()->setCurrentProject(new Project(filename));

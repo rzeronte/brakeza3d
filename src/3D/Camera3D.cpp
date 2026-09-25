@@ -123,12 +123,17 @@ Vector3D &Camera3D::getVelocity()
 
 glm::mat4 Camera3D::getGLMMat4ViewMatrix()
 {
-    Vertex3D forward = getRotation().getTranspose() * Vertex3D(0, 0, -1);
+    M3 rotT = getRotation().getTranspose();
+    Vertex3D forward = rotT * Vertex3D(0, 0, -1);
+    // "Arriba" real de la cámara, sacado de su propia rotación. Antes se usaba worldUp y, cerca
+    // de la vertical (|dot| > 0.999, pitch > ~87.4º), un (0,0,-1) fijo: la vista cenital perdía
+    // el yaw y quedaba siempre alineada con los ejes del mundo. Con roll 0 coincide exactamente
+    // con el lookAt(worldUp) de antes en cualquier otra inclinación.
+    Vertex3D camUp = rotT * Vertex3D(0, 1, 0);
 
     const auto p = position.toGLM();
     glm::vec3 fwd = forward.toGLM();
-    glm::vec3 worldUp = glm::vec3(0, 1, 0);
-    glm::vec3 up = (glm::abs(glm::dot(fwd, worldUp)) > 0.999f) ? glm::vec3(0, 0, -1) : worldUp;
+    glm::vec3 up = camUp.toGLM();
 
     ViewMatrix = glm::lookAt(p, p + fwd, up);
 

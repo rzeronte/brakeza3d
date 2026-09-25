@@ -19,3 +19,11 @@ std::map<std::string, ShaderTypeInfo> GLSLTypeMapping = {
     {"depth", {ShaderOpenGLCustomDataType::DEPTH, "Depth texture (internal)" }},
     {"gposition", {ShaderOpenGLCustomDataType::GPOSITION, "G-Buffer world positions (internal)" }}
 };
+
+std::mutex GLSLTypeMappingMutex;
+
+ShaderTypeInfo GetGLSLTypeInfo(const std::string& key)
+{
+    std::lock_guard<std::mutex> lock(GLSLTypeMappingMutex);
+    return GLSLTypeMapping[key];
+}

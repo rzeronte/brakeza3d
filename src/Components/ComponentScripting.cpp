@@ -20,6 +20,39 @@ void ComponentScripting::onStart()
 void ComponentScripting::preUpdate()
 {
     Component::preUpdate();
+
+    // Barrido de escenas retiradas (ver retireScene): las que ya no tienen ningun
+    // ThreadJob en vuelo referenciandolas se liberan aqui. Mismo patron que
+    // ComponentRender::DeleteRemovedObjects para Object3D.
+    for (auto it = scenesPendingDelete.begin(); it != scenesPendingDelete.end(); ) {
+        if ((*it)->canBeDeletedNow()) {
+            delete *it;
+            it = scenesPendingDelete.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+void ComponentScripting::retireScene(Scene *scene)
+{
+    if (scene == nullptr) return;
+
+    // No se puede borrar de golpe por dos motivos distintos:
+    // 1) ThreadJobLoadObject/ReadSceneScript/ReadSceneShaders guardan un Scene* crudo y lo
+    //    tocan en su fnCallback(), que corre en un salto async posterior a su construccion
+    //    (ver ThreadPool::enqueueWithMainThreadCallback) -- Scene::hasPendingJobs().
+    // 2) Object3D::~Object3D() llama a scene->removeObject(this) si el objeto tenia esta
+    //    escena asignada, y ese delete va diferido un frame completo
+    //    (ComponentRender::DeleteRemovedObjects) tras marcarse removed=true -- puede seguir
+    //    pendiente aunque ya no quede ningun ThreadJob en vuelo. Scene::hasLiveObjects().
+    // Sin ninguno de los dos pendiente (el caso normal) el comportamiento es identico a un
+    // delete directo.
+    if (scene->canBeDeletedNow()) {
+        delete scene;
+    } else {
+        scenesPendingDelete.push_back(scene);
+    }
 }
 
 void ComponentScripting::onUpdate()
@@ -499,7 +532,7 @@ bool ComponentScripting::hasProjectScene(const std::string& filePath)
 
 void ComponentScripting::setCurrentScene(Scene *value)
 {
-    for (auto *s : loadedScenes) delete s;
+    for (auto *s : loadedScenes) retireScene(s);
     loadedScenes.clear();
     if (value != nullptr)
         loadedScenes.push_back(value);
@@ -514,7 +547,7 @@ void ComponentScripting::removeScene(const std::string &name)
 {
     for (auto it = loadedScenes.begin(); it != loadedScenes.end(); ++it) {
         if ((*it)->getName() == name) {
-            delete *it;
+            retireScene(*it);
             loadedScenes.erase(it);
             return;
         }

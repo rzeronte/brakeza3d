@@ -31,8 +31,6 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
     GLuint bufferUBOLightPoints = 0;
     GLuint bufferUBOSpotLights = 0;
 
-    GLuint matrixProjectionUniform = 0;
-    GLuint matrixViewUniform = 0;
     GLuint matrixModelUniform = 0;
 
     GLuint materialTextureDiffuseUniform = 0;
@@ -83,12 +81,14 @@ public:
         GLuint uvbuffer,
         GLuint normalbuffer,
         int size,
-        GLuint fbo
+        GLuint fbo,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
     ) const;
 
     int getNumPointLights() const;
     void Destroy() override;
-    void CreateUBOFromLights();
+    void CreateUBOFromLights(const std::vector<Object3D*> &sceneObjects);
     void renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo) const;
     void FillUBOLights();
     void ExtractLights(Object3D *o);

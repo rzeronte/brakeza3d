@@ -37,6 +37,14 @@ size_t ResourceCacheBase::getHitsForKey(const std::string& key) const
     return it != _hitsPerKey.end() ? it->second : 0;
 }
 
+std::shared_ptr<std::mutex> ResourceCacheBase::getKeyLoadMutex(const std::string& key)
+{
+    std::lock_guard<std::mutex> lock(_keyLoadMapMutex);
+    auto& m = _keyLoadMutexes[normalizePath(key)];
+    if (!m) m = std::make_shared<std::mutex>();
+    return m;
+}
+
 size_t ResourceCacheBase::size() const
 {
     std::lock_guard<std::mutex> lock(_mutex);

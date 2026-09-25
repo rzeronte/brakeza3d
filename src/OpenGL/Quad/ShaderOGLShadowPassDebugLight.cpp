@@ -4,6 +4,7 @@
 
 #include "../../../include/OpenGL/Quad/ShaderOGLShadowPassDebugLight.h"
 #include "../../../include/Components/Components.h"
+#include "../../../include/Render/Profiler.h"
 
 ShaderOGLShadowPassDebugLight::ShaderOGLShadowPassDebugLight()
 :
@@ -38,6 +39,8 @@ void ShaderOGLShadowPassDebugLight::renderInternalToTexture()
     LoadQuadMatrixUniforms();
 
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(internalFramebuffer);
 
     auto shaderShadowPass = Components::get()->Render()->getShaders()->shaderShadowPass;
     glActiveTexture(GL_TEXTURE0);
@@ -57,6 +60,8 @@ void ShaderOGLShadowPassDebugLight::renderInternalFromArrayTextures(GLuint depth
     LoadQuadMatrixUniforms();
 
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(internalFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, internalTextures[layer], 0);
 
     glActiveTexture(GL_TEXTURE0);
@@ -82,6 +87,8 @@ void ShaderOGLShadowPassDebugLight::CreateFramebuffer()
 
     glGenFramebuffers(1, &internalFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, internalFramebuffer);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(internalFramebuffer);
 
     auto window = Components::get()->Window();
 
@@ -189,16 +196,20 @@ GLuint ShaderOGLShadowPassDebugLight::extractLayerFromArray(GLuint arrayTexture,
 
     // Configurar READ framebuffer (fuente: capa del array)
     glBindFramebuffer(GL_READ_FRAMEBUFFER, fboRead);
+    Profiler::get()->incrementFboChanges();
     glFramebufferTextureLayer(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, arrayTexture, 0, layer);
 
     // Configurar DRAW framebuffer (destino: textura 2D)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboDraw);
+    Profiler::get()->incrementFboChanges();
     glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture2D, 0);
 
     // Copiar usando glBlitFramebuffer
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
     glDeleteFramebuffers(1, &fboRead);
     glDeleteFramebuffers(1, &fboDraw);
 

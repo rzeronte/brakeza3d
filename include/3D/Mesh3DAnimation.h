@@ -10,6 +10,8 @@
 #define NUM_BONES_PER_VERTEX 6
 #define MAX_BONES 100
 
+struct AnimationData;
+
 struct VertexBoneData {
     int IDs[NUM_BONES_PER_VERTEX] = {0};
     float Weights[NUM_BONES_PER_VERTEX] = {0};
@@ -32,8 +34,20 @@ struct BoneInfo {
     std::string name;
     Vertex3D position;
 
-    aiMatrix4x4 BoneOffset;
-    aiMatrix4x4 FinalTransformation;
+    // Offset (bind pose) de este hueso, UNO POR CADA MESH que lo usa. Un personaje con
+    // varios submeshes (cuerpo/manos/pies/casco...) puede tener el mismo hueso con un
+    // offset distinto por submesh, porque cada mesh tiene su propia relación con el
+    // esqueleto en el momento del bind. Guardar un único offset compartido (como antes)
+    // hace que el segundo mesh en usar un hueso "herede" el offset del primero -> malla
+    // deformada de forma catastrófica en cuanto ese hueso rota lejos de su pose de reposo.
+    std::unordered_map<int, aiMatrix4x4> BoneOffsetByMesh;  // meshId -> offset
+
+    // Transform del hueso en el mundo (globalInverseTransform * GlobalTransformation),
+    // SIN offset de ningún mesh aplicado. Es el mismo para todos los meshes -- correcto
+    // usarlo directamente para "donde esta este hueso" (debug draw, bone colliders,
+    // getBoneWorldPosition/Rotation). Para skinning real hace falta combinarlo con el
+    // offset del mesh concreto (ver meshBoneFinalTransforms).
+    aiMatrix4x4 WorldTransform;
 };
 
 enum BoneCollisionShape {
@@ -67,7 +81,6 @@ class Mesh3DAnimation : public Mesh3D
     float runningTime = 0;
     float animation_speed = 1;
     bool loop = true;
-    std::vector<glm::mat4> boneTransformCache;
     std::unordered_map<std::string, const aiNodeAnim*> nodeAnimCache;
     bool boneColliderEnabled = false;
     bool removeOnAnimationEnd = false;
@@ -75,6 +88,11 @@ class Mesh3DAnimation : public Mesh3D
 
     const aiScene *scene = nullptr;
     std::shared_ptr<Assimp::Importer> sharedImporter;
+
+    // Mantiene vivo el AnimationData cacheado (y sus buffers de GPU compartidos de pose de
+    // reposo, ver AnimationMeshEntry) mientras esta instancia exista -- mismo mecanismo que
+    // Mesh3D::sharedModel, ver Mesh3D::sharedStaticGeometry.
+    std::shared_ptr<AnimationData> sharedAnimModel;
 
     aiMatrix4x4 globalInverseTransform;
 
@@ -84,6 +102,13 @@ class Mesh3DAnimation : public Mesh3D
     std::map<std::string, unsigned int> boneMapping;                // maps a bone's name to its index
     std::vector<BoneInfo> boneInfo;                                 // Bone info and final transformation
     std::vector<BonesMappingColliders> boneMappingColliders;
+
+    // [meshId][boneIndex] = WorldTransform * BoneOffsetByMesh[meshId] (identidad si ese
+    // mesh no usa ese hueso). Recalculado cada vez que cambian las FinalTransformation
+    // (una vez por frame animado). Es lo que de verdad se usa para deformar cada submesh,
+    // tanto en GPU (UpdateOpenGLBones) como en CPU (UpdateForBone / bounding box).
+    std::vector<std::vector<aiMatrix4x4>> meshBoneFinalTransforms;
+    std::vector<std::vector<glm::mat4>> boneTransformCachePerMesh;
 public:
     Mesh3DAnimation();
     ~Mesh3DAnimation() override;
@@ -97,8 +122,9 @@ public:
     void ReadNodesFromRoot();
     void UpdateBonesFinalTransformations(float TimeInSeconds);
     void ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
+    void ComputeMeshBoneFinalTransforms();
     void UpdateForBone(Vertex3D &dest, int meshID, int vertexID);
-    void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData);
+    void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData, bool skipWeights = false);
     void DrawBones(aiNode *node, Vertex3D *lastBonePosition = nullptr);
     void setRemoveAtEndAnimation(bool removeAtEnds);
     void DrawPropertiesGUI() override;
@@ -130,6 +156,11 @@ public:
     [[nodiscard]] std::string getAnimationName(int i) const { return (scene && i >= 0 && i < static_cast<int>(scene->mNumAnimations)) ? scene->mAnimations[i]->mName.C_Str() : ""; }
     [[nodiscard]] float getCurrentAnimationMaxTime() const;
     [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
+
+    // Instancing de unidades animadas (Fase 1): matrices de huesos de este submesh ya calculadas
+    // este frame por UpdateOpenGLBones() (glm, listas para subir a un TBO), reutilizadas por
+    // ComponentRender::EnqueueOpaque sin recalcular nada.
+    [[nodiscard]] const std::vector<glm::mat4>& getBoneTransformCache(size_t meshIdx) const { return boneTransformCachePerMesh[meshIdx]; }
     [[nodiscard]] Vertex3D getBoneWorldPosition(const std::string& boneName) const;
     [[nodiscard]] M3 getBoneWorldRotation(const std::string& boneName) const;
     [[nodiscard]] std::vector<std::string> getBoneNames() const;

@@ -206,8 +206,10 @@ void SelectionManager::update()
                 auto entry = Components::get()->Render()->getSubmeshEntry(id);
                 o = entry.first;
             }
-            if (o != nullptr && o->isEnabled() && o->isSelectable() && !isObjectInSelection(o))
+            if (o == nullptr) continue;
+            if (o->isEnabled() && o->isSelectable() && !isObjectInSelection(o)) {
                 selectedObjects.push_back(o);
+            }
         }
         LOG_MESSAGE("[Selection] Rect selection: %zu objects", selectedObjects.size());
         return;

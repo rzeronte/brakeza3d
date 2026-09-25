@@ -13,6 +13,21 @@
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Cache/ScriptDataCache.h"
 
+std::map<std::string, LUATypeInfo> LUADataTypesMapping = {
+    {"int", {LUADataType::INT, "int" }},
+    {"float", {LUADataType::FLOAT, "float" }},
+    {"string", {LUADataType::STRING, "string" }},
+    {"Vertex3D", {LUADataType::VERTEX3D, "vec3" }},
+};
+
+std::mutex LUADataTypesMappingMutex;
+
+LUATypeInfo GetLUATypeInfo(const std::string& key)
+{
+    std::lock_guard<std::mutex> lock(LUADataTypesMappingMutex);
+    return LUADataTypesMapping[key];
+}
+
 ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeScript, const std::string &typesFile)
 :
     scriptFilename(codeScript),
@@ -62,7 +77,7 @@ void ScriptLUA::InitEnvironment(sol::environment &environment)
         lua.script(content, environment);
 
         for (const auto& type : dataTypes) {
-            switch (LUADataTypesMapping[type.type].type) {
+            switch (GetLUATypeInfo(type.type).type) {
                 case LUADataType::INT:
                     environment[type.name] = std::get<int>(type.value);
                     break;
@@ -143,7 +158,7 @@ void ScriptLUA::ensureGlobalEnvironment()
     globalEnvironment = sol::environment(lua, sol::create, lua.globals());
 
     for (const auto& type : dataTypes) {
-        switch (LUADataTypesMapping[type.type].type) {
+        switch (GetLUATypeInfo(type.type).type) {
             case LUADataType::INT:     globalEnvironment[type.name] = std::get<int>(type.value);         break;
             case LUADataType::FLOAT:   globalEnvironment[type.name] = std::get<float>(type.value);       break;
             case LUADataType::STRING:  globalEnvironment[type.name] = std::get<std::string>(type.value); break;
@@ -198,7 +213,7 @@ void ScriptLUA::AddDataTypeEmpty(const char *name, const char *type)
 {
     LUADataValue LUAValue;
 
-    switch (LUADataTypesMapping[type].type) {
+    switch (GetLUATypeInfo(type).type) {
         case LUADataType::INT: {
             LUAValue = 0;
             break;
@@ -227,7 +242,7 @@ void ScriptLUA::AddDataType(const char *name, const char *type, cJSON *value)
 {
     LUADataValue LUAValue;
 
-    switch (LUADataTypesMapping[type].type) {
+    switch (GetLUATypeInfo(type).type) {
         case LUADataType::INT: {
             LUAValue = cJSON_IsNumber(value) ? value->valueint
                      : (value->valuestring   ? atoi(value->valuestring) : 0);
@@ -273,7 +288,7 @@ void ScriptLUA::ReloadGlobals()
 
     for (const auto& type : dataTypes) {
         LOG_MESSAGE("[ScriptLUA] Setting variable => Script: '%s', Name: '%s'", this->getName().c_str(), type.name.c_str());
-        switch (LUADataTypesMapping[type.type].type) {
+        switch (GetLUATypeInfo(type.type).type) {
             case LUADataType::INT:     globalEnvironment[type.name] = std::get<int>(type.value);         break;
             case LUADataType::FLOAT:   globalEnvironment[type.name] = std::get<float>(type.value);       break;
             case LUADataType::STRING:  globalEnvironment[type.name] = std::get<std::string>(type.value); break;
@@ -298,7 +313,7 @@ void ScriptLUA::ReloadEnvironment(sol::environment &environment)
     }
 
     for (const auto& type : dataTypes) {
-        switch (LUADataTypesMapping[type.type].type) {
+        switch (GetLUATypeInfo(type.type).type) {
             case LUADataType::INT:
                 environment[type.name] = std::get<int>(type.value);
                 break;
@@ -317,7 +332,7 @@ void ScriptLUA::ReloadEnvironment(sol::environment &environment)
 
 void ScriptLUA::applyTypeToEnvironment(const ScriptLUATypeData& type)
 {
-    switch (LUADataTypesMapping[type.type].type) {
+    switch (GetLUATypeInfo(type.type).type) {
         case LUADataType::INT:    globalEnvironment[type.name] = std::get<int>(type.value);      break;
         case LUADataType::FLOAT:  globalEnvironment[type.name] = std::get<float>(type.value);    break;
         case LUADataType::STRING: globalEnvironment[type.name] = std::get<std::string>(type.value); break;
@@ -481,7 +496,7 @@ cJSON *ScriptLUA::getTypesJSON() const
         cJSON_AddStringToObject(typeJSON, "type", dataType.type.c_str());
 
         std::string name = dataType.name + "("+ dataType.type +")";
-        switch (LUADataTypesMapping[dataType.type].type) {
+        switch (GetLUATypeInfo(dataType.type).type) {
             case LUADataType::INT: {
                 int valueInt = std::get<int>(dataType.value);
                 cJSON_AddNumberToObject(typeJSON, "value", valueInt);

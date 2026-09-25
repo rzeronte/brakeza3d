@@ -27,6 +27,11 @@ class Grid3D {
     AABB3D bounds;
     std::vector<CubeGrid3D> boxes;
     PathFinding pathFinding;
+    // Coste de paso por celda (1.0 = normal). Copy-on-write: cada cambio publica un vector nuevo
+    // con std::atomic_store y computePath() lo lee con std::atomic_load (corre en el pool).
+    std::shared_ptr<const std::vector<float>> cellCosts;
+    [[nodiscard]] std::vector<float> copyCellCosts() const;
+    void publishCellCosts(std::vector<float> &&costs);
 public:
 
     Grid3D(AABB3D bounds, int sizeX, int sizeY, int sizeZ);
@@ -40,6 +45,9 @@ public:
     std::vector<CubeGrid3D> MakeTravelCubesGrid();
     std::vector<CubeGrid3D> computePath(int gx1, int gz1, int gx2, int gz2);
     void fillGrid3DFromImage(const std::string& imagePath, int threshold = 128, bool flipZ = false, bool flipX = false);
+    void fillCostFromImage(const std::string& imagePath, int threshold, float cost, bool flipZ = false, bool flipX = false);
+    void setCellsCost(const std::vector<std::pair<int,int>> &cells, float cost);
+    [[nodiscard]] float getCellCost(int x, int z) const;
     void drawDebug(Color color = Color::green());
     CubeGrid3D *getCubeFromPosition(int x, int y, int z);
     bool isCellWalkable(int x, int z) const;

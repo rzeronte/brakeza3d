@@ -4,6 +4,7 @@
 
 #include "../../include/OpenGL/ShaderOGLWire.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLWire::ShaderOGLWire()
 :
@@ -37,7 +38,9 @@ void ShaderOGLWire::renderMesh(Mesh3D *mesh, bool useFeedbackFramebuffer, const 
             useFeedbackFramebuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             m.vertices.size(),
             c,
-            fbo
+            fbo,
+            useFeedbackFramebuffer ? 0 : m.indexBuffer,
+            useFeedbackFramebuffer ? 0 : m.indexCount
         );
     }
 }
@@ -49,7 +52,9 @@ void ShaderOGLWire::render(
     GLuint normalBuffer,
     int size,
     const Color &c,
-    GLuint fbo
+    GLuint fbo,
+    GLuint indexBuffer,
+    GLsizei indexCount
 ) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
@@ -69,7 +74,7 @@ void ShaderOGLWire::render(
     setVec3("color", c.toGLM());
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    glDrawArrays(GL_LINES, 0, size );
+    DrawMeshGeometry(GL_LINES, indexBuffer, indexCount, size);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

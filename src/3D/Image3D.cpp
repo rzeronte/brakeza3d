@@ -81,11 +81,15 @@ void Image3D::onUpdate()
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();
 
+    // Este glEnable/glDisable directo (y Outline más abajo) tocan GL_CULL_FACE/BLEND/DEPTH_TEST
+    // fuera de la caché compartida de Fase 1.1.1 (Deferred/Forward, más abajo en esta función) --
+    // invalidarla para que el próximo Apply* no se fíe de un valor obsoleto.
     if (getRenderSettings().culling) {
         glEnable(GL_CULL_FACE);
     } else {
         glDisable(GL_CULL_FACE);
     }
+    render->InvalidateRenderStateCache();
 
     if (isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutlineImage3D(
@@ -94,10 +98,12 @@ void Image3D::onUpdate()
             0.1f,
             window->getUIFramebuffer()
         );
+        render->InvalidateRenderStateCache();
     }
 
     if (render->getLastRightClickedObject() == this && !isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutlineImage3D(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+        render->InvalidateRenderStateCache();
     }
 
     GLuint fbo = Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : window->getSceneFramebuffer();
@@ -144,6 +150,7 @@ void Image3D::onUpdate()
             Color::gray(),
             fbo
         );
+        render->InvalidateRenderStateCache();
     }
 
     if (Config::get()->TRIANGLE_MODE_PIXELS) {
@@ -165,6 +172,7 @@ void Image3D::onUpdate()
             false,
             fbo
         );
+        render->InvalidateRenderStateCache();
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D)  {
@@ -178,9 +186,11 @@ void Image3D::onUpdate()
             false,
             window->getPickingColorFramebuffer().FBO
         );
+        render->InvalidateRenderStateCache();
     }
 
     glEnable(GL_CULL_FACE);
+    render->InvalidateRenderStateCache();
 }
 
 void Image3D::postUpdate()
@@ -266,22 +276,8 @@ void Image3D::ShadowMappingPass()
 
 void Image3D::LookAtBillboard()
 {
-    auto o = Components::get()->Camera()->getCamera();
-
-    // Dirección de la imagen hacia la cámara
-    auto direction = (o->getPosition() - position).getNormalize();
-
-    // Proyectar la dirección en el plano horizontal (XY)
-    auto forward = Vertex3D(direction.x, direction.y, 0).getNormalize();
-
-    // Vector arriba fijo (siempre apuntando en Z positivo)
-    auto upVector = Vertex3D(0, 1, 0);
-
-    // Vector derecha (perpendicular a forward y up)
-    Vertex3D rightVector = forward % upVector;
-
-    // Establecer la rotación con los vectores corregidos
-    setRotation(M3::getFromVectors(forward, upVector));
+    auto camera = Components::get()->Camera()->getCamera();
+    LookAt(camera->getPosition());
 }
 
 void Image3D::setWidth(float value)
@@ -297,6 +293,11 @@ void Image3D::setSource(const std::string &source)
 void Image3D::setHeight(float value)
 {
     height = value;
+}
+
+void Image3D::setTowardsCamera(bool value)
+{
+    towardsCamera = value;
 }
 
 void Image3D::setImage(Image* value)

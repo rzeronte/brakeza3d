@@ -4,6 +4,7 @@
 #include "../../include/Render/Color.h"
 #include "../../include/Config.h"
 #include "../../include/Misc/ToolsMaths.h"
+#include "../../include/Misc/Tools.h"
 #include "../../include/Components/Components.h"
 #include "../../include/OpenGL/ShaderOGLLine3D.h"
 #include <SDL2/SDL_image.h>
@@ -198,6 +199,7 @@ void Grid3D::Reset(int x, int y, int z)
     boxes.clear();
     MakeCells();
     pathFinding.reset(x, y, z);
+    std::atomic_store(&cellCosts, std::shared_ptr<const std::vector<float>>());
 }
 
 PathFinding Grid3D::getPathFinding()
@@ -232,7 +234,9 @@ cJSON *Grid3D::getJSON()
 
 std::vector<CubeGrid3D> Grid3D::MakeTravelCubesGrid()
 {
-    auto path = getPathFinding().makeTravelIndexes();
+    PathFinding pf = getPathFinding();
+    pf.setCellCost(std::atomic_load(&cellCosts));
+    auto path = pf.makeTravelIndexes();
 
     if (path.empty()) return {};
     std::vector<CubeGrid3D> output;
@@ -327,6 +331,7 @@ void Grid3D::drawDebug(Color color)
 std::vector<CubeGrid3D> Grid3D::computePath(int gx1, int gz1, int gx2, int gz2)
 {
     PathFinding pf = pathFinding;  // copia local — boxes/obstáculos son read-only tras init
+    pf.setCellCost(std::atomic_load(&cellCosts));
     pf.setTravel(gx1, 0, gz1, gx2, 0, gz2);
     auto path = pf.makeTravelIndexes();
 
@@ -340,7 +345,7 @@ std::vector<CubeGrid3D> Grid3D::computePath(int gx1, int gz1, int gx2, int gz2)
 
 void Grid3D::fillGrid3DFromImage(const std::string& imagePath, int threshold, bool flipZ, bool flipX)
 {
-    SDL_Surface* raw = IMG_Load(imagePath.c_str());
+    SDL_Surface* raw = Tools::SafeIMGLoad(imagePath);
     if (!raw) {
         printf("[Grid3D] FillGrid3DFromImage: cannot load '%s': %s\n",
                imagePath.c_str(), IMG_GetError());
@@ -410,4 +415,87 @@ void Grid3D::fillGrid3DFromImage(const std::string& imagePath, int threshold, bo
            imagePath.c_str(), imgW, imgH,
            numberCubesX, numberCubesY, numberCubesZ,
            obstacleCount, (int)boxes.size() - obstacleCount);
+}
+
+std::vector<float> Grid3D::copyCellCosts() const
+{
+    auto current = std::atomic_load(&cellCosts);
+    if (current) return *current;
+    return std::vector<float>((size_t) numberCubesX * numberCubesY * numberCubesZ, 1.0f);
+}
+
+void Grid3D::publishCellCosts(std::vector<float> &&costs)
+{
+    std::atomic_store(&cellCosts, std::shared_ptr<const std::vector<float>>(
+        std::make_shared<const std::vector<float>>(std::move(costs))));
+}
+
+// Marca con `cost` las celdas que en la imagen NO son obstáculo (mismo criterio y mismo muestreo
+// que fillGrid3DFromImage). Pensado para pasar la máscara de calzada (la imagen de pathfinding de
+// vehículos) sobre el grid peatonal: caminar por la calzada cuesta más que por la acera.
+void Grid3D::fillCostFromImage(const std::string& imagePath, int threshold, float cost, bool flipZ, bool flipX)
+{
+    SDL_Surface* raw = Tools::SafeIMGLoad(imagePath);
+    if (!raw) {
+        printf("[Grid3D] fillCostFromImage: cannot load '%s': %s\n", imagePath.c_str(), IMG_GetError());
+        return;
+    }
+    SDL_Surface* img = SDL_ConvertSurfaceFormat(raw, SDL_PIXELFORMAT_RGBA32, 0);
+    SDL_FreeSurface(raw);
+    if (!img) return;
+
+    SDL_LockSurface(img);
+    const int imgW = img->w;
+    const int imgH = img->h;
+    const auto* pixels = static_cast<const Uint8*>(img->pixels);
+    const int bpp = img->format->BytesPerPixel;
+    const int pitch = img->pitch;
+
+    cost = std::max(cost, 1.0f);
+    auto costs = copyCellCosts();
+    int marked = 0;
+    for (int x = 0; x < numberCubesX; x++) {
+        for (int z = 0; z < numberCubesZ; z++) {
+            float u = (x + 0.5f) / (float) numberCubesX;
+            float v = (z + 0.5f) / (float) numberCubesZ;
+            if (flipX) u = 1.0f - u;
+            if (flipZ) v = 1.0f - v;
+            int px = std::clamp((int)(u * imgW), 0, imgW - 1);
+            int pz = std::clamp((int)(v * imgH), 0, imgH - 1);
+            const Uint8* p = pixels + pz * pitch + px * bpp;
+            bool drivable = !(p[0] < threshold && p[1] < threshold && p[2] < threshold);
+            if (!drivable) continue;
+            for (int y = 0; y < numberCubesY; y++) {
+                costs[(x * numberCubesY + y) * numberCubesZ + z] = cost;
+            }
+            marked++;
+        }
+    }
+    SDL_UnlockSurface(img);
+    SDL_FreeSurface(img);
+
+    publishCellCosts(std::move(costs));
+    printf("[Grid3D] fillCostFromImage: '%s' cost=%.2f cells=%d\n", imagePath.c_str(), cost, marked);
+}
+
+void Grid3D::setCellsCost(const std::vector<std::pair<int,int>> &cells, float cost)
+{
+    if (cells.empty()) return;
+    cost = std::max(cost, 1.0f);
+    auto costs = copyCellCosts();
+    for (const auto& [x, z] : cells) {
+        if (x < 0 || z < 0 || x >= numberCubesX || z >= numberCubesZ) continue;
+        for (int y = 0; y < numberCubesY; y++) {
+            costs[(x * numberCubesY + y) * numberCubesZ + z] = cost;
+        }
+    }
+    publishCellCosts(std::move(costs));
+}
+
+float Grid3D::getCellCost(int x, int z) const
+{
+    if (x < 0 || z < 0 || x >= numberCubesX || z >= numberCubesZ) return 1.0f;
+    auto current = std::atomic_load(&cellCosts);
+    if (!current) return 1.0f;
+    return (*current)[(size_t) x * numberCubesY * numberCubesZ + z];
 }

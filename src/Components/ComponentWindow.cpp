@@ -12,16 +12,18 @@
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../../include/Components/ComponentWindow.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/Misc/Tools.h"
 #include "../../include/OpenGL/ShaderOGLImage.h"
 #include "../../include/Brakeza.h"
 #include "../../include/2D/Image2D.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Objects/IconsGUI.h"
 #include "../../include/GUI/GUI.h"
+#include "../../include/Render/Profiler.h"
 
 ComponentWindow::ComponentWindow()
 :
-    applicationIcon(IMG_Load(std::string(Config::get()->ICONS_FOLDER + Config::get()->iconApplication).c_str()))
+    applicationIcon(Tools::SafeIMGLoad(Config::get()->ICONS_FOLDER + Config::get()->iconApplication))
 {
     InitWindow();
 }
@@ -82,12 +84,16 @@ void ComponentWindow::postUpdate()
 
     // Issue async readback into PBO for next frame to consume
     glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(pickingColorBuffer.FBO);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, hoverPBO);
     glBufferData(GL_PIXEL_PACK_BUFFER, 3, nullptr, GL_STREAM_READ);
     glReadPixels(hoverPickRequestX, getHeightRender() - hoverPickRequestY - 1, 1, 1, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
     hoverPickRequestX = -1;
     hoverPBOPending   = true;
 }
@@ -155,7 +161,13 @@ void ComponentWindow::InitWindow()
 
     ResetOpenGLSettings();
     glewInit();
-    SDL_GL_SetSwapInterval(1);
+    // Antes forzaba vsync ON a fuego (SDL_GL_SetSwapInterval(1)) ignorando Config::V_SYNC -- si
+    // un proyecto se guardaba con V_SYNC=false, al reabrirlo el estado REAL de OpenGL seguía en
+    // vsync ON pese a que el checkbox del menú (GUIAddonMenu::MenuVideo) mostrara "desactivado",
+    // hasta que el usuario lo tocara a mano esa sesión. Ahora respeta el valor cargado desde el
+    // arranque, igual que hace el propio toggle del menú.
+    SDL_GL_SetSwapInterval(Config::get()->V_SYNC ? 1 : 0);
+    SDL_RenderSetVSync(renderer, Config::get()->V_SYNC ? 1 : 0);
     SDL_SetWindowIcon(window, applicationIcon);
 }
 
@@ -196,6 +208,8 @@ void ComponentWindow::CreateFramebuffers()
 {
     glGenFramebuffers(1, &openGLBuffers.globalFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.globalFBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(openGLBuffers.globalFBO);
 
     glGenTextures(1, &openGLBuffers.globalTexture);
     glBindTexture(GL_TEXTURE_2D, openGLBuffers.globalTexture);
@@ -209,13 +223,17 @@ void ComponentWindow::CreateFramebuffers()
 
     GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("Error setting framebuffer!");
+        LOG_ERROR("[Window] globalFBO incomplete (status 0x%X) at %dx%d", framebufferStatus, widthRender, heightRender);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
     // ----
 
     glGenFramebuffers(1, &openGLBuffers.sceneFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.sceneFBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(openGLBuffers.sceneFBO);
 
     glGenTextures(1, &openGLBuffers.sceneTexture);
     glBindTexture(GL_TEXTURE_2D, openGLBuffers.sceneTexture);
@@ -230,13 +248,18 @@ void ComponentWindow::CreateFramebuffers()
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gBuffer.depth, 0);
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("Error setting framebuffer!");
+        LOG_ERROR("[Window] sceneFBO incomplete (status 0x%X) at %dx%d, gBuffer.depth=%u",
+            framebufferStatus, widthRender, heightRender, gBuffer.depth);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
     // ----
 
     glGenFramebuffers(1, &openGLBuffers.backgroundFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.backgroundFBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(openGLBuffers.backgroundFBO);
 
     glGenTextures(1, &openGLBuffers.backgroundTexture);
     glBindTexture(GL_TEXTURE_2D, openGLBuffers.backgroundTexture);
@@ -250,13 +273,17 @@ void ComponentWindow::CreateFramebuffers()
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("Error setting framebuffer!");
+        LOG_ERROR("[Window] backgroundFBO incomplete (status 0x%X) at %dx%d", framebufferStatus, widthRender, heightRender);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
     // ----
 
     glGenFramebuffers(1, &openGLBuffers.foregroundFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.foregroundFBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(openGLBuffers.foregroundFBO);
 
     glGenTextures(1, &openGLBuffers.foregroundTexture);
     glBindTexture(GL_TEXTURE_2D, openGLBuffers.foregroundTexture);
@@ -270,13 +297,17 @@ void ComponentWindow::CreateFramebuffers()
 
     framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("Error setting framebuffer!");
+        LOG_ERROR("[Window] foregroundFBO incomplete (status 0x%X) at %dx%d", framebufferStatus, widthRender, heightRender);
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 
     // ----
     glGenFramebuffers(1, &openGLBuffers.uiFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, openGLBuffers.uiFBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(openGLBuffers.uiFBO);
 
     glGenTextures(1, &openGLBuffers.uiTexture);
     glBindTexture(GL_TEXTURE_2D, openGLBuffers.uiTexture);
@@ -290,10 +321,12 @@ void ComponentWindow::CreateFramebuffers()
     LOG_MESSAGE("[Render] Creating UITexture(%d, %d)", widthWindow, heightWindow);
 
     if (framebufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("Error setting framebuffer!");
+        LOG_ERROR("[Window] uiFBO incomplete (status 0x%X) at %dx%d", framebufferStatus, widthWindow, heightWindow);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 }
 
 void ComponentWindow::ResetFramebuffer()
@@ -320,7 +353,6 @@ void ComponentWindow::ResetFramebuffer()
 
     Components::get()->Render()->resizeShadersFramebuffers();
     postProcessingManager->resize(widthRender, heightRender);
-
 }
 
 void ComponentWindow::FlipGlobalToWindow()
@@ -486,7 +518,13 @@ void ComponentWindow::setWindowTitle(const char *title) const
 void ComponentWindow::ToggleFullScreen() const
 {
     if (Config::get()->FULLSCREEN) {
-        SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+        // SDL_WINDOW_FULLSCREEN = pantalla completa EXCLUSIVA (fuera de DWM en Windows).
+        // SDL_WINDOW_FULLSCREEN_DESKTOP = "borderless", sigue compuesta por DWM -- ver comentario
+        // de Config::EXCLUSIVE_FULLSCREEN.
+        SDL_SetWindowFullscreen(
+            window,
+            Config::get()->EXCLUSIVE_FULLSCREEN ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_FULLSCREEN_DESKTOP
+        );
     } else {
         SDL_SetWindowFullscreen(window, 0);
     }
@@ -507,10 +545,11 @@ void ComponentWindow::CreatePickingColorBuffer()
 
     glGenFramebuffers(1, &pickingColorBuffer.FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(pickingColorBuffer.FBO);
 
     GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
     glDrawBuffers(1, drawBuffers);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glGenTextures(1, &pickingColorBuffer.rbgTexture);
     glBindTexture(GL_TEXTURE_2D, pickingColorBuffer.rbgTexture);
@@ -531,9 +570,17 @@ void ComponentWindow::CreatePickingColorBuffer()
         exit(-1);
     }
 
+    // Must clear after the attachments exist -- clearing an FBO with no color/depth attachment
+    // yet bound is a GL_INVALID_FRAMEBUFFER_OPERATION (harmless here since nothing reads the
+    // buffer before the next real render, but it left a spurious error sitting in the GL error
+    // queue on every resize).
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     LOG_MESSAGE("[Window] PickingColor-Buffer created successful (%d, %d)", widthRender,  heightRender);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 }
 
 void ComponentWindow::CreateGBuffer()
@@ -541,6 +588,7 @@ void ComponentWindow::CreateGBuffer()
     if (gBuffer.FBO != 0) {
         glDeleteFramebuffers(1, &gBuffer.FBO);
         glDeleteTextures(1, &gBuffer.albedo);
+        glDeleteTextures(1, &gBuffer.emission);
         glDeleteTextures(1, &gBuffer.normals);
         glDeleteTextures(1, &gBuffer.positions);
         glDeleteTextures(1, &gBuffer.depth);
@@ -548,6 +596,8 @@ void ComponentWindow::CreateGBuffer()
 
     glGenFramebuffers(1, &gBuffer.FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(gBuffer.FBO);
 
     glGenTextures(1, &gBuffer.positions);
     glBindTexture(GL_TEXTURE_2D, gBuffer.positions);
@@ -570,6 +620,16 @@ void ComponentWindow::CreateGBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gBuffer.albedo, 0);
 
+    // Emisión: adjunta siempre, pero FUERA de glDrawBuffers por defecto -- nadie la escribe ni la
+    // limpia salvo ComponentRender::FlushEmissiveQueue(), que activa los 4 draw buffers solo en
+    // frames con Mesh3D emisivos. Sin emisivos, coste cero (ni escritura, ni clear, ni lectura).
+    glGenTextures(1, &gBuffer.emission);
+    glBindTexture(GL_TEXTURE_2D, gBuffer.emission);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthRender, heightRender, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, gBuffer.emission, 0);
+
     GLuint attachments[3] = {
         GL_COLOR_ATTACHMENT0,
         GL_COLOR_ATTACHMENT1,
@@ -586,14 +646,17 @@ void ComponentWindow::CreateGBuffer()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, gBuffer.depth, 0);
 
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        LOG_ERROR("[Window] G-Buffer: Framebuffer no está completo!");
+    GLenum gBufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (gBufferStatus != GL_FRAMEBUFFER_COMPLETE) {
+        LOG_ERROR("[Window] G-Buffer: Framebuffer no está completo! (status 0x%X) at %dx%d", gBufferStatus, widthRender, heightRender);
         exit(-1);
     }
 
     LOG_MESSAGE("[ComponentWindow] G-Buffer created successful (%d, %d)", widthRender, heightRender);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 }
 
 void ComponentWindow::ResizeGBuffer()
@@ -615,6 +678,8 @@ void ComponentWindow::UpdateWindowSize()
 unsigned int ComponentWindow::getObjectIDByPickingColorFramebuffer(const int x, const int y) const
 {
     glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(pickingColorBuffer.FBO);
 
     unsigned char pixel[4];
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -644,6 +709,8 @@ std::set<unsigned int> ComponentWindow::getObjectIDsInPickingRect(int x1, int y1
     if (w <= 0 || h <= 0) return ids;
 
     glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(pickingColorBuffer.FBO);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
 
     std::vector<unsigned char> pixels(w * h * 3);
@@ -660,6 +727,8 @@ std::set<unsigned int> ComponentWindow::getObjectIDsInPickingRect(int x1, int y1
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
     return ids;
 }
 
@@ -679,12 +748,16 @@ void ComponentWindow::beginAsyncPickingRect(int x1, int y1, int x2, int y2) cons
     glBufferData(GL_PIXEL_PACK_BUFFER, (GLsizeiptr)size, nullptr, GL_STREAM_READ);
 
     glBindFramebuffer(GL_FRAMEBUFFER, pickingColorBuffer.FBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(pickingColorBuffer.FBO);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     const int flippedY = getHeightRender() - y2 - 1;
     glReadPixels(x1, flippedY, w, h, GL_RGB, GL_UNSIGNED_BYTE, nullptr); // async — offset 0
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 
     pendingPBOX1 = x1; pendingPBOY1 = y1;
     pendingPBOX2 = x2; pendingPBOY2 = y2;
@@ -734,8 +807,12 @@ void ComponentWindow::forceReloadLayout()
 void ComponentWindow::CheckForResizeOpenGLWindow(const SDL_Event &e)
 {
     if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-        LOG_WARNING("[Window] Detected size windows changed!");
+        LOG_WARNING(
+            "[Window] Detected size windows changed! window=%dx%d render=%dx%d -> event=%dx%d",
+            widthWindow, heightWindow, widthRender, heightRender, e.window.data1, e.window.data2
+        );
         UpdateWindowSize();
+        LOG_WARNING("[Window] After UpdateWindowSize: window=%dx%d render=%dx%d", widthWindow, heightWindow, widthRender, heightRender);
         glViewport(0,0, getWidth(), getHeight());
         ResetFramebuffer();
     }
@@ -748,7 +825,7 @@ void ComponentWindow::LoadCursorImage(const std::string &path)
         return;
     }
 
-    auto surface = IMG_Load(path.c_str());
+    auto surface = Tools::SafeIMGLoad(path);
 
     cursor = SDL_CreateColorCursor(surface, 0, 0);
     SDL_SetCursor(cursor);
@@ -806,4 +883,15 @@ void ComponentWindow::setRendererSize(int w, int h)
     heightRender = h;
     customRenderResolution = true;
     ResetFramebuffer();
+}
+
+// Used when restoring a project's last-known render size at load time -- this is just the
+// starting size, not an intentional "lock render resolution" choice (that's setRendererSize(),
+// used by the "Render size" menu). Must NOT set customRenderResolution, otherwise every project
+// that has ever been saved permanently decouples render size from the window: UpdateWindowSize()
+// stops following window resizes for the rest of the session (see git history around 2026-09-15).
+void ComponentWindow::setInitialRendererSize(int w, int h)
+{
+    widthRender = w;
+    heightRender = h;
 }

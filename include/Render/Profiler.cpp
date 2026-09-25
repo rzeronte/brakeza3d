@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cstdint>
 #include <string>
+#include <fstream>
+#include <ctime>
 
 #if defined(_WIN32)
   #include <windows.h>
@@ -60,6 +62,26 @@ static void GetSystemMemoryMB(uint64_t &outTotal, uint64_t &outFree)
 #include "../Cache/AnimationDataCache.h"
 #include "../Cache/ScriptDataCache.h"
 #include "../Cache/SceneCache.h"
+
+// Pipeline steps en orden de ejecucion, compartido entre DrawRenderDetail() y
+// ExportFrameStatsCSV() para no mantener la lista dos veces.
+namespace {
+    struct PipelineStep {
+        const char* key;
+        const char* label;
+        ImVec4      color;
+    };
+    static const PipelineStep pipelineSteps[] = {
+        { "Scripts",                  "Scripts (Lua)",        { 0.95f, 0.75f, 0.20f, 1.0f } },
+        { "GBuffer",                  "GBuffer (meshes)",     { 0.30f, 0.80f, 0.40f, 1.0f } },
+        { "ShadowPass",               "Shadow Pass",          { 0.55f, 0.45f, 0.85f, 1.0f } },
+        { "LightPass",                "Light Pass",           { 1.00f, 0.55f, 0.10f, 1.0f } },
+        { "Transparencies",           "Transparencies",       { 0.85f, 0.85f, 0.30f, 1.0f } },
+        { "FlipBuffersToGlobal",      "Flip Buffers",         { 0.30f, 0.70f, 1.00f, 1.0f } },
+        { "PostProcessingShadersChain","Post-Processing",     { 1.00f, 0.35f, 0.65f, 1.0f } },
+    };
+    constexpr int PIPELINE_STEP_COUNT = sizeof(pipelineSteps) / sizeof(pipelineSteps[0]);
+}
 
 Profiler *Profiler::instance = nullptr;
 
@@ -853,6 +875,7 @@ void Profiler::DrawOpenGLStatus()
     ImGui::SeparatorText("Context Switches (this frame)");
     ImGui::Checkbox("Count FBO switches",     &countFboSwitches);
     ImGui::Checkbox("Count Program switches", &countProgramSwitches);
+    ImGui::Checkbox("Count draw calls / triangles", &countDrawCalls);
     if (ImGui::BeginTable("gl_ctx_switches", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingFixedFit))
     {
         ImGui::TableSetupColumn("Type",  ImGuiTableColumnFlags_WidthStretch);
@@ -866,6 +889,14 @@ void Profiler::DrawOpenGLStatus()
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Program binds");
         ImGui::TableSetColumnIndex(1); ImGui::Text("%d", lastProgramChanges);
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Draw calls");
+        ImGui::TableSetColumnIndex(1); ImGui::Text("%d", lastDrawCalls);
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0); ImGui::TextUnformatted("Triangles");
+        ImGui::TableSetColumnIndex(1); ImGui::Text("%d", lastTriangles);
 
         ImGui::EndTable();
     }
@@ -1878,10 +1909,44 @@ void Profiler::ResetTotalFrameTime()
     lastProgramChanges = programChanges;
     fboChanges     = 0;
     programChanges = 0;
+
+    lastDrawCalls = drawCalls;
+    lastTriangles = triangles;
+    drawCalls = 0;
+    triangles = 0;
 }
 
 void Profiler::incrementFboChanges()     { if (countFboSwitches) fboChanges++; }
 void Profiler::incrementProgramChanges() { if (countProgramSwitches) programChanges++; }
+
+void Profiler::incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCount)
+{
+    if (!countDrawCalls) return;
+
+    // Cada llamada a incrementDrawCall() representa UNA llamada real a glDraw*
+    // (instanciada o no) -- el contador de "draw calls" debe reflejar eso, no el
+    // numero de instancias dibujadas en esa llamada (para eso ya esta "triangles").
+    drawCalls++;
+
+    int trisPerInstance = 0;
+    switch (mode) {
+        case GL_TRIANGLES:
+            trisPerInstance = count / 3;
+            break;
+        case GL_TRIANGLE_STRIP:
+        case GL_TRIANGLE_FAN:
+            trisPerInstance = count >= 3 ? count - 2 : 0;
+            break;
+        default:
+            // GL_LINES, GL_LINE_STRIP, GL_POINTS, etc. no aportan triangulos.
+            trisPerInstance = 0;
+            break;
+    }
+    triangles += trisPerInstance * instanceCount;
+}
+
+int Profiler::getLastDrawCalls() const { return lastDrawCalls; }
+int Profiler::getLastTriangles() const { return lastTriangles; }
 
 void Profiler::EndTotalFrameTime()
 {
@@ -1898,6 +1963,129 @@ MeasuresMap& Profiler::getComponentMeasures()
 MeasuresMap& Profiler::getScriptMeasures()
 {
     return scriptMeasures;
+}
+
+GpuMeasuresMap& Profiler::getGpuMeasures()
+{
+    return gpuMeasures;
+}
+
+bool Profiler::isGpuTimingEnabled() const
+{
+    return gpuTimingEnabled;
+}
+
+void Profiler::setGpuTimingEnabled(bool v)
+{
+    gpuTimingEnabled = v;
+}
+
+void Profiler::StartGpuMeasure(const std::string &name)
+{
+    if (!gpuTimingEnabled) return;
+
+    GpuMeasure &m = gpuMeasures[name];
+    if (m.queryIds[0] == 0) {
+        glGenQueries(GpuMeasure::RING_SIZE, m.queryIds);
+    }
+
+    const int slot = m.currentSlot;
+    if (m.queryPending[slot]) {
+        GLuint available = 0;
+        glGetQueryObjectuiv(m.queryIds[slot], GL_QUERY_RESULT_AVAILABLE, &available);
+        if (available) {
+            GLuint64 elapsedNs = 0;
+            glGetQueryObjectui64v(m.queryIds[slot], GL_QUERY_RESULT, &elapsedNs);
+            m.lastGpuMs = (double)elapsedNs / 1000000.0;
+            m.gpuTimeHistory.push_back((float)m.lastGpuMs);
+            if ((int)m.gpuTimeHistory.size() > m.MAX_HISTORY) {
+                m.gpuTimeHistory.erase(m.gpuTimeHistory.begin());
+            }
+            m.queryPending[slot] = false;
+        }
+        // Si aun no esta disponible, se deja pendiente: esta muestra se pierde y el
+        // slot se reintenta la proxima vez que el anillo vuelva a el (no bloquear nunca).
+    }
+
+    glBeginQuery(GL_TIME_ELAPSED, m.queryIds[slot]);
+}
+
+void Profiler::EndGpuMeasure(const std::string &name)
+{
+    if (!gpuTimingEnabled) return;
+
+    auto it = gpuMeasures.find(name);
+    if (it == gpuMeasures.end()) return;
+
+    glEndQuery(GL_TIME_ELAPSED);
+    it->second.queryPending[it->second.currentSlot] = true;
+    it->second.currentSlot = (it->second.currentSlot + 1) % GpuMeasure::RING_SIZE;
+}
+
+float Profiler::AverageGpuHistory(const GpuMeasure &m)
+{
+    if (m.gpuTimeHistory.empty()) return (float)m.lastGpuMs;
+    float sum = 0.0f;
+    for (float v : m.gpuTimeHistory) sum += v;
+    return sum / (float)m.gpuTimeHistory.size();
+}
+
+float Profiler::PercentileHistory(const std::vector<float> &history, float percentile)
+{
+    if (history.empty()) return 0.0f;
+    std::vector<float> sorted(history);
+    std::sort(sorted.begin(), sorted.end());
+    float idxF = percentile * (float)(sorted.size() - 1);
+    int idx = (int)(idxF + 0.5f); // redondeo al vecino mas cercano, suficiente para 120 muestras
+    if (idx < 0) idx = 0;
+    if (idx >= (int)sorted.size()) idx = (int)sorted.size() - 1;
+    return sorted[idx];
+}
+
+std::string Profiler::ExportFrameStatsCSV() const
+{
+    const std::string dir = Config::get()->ROOT_FOLDER + "logs/";
+    std::time_t t = std::time(nullptr);
+    char stamp[32];
+    std::strftime(stamp, sizeof(stamp), "%Y%m%d_%H%M%S", std::localtime(&t));
+    const std::string path = dir + "profiler_" + stamp + ".csv";
+
+    std::ofstream f(path);
+    if (!f.is_open()) {
+        return "Export FAILED (no se pudo abrir " + path + ")";
+    }
+
+    f << "pass,samples,avg_ms,median_ms,p95_ms,p99_ms,gpu_samples,gpu_avg_ms,gpu_median_ms,gpu_p95_ms,gpu_p99_ms\n";
+
+    auto writeRow = [&](const std::string &label, const Measure &m, const GpuMeasure *gm) {
+        f << label << ","
+          << m.frameTimeHistory.size() << ","
+          << AverageHistory(m) << ","
+          << PercentileHistory(m.frameTimeHistory, 0.50f) << ","
+          << PercentileHistory(m.frameTimeHistory, 0.95f) << ","
+          << PercentileHistory(m.frameTimeHistory, 0.99f) << ",";
+        if (gm) {
+            f << gm->gpuTimeHistory.size() << ","
+              << AverageGpuHistory(*gm) << ","
+              << PercentileHistory(gm->gpuTimeHistory, 0.50f) << ","
+              << PercentileHistory(gm->gpuTimeHistory, 0.95f) << ","
+              << PercentileHistory(gm->gpuTimeHistory, 0.99f) << "\n";
+        } else {
+            f << "0,0,0,0,0\n";
+        }
+    };
+
+    writeRow("FrameTotal", measureFrameTime, nullptr);
+
+    for (int i = 0; i < PIPELINE_STEP_COUNT; i++) {
+        auto it = componentMeasures.find(pipelineSteps[i].key);
+        if (it == componentMeasures.end()) continue;
+        auto gpuIt = gpuMeasures.find(pipelineSteps[i].key);
+        writeRow(pipelineSteps[i].label, it->second, gpuIt != gpuMeasures.end() ? &gpuIt->second : nullptr);
+    }
+
+    f.close();
+    return "Exportado a " + path;
 }
 
 void Profiler::StartMeasure(MeasuresMap &map, const std::string &name)
@@ -2024,21 +2212,17 @@ void Profiler::UpdateHistory(Measure &measure)
 
 void Profiler::DrawRenderDetail()
 {
-    // Pipeline steps in execution order with display names and colors
-    struct PipelineStep {
-        const char* key;
-        const char* label;
-        ImVec4      color;
-    };
-    static const PipelineStep steps[] = {
-        { "Scripts",                  "Scripts (Lua)",        { 0.95f, 0.75f, 0.20f, 1.0f } },
-        { "GBuffer",                  "GBuffer (meshes)",     { 0.30f, 0.80f, 0.40f, 1.0f } },
-        { "ShadowPass",               "Shadow Pass",          { 0.55f, 0.45f, 0.85f, 1.0f } },
-        { "LightPass",                "Light Pass",           { 1.00f, 0.55f, 0.10f, 1.0f } },
-        { "FlipBuffersToGlobal",      "Flip Buffers",         { 0.30f, 0.70f, 1.00f, 1.0f } },
-        { "PostProcessingShadersChain","Post-Processing",     { 1.00f, 0.35f, 0.65f, 1.0f } },
-    };
-    constexpr int N = sizeof(steps) / sizeof(steps[0]);
+    const auto& steps = pipelineSteps;
+    const int N = PIPELINE_STEP_COUNT;
+
+    bool gpuOn = gpuTimingEnabled;
+    if (ImGui::Checkbox("Enable GPU timing (GL_TIME_ELAPSED)", &gpuOn)) {
+        setGpuTimingEnabled(gpuOn);
+    }
+    if (!gpuTimingEnabled) {
+        ImGui::SameLine();
+        ImGui::TextDisabled("(off — zero overhead)");
+    }
 
     float frameAvg = AverageHistory(measureFrameTime);
 
@@ -2074,11 +2258,12 @@ void Profiler::DrawRenderDetail()
     ImGui::Spacing();
 
     // ── Table ────────────────────────────────────────────────────────────────
-    if (ImGui::BeginTable("render_detail", 4,
+    if (ImGui::BeginTable("render_detail", 5,
         ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
     {
         ImGui::TableSetupColumn("Step",      ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableSetupColumn("Avg (ms)",  ImGuiTableColumnFlags_WidthFixed, 80.0f);
+        ImGui::TableSetupColumn("GPU (ms)",  ImGuiTableColumnFlags_WidthFixed, 80.0f);
         ImGui::TableSetupColumn("% frame",   ImGuiTableColumnFlags_WidthFixed, 70.0f);
         ImGui::TableSetupColumn("History",   ImGuiTableColumnFlags_WidthFixed, 120.0f);
         ImGui::TableHeadersRow();
@@ -2100,10 +2285,18 @@ void Profiler::DrawRenderDetail()
             ImGui::Text("%.3f", ms);
 
             ImGui::TableSetColumnIndex(2);
+            auto gpuIt = gpuMeasures.find(steps[i].key);
+            if (gpuTimingEnabled && gpuIt != gpuMeasures.end()) {
+                ImGui::Text("%.3f", AverageGpuHistory(gpuIt->second));
+            } else {
+                ImGui::TextDisabled("—");
+            }
+
+            ImGui::TableSetColumnIndex(3);
             ImVec4 pctCol = pct > 30.0f ? ImVec4(1,0.2f,0.2f,1) : pct > 15.0f ? ImVec4(1,0.8f,0.2f,1) : ImVec4(0.6f,0.9f,0.6f,1);
             ImGui::TextColored(pctCol, "%.1f%%", pct);
 
-            ImGui::TableSetColumnIndex(3);
+            ImGui::TableSetColumnIndex(4);
             ImGui::PushStyleColor(ImGuiCol_PlotLines, steps[i].color);
             char pid[32]; snprintf(pid, sizeof(pid), "##rp%d", i);
             ImGui::PlotLines(pid, m.frameTimeHistory.data(), (int)m.frameTimeHistory.size(),
@@ -2111,6 +2304,16 @@ void Profiler::DrawRenderDetail()
             ImGui::PopStyleColor();
         }
         ImGui::EndTable();
+    }
+
+    ImGui::Spacing();
+    static std::string lastExportMsg;
+    if (ImGui::Button("Export CSV (avg/median/P95/P99)")) {
+        lastExportMsg = ExportFrameStatsCSV();
+    }
+    if (!lastExportMsg.empty()) {
+        ImGui::SameLine();
+        ImGui::TextDisabled("%s", lastExportMsg.c_str());
     }
 }
 

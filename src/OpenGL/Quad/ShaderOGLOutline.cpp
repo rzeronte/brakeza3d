@@ -6,6 +6,7 @@
 #include "../../../include/Components/Components.h"
 #include "../../../include/3D/Image3D.h"
 #include "../../../include/Misc/Logging.h"
+#include "../../../include/Render/Profiler.h"
 
 ShaderOGLOutline::ShaderOGLOutline()
 :
@@ -74,6 +75,8 @@ void ShaderOGLOutline::CreateStencilFBO()
     // ── assemble FBO ───────────────────────────────────────────────────────
     glGenFramebuffers(1, &stencilFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, stencilFBO);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(stencilFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, stencilColorBuffer, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, stencilDepthStencilRBO);
 
@@ -90,6 +93,8 @@ void ShaderOGLOutline::CreateStencilFBO()
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    Components::get()->Render()->setLastFrameBufferUsed(0);
 }
 
 // ---------------------------------------------------------------------------
@@ -173,7 +178,8 @@ void main() { FragColor = vec4(lineColor, 1.0); }
 void ShaderOGLOutline::stencilOutlineMesh(
     GLuint vertexBuf, GLuint uvBuf, GLuint normalBuf, int count,
     const glm::mat4 &model, const Color &c, float thickness, bool clearFirst,
-    GLuint destFBO, const glm::vec3 &submeshCenter)
+    GLuint destFBO, const glm::vec3 &submeshCenter,
+    GLuint indexBuffer, GLsizei indexCount)
 {
     if (!expandProgramID) {
         LOG_ERROR("[Outline] expandProgramID=0 — shader no compiló, outline desactivado");
@@ -223,17 +229,22 @@ void ShaderOGLOutline::stencilOutlineMesh(
     glUniform1f(expandThicknessUniform, thickness);
     glUniform3fv(expandColorUniform, 1, &col[0]);
     glUniform3fv(expandCenterUniform, 1, &submeshCenter[0]);
-    glDrawArrays(GL_TRIANGLES, 0, count);
+    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count);
 
     // ── Pass 2: draw ORIGINAL mesh → zero-out interior (leaving only the ring) ──
     glEnable(GL_BLEND);
     glBlendFuncSeparate(GL_ZERO, GL_ZERO, GL_ZERO, GL_ZERO);
     render->ChangeOpenGLProgram(shaderColor->getProgramID());
-    shaderColor->setMat4("projection", proj);
-    shaderColor->setMat4("view",       view);
+    // projection/view: CameraBlock (binding 3), ya coincide con lo que se calculo arriba.
+    // useInstancing/useSkinning son uniforms del programa Color y persisten entre usos: si el
+    // último uso fue un picking instanciado (RenderColorInstanced*) seguirían a true, el shader
+    // leería el model de un atributo de instancia inexistente, esta pasada no dibujaría nada y el
+    // interior NO se vaciaría (el edificio salía relleno de color en vez de solo contorneado).
+    shaderColor->setBool("useInstancing", false);
+    shaderColor->setBool("useSkinning", false);
     shaderColor->setMat4("model",      model);
     shaderColor->setVec3("color", glm::vec3(0.0f));
-    glDrawArrays(GL_TRIANGLES, 0, count);
+    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count);
 
     // ── Restore ───────────────────────────────────────────────────────────
     glDisable(GL_BLEND);
@@ -276,7 +287,7 @@ void ShaderOGLOutline::drawOutline(Mesh3D *m, const Color &c, float borderThickn
     for (const auto &mm : m->getMeshData()) {
         stencilOutlineMesh(mm.vertexBuffer, mm.uvBuffer, mm.normalBuffer,
                            (int)mm.vertices.size(), m->getModelMatrix(), c, borderThickness, first,
-                           fbo, mm.localAabb.getCenter().toGLM());
+                           fbo, mm.localAabb.getCenter().toGLM(), mm.indexBuffer, mm.indexCount);
         first = false;
     }
     blitToFBO(fbo);
@@ -293,7 +304,7 @@ void ShaderOGLOutline::drawOutlineSubmesh(Mesh3D *m, const std::string &submeshN
         if (mm.name.rfind(prefix, 0) != 0) continue;
         stencilOutlineMesh(mm.vertexBuffer, mm.uvBuffer, mm.normalBuffer,
                            (int)mm.vertices.size(), m->getModelMatrix(), c, borderThickness, first,
-                           fbo, mm.localAabb.getCenter().toGLM());
+                           fbo, mm.localAabb.getCenter().toGLM(), mm.indexBuffer, mm.indexCount);
         first = false;
     }
     if (!first) blitToFBO(fbo);
@@ -346,7 +357,7 @@ void ShaderOGLOutline::drawOutlineSubmeshBatch(Mesh3D *m, const std::string &sub
         // clearFirst=false: el stencilFBO ya fue limpiado por clearOutlineBatch()
         stencilOutlineMesh(mm.vertexBuffer, mm.uvBuffer, mm.normalBuffer,
                            (int)mm.vertices.size(), m->getModelMatrix(), c, borderThickness, false,
-                           0, mm.localAabb.getCenter().toGLM());
+                           0, mm.localAabb.getCenter().toGLM(), mm.indexBuffer, mm.indexCount);
         first = false;
     }
     (void)first;

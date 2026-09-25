@@ -4,6 +4,7 @@
 
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/Misc/Tools.h"
 
 void TextureAtlas::AllocateEmptyMask(int totalWidth, int totalHeight)
 {
@@ -63,7 +64,7 @@ void TextureAtlas::CreateFromSheet(const std::string &file, int spriteWidth, int
         exit(-1);
     }
 
-    SDL_Surface* spriteSheetSurface = IMG_Load(file.c_str());
+    SDL_Surface* spriteSheetSurface = Tools::SafeIMGLoad(file);
     if (!spriteSheetSurface) {
         LOG_MESSAGE("[TextureAtlas] Failed to load sprite sheet: %s", SDL_GetError());
         exit(-1);

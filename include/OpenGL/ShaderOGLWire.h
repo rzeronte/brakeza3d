@@ -26,7 +26,9 @@ public:
         GLuint normalBuffer,
         int size,
         const Color &c,
-        GLuint fbo
+        GLuint fbo,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
     ) const;
     void Destroy() override;
 };

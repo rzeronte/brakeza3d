@@ -25,6 +25,7 @@ public:
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
+        if (scene != nullptr) scene->retainForJob();
     }
 
     void fnProcess()
@@ -57,6 +58,11 @@ public:
         }
 
         LOG_MESSAGE("[ThreadJobReadSceneShaders] Callback END");
+    }
+
+    ~ThreadJobReadSceneShaders()
+    {
+        if (scene != nullptr) scene->releaseFromJob();
     }
 };
 

@@ -29,6 +29,13 @@ public:
     static void LoadADSSettings(const cJSON *contentJSON);
     static void InitSerializers();
 
+    // Asociación escena↔fichero de luces FBX (ver FBXLightLoader). "currentLightsFile" es el
+    // path actualmente asociado a la escena cargada -- se guarda como campo "lightsFile" en el
+    // JSON de la escena (SaveScene) y se usa para reimportar sin tener que ir al menú cada vez.
+    static std::string currentLightsFile;
+    static void LoadLightsFileAssociation(const cJSON *contentJSON, Scene *scene);
+    static void ReimportLightsFile(const std::string &path, Scene *scene = nullptr);
+
     static void LoadScene(const FilePath::SceneFile& filename);
     static void LoadSceneAdditive(
         const FilePath::SceneFile& filename,

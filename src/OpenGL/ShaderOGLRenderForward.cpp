@@ -5,6 +5,7 @@
 #include "../../include/OpenGL/ShaderOGLRenderForward.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLRenderForward::ShaderOGLRenderForward()
 :
@@ -18,8 +19,6 @@ ShaderOGLRenderForward::ShaderOGLRenderForward()
 
 void ShaderOGLRenderForward::LoadUniforms()
 {
-    matrixProjectionUniform = glGetUniformLocation(programID, "projection");
-    matrixViewUniform = glGetUniformLocation(programID, "view");
     matrixModelUniform = glGetUniformLocation(programID, "model");
 
     materialTextureDiffuseUniform = glGetUniformLocation(programID, "material.diffuse");
@@ -54,6 +53,16 @@ void ShaderOGLRenderForward::LoadUniforms()
     enableDirectionalLightShadowMapUniform = glGetUniformLocation(programID, "enableDirectionalLightShadowMapping");
 
     pcfKernelSizeUniform = glGetUniformLocation(programID, "pcfKernelSize");
+
+    // Los uniform blocks se asocian al programa, no al draw: antes se repetia esta llamada
+    // (con su glGetUniformBlockIndex, una busqueda por nombre) en cada submesh dibujado.
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsShadowMapDepthTexturesBlock"), 2);
+
+    // projection/view ya no son uniforms sueltos: se leen de CameraBlock (binding 3),
+    // relleno una vez por frame en ComponentRender::UpdateCameraUBO().
+    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "CameraBlock"), 3);
 }
 
 void ShaderOGLRenderForward::PrepareMainThread()
@@ -73,7 +82,9 @@ void ShaderOGLRenderForward::render(
     GLuint uvbuffer,
     GLuint normalbuffer,
     int size,
-    GLuint fbo
+    GLuint fbo,
+    GLuint indexBuffer,
+    GLsizei indexCount
 ) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
@@ -85,8 +96,7 @@ void ShaderOGLRenderForward::render(
 
     setFloatUniform(alphaUniform, o->getAlpha());
 
-    setMat4Uniform(matrixProjectionUniform, camera->getGLMMat4ProjectionMatrix());
-    setMat4Uniform(matrixViewUniform, camera->getGLMMat4ViewMatrix());
+    // projection/view: CameraBlock (binding 3), no hace falta subirlas aqui.
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
 
     setVec3Uniform(viewPositionUniform, camera->getCamera()->getPosition().toGLM());
@@ -126,29 +136,21 @@ void ShaderOGLRenderForward::render(
     setTextureUniform(dirLightShadowMapTextureUniform, shaders->shaderShadowPass->getDirectionalLightDepthTexture(), 5);
 
     setVAOAttributes(vertexbuffer, uvbuffer, normalbuffer);
-    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "PointLightsBlock"), 0);
-    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsBlock"), 1);
-    glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "SpotLightsShadowMapDepthTexturesBlock"), 2);
 
     auto settings = o->getRenderSettings();
+    auto* render = Components::get()->Render();
 
-    settings.blend ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
-    glBlendFunc(o->getRenderSettings().mode_src, o->getRenderSettings().mode_dst);
-    settings.depthTest ?  glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-    settings.writeDepth ?  glDepthMask(GL_TRUE) : glDepthMask(GL_FALSE);
-    settings.culling ?  glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);;
+    render->ApplyBlend(settings.blend);
+    render->ApplyBlendFunc(settings.mode_src, settings.mode_dst);
+    render->ApplyDepthTest(settings.depthTest);
+    render->ApplyDepthMask(settings.writeDepth);
+    render->ApplyCulling(settings.culling);
 
-    glDrawArrays(GL_TRIANGLES, 0, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);
-    glEnable(GL_CULL_FACE);
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
@@ -201,7 +203,7 @@ glm::mat4 ShaderOGLRenderForward::getDirectionalLightMatrix(const DirLightOpenGL
     return lightProjection * lightView;
 }
 
-void ShaderOGLRenderForward::CreateUBOFromLights()
+void ShaderOGLRenderForward::CreateUBOFromLights(const std::vector<Object3D*> &sceneObjects)
 {
     pointsLights.resize(0);
     spotLights.resize(0);
@@ -209,7 +211,6 @@ void ShaderOGLRenderForward::CreateUBOFromLights()
     ComponentRender::setLastFrameLightsCulled(0);
 
     if (Config::get()->ENABLE_LIGHTS) {
-        auto sceneObjects = Brakeza::get()->copySceneObjects();
         for (auto &o : sceneObjects) {
             if (!o->isEnabled()) continue;
             ExtractLights(o);
@@ -250,7 +251,9 @@ void ShaderOGLRenderForward::renderMesh(Mesh3D *o, bool useFeedbackBuffer, GLuin
             m.uvBuffer,
             useFeedbackBuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             static_cast<int>(m.vertices.size()),
-            fbo
+            fbo,
+            useFeedbackBuffer ? 0 : m.indexBuffer,
+            useFeedbackBuffer ? 0 : m.indexCount
         );
     }
 }

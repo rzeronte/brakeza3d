@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(SDL2_LIBRARY "SDL2")
 set(SDL2_IMAGE_LIBRARY "SDL2_image")
 set(SDL2_TTF_LIBRARY "SDL2_ttf")
-set(SDL2_MIXER_LIBRARY "SDL2_mixer")
 
 # Bullet
 set(BULLET_SOFTBODY_LIBRARY "BulletSoftBody")
@@ -116,6 +115,7 @@ add_executable(Brakeza3D
         src/Components/ComponentScripting.cpp include/Components/ComponentScripting.h
         src/Components/Components.cpp include/Components/Components.h
         src/Components/ComponentSound.cpp include/Components/ComponentSound.h
+        src/Audio/miniaudio.cpp
         src/Components/ComponentWindow.cpp include/Components/ComponentWindow.h
         include/Components/Camera3D.h
 
@@ -169,6 +169,7 @@ add_executable(Brakeza3D
         src/Cache/ScriptDataCache.cpp include/Cache/ScriptDataCache.h
         src/Cache/ScriptTypeCache.cpp include/Cache/ScriptTypeCache.h
         src/Cache/SceneCache.cpp include/Cache/SceneCache.h
+        src/Cache/TextureAnimatedCache.cpp include/Cache/TextureAnimatedCache.h
 
         # Misc
         src/Misc/cJSON.c include/Misc/cJSON.h
@@ -313,6 +314,7 @@ add_executable(Brakeza3D
         include/Threads/ThreadJobLoadImage3DAnimation360.h
         include/Threads/ThreadJobLoadImage2DAnimation.h
         include/Threads/ThreadJobLoadImage3DAnimation.h
+        include/Threads/ThreadJobRegisterImage3DAnimation.h
         include/LUA/ObjectFactory.h
         include/Threads/ThreadJobStepSimulation.h
         include/Threads/ThreadJobClearWorld.h
@@ -391,6 +393,7 @@ set_source_files_properties(
     include/GUI/imgui-node-editor-master/imgui_node_editor_api.cpp
     include/GUI/imgui-node-editor-master/imgui_canvas.cpp
     include/GUI/imgui-node-editor-master/crude_json.cpp
+    src/Audio/miniaudio.cpp
     PROPERTIES COMPILE_OPTIONS "-w"
 )
 
@@ -408,6 +411,7 @@ target_include_directories(Brakeza3D PRIVATE
         ${GLEW_INCLUDE_DIRS}
         ${LUA_INCLUDE_DIR}
         ${IMGUI_NODE_EDITOR_INCLUDE_DIRS}
+        ${CMAKE_SOURCE_DIR}/third_party/miniaudio
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -423,7 +427,6 @@ target_link_libraries(Brakeza3D
         ${SDL2_LIBRARY}
         ${SDL2_IMAGE_LIBRARY}
         ${SDL2_TTF_LIBRARY}
-        ${SDL2_MIXER_LIBRARY}
         ${BULLET_SOFTBODY_LIBRARY}
         ${BULLET_DYNAMICS_LIBRARY}
         ${BULLET_COLLISION_LIBRARY}

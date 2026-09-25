@@ -4,6 +4,7 @@
 
 #include "../../include/OpenGL/ShaderOGLBonesTransforms.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLBonesTransforms::ShaderOGLBonesTransforms()
 :
@@ -46,6 +47,7 @@ void ShaderOGLBonesTransforms::render(
     glBeginTransformFeedback(GL_TRIANGLES);
 
     glDrawArrays(GL_TRIANGLES, 0, meshData.vertices.size());
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, meshData.vertices.size());
 
     glEndTransformFeedback();
 

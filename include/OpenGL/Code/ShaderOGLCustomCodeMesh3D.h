@@ -37,7 +37,9 @@ public:
         GLuint feedbackBuffer,
         int size,
         float alpha,
-        GLuint fbo
+        GLuint fbo,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
     );
     void setShaderSystemUniforms(GLuint diffuse, GLuint specular);
 };

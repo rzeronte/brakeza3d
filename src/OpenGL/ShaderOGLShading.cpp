@@ -4,6 +4,7 @@
 
 #include "../../include/OpenGL/ShaderOGLShading.h"
 #include "../../include/Components/Components.h"
+#include "../../include/Render/Profiler.h"
 
 ShaderOGLShading::ShaderOGLShading()
 :
@@ -29,12 +30,14 @@ void ShaderOGLShading::renderMesh(Mesh3D *mesh, bool useFeedbackBuffer, GLuint f
             m.uvBuffer,
             useFeedbackBuffer ? m.feedbackNormalBuffer : m.normalBuffer,
             m.vertices.size(),
-            fbo
+            fbo,
+            useFeedbackBuffer ? 0 : m.indexBuffer,
+            useFeedbackBuffer ? 0 : m.indexCount
         );
     }
 }
 
-void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size,GLuint fbo) const
+void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint uvBuffer, GLuint normalBuffer, int size, GLuint fbo, GLuint indexBuffer, GLsizei indexCount) const
 {
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->ChangeOpenGLProgram(programID);
@@ -53,7 +56,7 @@ void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    glDrawArrays(GL_TRIANGLES, 0, size );
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

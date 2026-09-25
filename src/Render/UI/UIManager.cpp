@@ -7,6 +7,7 @@
 
 #include "../../../include/Render/UI/UIManager.h"
 #include "../../../include/Render/Image.h"
+#include "../../../include/Render/Profiler.h"
 #include "../../../include/Components/ComponentRender.h"
 #include "../../../include/Components/ComponentInput.h"
 #include "../../../include/Components/ComponentSound.h"
@@ -536,8 +537,12 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glGenFramebuffers(1, &w.cacheFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, w.cacheFBO);
+            Profiler::get()->incrementFboChanges();
+            Components::get()->Render()->setLastFrameBufferUsed(w.cacheFBO);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, w.cacheTexture, 0);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            Profiler::get()->incrementFboChanges();
+            Components::get()->Render()->setLastFrameBufferUsed(0);
             w.cacheRW = rW;  w.cacheRH = rH;
             w.cacheDirty = true;
         }
@@ -545,9 +550,13 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
         if (w.cacheDirty || data != w.cachedData) {
             // Clear cache FBO (transparent)
             glBindFramebuffer(GL_FRAMEBUFFER, w.cacheFBO);
+            Profiler::get()->incrementFboChanges();
+            Components::get()->Render()->setLastFrameBufferUsed(w.cacheFBO);
             glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
             glClear(GL_COLOR_BUFFER_BIT);
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            Profiler::get()->incrementFboChanges();
+            Components::get()->Render()->setLastFrameBufferUsed(0);
 
             // Redirect all draw calls to the cache FBO, render content, restore
             render->setFBOOverride(w.cacheFBO);

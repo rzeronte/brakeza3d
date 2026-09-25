@@ -143,6 +143,7 @@ public:
     void setImGuiMouse();
     void setWindowSize(int w, int h);
     void setRendererSize(int w, int h);
+    void setInitialRendererSize(int w, int h);
     void setClearColor(float r, float g, float b, float a) { clearColorR = r; clearColorG = g; clearColorB = b; clearColorA = a; }
     [[nodiscard]] float getClearColorR() const { return clearColorR; }
     [[nodiscard]] float getClearColorG() const { return clearColorG; }

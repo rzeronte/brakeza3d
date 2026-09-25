@@ -10,7 +10,9 @@
 #include "../3D/Mesh3DAnimation.h"
 #include "../3D/LightSpot.h"
 #include "Base/SharedOpenGLStructs.h"
+#include "../Render/AABB3D.h"
 #include <vector>
+#include <glm/mat4x4.hpp>
 
 class ShaderOGLShadowPass : public ShaderBaseOpenGL
 {
@@ -26,6 +28,22 @@ class ShaderOGLShadowPass : public ShaderBaseOpenGL
 
     GLuint spotLightsDepthMapArray = 0;
 
+    // Fase 4 (instancing, segunda rebanada): mismo patrón que ShaderOGLRenderDeferred -- buffer
+    // persistente de matrices por instancia, configurado una vez en PrepareMainThread().
+    GLuint instanceModelBuffer = 0;
+    GLuint useInstancingUniform = 0;
+
+    // renderSceneDirectionalLight/renderSceneSpotLight comparten este cuerpo (antes duplicado
+    // byte a byte): cull por AABB contra el VP de la luz + agrupar submeshes consecutivos que
+    // comparten geometría en un solo draw instanciado (ver ComponentRender::FlushOpaqueQueue,
+    // mismo patrón). El shadow pass no usa textura/alpha/drawOffset -- clave de agrupación más
+    // simple que en el G-Buffer.
+    void drawCastersInstanced(
+        const std::vector<Mesh3D*>& casters,
+        const std::vector<std::vector<AABB3D>>& casterSubmeshWorldAabbs,
+        const glm::mat4& lightVP
+    ) const;
+
 public:
     static constexpr int MAX_SHADOW_CASTERS = 16;
 
@@ -37,8 +55,17 @@ public:
     void renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight) const;
     void renderMeshIntoDirectionalLightTexture(Mesh3D *o, bool feedbackFBO, const DirLightOpenGL& light) const;
 
-    void renderSceneDirectionalLight(const std::vector<Mesh3D*>& casters, const DirLightOpenGL& light) const;
-    void renderSceneSpotLight(const std::vector<Mesh3D*>& casters, LightSpot* light, int layerIndex) const;
+    void renderSceneDirectionalLight(
+        const std::vector<Mesh3D*>& casters,
+        const std::vector<std::vector<AABB3D>>& casterSubmeshWorldAabbs,
+        const DirLightOpenGL& light
+    ) const;
+    void renderSceneSpotLight(
+        const std::vector<Mesh3D*>& casters,
+        const std::vector<std::vector<AABB3D>>& casterSubmeshWorldAabbs,
+        LightSpot* light,
+        int layerIndex
+    ) const;
 
     void renderIntoArrayDepthTextures(
         Object3D* o,
@@ -49,7 +76,9 @@ public:
         int size,
         GLuint shadowMapArrayTex,
         int layer,
-        GLuint fbo
+        GLuint fbo,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
     ) const;
 
     void renderIntoDirectionalLightTexture(
@@ -59,7 +88,9 @@ public:
         GLuint uvBuffer,
         GLuint normalBuffer,
         int size,
-        GLuint fbo
+        GLuint fbo,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
     ) const;
     void Destroy() override;
     void setupFBOSpotLights();

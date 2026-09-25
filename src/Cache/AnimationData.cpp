@@ -4,6 +4,23 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Logging.h"
 
+AnimationData::~AnimationData()
+{
+    for (auto& m : meshes) {
+        if (glIsBuffer(m.vertexBuffer))
+            glDeleteBuffers(1, &m.vertexBuffer);
+
+        if (glIsBuffer(m.uvBuffer))
+            glDeleteBuffers(1, &m.uvBuffer);
+
+        if (glIsBuffer(m.normalBuffer))
+            glDeleteBuffers(1, &m.normalBuffer);
+
+        if (glIsBuffer(m.vertexBoneDataBuffer))
+            glDeleteBuffers(1, &m.vertexBoneDataBuffer);
+    }
+}
+
 void AnimationData::cloneInto(Mesh3DAnimation& target) const
 {
     LOG_MESSAGE("[AnimationData] Cloning '%s' into Mesh3DAnimation '%s'",

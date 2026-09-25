@@ -71,11 +71,13 @@ public:
         mesh->setCollisionMode(BODY);
         mesh->setBody(builtBody);
 
-        if (shape == SIMPLE_SHAPE || shape == CAPSULE_SHAPE) {
-            world->addRigidBody(builtBody, btBroadphaseProxy::DefaultFilter, btBroadphaseProxy::DefaultFilter);
-        } else {
-            world->addRigidBody(builtBody, Config::collisionGroups::AllFilter, Config::collisionGroups::AllFilter);
-        }
+        // Respeta el grupo/máscara configurado vía setCollisionGroupMask() ANTES de llamar a
+        // SetupRigidBodyCollider() (p.ej. edificios: StaticWorld vs solo grupos de proyectil).
+        // Antes esto ignoraba esa configuración y siempre registraba con AllFilter/DefaultFilter,
+        // es decir "colisiona con todo" -- imposible acotar un cuerpo rígido a un subconjunto de
+        // grupos. Si el llamador nunca configuró nada, los valores por defecto del Collider
+        // (DefaultFilter/AllFilter, ver Collider::Collider()) se comportan igual que antes.
+        world->addRigidBody(builtBody, mesh->getCollisionGroup(), mesh->getCollisionMask());
 
         LOG_MESSAGE("[ThreadJobMakeRigidBody] Registered in dynamics world");
     }

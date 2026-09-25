@@ -2,6 +2,8 @@
 #include "../../include/Config.h"
 #include "../../include/Components/Components.h"
 #include "../../include/3D/Object3D.h"
+#include "../../include/Misc/Tools.h"
+#include "../../include/Render/Profiler.h"
 #include <SDL_image.h>
 
 struct GDVertex { float x, y, z, u, v; };
@@ -36,7 +38,7 @@ GLuint ShaderOGLGroundDecal::loadTexture(const std::string& path)
     auto it = textureCache.find(path);
     if (it != textureCache.end()) return it->second;
 
-    SDL_Surface* surf = IMG_Load(path.c_str());
+    SDL_Surface* surf = Tools::SafeIMGLoad(path);
     if (!surf) return 0;
 
     // Flip vertically (OpenGL origin is bottom-left)
@@ -126,6 +128,7 @@ void ShaderOGLGroundDecal::draw(Object3D* obj, const std::string& texturePath, c
     glPolygonOffset(-10.0f, -10.0f);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -146,8 +149,9 @@ void ShaderOGLGroundDecal::draw(Object3D* obj, const std::string& texturePath, c
 
 void ShaderOGLGroundDecal::Destroy()
 {
-    for (auto& [path, tex] : textureCache)
-        glDeleteTextures(1, &tex);
-    textureCache.clear();
-    glDeleteVertexArrays(1, &vao);
+    // VAO/VBO and the decal texture cache are size-independent — nothing to destroy on resize.
+    // Deleting `vao` here without ever recreating it (as this used to do) left it a stale GL name;
+    // once freed, the driver is free to hand that same name to the next unrelated glGenVertexArrays
+    // call (e.g. another shader's quad VAO created later), so a subsequent resize's Destroy() pass
+    // could end up deleting a VAO that a completely different shader was still actively using.
 }

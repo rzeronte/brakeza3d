@@ -1,6 +1,7 @@
 #ifndef BRAKEZA3D_MODELDATACACHE_H
 #define BRAKEZA3D_MODELDATACACHE_H
 
+#include <mutex>
 #include "ResourceCacheBase.h"
 #include "ModelData.h"
 #include "../Misc/FilePaths.h"
@@ -19,6 +20,10 @@ public:
 
     void visit(std::function<void(const FilePath::ModelFile& path, const ModelData& data)> visitor) const;
     ModelCacheStats getStats() const;
+    // La secuencia get()-miss->parse->store() de Mesh3D::AssimpLoadGeometryFromFile se protege con
+    // ResourceCacheBase::getKeyLoadMutex(fichero). Antes era un mutex GLOBAL que serializaba TODAS
+    // las mallas estáticas (CITY_TREES_Q1..Q4 en cadena: ~12.5 s en la carga, ver
+    // .claude/memory/loading-profile-report.md).
 };
 
 extern ModelDataCache modelDataCache;

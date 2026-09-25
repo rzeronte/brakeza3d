@@ -699,6 +699,12 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 "Only active when distribute is disabled.");
         }
 
+        StringField("data prefix##elapfx", el.arrayPrefix, 80.0f, 32);
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip(
+            "Prefix for row data keys sent from Lua.\n"
+            "Empty -> row i reads \"i_<id>\"; \"m\" -> \"m0_<id>\", \"m1_<id>\"...\n"
+            "Needed when a widget has several arrays.");
+
         BorderEditorSection(el);
 
         ImGui::SeparatorText("Background");
@@ -983,6 +989,10 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
                 cJSON_AddStringToObject(item, "arrayPagerWidget", el.arrayPagerWidget.c_str());
             if (el.arrayOffset != 0.0f)
                 cJSON_AddNumberToObject(item, "arrayOffset", el.arrayOffset);
+            // Sin esto, guardar desde el editor borraba el prefijo y las filas se quedaban sin datos
+            // (buscaban "0_x" en vez de "m0_x") -- p.ej. las dos listas del panel de Facciones.
+            if (!el.arrayPrefix.empty())
+                cJSON_AddStringToObject(item, "arrayPrefix", el.arrayPrefix.c_str());
             if (el.borderWidth > 0.0f) {
                 cJSON_AddNumberToObject(item, "borderWidth", el.borderWidth);
                 cJSON* bc = cJSON_CreateObject();

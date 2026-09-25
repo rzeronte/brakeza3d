@@ -21,6 +21,14 @@ public:
     [[nodiscard]] bool  getFrustumCullingEnabled() const { return frustumCullingEnabled; }
     [[nodiscard]] float getFrustumCullingOffset()  const { return frustumCullingOffset;  }
 
+    // true si esta luz la creó FBXLightLoader a partir del "lightsFile" asociado a la escena
+    // (heredado también por LightSpot, que hereda de LightPoint) -- SceneLoader::SaveScene la
+    // excluye del guardado normal porque se regenera siempre al recargar desde ese FBX;
+    // guardarla también duplicaría las luces en cada recarga.
+    bool importedFromLightsFile = false;
+    [[nodiscard]] bool isImportedFromLightsFile() const { return importedFromLightsFile; }
+    void setImportedFromLightsFile(bool v)              { importedFromLightsFile = v; }
+
     LightPoint(glm::vec4 ambient, glm::vec4 diffuse, glm::vec4 specular, float constant, float linear,float quadratic);
     void setColor(const Color &c);
     void setColorSpecular(const Color &c);

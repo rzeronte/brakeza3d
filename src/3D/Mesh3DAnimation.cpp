@@ -38,12 +38,16 @@ void Mesh3DAnimation::onUpdate()
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();
 
+    // Ver Mesh3D::onUpdate() -- mismo motivo: Outline toca GL_BLEND/DEPTH_TEST/CULL_FACE por su
+    // cuenta, sin pasar por la caché compartida de Fase 1.1.1 (Deferred/Forward, más abajo).
     if (isGUISelected() && !Components::get()->Scripting()->isExecuting()) {
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color::green(), 0.1f, window->getUIFramebuffer());
+        render->InvalidateRenderStateCache();
     }
 
     if (render->getLastRightClickedObject() == this && !isGUISelected()) {
         render->getShaders()->shaderOGLOutline->drawOutline(this, Color(1.0f, 0.5f, 0.0f, 1.0f), 0.1f, window->getForegroundFramebuffer());
+        render->InvalidateRenderStateCache();
     }
 
     GLuint fbo =  Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : window->getSceneFramebuffer();
@@ -51,7 +55,9 @@ void Mesh3DAnimation::onUpdate()
     if (Config::get()->TRIANGLE_MODE_TEXTURIZED) {
         if (!isTransparent()) {
             if (Config::get()->ENABLE_LIGHTS && isEnableLights()) {
-                render->getShaderOGLRenderDeferred()->renderMesh(this, true, fbo);
+                // Fase 3 (Etapa 2): encolar en vez de dibujar al instante -- ver
+                // ComponentRender::EnqueueOpaque/FlushOpaqueQueue, mismo mecanismo que Mesh3D.
+                render->EnqueueOpaque(this, true, fbo);
             } else {
                 render->getShaders()->shaderOGLRender->renderMesh(this, true, fbo);
             }
@@ -64,10 +70,12 @@ void Mesh3DAnimation::onUpdate()
 
     if (Config::get()->TRIANGLE_MODE_SHADING) {
         render->getShaders()->shaderOGLShading->renderMesh(this, true, fbo);
+        render->InvalidateRenderStateCache();
     }
 
     if (Config::get()->TRIANGLE_MODE_WIREFRAME) {
         render->getShaders()->shaderOGLWireframe->renderMesh(this, true, Color::gray(), fbo);
+        render->InvalidateRenderStateCache();
     }
 
     if (Config::get()->DRAW_MESH3D_AABB) {
@@ -92,13 +100,10 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
-        render->getShaders()->shaderOGLColor->renderMesh(
-            this,
-            true,
-            getPickingColor(),
-            false,
-            window->getPickingColorFramebuffer().FBO
-        );
+        // Fase 2 (instancing con skinning, ver .claude/plans): encolado igual que Mesh3D::onUpdate()
+        // -- se dibuja junto en ComponentRender::FlushPickingQueue(), que ya invalida la caché de
+        // estado una sola vez al final si la cola no estaba vacía (no hace falta aquí).
+        render->EnqueuePicking(this, true, window->getPickingColorFramebuffer().FBO);
     }
 }
 
@@ -119,20 +124,27 @@ void Mesh3DAnimation::postUpdate()
 void Mesh3DAnimation::UpdateOpenGLBones()
 {
     if (!scene) return;
-    const unsigned int n = static_cast<unsigned int>(boneInfo.size());
-    if (boneTransformCache.size() < n) {
-        boneTransformCache.resize(n, glm::mat4(1.0f));
-    }
 
-    for (unsigned int i = 0; i < n; i++) {
-        boneTransformCache[i] = Tools::aiMat4toGLMMat4(boneInfo[i].FinalTransformation);
-    }
+    boneTransformCachePerMesh.resize(meshes.size());
 
     auto shaderBones = Components::get()->Render()->getShaders()->shaderOGLBonesTransforms;
     auto fbo = Components::get()->Window()->getSceneFramebuffer();
-    for (auto &m: meshes) {
+
+    for (size_t meshIdx = 0; meshIdx < meshes.size(); meshIdx++) {
+        auto &m = meshes[meshIdx];
         if (m.vertices.empty()) continue;
-        shaderBones->render(m, boneTransformCache, fbo);
+        if (meshIdx >= meshBoneFinalTransforms.size()) continue;
+
+        const auto &meshTransforms = meshBoneFinalTransforms[meshIdx];
+        auto &glmCache = boneTransformCachePerMesh[meshIdx];
+        if (glmCache.size() < meshTransforms.size()) {
+            glmCache.resize(meshTransforms.size(), glm::mat4(1.0f));
+        }
+        for (size_t b = 0; b < meshTransforms.size(); b++) {
+            glmCache[b] = Tools::aiMat4toGLMMat4(meshTransforms[b]);
+        }
+
+        shaderBones->render(m, glmCache, fbo);
     }
 }
 
@@ -191,6 +203,14 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     boneColliderEnabled = true;
     setSourceFile(filename);
 
+    // get()-miss -> parse -> store() no es atómico: sin este lock, N unidades que piden el mismo
+    // modelo a la vez (roster inicial, 125 civiles...) ven todas MISS y parsean el FBX (~32 MB,
+    // 4-6 s) N veces en paralelo -- medido hasta x5 por fichero en la carga (ver
+    // .claude/memory/loading-profile-report.md). Lock POR FICHERO: los demás esperan al primero y
+    // entran por la rama HIT; ficheros distintos siguen cargándose en paralelo.
+    auto keyLoadMutex = animationDataCache.getKeyLoadMutex(filename);
+    std::unique_lock<std::mutex> cacheLoadLock(*keyLoadMutex);
+
     auto cached = animationDataCache.get(filename);
     if (cached) {
         LOG_MESSAGE("[AssimpLoadAnimation] Cache HIT for '%s'", filename.c_str());
@@ -208,6 +228,9 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
             );
             sceneCache.store(filename, sharedImporter);
         }
+        // Escena ya disponible (cacheada o recargada bajo el lock): el trabajo por instancia de
+        // abajo no necesita serializarse entre instancias del mismo modelo.
+        cacheLoadLock.unlock();
         scene = sharedImporter->GetScene();
         if (!scene) {
             LOG_MESSAGE("[AssimpLoadAnimation] ERROR getting scene from SceneCache for '%s'", filename.c_str());
@@ -222,33 +245,30 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         meshVerticesBoneData.resize(scene->mNumMeshes);
 
         cached->cloneInto(*this);
+        sharedAnimModel = cached;
+        sharedStaticGeometry = true;
 
         for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
             aiMesh* mesh = scene->mMeshes[i];
             if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) continue;
 
-            meshVerticesBoneData[i].clear();
             meshVertices[i].assign(mesh->mNumVertices, Vertex3D());
-
-            std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
-            LoadMeshBones(i, mesh, localMeshBones);
 
             std::vector<Vertex3D> localMeshNormals(mesh->mNumVertices);
             LoadMeshVertex(i, mesh, meshVertices[i], localMeshNormals);
 
-            std::vector<VertexBoneData> expandedBoneData;
-            expandedBoneData.reserve(mesh->mNumFaces * 3);
+            // Bookkeeping por instancia (boneMapping/boneInfo/numBones) -- sigue haciendo falta
+            // siempre, BoneInfo::WorldTransform se anima de forma independiente por instancia.
+            // El peso por vértice YA expandido por cara se reutiliza de la caché en vez de
+            // volver a recorrer Assimp (ver AnimationMeshEntry::boneData).
+            std::vector<VertexBoneData> localMeshBones(mesh->mNumVertices);
+            LoadMeshBones(i, mesh, localMeshBones, /*skipWeights=*/true);
 
-            for (unsigned int k = 0; k < mesh->mNumFaces; k++) {
-                const aiFace &Face = mesh->mFaces[k];
-                if (Face.mNumIndices < 3) continue;
-
-                expandedBoneData.push_back(localMeshBones[Face.mIndices[0]]);
-                expandedBoneData.push_back(localMeshBones[Face.mIndices[1]]);
-                expandedBoneData.push_back(localMeshBones[Face.mIndices[2]]);
+            if (i < cached->meshes.size()) {
+                meshVerticesBoneData[i] = cached->meshes[i].boneData;
+            } else {
+                meshVerticesBoneData[i].clear();
             }
-
-            meshVerticesBoneData[i] = std::move(expandedBoneData);
         }
 
         loaded = true;
@@ -291,6 +311,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         entry.normals = srcM.normals;
         entry.materialIndex = srcM.materialIndex;
         entry.name = srcM.name;
+        // Copia (no move): esta instancia también sigue usando su propio meshVerticesBoneData[i].
+        entry.boneData = meshVerticesBoneData[i];
 
         for (Triangle* tri : srcM.modelTriangles) {
             entry.triangleVertices.push_back(tri->A);
@@ -302,6 +324,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
     }
 
     animationDataCache.store(filename, animData);
+    sharedAnimModel = animData;
+    sharedStaticGeometry = true;
 
     LOG_MESSAGE("[AssimpLoadAnimation] Stored in AnimationDataCache (%zu meshes, %zu materials)",
         animData->meshes.size(), animData->materials.size());
@@ -400,7 +424,7 @@ void Mesh3DAnimation::ProcessMeshAnimation(int i, aiMesh *mesh)
     meshVerticesBoneData[i] = std::move(expandedBoneData);
 }
 
-void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData)
+void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData, bool skipWeights)
 {
     for (int i = 0; i < static_cast<int>(mesh->mNumBones); i++) {
         int BoneIndex;
@@ -414,12 +438,22 @@ void Mesh3DAnimation::LoadMeshBones(int meshId, aiMesh *mesh, std::vector<Vertex
 
             boneMapping[BoneName] = BoneIndex;
 
-            boneInfo[BoneIndex].BoneOffset = mesh->mBones[i]->mOffsetMatrix;
             boneInfo[BoneIndex].name = mesh->mBones[i]->mName.C_Str();
             //LOG_MESSAGE("[Mesh3DAnimation] Loading BoneInfo %s", boneInfo[BoneIndex].name.c_str());
         } else {
             BoneIndex = static_cast<int>(boneMapping[BoneName]);
         }
+
+        // El offset (bind pose) se guarda SIEMPRE para este mesh en concreto, aunque el
+        // hueso ya estuviera registrado por otro mesh anterior -- cada mesh tiene su propia
+        // relacion con el esqueleto en el momento del bind (ver comentario en BoneInfo).
+        boneInfo[BoneIndex].BoneOffsetByMesh[meshId] = mesh->mBones[i]->mOffsetMatrix;
+
+        // skipWeights=true: cache-hit de AnimationData, el peso por vértice ya calculado se
+        // reutiliza de AnimationMeshEntry::boneData (ver AssimpLoadAnimation) -- solo hace
+        // falta el bookkeeping de arriba (boneMapping/boneInfo/numBones), que sí es por
+        // instancia.
+        if (skipWeights) continue;
 
         for (int j = 0; j < static_cast<int>(mesh->mBones[i]->mNumWeights); j++) {
             unsigned int VertexID = mesh->mBones[i]->mWeights[j].mVertexId;
@@ -461,6 +495,7 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
     auto AnimationTime = static_cast<float>(fmod(TimeInTicks, scene->mAnimations[indexCurrentAnimation]->mDuration));
 
     ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
+    ComputeMeshBoneFinalTransforms();
 }
 
 void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)
@@ -499,11 +534,33 @@ void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode
 
     if (boneMapping.find(NodeName) != boneMapping.end()) {
         unsigned int BoneIndex = boneMapping[NodeName];
-        boneInfo[BoneIndex].FinalTransformation = globalInverseTransform * GlobalTransformation * boneInfo[BoneIndex].BoneOffset;
+        boneInfo[BoneIndex].WorldTransform = globalInverseTransform * GlobalTransformation;
     }
 
     for (unsigned int i = 0; i < pNode->mNumChildren; i++) {
         ReadNodeHierarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation);
+    }
+}
+
+// Combina el WorldTransform (compartido) de cada hueso con el offset propio de CADA mesh
+// para producir la matriz de skinning real que usa ese mesh. Un mesh que no use un hueso
+// concreto se queda con la identidad para ese slot (da igual: sus vertices nunca tendran
+// peso > 0 para ese hueso).
+void Mesh3DAnimation::ComputeMeshBoneFinalTransforms()
+{
+    size_t meshCount = meshes.size();
+    meshBoneFinalTransforms.resize(meshCount);
+
+    for (size_t meshId = 0; meshId < meshCount; meshId++) {
+        auto &transforms = meshBoneFinalTransforms[meshId];
+        transforms.assign(numBones, aiMatrix4x4());
+
+        for (int b = 0; b < numBones; b++) {
+            auto it = boneInfo[b].BoneOffsetByMesh.find(static_cast<int>(meshId));
+            if (it != boneInfo[b].BoneOffsetByMesh.end()) {
+                transforms[b] = boneInfo[b].WorldTransform * it->second;
+            }
+        }
     }
 }
 
@@ -548,14 +605,17 @@ unsigned int Mesh3DAnimation::FindPosition(float AnimationTime, const aiNodeAnim
 void Mesh3DAnimation::UpdateForBone(Vertex3D &V, int meshID, int vertexID)
 {
     if (numBones == 0) return;
+    if (meshID < 0 || static_cast<size_t>(meshID) >= meshBoneFinalTransforms.size()) return;
+    const auto &meshTransforms = meshBoneFinalTransforms[meshID];
 
     glm::mat4 BoneTransform(0);
     for (int n = 0; n < NUM_BONES_PER_VERTEX; n++) {
         auto boneData = meshVerticesBoneData[meshID][vertexID];
         unsigned int boneId = boneData.IDs[n];
         float weight = boneData.Weights[n];
+        if (weight <= 0.0f || boneId >= meshTransforms.size()) continue;
         //LOG_MESSAGE("ID: %d, Weight: %f, vertexID: %d", boneId, weight, vertexID);
-        BoneTransform += Tools::aiMat4toGLMMat4(boneInfo[boneId].FinalTransformation) * weight;
+        BoneTransform += Tools::aiMat4toGLMMat4(meshTransforms[boneId]) * weight;
     }
 
     V = Vertex3D::fromGLM(BoneTransform * V.toGLM4());
@@ -644,20 +704,12 @@ void Mesh3DAnimation::CalcInterpolatedScaling(aiVector3D &Out, float AnimationTi
 
 void Mesh3DAnimation::DrawBones(aiNode *node, Vertex3D *lastBonePosition)
 {
-    std::vector<aiMatrix4x4> Transforms;
-    Transforms.resize(numBones);
-    for (int i = 0; i < (int) numBones; i++) {
-        Transforms[i] = boneInfo[i].FinalTransformation;
-    }
-
     if (boneMapping.find(node->mName.C_Str()) != boneMapping.end()) {
         int idCurrentNode = static_cast<int>(boneMapping[node->mName.C_Str()]);
 
-        aiMatrix4x4 mOffset = boneInfo[idCurrentNode].BoneOffset;
-        aiMatrix4x4 mT = Transforms[idCurrentNode];
+        aiMatrix4x4 mT = boneInfo[idCurrentNode].WorldTransform;
         aiVector3D aBonePosition;
 
-        aBonePosition = mOffset.Inverse() * aBonePosition;
         aBonePosition = mT * aBonePosition;
 
         Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
@@ -721,12 +773,84 @@ Mesh3DAnimation::~Mesh3DAnimation()
 void Mesh3DAnimation::FillOGLBuffers()
 {
     LOG_MESSAGE("[Mesh3DAnimation] Filling buffers (with feedback)...");
-    ComponentRender::FillOGLBuffers(meshes, true);
+
+    if (!sharedAnimModel) {
+        // Sin AnimationData compartido (carga fallida): comportamiento antiguo.
+        ComponentRender::FillOGLBuffers(meshes, true);
+        RegisterSubmeshPicking();
+        return;
+    }
+
+    // Fase 2.1 extendida a animacion: vertexBuffer/uvBuffer/normalBuffer (pose de reposo,
+    // solo lectura para el transform feedback) se comparten entre instancias del mismo
+    // fichero. feedbackBuffer/feedbackNormalBuffer (la pose ANIMADA actual) son siempre
+    // por instancia -- se crean aqui igual que antes, nunca compartidos.
+    for (size_t i = 0; i < meshes.size() && i < sharedAnimModel->meshes.size(); i++) {
+        auto &m = meshes[i];
+        auto &shared = sharedAnimModel->meshes[i];
+
+        if (m.vertices.empty() || m.uvs.empty() || m.normals.empty()) {
+            LOG_ERROR("[Mesh3DAnimation] FillOGLBuffers: mesh with empty geometry (vertices=%zu uvs=%zu normals=%zu) — skipped",
+                m.vertices.size(), m.uvs.size(), m.normals.size());
+            continue;
+        }
+
+        if (!glIsBuffer(shared.vertexBuffer)) {
+            glGenBuffers(1, &shared.vertexBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, shared.vertexBuffer);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(shared.vertices.size() * sizeof(glm::vec4)), shared.vertices.data(), GL_STATIC_DRAW);
+
+            glGenBuffers(1, &shared.uvBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, shared.uvBuffer);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(shared.uvs.size() * sizeof(glm::vec2)), shared.uvs.data(), GL_STATIC_DRAW);
+
+            glGenBuffers(1, &shared.normalBuffer);
+            glBindBuffer(GL_ARRAY_BUFFER, shared.normalBuffer);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(shared.normals.size() * sizeof(glm::vec3)), shared.normals.data(), GL_STATIC_DRAW);
+        }
+
+        m.vertexBuffer = shared.vertexBuffer;
+        m.uvBuffer = shared.uvBuffer;
+        m.normalBuffer = shared.normalBuffer;
+
+        // Salida del transform feedback: siempre propia de esta instancia.
+        glGenBuffers(1, &m.feedbackBuffer);
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackBuffer);
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.vertices.size() * sizeof(glm::vec4)), m.vertices.data(), GL_DYNAMIC_COPY);
+
+        glGenBuffers(1, &m.feedbackNormalBuffer);
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, m.feedbackNormalBuffer);
+        glBufferData(GL_TRANSFORM_FEEDBACK_BUFFER, static_cast<GLuint>(m.normals.size() * sizeof(glm::vec3)), m.normals.data(), GL_DYNAMIC_COPY);
+
+        glBindBuffer(GL_TRANSFORM_FEEDBACK_BUFFER, 0);
+    }
+
     RegisterSubmeshPicking();
 }
 
 void Mesh3DAnimation::FillAnimationBoneDataOGLBuffers()
 {
+    if (sharedAnimModel) {
+        // Fase 2.1 extendida a animacion: vertexBoneDataBuffer (pesos/indices de hueso por
+        // vertice) tambien es igual entre instancias del mismo fichero -- se comparte igual
+        // que vertexBuffer/uvBuffer/normalBuffer en FillOGLBuffers(). meshVerticesBoneData
+        // (el dato de CPU) se sigue calculando por instancia por ahora; solo se evita
+        // repetir la subida a GPU.
+        for (size_t i = 0; i < meshes.size() && i < sharedAnimModel->meshes.size(); i++) {
+            if (meshes[i].vertices.empty()) continue;
+            auto &shared = sharedAnimModel->meshes[i];
+
+            if (!glIsBuffer(shared.vertexBoneDataBuffer)) {
+                glGenBuffers(1, &shared.vertexBoneDataBuffer);
+                glBindBuffer(GL_ARRAY_BUFFER, shared.vertexBoneDataBuffer);
+                glBufferData(GL_ARRAY_BUFFER, static_cast<GLuint>(meshVerticesBoneData[i].size() * sizeof(VertexBoneData)), meshVerticesBoneData[i].data(), GL_STATIC_DRAW);
+            }
+
+            meshes[i].vertexBoneDataBuffer = shared.vertexBoneDataBuffer;
+        }
+        return;
+    }
+
     for (int i = 0; i < (int)meshes.size(); i++) {
         if (meshes[i].vertices.empty()) continue;
 
@@ -812,7 +936,20 @@ void Mesh3DAnimation::setAnimationByName(const std::string& name)
     for (int i = 0; i < static_cast<int>(scene->mNumAnimations); i++) {
         if (name == scene->mAnimations[i]->mName.C_Str()) {
             setIndexCurrentAnimation(i);
+            return;
         }
+    }
+    // DIAGNOSTICO TEMPORAL (2026-09-20): sin match, esta funcion no hacia NADA -- ni error, ni
+    // fallback -- dejando la animacion actual (o el indice 0 por defecto tras la carga) puesta
+    // para siempre, indistinguible en Lua de un cambio de animacion exitoso (RTSUtils.playAnim/
+    // CivilianManager.setAnim marcan su cache de "animacion ya aplicada" igual en ambos casos).
+    // Sospecha: policias/civiles quedan pegados en la PRIMERA animacion del FBX (aparenta "dando
+    // punetazos") porque el nombre pedido desde Lua no hace match exacto contra
+    // scene->mAnimations[i]->mName tal y como lo parsea Assimp para ese fichero en concreto.
+    LOG_MESSAGE("[Mesh3DAnimation] setAnimationByName: NO MATCH para '%s' (mesh '%s', %u animaciones disponibles)",
+        name.c_str(), this->getName().c_str(), scene->mNumAnimations);
+    for (unsigned int i = 0; i < scene->mNumAnimations; i++) {
+        LOG_MESSAGE("[Mesh3DAnimation]   disponible[%u]: '%s'", i, scene->mAnimations[i]->mName.C_Str());
     }
 }
 
@@ -877,7 +1014,7 @@ void Mesh3DAnimation::createBoneGhostBody(int bmIndex, unsigned int boneId, cons
     aiVector3t<float> scaling, rotationAxis, position;
     float rotationAngle;
 
-    aiMatrix4x4t<float> FinalTransformation = boneInfo[boneId].FinalTransformation;
+    aiMatrix4x4t<float> FinalTransformation = boneInfo[boneId].WorldTransform;
     FinalTransformation.Decompose(scaling, rotationAxis, rotationAngle, position);
 
     ci.position = Vertex3D(position.x, position.y, position.z);
@@ -940,11 +1077,9 @@ void Mesh3DAnimation::UpdateBoneColliders()
                     continue;
                 }
 
-                aiMatrix4x4 mOffset = boneInfo[b.boneId].BoneOffset;
-                aiMatrix4x4 mT = boneInfo[b.boneId].FinalTransformation;
+                aiMatrix4x4 mT = boneInfo[b.boneId].WorldTransform;
                 aiVector3D aBonePosition;
 
-                aBonePosition = mOffset.Inverse() * aBonePosition;
                 aBonePosition = mT * aBonePosition;
 
                 Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePosition);
@@ -989,11 +1124,9 @@ Vertex3D Mesh3DAnimation::getBoneWorldPosition(const std::string& boneName) cons
     unsigned int boneId = it->second;
     if (boneId >= boneInfo.size()) return getPosition();
 
-    aiMatrix4x4 mOffset = boneInfo[boneId].BoneOffset;
-    aiMatrix4x4 mT      = boneInfo[boneId].FinalTransformation;
+    aiMatrix4x4 mT      = boneInfo[boneId].WorldTransform;
     aiVector3D  aBonePos;
 
-    aBonePos = mOffset.Inverse() * aBonePos;
     aBonePos = mT * aBonePos;
 
     Vertex3D bonePosition = Vertex3D::fromAssimp(aBonePos);
@@ -1009,11 +1142,9 @@ M3 Mesh3DAnimation::getBoneWorldRotation(const std::string& boneName) const
     unsigned int boneId = it->second;
     if (boneId >= boneInfo.size()) return getRotation();
 
-    // FinalTransformation * BoneOffset^-1 = globalInverseTransform * GlobalTransformation
-    // Upper-left 3x3 of this gives bone orientation in model space.
-    aiMatrix4x4 boneOffsetInv = boneInfo[boneId].BoneOffset;
-    boneOffsetInv.Inverse();
-    aiMatrix4x4 mLocal = boneInfo[boneId].FinalTransformation * boneOffsetInv;
+    // WorldTransform = globalInverseTransform * GlobalTransformation (sin offset de mesh).
+    // Upper-left 3x3 de esto da la orientacion del hueso en model space.
+    aiMatrix4x4 mLocal = boneInfo[boneId].WorldTransform;
 
     // Normalize columns to strip scale
     float lenX = std::sqrt(mLocal.a1*mLocal.a1 + mLocal.b1*mLocal.b1 + mLocal.c1*mLocal.c1);

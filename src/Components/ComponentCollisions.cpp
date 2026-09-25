@@ -132,8 +132,22 @@ void ComponentCollisions::CheckCollisionsForAll() const
             auto cIA = CollisionInfo(brkObjectB, obA->getUserIndex(), obA->getUserIndex2());
             auto cIB = CollisionInfo(brkObjectA, obB->getUserIndex(), obB->getUserIndex2());
 
-            brkObjectA->ResolveCollision(cIA);
-            brkObjectB->ResolveCollision(cIB);
+            // Guard contra objetos ya eliminados/deshabilitados este mismo frame (p.ej. un
+            // proyectil que se auto-elimina en RTSProjectile.onCollision al resolver un manifold
+            // anterior, y vuelve a aparecer en OTRO manifold mas adelante en este mismo bucle) --
+            // el bucle de objetos ghost, justo debajo, ya hace exactamente este chequeo
+            // (isRemoved/isEnabled/isCollisionsEnabled) antes de llamar a ResolveCollision; a este
+            // bucle de manifolds le faltaba, y ResolveCollision->RunResolveCollisionScripts
+            // ejecuta el entorno Lua del objeto (Object3D::luaEnvironment) sin volver a validarlo
+            // -- crash 0xC0000005 confirmado con addr2line en ScriptLUA::RunEnvironment llamado
+            // desde aqui via Object3D::RunResolveCollisionScripts.
+            auto *objA = static_cast<Object3D *>(brkObjectA);
+            auto *objB = static_cast<Object3D *>(brkObjectB);
+            bool aAlive = !objA->isRemoved() && objA->isEnabled() && brkObjectA->isCollisionsEnabled();
+            bool bAlive = !objB->isRemoved() && objB->isEnabled() && brkObjectB->isCollisionsEnabled();
+
+            if (aAlive) brkObjectA->ResolveCollision(cIA);
+            if (bAlive) brkObjectB->ResolveCollision(cIB);
         }
     }
 
@@ -243,11 +257,21 @@ void ComponentCollisions::setEnableDebugMode(bool value) const
 
 ComponentCollisions::~ComponentCollisions()
 {
-    delete collisionConfiguration;
-    delete dispatcher;
-    delete overlappingPairCache;
-    delete solver;
-    delete debugDraw;
+    // dynamicsWorld must be destroyed FIRST: btDiscreteDynamicsWorld's own destructor walks
+    // any collision objects still registered in it and cleans up their broadphase proxies via
+    // dispatcher/overlappingPairCache -- both of which it only holds by pointer, not by
+    // ownership (they're constructed and owned separately in InitBulletSystem() above). This
+    // used to be safe by accident because Brakeza::onEndComponents() always emptied the world
+    // object-by-object before shutdown (nothing left for this destructor to walk); now that a
+    // full app quit skips that per-object teardown (removeCollisionObject() O(n) x N was the
+    // main cause of slow "Quit to desktop"), the world can still hold live bodies here, so the
+    // dependency order below is required to avoid destructing into freed dispatcher/broadphase
+    // memory.
     delete dynamicsWorld;
     delete ghostPairCallback;
+    delete solver;
+    delete overlappingPairCache;
+    delete dispatcher;
+    delete collisionConfiguration;
+    delete debugDraw;
 }
