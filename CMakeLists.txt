@@ -401,10 +401,12 @@ set_source_files_properties(
     PROPERTIES COMPILE_OPTIONS "-w"
 )
 
-set_source_files_properties(
-    src/Components/ComponentScripting.cpp
-    PROPERTIES COMPILE_OPTIONS "-Wa,-mbig-obj"
-)
+if(WIN32)
+    set_source_files_properties(
+        src/Components/ComponentScripting.cpp
+        PROPERTIES COMPILE_OPTIONS "-Wa,-mbig-obj"
+    )
+endif()
 
 target_include_directories(Brakeza3D PRIVATE
         ${SDL2_INCLUDE_DIRS}

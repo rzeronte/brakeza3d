@@ -2,8 +2,13 @@
 #define CL_TARGET_OPENCL_VERSION 120
 #define USE_IMGUI_API 1
 
+#ifdef _WIN32
 #include <windows.h>
 #include <dbghelp.h>
+#else
+#include <execinfo.h>
+#include <unistd.h>
+#endif
 #include <cstdio>
 #include <iostream>
 #include <exception>
@@ -12,6 +17,7 @@
 #pragma pack(push, MAIN)
 #pragma pack(pop, MAIN)
 
+#ifdef _WIN32
 static bool g_symInit = false;
 
 static void EnsureSymInit()
@@ -151,6 +157,8 @@ static LONG WINAPI SehHandler(_EXCEPTION_POINTERS* ep)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
+#endif
+
 // Complementa al SehHandler (ese cubre 0xC0000005 y similares -- violaciones de acceso).
 // Este cubre el otro tipo de crash "aleatorio": una excepción de C++ (p.ej. sol::error de un
 // error de Lua) que se propaga sin que nadie la capture, terminando en std::terminate() sin más
@@ -174,16 +182,24 @@ static void TerminateHandler()
     }
     std::fflush(stderr);
 
+#ifdef _WIN32
     void* stack[64];
     WORD frames = CaptureStackBackTrace(0, 64, stack, nullptr);
     PrintStackWithSymbols(stack, frames);
+#else
+    void* stack[64];
+    int frames = backtrace(stack, 64);
+    backtrace_symbols_fd(stack, frames, STDERR_FILENO);
+#endif
 
     std::abort();
 }
 
 int main(int argc, char *argv[])
 {
+#ifdef _WIN32
     SetUnhandledExceptionFilter(SehHandler);
+#endif
     std::set_terminate(TerminateHandler);
 
     Brakeza::get()->Start(argc, argv);
