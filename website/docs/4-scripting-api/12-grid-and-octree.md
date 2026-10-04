@@ -119,6 +119,35 @@ mesh:getGrid3D():fillGrid3DFromImage("../assets/nav/walkable.png", 128)
 
 ---
 
+## Path Costs
+
+Walkable cells can also have a **traversal cost**. The A* pathfinding prefers cheaper cells, so you
+can make units favour sidewalks over roads, avoid mud, or keep away from danger zones without
+blocking those cells completely. Every cell costs `1` by default and costs are never lower than `1`.
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `fillCostFromImage()` | `string path, int threshold, float cost [, bool flipZ, bool flipX]` | Gives `cost` to every cell whose pixel is **not** dark (any channel at or above `threshold`). Same mapping and flips as `fillGrid3DFromImage` |
+| `setCellsCost()` | `table cells, float cost` | Sets `cost` on a list of cells given as a flat table `{x1, z1, x2, z2, ...}` |
+| `getCellCost()` | `int x, int z` | Returns the cost of a cell (`1` if unset or out of bounds) |
+
+```lua
+local grid = mesh:getGrid3D()
+
+-- Roads (bright pixels in the mask) cost 4: units walk on them only when there is no better option
+grid:fillCostFromImage("../assets/nav/roads.png", 128, 4.0)
+
+-- Mark a temporary danger zone
+grid:setCellsCost({ 10, 12, 11, 12, 12, 12 }, 10.0)
+
+print(grid:getCellCost(10, 12))   -- 10
+```
+
+Costs are swapped atomically, so they can be changed at runtime while path requests are running on
+worker threads.
+
+---
+
 ## Querying Walkability
 
 ### isCellWalkable

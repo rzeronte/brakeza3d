@@ -53,6 +53,7 @@ ParticlesContext Properties:
 | positionNoise      | int   | Random offset applied to the particle spawn position |
 | velocityNoise      | int   | Random variation applied to the particle velocity    |
 | decelerationFactor | float | Particle deceleration factor over time               |
+| particleSizeScale  | float | Multiplier of the base particle size (1.0 = default) |
 
 All ParticlesContext properties can be modified from the UI.
 
@@ -73,6 +74,13 @@ particleContext = ParticlesContext.new(
     8,      -- VELOCITY_NOISE
     0.98    -- DECELERATION_FACTOR
 )
+emitter:setContext(particleContext)
+```
+
+The size multiplier is not part of the constructor; set it as a property before assigning the context:
+
+```lua
+particleContext.PARTICLE_SIZE_SCALE = 2.0   -- particles twice as big
 emitter:setContext(particleContext)
 ```
 

@@ -33,7 +33,7 @@ dist ≥ outerRadius          → vol = 0                   (silence, channel re
 
 Where `t = (dist − innerRadius) / (outerRadius − innerRadius)`.
 
-When the volume crosses from zero to positive the SDL_mixer channel is acquired automatically.
+When the volume crosses from zero to positive an audio channel is acquired automatically.
 When it drops back to zero the channel is released so other sounds can use it.
 
 ---
@@ -46,7 +46,7 @@ When it drops back to zero the channel is released so other sounds can use it.
 | `sourceFile`  | `string` | —       | Path to the WAV file (relative to the executable)            |
 | `innerRadius` | `float`  | `15.0`  | Distance within which volume is at maximum                   |
 | `outerRadius` | `float`  | `60.0`  | Distance beyond which the sound is completely silent         |
-| `baseVolume`  | `int`    | `128`   | Maximum volume (SDL_mixer range: 0–128)                      |
+| `baseVolume`  | `int`    | `128`   | Maximum volume (range: 0–128)                                |
 | `loop`        | `bool`   | `true`  | Whether the sound loops indefinitely                         |
 
 ---
@@ -135,7 +135,7 @@ Residential       Market            Port
 
 `Sound3D::ambienceVolumeScale` is a C++-side static `float` (default `1.0`) that acts as a global
 multiplier applied on top of every `Sound3D`'s distance-computed volume before it is passed to
-SDL_mixer. It lets you fade all positional audio simultaneously — for example to duck world sounds
+the audio engine. It lets you fade all positional audio simultaneously — for example to duck world sounds
 during a cutscene or a menu overlay — without touching individual `baseVolume` values.
 
 ### How the volume is computed
@@ -200,10 +200,9 @@ Brakeza:addObject3D(bgm, "bgm")
 
 | Limitation | Cause | Workaround |
 |------------|-------|------------|
-| WAV only | `Mix_LoadWAV` does not decode OGG/MP3 | Convert to WAV before use |
-| 32 simultaneous sources | SDL_mixer channel limit | Increase in `ComponentSound.cpp` via `Mix_AllocateChannels` |
+| 32 simultaneous sources | Engine channel limit | Increase `MAX_CHANNELS` in `ComponentSound.h` |
 | Linear attenuation | Volume curve is `1 − t` | Change exponent in `Sound3D::onUpdate()` for a more natural roll-off |
-| No occlusion | SDL_mixer has no geometry awareness | Not applicable for ambient music use cases |
+| No occlusion | The audio engine has no geometry awareness | Not applicable for ambient music use cases |
 
 ---
 

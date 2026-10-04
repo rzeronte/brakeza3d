@@ -26,7 +26,7 @@ On Unix-based systems, you only need to ensure that the required development pac
 ```bash
 sudo apt update && sudo apt install -y \
     build-essential cmake git \
-    libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev \
+    libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev \
     libbullet-dev libassimp-dev liblua5.2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libglew-dev \
     libcurl4-openssl-dev \

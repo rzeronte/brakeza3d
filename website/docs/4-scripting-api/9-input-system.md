@@ -47,6 +47,7 @@ isEnabled = input:isEnabled()
     - isLeftMouseButtonPressed(): Returns true while the left mouse button is being held down.
     - isRightMouseButtonPressed(): Returns true while the right mouse button is being held down.
     - getMouseWheelY(): Returns the mouse wheel scroll delta for the current frame.
+    - isMouseInWindow(): Returns true while the mouse cursor is inside the application window.
 
 
 

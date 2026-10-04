@@ -22,6 +22,25 @@ image3d = ObjectFactory.Image3D(
 )
 ```
 
+### Animated billboards (Image3DAnimation)
+
+Animated sprite billboards are exposed to Lua as `BillboardAnimation`. Besides `CreateAnimation` and
+`setAnimation`, they offer:
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `setTowardsCamera()` | `bool` | When `true`, the quad always faces the camera. Set `false` for flat sprites lying on the ground (decals, puddles) |
+| `setSize()` | `float w, float h` | Resizes the quad at runtime (e.g. a growing puddle effect) |
+| `setRenderFB()` | `string fb` | Draws the billboard into a named framebuffer layer (`"scene"`, `"ui"`...) |
+
+Objects found by name are returned as a plain `Object3D`. To get the full billboard API, use the
+typed accessor:
+
+```lua
+local fx = Brakeza:getImage3DAnimationByName("explosion_01")
+if fx then fx:setSize(4, 4) end
+```
+
 
 ## Mesh3D
 ---
@@ -38,6 +57,39 @@ ObjectFactory.Mesh3D(
 Mesh3D objects provide some advanced features, such as Grid3D and Octrees, which will be covered in the
 scripting chapter.
 
+:::tip Shared geometry and instancing
+Several `Mesh3D` / `Mesh3DAnimation` objects created from the **same model file** share their GPU
+geometry, and the deferred renderer draws them with instancing (G-Buffer, shadow and picking passes,
+animated models included). Spawning many copies of the same model is therefore much cheaper than
+loading different files.
+:::
+
+### Mesh3D Methods
+
+| Method | Parameters | Return | Description |
+|--------|------------|--------|-------------|
+| `getModelFile()` | - | string | Path of the model file the object was created from (valid right after creation, before async loading ends) |
+| `getMeshCount()` | - | int | Number of submeshes (one texture slot each) |
+| `setDiffuseTexture()` | `int index, string path` | void | Replaces the diffuse texture of one submesh (e.g. uniforms or skins) |
+| `getDiffuseTextureFile()` | `int index` | string | File name of the diffuse texture loaded in that submesh (`""` if none) |
+| `setEmissionEnabled()` | `bool` | void | Turns emission on/off (off by default) |
+| `isEmissionEnabled()` | - | bool | Returns whether emission is enabled |
+| `setEmissionIntensity()` | `float 0..1` | void | How much the object glows with its own diffuse color, ignoring lighting |
+| `getEmissionIntensity()` | - | float | Returns the emission intensity |
+
+### Emission
+
+An emissive mesh is drawn with its own diffuse color regardless of the scene lighting: screens, neon
+signs, lamps, magic effects... Emission is **off by default**; enable it in the object inspector or from Lua:
+
+```lua
+local sign = Brakeza:getObjectByName("neon_sign")
+sign:setEmissionEnabled(true)
+sign:setEmissionIntensity(0.8)   -- 0 = lit normally, 1 = full self-illumination
+```
+
+Emissive objects are rendered in their own pass, so scenes without any emissive object pay no extra cost.
+
 
 ## Mesh3DAnimation
 ---
@@ -50,6 +102,9 @@ man = ObjectFactory.Mesh3DAnimation(
     Vertex3D.new(0, -10, 40)                            -- position
 )
 ```
+
+Objects found by name are returned as a plain `Object3D`. Use `Brakeza:getMesh3DAnimationByName(name)`
+to get the object with the full animation API.
 
 ### Mesh3DAnimation Methods
 

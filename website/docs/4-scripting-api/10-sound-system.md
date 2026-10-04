@@ -18,13 +18,13 @@ the functionalities of this system through ComponentSound.
 
 ## Sound Formats
 ---
-You will be able to play **WAV** and/or **MP3** files.
+You will be able to play **WAV**, **MP3** and **FLAC** files.
 
 
 ## Channels
 ---
 
-**Brakeza3D** manages sound through the SDL_mixer library, which supports **32 audio channels**.
+**Brakeza3D** manages sound through the [miniaudio](https://miniaud.io) library (bundled with the engine, no extra dependency), with **32 audio channels**.
 
 Although the management of these channels is automatic when working from our scripts, Brakeza3D assigns one
 exclusively for music. The rest remain available for sound playback.
@@ -116,10 +116,17 @@ Set the playback frequency of a specific channel. Useful for simulating engine R
 
 ```lua
     -- Range: 11025 (slow) to 44100 (normal) to 88200 (fast)
-    -- Default SDL_mixer frequency is 44100
+    -- 44100 is the reference rate (= pitch 1.0)
     local speed = obj:getVelocity():length()
     local freq = 22050 + (speed / maxSpeed) * 22050
     Components:Sound():setChannelFrequency(channel, freq)
+```
+
+If you prefer to think in pitch multipliers rather than frequencies, use `setChannelPitch`:
+
+```lua
+    -- 1.0 = normal, 0.5 = one octave down, 2.0 = one octave up
+    Components:Sound():setChannelPitch(channel, 1.0 + rpm / maxRpm)
 ```
 
 ### Channel Volume
@@ -181,7 +188,7 @@ Check if a sound loaded by label is currently playing on any channel.
     Components:Sound():setAmbienceVolume(100)
 ```
 
-See **[Sound3D — Global Ambience Volume](./17-sound3d#global-ambience-volume)** for the full
+See **[Sound3D — Global Ambience Volume](./17-sound3d.md#global-ambience-volume)** for the full
 interaction with `baseVolume` and distance attenuation.
 
 ## Automatic Loading
@@ -208,5 +215,5 @@ You can automatically access the sounds and music defined in this file by label.
 ---
 
 For sounds that should change volume based on the camera's distance to a point in the world,
-see **[Sound3D](./17-sound3d)** — a dedicated scene object that handles distance attenuation
+see **[Sound3D](./17-sound3d.md)** — a dedicated scene object that handles distance attenuation
 automatically and supports zone-based ambient crossfade.

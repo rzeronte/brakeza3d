@@ -75,6 +75,8 @@ Through your LUA scripts, you can access the following methods:
 | `drawGroundDecal(obj, tex, r, g, b, a, radius)` | Projects a decal texture onto the ground under an object                                             |
 | `drawAxisQuad(obj, r, g, b, a, halfSize)` | Draws a flat quad aligned to an axis under an object                                                        |
 | `drawOutlineSubmesh(obj, name, r, g, b, a, thickness)` | Draws a colored outline around a specific submesh                                                |
+| `drawFillSubmesh(obj, name, r, g, b, a)`  | Tints a specific submesh with a translucent color for the current frame (`name = ""` tints every submesh of the object). `a` is the opacity |
+| `PreloadImage2D(path)`                    | Loads an image into the image cache ahead of time, so the first time it is drawn there is no hitch (e.g. loading-screen backgrounds) |
 | `getSubmeshCenter(obj, name)`             | Returns the world-space center of the given submesh                                                         |
 | `getTextWriter()`                         | Returns the engine's shared TextWriter instance                                                             |
 | `DrawFilledRectToFB(x, y, w, h, color, fb)` | Draws a filled rectangle into a named framebuffer instead of the screen                                  |
@@ -82,6 +84,21 @@ Through your LUA scripts, you can access the following methods:
 | `DrawCircle2DToFB(x, y, size, r, g, b, a, waves, speed, thickness, additive, fb)` | Draws a 2D circle into a named framebuffer        |
 | `drawGroundCircleToFB(obj, r, g, b, a, radius, fb)` | Draws a ground circle into a named framebuffer                                                   |
 | `drawGroundDecalToFB(obj, tex, r, g, b, a, radius, fb)` | Projects a decal into a named framebuffer                                                    |
+
+### Highlighting part of a model
+
+`drawFillSubmesh` paints a translucent color over one submesh of an object (for example one building
+of a city model, or one piece of a vehicle). It lasts one frame, so call it every frame while the
+highlight should be visible. It is a fill, not an outline: combine it with `drawOutlineSubmesh` if you
+want both.
+
+```lua
+function onUpdate()
+    local city = Brakeza:getObjectByName("city")
+    -- 40% green tint over the hovered building
+    Components:Render():drawFillSubmesh(city, "BUILDING_12", 0.0, 1.0, 0.2, 0.4)
+end
+```
 
 ### Drawing to a named framebuffer
 
@@ -121,6 +138,11 @@ Widgets are reusable UI panels defined as JSON files in `assets/ui/`. Each widge
 | `getHoveredWidgetCursor()` | — | `string` | Returns the cursor name string for the currently hovered widget element (empty string when nothing is hovered) |
 | `flushTooltip(deltaTime)` | `float` | void | Advances the tooltip system timer by `deltaTime` seconds; call once per frame to drive tooltip show/hide transitions |
 | `reloadWidgets()` | — | void | Reloads all widget JSON files from disk without restarting |
+| `getWidgetSize(name)` | `string` | `width, height` | Declared size of a widget in window fractions (`0, 0` if it does not exist). Useful to center or align it from Lua |
+| `invalidateWidget(name)` | `string` | `bool` | Forces a cacheable widget to re-render its cached image on the next draw |
+| `invalidateAllWidgets()` | — | void | Same as `invalidateWidget` for every widget (e.g. after a context change) |
+| `setUIDesignResolution(w, h)` | `float, float` | void | Resolution the UI was designed for: widget text scales with the window from it. `0, 0` disables it (text keeps its pixel size) |
+| `isUIScrollHovered()` | — | `bool` | `true` while the mouse is over a scrollable widget area (use it to avoid zooming the camera with the wheel) |
 
 #### drawWidget data table
 
@@ -133,9 +155,12 @@ The `data` table is keyed by element **id** (as defined in the widget JSON). Eac
 | `rect` | `color` (Color) |
 | `progressbar` | `value` (float), `max` (float), `color` (Color) |
 | `icons` | `list` (array of image path strings) |
-| `button` | `text` (string), `color` (Color) |
+| `button` | `text` (string), `color` (Color), `key` (string, selects one of the button `options`), `path` (image), `tooltip` (string) |
+| `widget` / `array` | `count` (int, number of rows of an array) — child elements read their own prefixed keys, see below |
 
 Elements whose id is not present in the data table are rendered with their JSON defaults.
+
+`image` and `button` values also accept `tooltip` (string), shown when the element is hovered.
 
 `drawWidget` and `drawWidgetAtPos` each return four values:
 - **`nextY`** — the Y pixel coordinate immediately below the widget (useful for stacking multiple widgets)
@@ -148,20 +173,17 @@ local render = Components:Render()
 
 function postUpdate()
     -- drawWidget uses the position defined in the widget JSON
-    local nextY, hovered, clicked, tooltip = render:drawWidget("unitCard", {
-        name     = { text = "Soldier",          color = Color.new(1, 1, 1, 1) },
-        hp_bar   = { value = 75, max = 100,     color = Color.new(0.2, 0.8, 0.2, 1) },
-        portrait = { path = "../assets/ui/soldier.png" },
-        btn_stop = { text = "Stop",             color = Color.new(0.9, 0.3, 0.3, 1) },
+    local nextY, hovered, clicked, tooltip = render:drawWidget("exampleCard", {
+        avatar   = { path = "../assets/images/me.png" },
+        name     = { text = "Soldier",  color = Color.new(1, 1, 1, 1) },
+        subtitle = { text = "Moving" },
+        hpBar    = { value = 75, max = 100 },
     })
 
-    if clicked == "btn_stop" then
-        -- handle button press
-    end
-
-    -- Draw a second widget at an explicit position, below the first
-    render:drawWidgetAtPos("resourceBar", 10, nextY + 4, {
-        gold_label = { text = "Gold: " .. gold, color = Color.new(1, 0.85, 0.2, 1) },
+    -- Draw a second card at an explicit position, below the first
+    render:drawWidgetAtPos("exampleCard", 10, nextY + 4, {
+        name  = { text = "Gold: " .. gold, color = Color.new(1, 0.85, 0.2, 1) },
+        hpBar = { value = gold, max = 1000 },
     })
 end
 ```
@@ -172,10 +194,10 @@ end
 local render = Components:Render()
 
 -- Load a single widget at startup
-render:loadWidget("../assets/ui/rts/hud/unitCard.json")
+render:loadWidget("../assets/ui/hud/unitCard.json")
 
 -- Or bulk-load an entire folder
-render:loadWidgets("../assets/ui/rts/hud/")
+render:loadWidgets("../assets/ui/hud/")
 
 -- Fade all widgets out
 render:setWidgetAlpha(0.0)
@@ -198,6 +220,78 @@ render:unloadWidget("unitCard")
 
 :::note
 Call `reloadWidgets()` after editing a widget JSON at runtime to pick up the changes without reloading the scene.
+:::
+
+#### Widget JSON reference
+
+All widgets in `assets/ui/` (subfolders included) are loaded at startup; a widget is referenced by its
+file name without extension. Positions and sizes are **fractions**: the widget's `posX`/`posY`/`width`/
+`height` are fractions of the window, and element `x`/`y`/`w`/`h` are fractions of the widget.
+
+Widget-level keys:
+
+| Key | Description |
+|-----|-------------|
+| `posX`, `posY`, `width`, `height`, `scale` | Placement used by `drawWidget` and widget size |
+| `bgColor`, `bgImage`, `bgImageAlpha` | Background color and/or image |
+| `bgSlice`, `bgSliceScale` | 9-slice borders `[left, top, right, bottom]` in pixels: corners keep their size, edges stretch (frames that resize cleanly) |
+| `borderColor`, `borderWidth` | Optional border |
+| `font` | `.ttf`/`.otf` path for every text of the widget (nested widgets inherit it) |
+| `refHeight` | When set, text scales with the window height relative to this value |
+| `cacheable` | `true` (default) renders the widget into a cached image and only redraws it when its data changes. Use `false` for widgets that change every frame |
+| `cursor` | Cursor name reported by `getHoveredWidgetCursor()` while hovering the widget |
+
+Element types: `text`, `image`, `rect`, `progressbar`, `icons`, `button`, `widget` (a nested widget),
+`array` (a list of a nested widget) and `scroll` (a scrollable list). Common element keys are `id`,
+`type`, `x`, `y`, `w`, `h`, `alpha` and `enabled` (images and buttons also take a static `tooltip`).
+
+| Key | Applies to | Description |
+|-----|------------|-------------|
+| `fontScale`, `textColor`, `textAlign` | text | Size, default color and alignment (`left`, `center`, `right`) |
+| `font` | text | Font for this text only (overrides the widget font) |
+| `wrap`, `w`, `maxLines`, `lineSpacing` | text | Word-wrap the text to width `w`, up to `maxLines` lines |
+| `yAuto`, `paddingLeft`, `paddingTop`, `paddingBottom` | any | Stack the element right below the previous `yAuto` element instead of using `y` (layouts that grow with wrapped text) |
+| `imagePath`, `imageScale` | image | Static image and its scale inside the box |
+| `barW`, `barH`, `barBg`, `barOk`, `barMid`, `barLow` | progressbar | Bar size and colors (ok / mid / low by percentage) |
+| `options` | button | List of states `{ key, text, image, tooltip, color }`; the data `key` picks one (e.g. an on/off toggle with two icons) |
+| `size`, `btnBg`, `btnHover`, `btnPressed`, `sound` | button | Icon size, background colors per state and hover sound |
+| `widgetRef` | widget, array, scroll | Name of the child widget |
+| `arrayCount`, `arrayAlign`, `arrayOffset` | array | Default rows, `vertical`/`horizontal`, gap between rows |
+| `arrayPaginate`, `arrayPagerWidget`, `arrayPagerTop` | array | Paginate long lists with a pager widget, optionally above the list |
+| `arrayPrefix` | array | Prefix for row keys (default `""`) |
+
+**Data for nested widgets.** A `widget` element with id `card` reads the keys prefixed with
+`card_`. An `array` element reads its row count from its own id (`{ count = N }`) and row `i`
+(0-based) reads the keys prefixed with `"<i>_"`. Click and hover ids of array rows come back
+prefixed the same way (`"2_buyBtn"`).
+
+```json
+{
+  "posX": 0.01, "posY": 0.3, "width": 0.1, "height": 0.22,
+  "elements": [
+    { "id": "title",    "type": "text",  "x": 0.04, "y": 0.03, "fontScale": 0.42 },
+    { "id": "desc",     "type": "text",  "yAuto": true, "paddingTop": 0.12, "paddingLeft": 0.04,
+      "w": 0.92, "wrap": true, "maxLines": 4, "fontScale": 0.35 },
+    { "id": "unitList", "type": "array", "yAuto": true, "widgetRef": "exampleCard",
+      "arrayAlign": "vertical" }
+  ]
+}
+```
+
+```lua
+local data = {
+    title    = { text = "SQUAD" },
+    desc     = { text = "A long description that wraps automatically to the panel width." },
+    unitList = { count = 2 },
+    ["0_name"]  = { text = "Scout" },   ["0_hpBar"] = { value = 40, max = 80 },
+    ["1_name"]  = { text = "Builder" }, ["1_hpBar"] = { value = 90, max = 120 },
+}
+Components:Render():drawWidget("squadPanel", data)
+```
+
+:::tip
+The **UITest** scene (TutorialsProject) runs `Demos/GlobalScripts/UIWidgetsDemo.lua`, a minimal example
+of a plain widget, a nested widget and an array, using the sample widgets shipped in `assets/ui/`.
 :::
 
 ### Multi-selection example
@@ -262,6 +356,7 @@ Through your LUA scripts, you can access the following methods:
 | `isLeftMouseButtonPressed()`      | Returns true while the left mouse button is being held down                  |
 | `isRightMouseButtonPressed()`     | Returns true while the right mouse button is being held down                 |
 | `getMouseWheelY()`                | Returns the mouse wheel scroll delta for the current frame                   |
+| `isMouseInWindow()`               | Returns true while the mouse cursor is inside the application window (e.g. to stop edge-scrolling when it leaves) |
 | `isGameControllerAvailable()`     | Returns true if a game controller is connected and available                 |
 | `isMouseButtonDown(button)`       | Returns true while the given button is held (0=left, 1=middle, 2=right)      |
 | `isMouseButtonUp(button)`         | Returns true for one frame when the given button is released                 |

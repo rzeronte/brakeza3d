@@ -35,7 +35,7 @@ This document is currently in BETA. We are continuously working on it.
 | SDL2           | Window management and input handling    | https://www.libsdl.org                  |
 | SDL2_image     | Image loading library for SDL           | https://github.com/libsdl-org/SDL_image |
 | SDL2_ttf       | Font rendering library for SDL          | https://github.com/libsdl-org/SDL_ttf   |
-| SDL2_mixer     | Audio playback library for SDL          | https://github.com/libsdl-org/SDL_mixer |
+| miniaudio      | Audio playback library (single header)  | https://miniaud.io                      |
 | Bullet Physics | Physics engine                          | https://pybullet.org                    |
 | Assimp         | 3D model importer                       | https://www.assimp.org                  |
 | OpenGL         | Graphics API                            | https://www.opengl.org                  |
