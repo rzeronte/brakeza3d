@@ -410,6 +410,7 @@ inline void LUAIntegration(sol::state &lua)
         "drawGroundBlob",    sol::overload(&ComponentRender::drawGroundBlob,    &ComponentRender::drawGroundBlobToFB),
         "drawGroundDecal",   sol::overload(&ComponentRender::drawGroundDecal,   &ComponentRender::drawGroundDecalToFB),
         "drawOutlineSubmesh",      &ComponentRender::drawOutlineSubmesh,
+        "drawFillSubmesh",         &ComponentRender::drawFillSubmesh,
         "clearOutlineBatch",       &ComponentRender::clearOutlineBatch,
         "drawOutlineSubmeshBatch", &ComponentRender::drawOutlineSubmeshBatch,
         "flushOutlines",           &ComponentRender::flushOutlines,
@@ -439,9 +440,34 @@ inline void LUAIntegration(sol::state &lua)
                              ? scaleArg.as<float>() : 0.0f;
             return r.getUIManager()->drawWidgetAtPosLua(name, x, y, data, fb, scaleOverride);
         },
+        // Tamaño declarado de un widget (fracciones de ventana, 0 si no existe): para colocarlo
+        // desde Lua (p.ej. centrarlo) respetando lo que se edite en el UI Manager.
+        "getWidgetSize", [](ComponentRender& r, const std::string& name) -> std::tuple<float, float> {
+            if (!r.getUIManager()) return {0.0f, 0.0f};
+            auto& ws = r.getUIManager()->getWidgets();
+            auto it = ws.find(name);
+            if (it == ws.end()) return {0.0f, 0.0f};
+            return {it->second.width, it->second.height};
+        },
+        // Forzar el re-render de la caché FBO de un widget (o de todos) en el siguiente draw: para
+        // cambios de contexto (p.ej. entrar/salir del modo adquisición) tras los que se vería la
+        // imagen cacheada anterior. Solo tiene efecto en widgets cacheables de primer nivel.
+        "invalidateWidget", [](ComponentRender& r, const std::string& name) -> bool {
+            return r.getUIManager() && r.getUIManager()->invalidateWidget(name);
+        },
+        "invalidateAllWidgets", [](ComponentRender& r) {
+            if (r.getUIManager()) r.getUIManager()->invalidateAllWidgets();
+        },
+        // UI design resolution: widget texts scale with the window from it (0, 0 = off)
+        "setUIDesignResolution", [](ComponentRender& r, float w, float h) {
+            if (r.getUIManager()) r.getUIManager()->setDesignResolution(w, h);
+        },
         "getHoveredWidgetCursor", [](ComponentRender& r) -> std::string {
             if (!r.getUIManager()) return "";
             return r.getUIManager()->getHoveredCursorName();
+        },
+        "isUIScrollHovered", [](ComponentRender& r) -> bool {
+            return r.getUIManager() && r.getUIManager()->isScrollHovered();
         },
         "flushTooltip", [](ComponentRender& r, sol::object dtArg) {
             if (!r.getUIManager()) return;
@@ -527,6 +553,7 @@ inline void LUAIntegration(sol::state &lua)
         "isLeftMouseButtonPressed", &ComponentInput::isLeftMouseButtonPressed,
         "isRightMouseButtonPressed", &ComponentInput::isRightMouseButtonPressed,
         "isMiddleMouseButtonPressed", &ComponentInput::isMiddleMouseButtonPressed,
+        "isMouseInWindow", &ComponentInput::isMouseInWindow,
         "getMouseWheelY", &ComponentInput::getMouseWheelY,
         "getRawMouseX", &ComponentInput::getRawMouseX,
         "getRawMouseY", &ComponentInput::getRawMouseY,
@@ -736,6 +763,9 @@ inline void LUAIntegration(sol::state &lua)
         "getGrid3D", &Mesh3D::getGrid3D,
         "isRenderPipelineDefault", &Mesh3D::isRenderPipelineDefault,
         "setRenderPipelineDefault", &Mesh3D::setRenderPipelineDefault,
+        // Ruta del .fbx con el que se creó el objeto (válida nada más crearlo, antes de que termine
+        // la carga asíncrona) -- p.ej. RiderAttachment.lua clona el modelo de una unidad montada.
+        "getModelFile", [](Mesh3D& m) -> std::string { return m.getModelFile(); },
         "isEmissionEnabled", &Mesh3D::isEmissionEnabled,
         "setEmissionEnabled", &Mesh3D::setEmissionEnabled,
         "getEmissionIntensity", &Mesh3D::getEmissionIntensity,
@@ -1037,6 +1067,9 @@ inline void LUAIntegration(sol::state &lua)
         "writeTextAtlasCenterHorizontal",  &TextWriter::writeTextAtlasCenterHorizontal,
         "flushTextBatch",      &TextWriter::flushTextBatch,
         "flushTextBatchToFB",  &TextWriter::flushTextBatchToFB,
+        // Ancho en px de ventana de un texto con el atlas de este writer (para centrar texto
+        // dibujado por lotes con writeTextAtlasCache, que no tiene variante centrada)
+        "measureTextWidthAtlas", &TextWriter::measureTextWidthAtlas,
         "buildGlyphAtlas", &TextWriter::buildGlyphAtlas,
         "getGlyphAtlas",   &TextWriter::getGlyphAtlas
     );

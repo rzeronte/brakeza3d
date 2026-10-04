@@ -50,6 +50,9 @@ public:
 
     void processSDLEvent(SDL_Event *event);
     void update();
+    // Cancela la selección por recuadro / el clic izquierdo pendiente sin seleccionar nada (la
+    // ventana perdió el foco a mitad de arrastre, ver ComponentInput::CancelMouseInteraction).
+    void cancelRectSelection();
     void DrawSelectionBox() const;
     void DrawSelectionRectFill() const;
 };

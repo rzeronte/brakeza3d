@@ -1,5 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include <optional>
 #include <cmath>
 #include <glm/ext/matrix_clip_space.hpp>
 #include "../../include/Render/TextWriter.h"
@@ -34,8 +35,8 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
         targetFBO = activeTextCache->fbo;
     } else {
         auto *win = Components::get()->Window();
-        const int rw = win->getWidthRender();
-        const int rh = win->getHeightRender();
+        int rw, rh;
+        ComponentRender::getTargetSize("ui", rw, rh);   // "ui" is window sized
         const float rx = (float)rw / (float)win->getWidth();
         const float ry = (float)rh / (float)win->getHeight();
         targetW   = rw;
@@ -59,6 +60,12 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
         targetFBO
     );
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // Back to the render-size viewport the rest of the frame assumes (the target may be the
+    // window-sized "ui" layer or a text cache)
+    {
+        auto* win = Components::get()->Window();
+        glViewport(0, 0, win->getWidthRender(), win->getHeightRender());
+    }
 
     glDeleteTextures(1, &texID);
     SDL_FreeSurface(surfaceTTF);
@@ -113,8 +120,9 @@ void TextWriter::drawTextCache(const std::string &name, int x, int y)
     const TextCache &tc = it->second;
 
     auto *win = Components::get()->Window();
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    ComponentRender::getTargetSize("ui", rw, rh);
+    ComponentRender::ScopedTargetViewport vp(rw, rh);
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
 
@@ -283,19 +291,21 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
     auto *win = Components::get()->Window();
     int targetW, targetH;
     GLuint targetFBO;
+    std::optional<ComponentRender::ScopedTargetViewport> uiViewport;
 
     if (activeTextCache != nullptr) {
         targetW   = activeTextCache->w;
         targetH   = activeTextCache->h;
         targetFBO = activeTextCache->fbo;
     } else {
-        const int rw = win->getWidthRender();
-        const int rh = win->getHeightRender();
+        int rw, rh;
+        ComponentRender::getTargetSize("ui", rw, rh);   // "ui" is window sized
         const float rx = (float)rw / (float)win->getWidth();
         const float ry = (float)rh / (float)win->getHeight();
         targetW   = rw;
         targetH   = rh;
         targetFBO = ComponentRender::resolveEffectiveFBO("ui");
+        uiViewport.emplace(targetW, targetH);   // inside a text cache, beginTextCache already set it
         for (int j = 0; j < numFloats; j += 4) {
             vertices[j]     *= rx;
             vertices[j + 1] *= ry;
@@ -306,6 +316,7 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(targetFBO);
     glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);   // same as flushTextBatch: don't inherit the blend state of the previous draw
     Components::get()->Render()->ChangeOpenGLProgram(shader->getProgramID());
 
     glm::mat4 projection = glm::ortho(0.0f, (float)targetW, (float)targetH, 0.0f, -1.0f, 1.0f);
@@ -315,6 +326,8 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
     shader->setMat4("model", model);
     shader->setFloat("alpha", alpha);
     shader->setInt("inverse", 0);
+    // Without this the text took the tint left by the previous atlas draw (color ignored / flicker)
+    shader->setVec4("tintColor", glm::vec4(c.r, c.g, c.b, c.a));
     shader->setTexture("image", glyphAtlas->getAtlasTexture(), 0);
 
     ensureGlyphVBO(numVerts);
@@ -479,8 +492,9 @@ void TextWriter::flushTextBatchToFB(const std::string& fb)
     auto* render = Components::get()->Render();
     auto* shader = render->getShaders()->shaderOGLImage;
 
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    ComponentRender::getTargetSize(fb, rw, rh);
+    ComponentRender::ScopedTargetViewport vp(rw, rh);
 
     GLuint targetFBO = ComponentRender::resolveEffectiveFBO(fb);
 
@@ -520,8 +534,9 @@ void TextWriter::flushTextBatch()
     auto* render = Components::get()->Render();
     auto* shader = render->getShaders()->shaderOGLImage;
 
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    ComponentRender::getTargetSize("ui", rw, rh);
+    ComponentRender::ScopedTargetViewport vp(rw, rh);
     const GLuint uiFBO = ComponentRender::resolveEffectiveFBO("ui");
 
     render->ChangeOpenGLFramebuffer(uiFBO);
@@ -560,8 +575,9 @@ void TextWriter::writeTextAtlasToFB(int x, int y, const char* text, const Color&
     auto* render = Components::get()->Render();
     auto* shader = render->getShaders()->shaderOGLImage;
 
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    ComponentRender::getTargetSize(fb, rw, rh);
+    ComponentRender::ScopedTargetViewport vp(rw, rh);
 
     GLuint targetFBO = ComponentRender::resolveEffectiveFBO(fb);
 

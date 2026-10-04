@@ -48,6 +48,18 @@ public:
         GLuint indexBuffer = 0,
         GLsizei indexCount = 0
     ) const;
+    void RenderTint(
+        const glm::mat4 &model,
+        GLuint vertexBuffer,
+        GLuint uvBuffer,
+        GLuint normalBuffer,
+        int size,
+        const Color &c,
+        float alpha,
+        GLuint fbo,
+        GLuint indexBuffer = 0,
+        GLsizei indexCount = 0
+    ) const;
     void RenderColorInstanced(
         GLuint vertexBuffer,
         GLuint uvBuffer,
