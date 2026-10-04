@@ -142,7 +142,7 @@ during a cutscene or a menu overlay — without touching individual `baseVolume`
 
 ```
 distance_vol = baseVolume × (1 − t)    -- linear fade from inner to outer radius
-final_SDL_vol = distance_vol × ambienceVolumeScale
+final_vol     = distance_vol × ambienceVolumeScale
 ```
 
 Where `t = (dist − innerRadius) / (outerRadius − innerRadius)` for sources between the two radii,

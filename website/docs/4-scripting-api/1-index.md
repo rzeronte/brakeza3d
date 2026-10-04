@@ -179,13 +179,12 @@ function onStart()
 end
 ```
 
-Scenes, models and textures load **asynchronously** on worker threads. Two helpers let you follow
-or discard that work:
+Scenes, models and images load asynchronously in background jobs. You can check whether loading has finished, for example to keep a loading screen visible, and cancel what is still queued:
 
 | Function | Description |
 |----------|-------------|
-| `Brakeza:getPendingJobsCount()` | Number of loading jobs still queued, running or waiting for their callback. `0` means everything requested so far has finished loading (e.g. to hide a loading screen) |
-| `Brakeza:cancelPendingJobs()` | Discards queued jobs and pending callbacks (jobs already running finish). Call it before reloading a scene on restart, so work from the previous session is not applied to the new one |
+| `Brakeza:getPendingJobsCount()` | Number of loading jobs still queued, running or waiting to be applied (`0` = everything loaded) |
+| `Brakeza:cancelPendingJobs()` | Drops every queued job and every result waiting to be applied. Jobs already running finish, but their results are discarded. Useful before restarting a level |
 
 ```lua
 function onUpdate()
@@ -269,13 +268,17 @@ If you want to terminate the application from code, you can do so as follows:
 Brakeza:Shutdown()
 ```
 
-To close the application with a specific **process exit code** (useful for automated runs, CI or
-test scenarios launched from a script), use `requestExit`:
+This closes the application with exit code `0`. If you need to report a specific exit code instead
+(for example, to tell an external script whether a test run passed or failed), use `requestExit`:
 
 ```lua
-Brakeza:requestExit(0)   -- success
-Brakeza:requestExit(1)   -- any non-zero code signals failure to the caller
+Brakeza:requestExit(1)   -- terminates the application, process exit code = 1
 ```
+
+:::note
+`Brakeza:requestExit(code)` is the mechanism used by CLI automation (see below) to report results —
+for instance, a headless test runner can check the process exit code without parsing any log file.
+:::
 
 
 ## Auto-loading Projects or Scenes
@@ -296,45 +299,76 @@ This will run the project automatically without the UI.
 The project file path is relative to the base projects directory: **/assets/projects/**
 :::
 
-### Command line parameters
+## Passing Custom Parameters to a Project
+---
 
-Besides `-p`, the executable accepts two generic options:
+Beyond `-p`, Brakeza3D accepts a generic, repeatable `--set key=value` flag on the command line.
+The engine itself does **not** interpret these values — it only stores them. What each key means is
+entirely up to your project's own Lua scripts, which read them back through `Brakeza:getCliParam()`.
+This keeps the engine agnostic of any project-specific vocabulary while still letting you drive a
+project's behavior from the command line — useful for automated test scenarios, CI pipelines, batch
+rendering, or any other unattended run.
 
-| Option | Description |
-|--------|-------------|
-| `--set key=value` | Passes a parameter to the project. Repeatable. The engine does not interpret it: its meaning is defined by the project's Lua scripts |
-| `--exit-after N` | Safety watchdog: force-quits the application N seconds after startup (exit code `2`). Useful for headless or automated runs |
-
-A project declares which parameters it accepts in a `cli_params` array inside its project JSON.
-Each entry has a `name`, a `type` (`bool`, `number` or `string`) and a `default`. A `--set` whose
-key is not declared is ignored with a warning.
-
-```json
-{
-  "name": "MyGame",
-  "cli_params": [
-    { "name": "level",     "type": "string", "default": "intro" },
-    { "name": "godMode",   "type": "bool",   "default": false },
-    { "name": "timeScale", "type": "number", "default": 1.0 }
-  ]
-}
+```bash
+> brakeza3d.exe -p MyProject.json --set level=level_03 --set skipIntro=true
 ```
-
-Scripts read the resolved values (the `--set` value, or the default) with `Brakeza:getCliParam(name)`,
-which returns a value of the declared type, or `nil` if the parameter is not declared:
 
 ```lua
 function onStart()
-    local level = Brakeza:getCliParam("level")
-    if Brakeza:getCliParam("godMode") then
-        print("God mode enabled")
+    local level     = Brakeza:getCliParam("level")       -- "level_03" (string)
+    local skipIntro = Brakeza:getCliParam("skipIntro")    -- true (boolean)
+
+    if level then
+        print("Booting into level: " .. level)
     end
 end
 ```
 
-```bash
-> brakeza3d.exe -p MyGame.json --set level=forest --set godMode=true --exit-after 300
+### Declaring accepted parameters (`cli_params`)
+
+A project can optionally declare, in its own project JSON (`/assets/projects/MyProject.json`), which
+parameters it expects, along with their type and default value. This has two benefits: `getCliParam`
+returns a properly typed value (`string`, `bool`, or `number`) instead of a raw string, and Brakeza3D
+logs a warning for any `--set` that doesn't match a declared name — handy for catching typos.
+
+```json
+{
+  "name": "MyProject",
+  "cli_params": [
+    { "name": "level",      "type": "string", "default": "level_01" },
+    { "name": "skipIntro",  "type": "bool",   "default": false }
+  ]
+}
 ```
+
+If a parameter isn't passed on the command line, `getCliParam` returns the declared `default`. If a
+project doesn't declare `cli_params` at all, `getCliParam` simply returns `nil` for any key.
+
+:::note
+`--set` values are always read as strings from the command line; the declared `type` is what tells
+Brakeza3D how to convert them (`"true"`/`"1"` → `true` for `bool`, numeric parsing for `number`).
+:::
+
+
+## Unattended / Headless Runs
+---
+
+Combine the parameters above with an exit watchdog to run Brakeza3D fully unattended — for example,
+from a CI job or a script that launches the engine, waits for it to finish, and inspects the result:
+
+```bash
+> brakeza3d.exe -p MyProject.json --set level=level_03 --exit-after 300
+```
+
+`--exit-after <seconds>` force-quits the process after the given number of seconds regardless of what
+the project does, as a safety net against a run that never finishes on its own — the project can
+still request an earlier, deliberate exit at any point via `Brakeza:requestExit(code)` (see
+[Terminating Execution](#terminating-execution) above).
+
+:::note
+When autoloading a project (`-p`), Brakeza3D also mirrors its log output to stdout, since there is no
+ImGui console to look at in that mode — useful when piping output to a file for later inspection.
+:::
 
 
 

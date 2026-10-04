@@ -50,5 +50,16 @@ In the main menu, you will find the `Windows` section, which provides access to 
 | File Browser      | Unified browser for projects, scenes, scripts, and shaders             |
 | Console Log       | Log console                                                            |
 | Light Depth Maps  | Debugging dynamic light depth maps                                     |
-| Profiler          | Engine performance                                                     |
+| Profiler          | Engine performance: frame times, render passes, GPU timing, caches     |
+| Threads           | Worker thread pools and pending loading jobs                           |
 | Code Editor       | Editor with syntax highlighting for LUA/GLSL                           |
+| UI Manager        | Visual editor for UI widgets (see [UI Widgets](../4-scripting-api/18-ui-widgets.md)) |
+
+### Profiler
+
+Besides CPU times per component and per render pass, the Profiler window offers:
+
+- **Count draw calls / triangles**: per-frame totals (instanced draws count once).
+- **Enable GPU timing**: measures the real GPU time of each render pass (`GL_TIME_ELAPSED` queries), shown next to the CPU time.
+- **Export CSV (avg/median/P95/P99)**: writes `logs/profiler_<date>_<time>.csv` with the statistics of every pass, CPU and GPU. Useful to compare performance before and after a change.
+- Cache statistics (images, models, scripts) with buttons to reset or clear them, and a view of the internal framebuffers (layers, G-Buffer, picking).

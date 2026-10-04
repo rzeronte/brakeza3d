@@ -57,6 +57,31 @@ ObjectFactory.Mesh3D(
 Mesh3D objects provide some advanced features, such as Grid3D and Octrees, which will be covered in the
 scripting chapter.
 
+### Model and textures
+
+| Method | Description |
+|--------|-------------|
+| `getModelFile()` | Path of the model file the object was created from. Valid right after creation, before async loading finishes |
+| `getMeshCount()` | Number of sub-meshes (texture slots) in the model |
+| `getDiffuseTextureFile(meshIdx)` | File of the diffuse texture of sub-mesh `meshIdx` (0-based), or `""` |
+| `setDiffuseTexture(meshIdx, path)` | Replaces the diffuse texture of sub-mesh `meshIdx` |
+
+```lua
+-- Give each spawned car a random paint
+local skins = { "../assets/images/car_red.png", "../assets/images/car_blue.png" }
+local car = Brakeza:getObjectByName("car_01")
+car:setDiffuseTexture(0, skins[math.random(#skins)])
+```
+
+### Emission
+
+Emissive meshes ignore lighting and shadows: the lit color is blended towards the plain texture color, so they stay visible in the dark (neon signs, screens, lamps…). At intensity `1` the mesh shows its texture exactly as it is.
+
+| Method | Description |
+|--------|-------------|
+| `setEmissionEnabled(bool)` / `isEmissionEnabled()` | Turn emission on or off for this object |
+| `setEmissionIntensity(value)` / `getEmissionIntensity()` | Blend amount from `0` (normal lighting) to `1` (fully unlit) |
+
 :::tip Shared geometry and instancing
 Several `Mesh3D` / `Mesh3DAnimation` objects created from the **same model file** share their GPU
 geometry, and the deferred renderer draws them with instancing (G-Buffer, shadow and picking passes,
@@ -64,29 +89,14 @@ animated models included). Spawning many copies of the same model is therefore m
 loading different files.
 :::
 
-### Mesh3D Methods
-
-| Method | Parameters | Return | Description |
-|--------|------------|--------|-------------|
-| `getModelFile()` | - | string | Path of the model file the object was created from (valid right after creation, before async loading ends) |
-| `getMeshCount()` | - | int | Number of submeshes (one texture slot each) |
-| `setDiffuseTexture()` | `int index, string path` | void | Replaces the diffuse texture of one submesh (e.g. uniforms or skins) |
-| `getDiffuseTextureFile()` | `int index` | string | File name of the diffuse texture loaded in that submesh (`""` if none) |
-| `setEmissionEnabled()` | `bool` | void | Turns emission on/off (off by default) |
-| `isEmissionEnabled()` | - | bool | Returns whether emission is enabled |
-| `setEmissionIntensity()` | `float 0..1` | void | How much the object glows with its own diffuse color, ignoring lighting |
-| `getEmissionIntensity()` | - | float | Returns the emission intensity |
-
-### Emission
-
-An emissive mesh is drawn with its own diffuse color regardless of the scene lighting: screens, neon
-signs, lamps, magic effects... Emission is **off by default**; enable it in the object inspector or from Lua:
 
 ```lua
 local sign = Brakeza:getObjectByName("neon_sign")
 sign:setEmissionEnabled(true)
-sign:setEmissionIntensity(0.8)   -- 0 = lit normally, 1 = full self-illumination
+sign:setEmissionIntensity(0.8)
 ```
+
+Both values can also be set in the editor (**Object Properties › Emission**) and are saved with the scene.
 
 Emissive objects are rendered in their own pass, so scenes without any emissive object pay no extra cost.
 

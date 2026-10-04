@@ -125,174 +125,28 @@ render:drawGroundCircleToFB(unit, 0, 1, 0, 0.8, 1.5, "scene")
 
 ### UI Widget System
 
-Widgets are reusable UI panels defined as JSON files in `assets/ui/`. Each widget contains a list of typed elements (text, image, rect, progressbar, icons, button). The editor (UIManager window) lets you design widgets visually; from Lua you draw them at runtime.
+Widgets are reusable UI panels defined as JSON files in `assets/ui/` and designed visually in the editor's **UI Manager** window. The Render component draws them:
 
-| Method | Parameters | Return | Description |
-|--------|------------|--------|-------------|
-| `drawWidget(name, data, fb, scale)` | `string, table, string?, float?` | `nextY, hovered, clickedId, tooltipId` | Draws a widget at its JSON-defined position; `fb` selects the target framebuffer (default `"foreground"`), `scale` overrides the JSON scale (0 = use JSON value) |
-| `drawWidgetAtPos(name, x, y, data, fb, scale)` | `string, float, float, table, string?, float?` | `nextY, hovered, clickedId, tooltipId` | Draws a widget at explicit pixel position `(x, y)`; other parameters same as `drawWidget` |
-| `loadWidget(filePath)` | `string` | void | Loads a single widget JSON from the given file path into the UI manager |
-| `loadWidgets(dir)` | `string` | void | Loads all widget JSON files found in the given directory |
-| `unloadWidget(name)` | `string` | void | Unloads the named widget, freeing its resources |
-| `setWidgetAlpha(alpha)` | `float` | void | Sets the global alpha multiplier applied to all widgets (0.0 = fully transparent, 1.0 = fully opaque) |
-| `getHoveredWidgetCursor()` | — | `string` | Returns the cursor name string for the currently hovered widget element (empty string when nothing is hovered) |
-| `flushTooltip(deltaTime)` | `float` | void | Advances the tooltip system timer by `deltaTime` seconds; call once per frame to drive tooltip show/hide transitions |
-| `reloadWidgets()` | — | void | Reloads all widget JSON files from disk without restarting |
-| `getWidgetSize(name)` | `string` | `width, height` | Declared size of a widget in window fractions (`0, 0` if it does not exist). Useful to center or align it from Lua |
-| `invalidateWidget(name)` | `string` | `bool` | Forces a cacheable widget to re-render its cached image on the next draw |
-| `invalidateAllWidgets()` | — | void | Same as `invalidateWidget` for every widget (e.g. after a context change) |
-| `setUIDesignResolution(w, h)` | `float, float` | void | Resolution the UI was designed for: widget text scales with the window from it. `0, 0` disables it (text keeps its pixel size) |
-| `isUIScrollHovered()` | — | `bool` | `true` while the mouse is over a scrollable widget area (use it to avoid zooming the camera with the wheel) |
-
-#### drawWidget data table
-
-The `data` table is keyed by element **id** (as defined in the widget JSON). Each value is a table with the fields that element needs:
-
-| Element type | Accepted fields |
-|---|---|
-| `text` | `text` (string), `color` (Color) |
-| `image` | `path` (string) |
-| `rect` | `color` (Color) |
-| `progressbar` | `value` (float), `max` (float), `color` (Color) |
-| `icons` | `list` (array of image path strings) |
-| `button` | `text` (string), `color` (Color), `key` (string, selects one of the button `options`), `path` (image), `tooltip` (string) |
-| `widget` / `array` | `count` (int, number of rows of an array) — child elements read their own prefixed keys, see below |
-
-Elements whose id is not present in the data table are rendered with their JSON defaults.
-
-`image` and `button` values also accept `tooltip` (string), shown when the element is hovered.
-
-`drawWidget` and `drawWidgetAtPos` each return four values:
-- **`nextY`** — the Y pixel coordinate immediately below the widget (useful for stacking multiple widgets)
-- **`hovered`** — the `id` of the element currently under the mouse cursor, or `""` if none
-- **`clickedId`** — the `id` of the button element that was clicked this frame, or `""` if none
-- **`tooltipId`** — the `id` of the element whose tooltip is active, or `""` if none
+| Method | Description |
+|--------|-------------|
+| `drawWidget(name, data, fb, scale)` | Draws a widget at its JSON position. Returns `nextY, clickedId, rightClickedId, hoveredId` |
+| `drawWidgetAtPos(name, x, y, data, fb, scale)` | Same, at pixel position (x, y) |
+| `getWidgetSize(name)` | Widget `width, height` as window fractions |
+| `setWidgetAlpha(a)` | Global opacity for the widgets drawn afterwards |
+| `flushTooltip(dt)` | Draws the pending widget tooltip (call once per frame, after all widgets) |
+| `getHoveredWidgetCursor()` | Cursor name requested by the widget under the mouse |
+| `isUIScrollHovered()` | `true` while the mouse is over a widget scroll area |
+| `reloadWidgets()` / `loadWidget(path)` / `loadWidgets(dir)` / `unloadWidget(name)` / `clearWidgets()` | Manage loaded widget files |
 
 ```lua
-local render = Components:Render()
-
-function postUpdate()
-    -- drawWidget uses the position defined in the widget JSON
-    local nextY, hovered, clicked, tooltip = render:drawWidget("exampleCard", {
-        avatar   = { path = "../assets/images/me.png" },
-        name     = { text = "Soldier",  color = Color.new(1, 1, 1, 1) },
-        subtitle = { text = "Moving" },
-        hpBar    = { value = 75, max = 100 },
-    })
-
-    -- Draw a second card at an explicit position, below the first
-    render:drawWidgetAtPos("exampleCard", 10, nextY + 4, {
-        name  = { text = "Gold: " .. gold, color = Color.new(1, 0.85, 0.2, 1) },
-        hpBar = { value = gold, max = 1000 },
-    })
-end
+local _, clicked = Components:Render():drawWidget("pauseMenu", {
+    title = { text = "PAUSED" },
+    hp    = { value = 75, max = 100 },
+}, "ui")
+if clicked == "btnResume" then resumeGame() end
 ```
 
-#### Widget lifecycle helpers
-
-```lua
-local render = Components:Render()
-
--- Load a single widget at startup
-render:loadWidget("../assets/ui/hud/unitCard.json")
-
--- Or bulk-load an entire folder
-render:loadWidgets("../assets/ui/hud/")
-
--- Fade all widgets out
-render:setWidgetAlpha(0.0)
-
--- Restore
-render:setWidgetAlpha(1.0)
-
--- Update cursor when hovering widget elements
-local cursor = render:getHoveredWidgetCursor()
-if cursor ~= "" then
-    Components:Window():LoadCursorImage("../assets/ui/cursors/" .. cursor .. ".png")
-end
-
--- Drive tooltip timers (call once per frame)
-render:flushTooltip(brakeza:getDeltaTime())
-
--- Unload a widget that is no longer needed
-render:unloadWidget("unitCard")
-```
-
-:::note
-Call `reloadWidgets()` after editing a widget JSON at runtime to pick up the changes without reloading the scene.
-:::
-
-#### Widget JSON reference
-
-All widgets in `assets/ui/` (subfolders included) are loaded at startup; a widget is referenced by its
-file name without extension. Positions and sizes are **fractions**: the widget's `posX`/`posY`/`width`/
-`height` are fractions of the window, and element `x`/`y`/`w`/`h` are fractions of the widget.
-
-Widget-level keys:
-
-| Key | Description |
-|-----|-------------|
-| `posX`, `posY`, `width`, `height`, `scale` | Placement used by `drawWidget` and widget size |
-| `bgColor`, `bgImage`, `bgImageAlpha` | Background color and/or image |
-| `bgSlice`, `bgSliceScale` | 9-slice borders `[left, top, right, bottom]` in pixels: corners keep their size, edges stretch (frames that resize cleanly) |
-| `borderColor`, `borderWidth` | Optional border |
-| `font` | `.ttf`/`.otf` path for every text of the widget (nested widgets inherit it) |
-| `refHeight` | When set, text scales with the window height relative to this value |
-| `cacheable` | `true` (default) renders the widget into a cached image and only redraws it when its data changes. Use `false` for widgets that change every frame |
-| `cursor` | Cursor name reported by `getHoveredWidgetCursor()` while hovering the widget |
-
-Element types: `text`, `image`, `rect`, `progressbar`, `icons`, `button`, `widget` (a nested widget),
-`array` (a list of a nested widget) and `scroll` (a scrollable list). Common element keys are `id`,
-`type`, `x`, `y`, `w`, `h`, `alpha` and `enabled` (images and buttons also take a static `tooltip`).
-
-| Key | Applies to | Description |
-|-----|------------|-------------|
-| `fontScale`, `textColor`, `textAlign` | text | Size, default color and alignment (`left`, `center`, `right`) |
-| `font` | text | Font for this text only (overrides the widget font) |
-| `wrap`, `w`, `maxLines`, `lineSpacing` | text | Word-wrap the text to width `w`, up to `maxLines` lines |
-| `yAuto`, `paddingLeft`, `paddingTop`, `paddingBottom` | any | Stack the element right below the previous `yAuto` element instead of using `y` (layouts that grow with wrapped text) |
-| `imagePath`, `imageScale` | image | Static image and its scale inside the box |
-| `barW`, `barH`, `barBg`, `barOk`, `barMid`, `barLow` | progressbar | Bar size and colors (ok / mid / low by percentage) |
-| `options` | button | List of states `{ key, text, image, tooltip, color }`; the data `key` picks one (e.g. an on/off toggle with two icons) |
-| `size`, `btnBg`, `btnHover`, `btnPressed`, `sound` | button | Icon size, background colors per state and hover sound |
-| `widgetRef` | widget, array, scroll | Name of the child widget |
-| `arrayCount`, `arrayAlign`, `arrayOffset` | array | Default rows, `vertical`/`horizontal`, gap between rows |
-| `arrayPaginate`, `arrayPagerWidget`, `arrayPagerTop` | array | Paginate long lists with a pager widget, optionally above the list |
-| `arrayPrefix` | array | Prefix for row keys (default `""`) |
-
-**Data for nested widgets.** A `widget` element with id `card` reads the keys prefixed with
-`card_`. An `array` element reads its row count from its own id (`{ count = N }`) and row `i`
-(0-based) reads the keys prefixed with `"<i>_"`. Click and hover ids of array rows come back
-prefixed the same way (`"2_buyBtn"`).
-
-```json
-{
-  "posX": 0.01, "posY": 0.3, "width": 0.1, "height": 0.22,
-  "elements": [
-    { "id": "title",    "type": "text",  "x": 0.04, "y": 0.03, "fontScale": 0.42 },
-    { "id": "desc",     "type": "text",  "yAuto": true, "paddingTop": 0.12, "paddingLeft": 0.04,
-      "w": 0.92, "wrap": true, "maxLines": 4, "fontScale": 0.35 },
-    { "id": "unitList", "type": "array", "yAuto": true, "widgetRef": "exampleCard",
-      "arrayAlign": "vertical" }
-  ]
-}
-```
-
-```lua
-local data = {
-    title    = { text = "SQUAD" },
-    desc     = { text = "A long description that wraps automatically to the panel width." },
-    unitList = { count = 2 },
-    ["0_name"]  = { text = "Scout" },   ["0_hpBar"] = { value = 40, max = 80 },
-    ["1_name"]  = { text = "Builder" }, ["1_hpBar"] = { value = 90, max = 120 },
-}
-Components:Render():drawWidget("squadPanel", data)
-```
-
-:::tip
-The **UITest** scene (TutorialsProject) runs `Demos/GlobalScripts/UIWidgetsDemo.lua`, a minimal example
-of a plain widget, a nested widget and an array, using the sample widgets shipped in `assets/ui/`.
-:::
+See **[UI Widgets](./18-ui-widgets.md)** for the JSON format, element types, lists, scroll areas, 9-slice backgrounds and the editor.
 
 ### Multi-selection example
 
