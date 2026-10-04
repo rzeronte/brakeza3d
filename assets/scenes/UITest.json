@@ -40,9 +40,9 @@
 			"enabled":	true
 		}],
 	"scripts":	[{
-			"codeFile":	"../assets/scripts/test.lua",
-			"typesFile":	"../assets/scripts/test.json",
-			"name":	"../assets/scripts/test",
+			"codeFile":	"../assets/scripts/Demos/GlobalScripts/UIWidgetsDemo.lua",
+			"typesFile":	"../assets/scripts/Demos/GlobalScripts/UIWidgetsDemo.json",
+			"name":	"UIWidgetsDemo",
 			"type":	"Global",
 			"ticks_per_second":	0,
 			"types":	[]
