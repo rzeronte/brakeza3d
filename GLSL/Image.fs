@@ -10,5 +10,7 @@ out vec4 color;
 
 void main()
 {
-    color = vec4(tintColor.rgb, alpha) * texture(image, TexCoords);
+    // tintColor.a también cuenta: el texto de los widgets lleva ahí su transparencia (fundidos vía
+    // UIManager::globalAlpha, p.ej. números de daño o tooltips). Las imágenes pasan siempre a=1.
+    color = vec4(tintColor.rgb, alpha * tintColor.a) * texture(image, TexCoords);
 }

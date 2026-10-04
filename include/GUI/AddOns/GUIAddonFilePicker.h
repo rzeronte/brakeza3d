@@ -80,27 +80,43 @@ private:
         return false;
     }
 
+    static std::string lowerName(const std::filesystem::path& p)
+    {
+        std::string s = p.filename().string();
+        std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+        return s;
+    }
+
+    // Carpetas primero y luego ficheros, cada grupo en orden alfabético sin distinguir mayúsculas
+    // (directory_iterator no garantiza ningún orden y los mezclaba).
     void drawFolder(const char* popupId, const std::string& folder)
     {
         namespace fs = std::filesystem;
         if (!fs::exists(folder)) { ImGui::TextDisabled("Not found: %s", folder.c_str()); return; }
 
+        std::vector<fs::path> dirs, files;
         for (auto& entry : fs::directory_iterator(folder)) {
-            if (entry.is_directory()) {
-                if (ImGui::BeginMenu(entry.path().filename().string().c_str())) {
-                    drawFolder(popupId, entry.path().string());
-                    ImGui::EndMenu();
-                }
-            } else {
-                if (!matchExt(entry.path())) continue;
-                std::string rel = _relPrefix + entry.path()
-                    .lexically_relative(fs::path(_baseFolder)).string();
-                std::replace(rel.begin(), rel.end(), '\\', '/');
-                if (ImGui::MenuItem(entry.path().filename().string().c_str())) {
-                    result   = rel;
-                    accepted = true;
-                    ImGui::CloseCurrentPopup();
-                }
+            if (entry.is_directory())            dirs.push_back(entry.path());
+            else if (matchExt(entry.path()))     files.push_back(entry.path());
+        }
+        auto byName = [](const fs::path& a, const fs::path& b) { return lowerName(a) < lowerName(b); };
+        std::sort(dirs.begin(),  dirs.end(),  byName);
+        std::sort(files.begin(), files.end(), byName);
+
+        for (auto& dir : dirs) {
+            if (ImGui::BeginMenu(dir.filename().string().c_str())) {
+                drawFolder(popupId, dir.string());
+                ImGui::EndMenu();
+            }
+        }
+        if (!dirs.empty() && !files.empty()) ImGui::Separator();
+        for (auto& file : files) {
+            std::string rel = _relPrefix + file.lexically_relative(fs::path(_baseFolder)).string();
+            std::replace(rel.begin(), rel.end(), '\\', '/');
+            if (ImGui::MenuItem(file.filename().string().c_str())) {
+                result   = rel;
+                accepted = true;
+                ImGui::CloseCurrentPopup();
             }
         }
     }

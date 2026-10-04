@@ -1,0 +1,6 @@
+// Windows resources for the executable (compiled by windres via CMake, WIN32 only).
+// SDL2 uses the first icon in the .exe as the window-class icon, so the taskbar button gets
+// the right icon from the moment the window is created, instead of depending on the main
+// thread answering WM_GETICON during startup (SDL_SetWindowIcon arrives later).
+// Regenerate application.ico from assets/icons/application.png if the icon changes.
+IDI_ICON1 ICON "application.ico"

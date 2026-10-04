@@ -23,6 +23,15 @@ class ComponentInput : public Component
     bool drag = false;
     bool rightDrag = false;
     int mouseWheelY = 0;
+    // Tras perder el foco de la ventana con un botón pulsado, SDL puede quedarse creyendo que sigue
+    // pulsado (la suelta ocurre fuera y nunca llega). Mientras esto esté activo se ignora el estado
+    // de botones que da SDL, hasta una pulsación nueva real o hasta que SDL ya no marque ninguno.
+    bool mouseButtonsSuspended = false;
+    // El cursor está sobre la ventana del juego Y la ventana tiene el foco (se recalcula cada frame
+    // en ResetMouseMapping). Fuera de ella, SDL_GetMouseState sigue dando la última posición conocida
+    // dentro -pegada al borde-, así que cualquier lógica por posición (scroll por bordes) debe
+    // mirar esto primero.
+    bool mouseInWindow = true;
 
     Uint8 *keyboard = nullptr;
     std::unordered_map<SDL_Keycode, bool> keyboardEvents;
@@ -139,6 +148,7 @@ public:
     [[nodiscard]] bool isLeftMouseButtonPressed() const             { return mouseLeftButton; }
     [[nodiscard]] bool isRightMouseButtonPressed() const            { return mouseRightButton; }
     [[nodiscard]] bool isMiddleMouseButtonPressed() const           { return mouseMiddleButton; }
+    [[nodiscard]] bool isMouseInWindow() const                      { return mouseInWindow; }
     [[nodiscard]] bool isClickLeft() const                          { return mouseLeftButton; }
     [[nodiscard]] bool isClickRight() const                         { return mouseRightButton; }
     [[nodiscard]] bool isClickRightUp() const                       { return mouseRightButtonUp; }
@@ -158,7 +168,11 @@ public:
     void consumeLeftClick()                   { leftClickConsumedByUI = true; }
     [[nodiscard]] bool isLeftClickConsumed() const { return leftClickConsumedByUI; }
 
-    static void HandleWindowEvents(SDL_Event *event, bool &);
+    void HandleWindowEvents(SDL_Event *event, bool &);
+    // Cancela cualquier interacción de ratón en curso (arrastres, botones) y suspende el estado de
+    // botones de SDL hasta una pulsación nueva. Se llama al perder el foco la ventana.
+    void CancelMouseInteraction();
+    [[nodiscard]] bool isMouseButtonsSuspended() const              { return mouseButtonsSuspended; }
 };
 
 

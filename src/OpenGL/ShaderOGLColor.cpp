@@ -58,6 +58,11 @@ void ShaderOGLColor::LoadUniforms()
     // projection/view ya no son uniforms sueltos: se leen de CameraBlock (binding 3),
     // relleno una vez por frame en ComponentRender::UpdateCameraUBO().
     glUniformBlockBinding(programID, glGetUniformBlockIndex(programID, "CameraBlock"), 3);
+
+    // alpha (Color.fs): un uniform no fijado vale 0. Red de seguridad: 1 desde el principio; aun así
+    // cada consumidor lo fija explícitamente (los uniforms persisten entre usos del programa).
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
+    setFloat("alpha", 1.0f);
 }
 
 void ShaderOGLColor::renderMesh(Mesh3D* m, bool useFeedbackBuffer, const Color &color, bool clearFramebuffer, GLuint fbo) const
@@ -113,6 +118,7 @@ void ShaderOGLColor::RenderColor(
     // projection/view: CameraBlock (binding 3), no hace falta subirlas aqui.
     setBool("useInstancing", false);
     setBool("useSkinning", false);
+    setFloat("alpha", 1.0f);   // picking: opaco (ver RenderTint)
     setMat4("model", modelView);
     setVec3("color", c.toGLM());
 
@@ -126,6 +132,59 @@ void ShaderOGLColor::RenderColor(
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    render->ChangeOpenGLFramebuffer(0);
+}
+
+// Tinte de color translúcido sobre una geometría (edificio seleccionado: render:drawFillSubmesh).
+// Mismo programa que el picking, pero mezclado con alpha sobre fbo, sin prueba ni escritura de
+// profundidad (como el contorno: se ve aunque algo lo tape) y solo caras frontales (menos doble
+// mezcla donde se solapan caras del mismo mesh). Deja el estado como RenderColor al salir.
+void ShaderOGLColor::RenderTint(
+    const glm::mat4 &model,
+    GLuint vertexBuffer,
+    GLuint uvBuffer,
+    GLuint normalBuffer,
+    int size,
+    const Color &c,
+    float alpha,
+    GLuint fbo,
+    GLuint indexBuffer,
+    GLsizei indexCount
+) const
+{
+    auto render = Components::get()->Render();
+    render->ChangeOpenGLFramebuffer(fbo);
+    render->ChangeOpenGLProgram(programID);
+    auto window = Components::get()->Window();
+    glViewport(0,0, window->getWidthRender(), window->getHeightRender());
+
+    glBindVertexArray(VertexArrayID);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    setBool("useInstancing", false);
+    setBool("useSkinning", false);
+    setMat4("model", model);
+    setVec3("color", c.toGLM());
+    setFloat("alpha", alpha);
+
+    setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
+
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+
+    setFloat("alpha", 1.0f);   // no dejar el programa (compartido con el picking) translúcido
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
 
     render->ChangeOpenGLFramebuffer(0);
 }
@@ -164,6 +223,7 @@ void ShaderOGLColor::RenderColorInstanced(
 
     setBool("useInstancing", true);
     setBool("useSkinning", false);
+    setFloat("alpha", 1.0f);   // picking: opaco (ver RenderTint)
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
@@ -222,6 +282,7 @@ void ShaderOGLColor::RenderColorInstancedSkinned(
 
     setBool("useInstancing", true);
     setBool("useSkinning", true);
+    setFloat("alpha", 1.0f);   // picking: opaco (ver RenderTint)
     setInt("bonesPerInstance", bonesPerInstance);
     setInt("boneMatrices", 0);
 

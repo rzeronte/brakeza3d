@@ -56,6 +56,75 @@ void ShaderOGLImage::CreateQuadVBO()
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    // Region quad: same layout, UVs rewritten per draw in renderTextureRegion (GL_DYNAMIC_DRAW).
+    glGenVertexArrays(1, &regionVAO);
+    glGenBuffers(1, &regionVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, regionVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+    glBindVertexArray(regionVAO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void ShaderOGLImage::renderTextureRegion(
+    GLuint textureId,
+    int x, int y, int w, int h,
+    int worldW, int worldH,
+    float u0, float v0, float u1, float v1,
+    float alpha,
+    GLuint fbo
+) const
+{
+    if (w <= 0 || h <= 0) return;
+
+    // Unit quad (pos 0..1, y down) mapped to the requested UV sub-rect.
+    const float vertices[] = {
+        0.0f, 1.0f, u0, v1,
+        1.0f, 0.0f, u1, v0,
+        0.0f, 0.0f, u0, v0,
+
+        0.0f, 1.0f, u0, v1,
+        1.0f, 1.0f, u1, v1,
+        1.0f, 0.0f, u1, v0
+    };
+    glBindBuffer(GL_ARRAY_BUFFER, regionVBO);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
+    glDisable(GL_DEPTH_TEST);
+    Components::get()->Render()->ChangeOpenGLProgram(programID);
+
+    glm::mat4 projection = glm::ortho(0.0f, (float)worldW, (float)worldH, 0.0f, -1.0f, 1.0f);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3((float)x, (float)y, 0.0f));
+    model = glm::scale(model, glm::vec3((float)w, (float)h, 1.0f));
+
+    const int notInverse = 0;
+    glUniformMatrix4fv(modelMatrixUniform, 1, GL_FALSE, &model[0][0]);
+    glUniformMatrix4fv(projectionMatrixUniform, 1, GL_FALSE, &projection[0][0]);
+    glUniform1fv(alphaUniform, 1, &alpha);
+    glUniform1i(inverseUniform, notInverse);
+    setVec4("tintColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    setTextureUniform(textureUniform, textureId, 0);
+
+    // Same blending as renderTexture (Porter-Duff "over")
+    GLboolean blendWasEnabled = glIsEnabled(GL_BLEND);
+    glEnable(GL_BLEND);
+    glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+    glBindVertexArray(regionVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    glBindVertexArray(0);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (!blendWasEnabled) glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }
 
 void ShaderOGLImage::renderTexture(

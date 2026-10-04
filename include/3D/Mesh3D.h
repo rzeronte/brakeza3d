@@ -174,6 +174,7 @@ public:
     [[nodiscard]] bool isRenderPipelineDefault() const                            { return renderDefaultPipeline; }
     [[nodiscard]] bool isFrustumCullSubmeshes() const                             { return frustumCullSubmeshes; }
     void setFrustumCullSubmeshes(bool value)                                      { frustumCullSubmeshes = value; }
+    [[nodiscard]] const std::string &getModelFile() const                         { return sourceFile.str(); }
     [[nodiscard]] bool isEmissionEnabled() const                                  { return emissionEnabled; }
     void setEmissionEnabled(bool value)                                           { emissionEnabled = value; }
     [[nodiscard]] float getEmissionIntensity() const                              { return emissionIntensity; }

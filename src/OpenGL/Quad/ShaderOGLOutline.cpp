@@ -244,6 +244,7 @@ void ShaderOGLOutline::stencilOutlineMesh(
     shaderColor->setBool("useSkinning", false);
     shaderColor->setMat4("model",      model);
     shaderColor->setVec3("color", glm::vec3(0.0f));
+    shaderColor->setFloat("alpha", 1.0f);   // Color.fs tiene alpha (lo usa RenderTint): fijarlo aquí también
     ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count);
 
     // ── Restore ───────────────────────────────────────────────────────────

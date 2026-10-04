@@ -198,13 +198,35 @@ public:
     void DrawLine2D(int x1, int y1, int x2, int y2, const Color &c, float weight) const;
     void DrawFilledRect(int x, int y, int w, int h, const Color &c) const;
     void DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const;
-    void DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb) const;
-    static void setFBOOverride(GLuint fbo);
+    void DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb, float alpha = 1.0f) const;
+    // w/h: size of the override FBO (a widget cache), so the 2D draw helpers map onto it; 0 = the
+    // size of the layer that was asked for
+    static void setFBOOverride(GLuint fbo, int w = 0, int h = 0);
     static void clearFBOOverride();
+    // Real pixel size of a 2D draw target: "ui" is WINDOW sized (ImGui draws there too), the other
+    // layers are RENDER sized; an active FBO override reports its own size. The 2D helpers map
+    // window-px coordinates onto it (before, they always assumed render size: with a render
+    // resolution different from the window, the RTS UI ended squeezed in a corner).
+    static void getTargetSize(const std::string& fb, int& w, int& h);
+    // Sets glViewport to (w, h) for a draw into a target whose size differs from the render
+    // resolution and puts the render-size viewport back on destruction (the rest of the frame
+    // assumes it). No-op when the target is render sized -- the usual case.
+    struct ScopedTargetViewport {
+        bool changed{false};
+        int rw{0}, rh{0};
+        ScopedTargetViewport(int w, int h);
+        ~ScopedTargetViewport();
+        ScopedTargetViewport(const ScopedTargetViewport&) = delete;
+        ScopedTargetViewport& operator=(const ScopedTargetViewport&) = delete;
+    };
     static GLuint resolveEffectiveFBO(const std::string& fb);
     void DrawImage2D(const std::string &path, int x, int y, int w, int h);
     void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f);
     void DrawImage2DFromImageToFB(Image *img, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f);
+    // 9-slice: corners keep their size, edges stretch along one axis, center stretches both.
+    // (x,y,w,h) in window px; slice L/T/R/B in IMAGE px; sliceScale = screen (window) px per image px.
+    void DrawImage2DNineSliceToFB(Image *img, float x, float y, float w, float h,
+                                  const float slice[4], float sliceScale, const std::string &fb, float alpha = 1.0f);
     void DrawImage2DFromImage(Image *img, int x, int y, int w, int h) const;
     Image* getOrLoadImage(const std::string &path);
     [[nodiscard]] GLuint getImageGLTexture(const std::string& path);
@@ -214,6 +236,8 @@ public:
     void drawGroundBlob(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundBlobToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawOutlineSubmesh(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
+    // Tinte de color translúcido (a = opacidad del tinte) sobre un submesh, en la capa foreground.
+    void drawFillSubmesh(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a) const;
     void clearOutlineBatch() const;
     void drawOutlineSubmeshBatch(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
     void flushOutlines() const;

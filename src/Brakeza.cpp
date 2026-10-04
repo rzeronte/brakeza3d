@@ -307,6 +307,12 @@ void Brakeza::AutoLoadProjectOrContinue() const
         ProjectLoader::LoadProject(Config::get()->PROJECTS_FOLDER + cliOptions.project);
         printf("[Brakeza] ProjectLoader::LoadProject DONE\n"); fflush(stdout);
         Config::get()->ENABLE_IMGUI = false;
+        // El backend SDL2 de ImGui desactiva la captura automática del ratón de SDL al inicializarse
+        // (imgui_impl_sdl2.cpp: SDL_HINT_MOUSE_AUTO_CAPTURE = "0") porque la hace él por frame con
+        // SDL_CaptureMouse() en ImGui_ImplSDL2_NewFrame(). Con ImGui apagado ese NewFrame ya no corre,
+        // así que nadie capturaba: soltar el botón fuera de la ventana no llegaba y el arrastre /
+        // la selección por recuadro se quedaban "pegados" al volver. SDL relee este hint en caliente.
+        SDL_SetHint(SDL_HINT_MOUSE_AUTO_CAPTURE, "1");
         // Autoload runs have no ImGui/in-app console to look at, so mirror LOG_MESSAGE/Lua
         // print() (routed through Logging::Message) to stdout instead of the default
         // interactive-mode behaviour (silent after startup, GUI console only) -- otherwise a

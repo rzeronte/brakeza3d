@@ -145,6 +145,15 @@ void ComponentWindow::InitWindow()
         SDL_WINDOW_OPENGL | SDL_WINDOW_INPUT_FOCUS | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED
     );
 
+    // Icono lo antes posible (antes de GL/renderer/glew) + bombear mensajes: la barra de tareas
+    // de Windows pide el icono (WM_GETICON) al crear el botón y, si el hilo principal no responde
+    // durante el arranque, se queda con el genérico. El icono embebido en el .exe
+    // (resources/windows/brakeza3d.rc) cubre además el instante de creación.
+    if (window != nullptr && applicationIcon != nullptr) {
+        SDL_SetWindowIcon(window, applicationIcon);
+        SDL_PumpEvents();
+    }
+
     context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, context);
 
@@ -168,7 +177,6 @@ void ComponentWindow::InitWindow()
     // arranque, igual que hace el propio toggle del menú.
     SDL_GL_SetSwapInterval(Config::get()->V_SYNC ? 1 : 0);
     SDL_RenderSetVSync(renderer, Config::get()->V_SYNC ? 1 : 0);
-    SDL_SetWindowIcon(window, applicationIcon);
 }
 
 void ComponentWindow::InitFontsTTF()

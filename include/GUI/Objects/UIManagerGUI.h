@@ -39,7 +39,8 @@ class UIManagerGUI
         GUIFilePicker& picker,
         const char* pickerTitle,
         float inputWidth = 260.0f);
-    static void BorderEditorSection(UIElement& el);
+    // withStates: also edit hover/pressed border colors (only buttons use them)
+    static void BorderEditorSection(UIElement& el, bool withStates = false);
 
 public:
     static void DrawWinUIManager();

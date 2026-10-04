@@ -121,7 +121,10 @@ void SelectionManager::processSDLEvent(SDL_Event *event)
         isRectSelecting = false;
     }
 
-    if (rectSelectEnabled && event->type == SDL_MOUSEMOTION && (event->motion.state & SDL_BUTTON_LMASK)) {
+    // motion.state viene de SDL y tras perder el foco puede seguir marcando el botón como pulsado
+    // (la suelta ocurrió fuera): no estirar el recuadro mientras los botones estén suspendidos.
+    if (rectSelectEnabled && event->type == SDL_MOUSEMOTION && (event->motion.state & SDL_BUTTON_LMASK)
+        && !input->isMouseButtonsSuspended()) {
         rectSelectCurrentX = event->motion.x;
         rectSelectCurrentY = event->motion.y;
 
@@ -186,6 +189,15 @@ void SelectionManager::processSDLEvent(SDL_Event *event)
         pendingLeftClick = true;
         pendingClickCtrl = ctrlHeld;
     }
+}
+
+void SelectionManager::cancelRectSelection()
+{
+    isRectSelecting    = false;
+    pendingLeftClick   = false;
+    pendingClickObject = nullptr;
+    rectSelectCurrentX = rectSelectStartX;
+    rectSelectCurrentY = rectSelectStartY;
 }
 
 void SelectionManager::update()

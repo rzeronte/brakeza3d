@@ -196,6 +196,25 @@ void ComponentInput::HandleWindowEvents(SDL_Event *e, bool &end)
     if (e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_CLOSE) {
         end = true;
     }
+    // Alt+Tab / clic en otra aplicación a mitad de arrastre: ni la captura del ratón salva la suelta,
+    // que ocurre ya fuera. Cancelar lo que estuviera en curso (arrastre, selección por recuadro).
+    if (e->type == SDL_WINDOWEVENT && e->window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+        CancelMouseInteraction();
+    }
+}
+
+void ComponentInput::CancelMouseInteraction()
+{
+    drag               = false;
+    rightDrag          = false;
+    mouseLeftButton    = false;
+    mouseRightButton   = false;
+    mouseMiddleButton  = false;
+    mouseButtonDown    = false;
+    mouseButtonUp      = false;
+    mouseRightButtonUp = false;
+    mouseButtonsSuspended = true;
+    Components::get()->Render()->getSelectionManager().cancelRectSelection();
 }
 
 void ComponentInput::ResetKeyboardMapping()
@@ -218,6 +237,7 @@ void ComponentInput::UpdateMouseStates(SDL_Event *event)
     }
 
     if (event->type == SDL_MOUSEBUTTONDOWN) {
+        mouseButtonsSuspended = false;   // pulsación nueva real: vuelve a valer el estado de SDL
         mouseButtonDown = true;
         if (event->button.button == SDL_BUTTON_RIGHT) rightDrag = false;
     }
@@ -243,7 +263,35 @@ void ComponentInput::ResetMouseMapping()
 
     // Siempre actualizar posición raw y botón central, independientemente de ImGui
     unsigned int rawButtons = SDL_GetMouseState(&rawMouseX, &rawMouseY);
-    if ((rawButtons & SDL_BUTTON_MMASK) != 0) {
+
+    // ¿Cursor realmente sobre nuestra ventana y con foco? (SDL mantiene el foco de ratón con los
+    // eventos ENTER/LEAVE; mientras hay captura -botón pulsado- se conserva aunque salga).
+    SDL_Window* sdlWindow = window->getWindow();
+    mouseInWindow = sdlWindow != nullptr
+                 && SDL_GetMouseFocus()    == sdlWindow
+                 && SDL_GetKeyboardFocus() == sdlWindow;
+
+    // Botones suspendidos tras perder el foco (ver CancelMouseInteraction): el estado de SDL puede
+    // ser un "pulsado" rancio. Se levanta en cuanto SDL deja de marcar botones (vuelve a ser fiable)
+    // o con una pulsación nueva (SDL_MOUSEBUTTONDOWN, en UpdateMouseStates).
+    const unsigned int anyButton = SDL_BUTTON_LMASK | SDL_BUTTON_RMASK | SDL_BUTTON_MMASK;
+    if (mouseButtonsSuspended && (rawButtons & anyButton) == 0) mouseButtonsSuspended = false;
+
+    // Salirse de la ventana con un botón pulsado cancela el arrastre / la selección por recuadro
+    // (a petición: que no siga "arrastrando" fuera ni al volver). Con el ratón capturado (botón
+    // pulsado) SDL no garantiza el evento LEAVE, así que se compara la posición GLOBAL del cursor
+    // (válida aunque esté capturado) con el rectángulo de cliente de la ventana.
+    if (!mouseButtonsSuspended && (rawButtons & anyButton) != 0 && sdlWindow != nullptr) {
+        int gx, gy, wx, wy, ww, wh;
+        SDL_GetGlobalMouseState(&gx, &gy);
+        SDL_GetWindowPosition(sdlWindow, &wx, &wy);
+        SDL_GetWindowSize(sdlWindow, &ww, &wh);
+        if (gx < wx || gy < wy || gx >= wx + ww || gy >= wy + wh) {
+            CancelMouseInteraction();
+        }
+    }
+
+    if (!mouseButtonsSuspended && (rawButtons & SDL_BUTTON_MMASK) != 0) {
         mouseMiddleButton = true;
     }
 
@@ -253,11 +301,11 @@ void ComponentInput::ResetMouseMapping()
 
     this->mouseButtons = SDL_GetMouseState(&mouseX, &mouseY);
 
-    if ((mouseButtons & SDL_BUTTON_LMASK) != 0) {
+    if (!mouseButtonsSuspended && (mouseButtons & SDL_BUTTON_LMASK) != 0) {
         mouseLeftButton = true;
     }
 
-    if ((mouseButtons & SDL_BUTTON_RMASK) != 0) {
+    if (!mouseButtonsSuspended && (mouseButtons & SDL_BUTTON_RMASK) != 0) {
         mouseRightButton = true;
     }
 

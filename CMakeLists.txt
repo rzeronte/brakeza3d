@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(Brakeza3D)
 
+if(WIN32)
+    enable_language(RC)   # windres (MinGW) para resources/windows/brakeza3d.rc
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 
 # SDL
@@ -445,4 +449,6 @@ target_link_libraries(Brakeza3D
 
 if(WIN32)
     target_link_libraries(Brakeza3D dbghelp)
+    # Icono embebido en el .exe (explorador + icono de clase de ventana desde el primer frame)
+    target_sources(Brakeza3D PRIVATE resources/windows/brakeza3d.rc)
 endif()

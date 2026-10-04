@@ -214,6 +214,12 @@ void ComponentRender::postUpdate()
 
     RenderAvatars();
     textWriter->flushTextBatchToFB("foreground");
+
+    // Tooltips de la UI de juego, lo ÚLTIMO del frame en la capa "ui": los componentes se ejecutan
+    // en orden fijo (Scripting antes que Render), así que aquí ya corrieron todos los onUpdate/
+    // postUpdate de Lua y ningún widget se pinta encima. Antes lo llamaba HUDManager.lua a mitad de
+    // frame y lo tapaba lo que otros scripts dibujaban después (y los widgets de otras capas).
+    if (uiManager) uiManager->flushTooltip(Brakeza::get()->getDeltaTime());
 }
 
 void ComponentRender::RenderAvatars()
@@ -866,9 +872,33 @@ void ComponentRender::DrawImage2DFromImage(Image *img, int x, int y, int w, int 
 }
 
 static GLuint s_fboOverride = 0;
+static int    s_overrideW = 0, s_overrideH = 0;
 
-void ComponentRender::setFBOOverride(GLuint fbo)  { s_fboOverride = fbo; }
-void ComponentRender::clearFBOOverride()           { s_fboOverride = 0;   }
+void ComponentRender::setFBOOverride(GLuint fbo, int w, int h) { s_fboOverride = fbo; s_overrideW = w; s_overrideH = h; }
+void ComponentRender::clearFBOOverride()                        { s_fboOverride = 0; s_overrideW = 0; s_overrideH = 0; }
+
+void ComponentRender::getTargetSize(const std::string& fb, int& w, int& h)
+{
+    auto* win = Components::get()->Window();
+    if (s_fboOverride && s_overrideW > 0 && s_overrideH > 0) { w = s_overrideW; h = s_overrideH; return; }
+    if (fb == "ui") { w = win->getWidth(); h = win->getHeight(); return; }
+    w = win->getWidthRender();
+    h = win->getHeightRender();
+}
+
+ComponentRender::ScopedTargetViewport::ScopedTargetViewport(int w, int h)
+{
+    auto* win = Components::get()->Window();
+    rw = win->getWidthRender();
+    rh = win->getHeightRender();
+    changed = (w != rw || h != rh);
+    if (changed) glViewport(0, 0, w, h);
+}
+
+ComponentRender::ScopedTargetViewport::~ScopedTargetViewport()
+{
+    if (changed) glViewport(0, 0, rw, rh);
+}
 
 static GLuint resolveFB(const std::string& fb)
 {
@@ -883,16 +913,21 @@ static GLuint resolveFB(const std::string& fb)
 
 GLuint ComponentRender::resolveEffectiveFBO(const std::string& fb) { return resolveFB(fb); }
 
-void ComponentRender::DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb) const
+void ComponentRender::DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb, float alpha) const
 {
-    shaders.shaderOGLImage->renderTexture(tex, 0, 0, rW, rH, rW, rH, 1.0f, true, resolveFB(fb));
+    // The cache texture has the size of its target layer (UIManager creates it with getTargetSize)
+    int tw, th;
+    getTargetSize(fb, tw, th);
+    ScopedTargetViewport vp(tw, th);
+    shaders.shaderOGLImage->renderTexture(tex, 0, 0, tw, th, tw, th, alpha, true, resolveFB(fb));
 }
 
 void ComponentRender::DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const
 {
     auto *win = Components::get()->Window();
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    getTargetSize(fb, rw, rh);
+    ScopedTargetViewport vp(rw, rh);   // renderRect sets the viewport itself; this puts it back
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
     shaders.shaderOGLRect->renderRect(
@@ -907,8 +942,9 @@ void ComponentRender::DrawFilledRectToFB(int x, int y, int w, int h, const Color
 void ComponentRender::DrawCircle2DToFB(int x, int y, int size, float r, float g, float b, float a, float numWaves, float speed, float thickness, bool additive, const std::string &fb) const
 {
     auto *win = Components::get()->Window();
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    getTargetSize(fb, rw, rh);
+    ScopedTargetViewport vp(rw, rh);
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
     const int px = (int)((x - size / 2) * rx);
@@ -938,13 +974,63 @@ void ComponentRender::DrawImage2DToFB(const std::string &path, int x, int y, int
     DrawImage2DFromImageToFB(getOrLoadImage(path), x, y, w, h, fb, alpha);
 }
 
+void ComponentRender::DrawImage2DNineSliceToFB(Image *img, float x, float y, float w, float h,
+                                               const float slice[4], float sliceScale, const std::string &fb, float alpha)
+{
+    if (!img || !img->isLoaded()) return;
+    const float imgW = (float)img->width(), imgH = (float)img->height();
+    if (imgW <= 0.0f || imgH <= 0.0f || w <= 0.0f || h <= 0.0f) return;
+
+    auto *win = Components::get()->Window();
+    int rw, rh;
+    getTargetSize(fb, rw, rh);
+    ScopedTargetViewport vp(rw, rh);
+    const float rx = (float)rw / (float)win->getWidth();
+    const float ry = (float)rh / (float)win->getHeight();
+
+    // Destination edges in TARGET px, each computed once and shared by the pieces on both sides
+    // (piece width = next edge - edge) → no 1 px seams/overlaps from independent rounding.
+    const float X0 = std::round(x * rx), X3 = std::round((x + w) * rx);
+    const float Y0 = std::round(y * ry), Y3 = std::round((y + h) * ry);
+    float bl = slice[0] * sliceScale * rx, br = slice[2] * sliceScale * rx;
+    float bt = slice[1] * sliceScale * ry, bb = slice[3] * sliceScale * ry;
+    // Panel smaller than two borders: shrink the borders proportionally so they don't overlap.
+    if (bl + br > X3 - X0 && bl + br > 0.0f) { const float k = (X3 - X0) / (bl + br); bl *= k; br *= k; }
+    if (bt + bb > Y3 - Y0 && bt + bb > 0.0f) { const float k = (Y3 - Y0) / (bt + bb); bt *= k; bb *= k; }
+    const float X1 = X0 + std::round(bl), X2 = X3 - std::round(br);
+    const float Y1 = Y0 + std::round(bt), Y2 = Y3 - std::round(bb);
+
+    // Source cuts in UV (v from the top of the image, like the image quads).
+    const float U[4] = { 0.0f, slice[0] / imgW, 1.0f - slice[2] / imgW, 1.0f };
+    const float V[4] = { 0.0f, slice[1] / imgH, 1.0f - slice[3] / imgH, 1.0f };
+    const float X[4] = { X0, X1, X2, X3 };
+    const float Y[4] = { Y0, Y1, Y2, Y3 };
+
+    const GLuint fbo = resolveFB(fb);
+    for (int row = 0; row < 3; row++) {
+        for (int col = 0; col < 3; col++) {
+            const int pw = (int)(X[col + 1] - X[col]);
+            const int ph = (int)(Y[row + 1] - Y[row]);
+            if (pw <= 0 || ph <= 0) continue;
+            shaders.shaderOGLImage->renderTextureRegion(
+                img->getOGLTextureID(),
+                (int)X[col], (int)Y[row], pw, ph,
+                rw, rh,
+                U[col], V[row], U[col + 1], V[row + 1],
+                alpha, fbo
+            );
+        }
+    }
+}
+
 void ComponentRender::DrawImage2DFromImageToFB(Image* img, int x, int y, int w, int h, const std::string &fb, float alpha)
 {
     if (!img || !img->isLoaded()) return;
 
     auto *win = Components::get()->Window();
-    const int rw = win->getWidthRender();
-    const int rh = win->getHeightRender();
+    int rw, rh;
+    getTargetSize(fb, rw, rh);
+    ScopedTargetViewport vp(rw, rh);
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
     shaders.shaderOGLImage->renderTexture(
@@ -1017,6 +1103,27 @@ void ComponentRender::drawOutlineSubmesh(Object3D* obj, const std::string& subme
     auto* mesh = dynamic_cast<Mesh3D*>(obj);
     if (!mesh) return;
     shaders.shaderOGLOutline->drawOutlineSubmesh(mesh, submeshName, Color(r, g, b, a), thickness, Components::get()->Window()->getForegroundFramebuffer());
+}
+
+// Tinte translúcido de un submesh (ShaderOGLColor::RenderTint) sobre la capa foreground. Mismo
+// criterio de nombre que el contorno (ShaderOGLOutline::drawOutlineSubmesh): "BUILDING_12" casa con
+// "BUILDING_12", "BUILDING_12.001"...
+void ComponentRender::drawFillSubmesh(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a) const
+{
+    if (!obj) return;
+    auto* mesh = dynamic_cast<Mesh3D*>(obj);
+    if (!mesh) return;
+
+    std::string prefix = submeshName;
+    const auto dot = submeshName.rfind('.');
+    if (dot != std::string::npos) prefix = submeshName.substr(0, dot);
+
+    const GLuint fbo = Components::get()->Window()->getForegroundFramebuffer();
+    for (const auto& mm : mesh->getMeshData()) {
+        if (mm.name.rfind(prefix, 0) != 0) continue;
+        shaders.shaderOGLColor->RenderTint(mesh->getModelMatrix(), mm.vertexBuffer, mm.uvBuffer, mm.normalBuffer,
+            static_cast<int>(mm.vertices.size()), Color(r, g, b, 1.0f), a, fbo, mm.indexBuffer, mm.indexCount);
+    }
 }
 
 void ComponentRender::clearOutlineBatch() const
