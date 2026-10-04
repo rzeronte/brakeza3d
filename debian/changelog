@@ -1,3 +1,10 @@
+brakeza3d (0.26.10) unstable; urgency=low
+
+  * Release 0.26.10: render performance (instancing, shared GPU geometry), emissive
+    materials, miniaudio audio backend, UI system upgrades, path costs, CLI parameters.
+
+ -- Eduardo <eduardo.rzeronte@gmail.com>  Sat, 04 Oct 2026 18:00:00 +0200
+
 brakeza3d (0.26.4) unstable; urgency=low
 
   * Initial Debian packaging.
