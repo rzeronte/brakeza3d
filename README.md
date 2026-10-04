@@ -4,7 +4,7 @@
 ### A Powerful 2D/3D Game Engine for Indie Developers
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![Version](https://img.shields.io/badge/version-0.26.1-green.svg)](https://github.com/rzeronte/brakeza3d/releases)
+[![Version](https://img.shields.io/badge/version-0.26.10-green.svg)](https://github.com/rzeronte/brakeza3d/releases)
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](https://brakeza.com/downloads)
 [![C++](https://img.shields.io/badge/C++-17-00599C.svg?logo=c%2B%2B)](https://isocpp.org/)
 
@@ -38,8 +38,8 @@ Whether you're learning graphics programming, prototyping game ideas, or buildin
 
 Download ready-to-use binaries for your platform:
 
-- **Windows 10/11** (amd74): [Download .exe](https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Windows-installer.exe) (68.9 MB)
-- **Ubuntu/Debian** (amd64): [Download .deb](https://github.com/rzeronte/brakeza3d/releases/download/0.26.2/Brakeza3D-v0.26.2-amd64-Linux-installer.deb) (33.3 MB)
+- **Windows 10/11** (amd64): [Download .exe](https://github.com/rzeronte/brakeza3d/releases/download/0.26.10/Brakeza3D-x64-86-Windows-installer.exe) (220.7 MB)
+- **Ubuntu/Debian** (amd64): [Download .deb](https://github.com/rzeronte/brakeza3d/releases/download/0.26.10/Brakeza3D-x64_86-Linux-installer.deb) (92.7 MB)
 
 ### Build from Source
 ```bash
@@ -74,7 +74,7 @@ make
 - **Cross-platform** (Windows / Linux / macOS)
 - **Multi-threading** support (thread pool based)
 - **Physics world integration** (Bullet Physics)
-- **Sound system** integration (SDL2_mixer)
+- **Sound system** integration (miniaudio)
 - **Assimp library** for 3D model loading
 
 ### 🎮 Scripting & Input

@@ -30,20 +30,25 @@ sudo apt update && sudo apt install -y \
     libbullet-dev libassimp-dev liblua5.2-dev \
     libgl1-mesa-dev libglu1-mesa-dev libglew-dev \
     libcurl4-openssl-dev \
-    libglm-dev
+    libglm-dev \
+    libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev
 ```
+
+Audio uses [miniaudio](https://miniaud.io), bundled with the sources: `libsdl2-mixer-dev` is no longer needed.
 
 ### Windows compilation
 
 #### Download compiler and libraries
 
-| Item                | Description                                                       | Link                                                                                                                                                                                      |
-|---------------------|-------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| MinGW Download      | MinGW x86_64 compiler (Source [winlibs.com](https://winlibs.com)) | [MinGW x86_64](https://github.com/brechtsanders/winlibs_mingw/releases/download/13.2.0-16.0.6-11.0.0-ucrt-r1/winlibs-x86_64-posix-seh-gcc-13.2.0-llvm-16.0.6-mingw-w64ucrt-11.0.0-r1.zip) |
-| Brakeza3D (Windows) | Precompiled Windows libraries ready to use                        | [Precompiled libraries](https://github.com/rzeronte/brakeza3d/releases/download/precompiled-libs/brakeza-win-x86_64-mingw.zip)                                                                                                                                                                |
+| Item                | Description | Link |
+|---------------------|-------------|------|
+| MinGW x86_64        | GCC 13.2.0 + LLVM 16.0.6, MinGW-w64 11.0.1 UCRT, MCF threads, release 2 (source [winlibs.com](https://winlibs.com)) | [MinGW x86_64 (winlibs r2 MCF)](https://github.com/brechtsanders/winlibs_mingw/releases/download/13.2.0mcf-16.0.6-11.0.1-ucrt-r2/winlibs-x86_64-mcf-seh-gcc-13.2.0-llvm-16.0.6-mingw-w64ucrt-11.0.1-r2.zip) |
+| Brakeza3D libraries | SDL2, SDL2_image, SDL2_ttf, Bullet, Assimp, Lua 5.2, GLEW, cURL, FFmpeg and glm, built for that MinGW | [Windows libraries 0.26.10](https://github.com/rzeronte/brakeza3d/releases/download/0.26.10-windows-libs/brakeza3d-windows-libs-0.26.10.zip) |
 
 :::note
-Unzip `Precompiled libraries` into same directory of MinGW compiler
+Use exactly that MinGW build (MCF threads, UCRT): the libraries are compiled against it. Unzip both files in the
+same folder: the libraries zip contains a `mingw64` folder that merges into the compiler's `mingw64`. Then select
+that `mingw64` as the CLion toolchain.
 :::
 
 #### CLion Toolchain setup
