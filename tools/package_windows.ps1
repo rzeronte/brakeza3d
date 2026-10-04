@@ -14,6 +14,8 @@
       5. Copies the DLLs from ..\dlls (minus the obsolete ones), Brakeza3D.exe and imgui.ini to bin\.
       6. Verifies that every DLL the exe imports is in bin\ or is a Windows system DLL.
       7. Zips the package to ..\Brakeza3D-<version>-windows.zip (skip with -NoZip).
+      8. Builds the installer ..\Brakeza3D-x64-86-Windows-installer.exe with Inno Setup (ISCC.exe) from
+         tools/installer/Brakeza3D.iss, stamped with the engine version (skip with -NoInstaller).
 
     Works from any branch: the assets always come from <Branch>.
 
@@ -26,6 +28,9 @@
 .PARAMETER Strip           Strip debug symbols from the packaged exe (smaller download; crash addresses can no
                            longer be resolved with addr2line against that copy). The exe in BuildDir is untouched.
 .PARAMETER Force           Package even if the exe version/date checks fail.
+.PARAMETER NoInstaller     Do not build the Inno Setup installer.
+.PARAMETER InstallerDir    Output folder of the installer. Default: the folder that contains the repo (..).
+.PARAMETER Iscc            Path to ISCC.exe. Default: Inno Setup 6 in Program Files (x86) / Program Files.
 
 .EXAMPLE
     .\tools\package_windows.ps1
@@ -39,7 +44,10 @@ param(
     [switch]$KeepPrevious,
     [switch]$NoZip,
     [switch]$Strip,
-    [switch]$Force
+    [switch]$Force,
+    [switch]$NoInstaller,
+    [string]$InstallerDir,
+    [string]$Iscc
 )
 
 $ErrorActionPreference = "Stop"
@@ -48,6 +56,7 @@ $Parent   = Split-Path -Parent $RepoRoot
 if (-not $OutDir)   { $OutDir   = Join-Path $Parent "build" }
 if (-not $DllDir)   { $DllDir   = Join-Path $Parent "dlls" }
 if (-not $BuildDir) { $BuildDir = Join-Path $RepoRoot "cmake-build-release-mingw-brakezabundle" }
+if (-not $InstallerDir) { $InstallerDir = $Parent }
 
 # DLLs from ..\dlls that the engine no longer uses (audio moved from SDL2_mixer to miniaudio)
 $ObsoleteDlls = @("SDL2_mixer.dll")
@@ -175,6 +184,34 @@ try {
         & tar.exe -a -c -f $zip -C $OutDir bin assets GLSL config
         if ($LASTEXITCODE -ne 0) { Fail "zip creation failed" }
         Step ("Zip ready: {0:N0} MB" -f ((Get-Item $zip).Length / 1MB))
+    }
+
+    # ── 8. Installer (Inno Setup) ─────────────────────────────────────────────
+    if (-not $NoInstaller) {
+        if (-not $Iscc) {
+            $Iscc = @("${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe", "$env:ProgramFiles\Inno Setup 6\ISCC.exe") |
+                    Where-Object { Test-Path $_ } | Select-Object -First 1
+        }
+        if (-not $Iscc -or -not (Test-Path $Iscc)) { Fail "ISCC.exe (Inno Setup 6) not found -- install it, pass -Iscc <path> or use -NoInstaller" }
+        $iss = Join-Path $RepoRoot "tools\installer\Brakeza3D.iss"
+        # The .iss is exported from <Branch> too, so the installer definition matches the packaged branch
+        $issTmp = Join-Path $env:TEMP "brakeza3d_installer_$Version.iss"
+        if (git ls-tree --name-only $Branch tools/installer/Brakeza3D.iss) {
+            git show "${Branch}:tools/installer/Brakeza3D.iss" | Out-File -FilePath $issTmp -Encoding utf8
+        } else {
+            Write-Host "[package_windows] Note: tools/installer/Brakeza3D.iss is not committed in '$Branch' yet, using the working copy" -ForegroundColor Yellow
+            Copy-Item $iss $issTmp -Force
+        }
+        New-Item -ItemType Directory -Force -Path $InstallerDir | Out-Null
+        $installer = Join-Path $InstallerDir "Brakeza3D-x64-86-Windows-installer.exe"
+        if (Test-Path $installer) { Remove-Item $installer -Force }
+        Step "Building installer with Inno Setup (version $Version)"
+        & $Iscc /Q "/DMyAppVersion=$Version" "/DSourceDir=$((Resolve-Path $OutDir).Path)" `
+                "/DOutputDir=$((Resolve-Path $InstallerDir).Path)" "/DRepoDir=$RepoRoot" $issTmp
+        $isccExit = $LASTEXITCODE
+        Remove-Item $issTmp -Force -ErrorAction SilentlyContinue
+        if ($isccExit -ne 0 -or -not (Test-Path $installer)) { Fail "Inno Setup failed (exit $isccExit)" }
+        Step ("Installer ready: {0} ({1:N0} MB)" -f $installer, ((Get-Item $installer).Length / 1MB))
     }
 }
 finally {
