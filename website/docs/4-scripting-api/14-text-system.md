@@ -166,103 +166,112 @@ The glyph atlas renders text using a pre-built texture atlas instead of creating
 
 The engine's shared TextWriter (obtained via `Components:Render():getTextWriter()`) already has the atlas built. You do not need to create or load anything extra.
 
-:::note
-Atlas text uses the engine's built-in bitmap font. For custom TTF fonts, use the `writeTextTTF*` methods instead.
-:::
-
-### writeTextAtlas
-
-Draws text at a pixel position using the glyph atlas.
+To use atlas text with your **own font**, create a TextWriter and build its atlas once:
 
 ```lua
-tw:writeTextAtlas(x, y, text, color, scale)
+local twTitle = ObjectFactory.TextWriter("../assets/fonts/MyFont.ttf")
+twTitle:buildGlyphAtlas(512)   -- atlas texture size in pixels
+```
+
+There are two ways to draw atlas text:
+
+| Method | When it draws |
+|--------|---------------|
+| `writeTextAtlasCache` | Queued; everything is drawn together by `flushTextBatch()`. Best for HUDs with many lines |
+| `writeTextAtlas` (and the centered variants) | Immediately, into the `"ui"` layer or the active TextCache |
+
+### writeTextAtlasCache
+
+Queues text at a pixel position. Everything queued is drawn, with its own color, when you call `flushTextBatch()`.
+
+```lua
+tw:writeTextAtlasCache(x, y, text, color, scale)
 ```
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `x` | `int` | X position in pixels |
-| `y` | `int` | Y position in pixels |
+| `y` | `int` | Y position in pixels (top of the text) |
 | `text` | `string` | Text to render |
 | `color` | `Color` | RGBA color |
 | `scale` | `float` | Size multiplier (1.0 = normal, 0.5 = half) |
 
 ```lua
 local tw = Components:Render():getTextWriter()
-tw:writeTextAtlas(10, 50, "Gold: " .. gold, Color.new(1, 0.85, 0.2, 1), 0.7)
+tw:writeTextAtlasCache(10, 50, "Gold: " .. gold, Color.new(1, 0.85, 0.2, 1), 0.7)
 ```
 
 ---
 
-### writeTextAtlasCache
+### flushTextBatch
 
-Same as `writeTextAtlas` but redirects output into the active TextCache FBO when called inside a `beginTextCache / endTextCache` block. Use this instead of `writeTextAtlas` when building cached overlays.
-
-```lua
-tw:writeTextAtlasCache(x, y, text, color, scale)
-```
-
-Behaves identically to `writeTextAtlas` outside of a cache block. Inside a cache block, coordinates are cache-local (0, 0 = top-left of the cache).
-
----
-
-### writeTextAtlasMiddleScreen
-
-Draws text centered on screen both horizontally and vertically.
+Draws every queued `writeTextAtlasCache` call into the `"ui"` layer and empties the queue. Call it once per frame, after all your text.
 
 ```lua
-tw:writeTextAtlasMiddleScreen(text, color, scale)
+tw:flushTextBatch()
+tw:flushTextBatchToFB("foreground")   -- same, into another layer
 ```
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `text` | `string` | Text to render |
-| `color` | `Color` | RGBA color |
-| `scale` | `float` | Size multiplier |
-
----
-
-### writeTextAtlasCenterHorizontal
-
-Draws text centered horizontally at a given Y position.
-
-```lua
-tw:writeTextAtlasCenterHorizontal(y, text, color, scale)
-```
-
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `y` | `int` | Y position in pixels |
-| `text` | `string` | Text to render |
-| `color` | `Color` | RGBA color |
-| `scale` | `float` | Size multiplier |
-
-```lua
-tw:writeTextAtlasCenterHorizontal(20, "PRESS SPACE TO CONTINUE", Color.new(1,1,1,1), 0.6)
-```
+:::warning
+If you forget `flushTextBatch`, queued text never appears. If a Lua error aborts your function before reaching it, the text of that frame is lost too — wrap HUD drawing in `pcall` and flush after it.
+:::
 
 ---
 
 ### measureTextWidthAtlas
 
-Returns the width in window pixels that a text would take with this writer's atlas at the given scale.
-Batched atlas calls such as `writeTextAtlasCache` have no centered variant; measure first and offset the X:
+Returns the width in pixels that a text would take with this writer's atlas. Use it to center, right-align or fit text.
 
 ```lua
-local w = tw:measureTextWidthAtlas("GAME OVER", 1.5)
-tw:writeTextAtlasCache((screenW - w) / 2, 200, "GAME OVER", Color.new(1, 0.2, 0.2, 1), 1.5)
+local w = tw:measureTextWidthAtlas(text, scale)
 ```
-
-### flushTextBatch
-
-The atlas renderer batches draw calls internally. Call `flushTextBatch` once per frame after all atlas text calls to submit the batch to the GPU.
 
 ```lua
-tw:flushTextBatch()
+-- Right-align a label at the right edge of the window
+local label = "Score: " .. score
+local sw = Components:Window():getWidth()
+tw:writeTextAtlasCache(sw - tw:measureTextWidthAtlas(label, 0.7) - 10, 10, label, Color.new(1, 1, 1, 1), 0.7)
 ```
 
-:::warning
-If you forget `flushTextBatch`, atlas text will not appear on screen. Call it once at the end of your `postUpdate()` after all `writeTextAtlas*` calls.
-:::
+---
+
+### writeTextAtlas
+
+Draws text immediately at a pixel position. Inside a `beginTextCache / endTextCache` block it draws into the cache, with cache-local coordinates.
+
+```lua
+tw:writeTextAtlas(x, y, text, color, scale)
+```
+
+Same parameters as `writeTextAtlasCache`.
+
+---
+
+### writeTextAtlasMiddleScreen
+
+Draws text centered on screen both horizontally and vertically (immediate).
+
+```lua
+tw:writeTextAtlasMiddleScreen(text, color, scale)
+```
+
+---
+
+### writeTextAtlasCenterHorizontal
+
+Draws text centered horizontally at a given Y position (immediate).
+
+```lua
+tw:writeTextAtlasCenterHorizontal(y, text, color, scale)
+```
+
+To center queued text, measure it yourself:
+
+```lua
+local text = "PRESS SPACE TO CONTINUE"
+local x = (Components:Window():getWidth() - tw:measureTextWidthAtlas(text, 0.6)) / 2
+tw:writeTextAtlasCache(x, 20, text, Color.new(1, 1, 1, 1), 0.6)
+```
 
 ### Full example — HUD with atlas text
 
@@ -276,12 +285,16 @@ end
 function postUpdate()
     local gold = tonumber(Components:Scripting():getGlobalScriptVar("ResourceManager", "gold")) or 0
 
-    tw:writeTextAtlas(10, 10, "Gold: " .. gold,  Color.new(1, 0.85, 0.2, 1), 0.65)
-    tw:writeTextAtlas(10, 30, "FPS: "  .. Components:Render():getFps(), Color.new(0.6, 0.6, 0.6, 1), 0.55)
+    tw:writeTextAtlasCache(10, 10, "Gold: " .. gold,  Color.new(1, 0.85, 0.2, 1), 0.65)
+    tw:writeTextAtlasCache(10, 30, "FPS: "  .. Components:Render():getFps(), Color.new(0.6, 0.6, 0.6, 1), 0.55)
 
     tw:flushTextBatch()
 end
 ```
+
+:::tip
+For panels, menus and anything with a layout, [UI Widgets](./18-ui-widgets.md) are usually a better fit than placing text by hand: they handle fonts, alignment, word wrap and lists for you.
+:::
 
 ---
 
@@ -561,9 +574,10 @@ end
 | `beginTextCache(name, w, h)` | Start recording text into a named off-screen FBO |
 | `endTextCache()` | Stop recording and restore screen framebuffer |
 | `drawTextCache(name, x, y)` | Blit a cached text FBO to the screen |
-| `writeTextAtlas(x, y, text, color, scale)` | Fast atlas text at pixel position |
-| `writeTextAtlasCache(x, y, text, color, scale)` | Atlas text, cache-aware (use inside begin/endTextCache) |
-| `writeTextAtlasMiddleScreen(text, color, scale)` | Atlas text centered on screen |
-| `writeTextAtlasCenterHorizontal(y, text, color, scale)` | Atlas text centered horizontally |
-| `flushTextBatch()` | Submit the atlas batch to the GPU (call once per frame after all atlas writes) |
-| `measureTextWidthAtlas(text, scale)` | Width in pixels of an atlas text (to center or align it) |
+| `buildGlyphAtlas(size)` | Build the glyph atlas for this writer's font (needed for custom fonts) |
+| `writeTextAtlasCache(x, y, text, color, scale)` | Queue colored atlas text (drawn by `flushTextBatch`) |
+| `flushTextBatch()` / `flushTextBatchToFB(fb)` | Draw all queued atlas text (once per frame) |
+| `measureTextWidthAtlas(text, scale)` | Width in pixels of a text with the atlas |
+| `writeTextAtlas(x, y, text, color, scale)` | Immediate atlas text (draws into the active TextCache inside a cache block) |
+| `writeTextAtlasMiddleScreen(text, color, scale)` | Immediate atlas text centered on screen |
+| `writeTextAtlasCenterHorizontal(y, text, color, scale)` | Immediate atlas text centered horizontally |

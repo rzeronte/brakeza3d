@@ -119,32 +119,55 @@ mesh:getGrid3D():fillGrid3DFromImage("../assets/nav/walkable.png", 128)
 
 ---
 
-## Path Costs
+## Movement Costs
 
-Walkable cells can also have a **traversal cost**. The A* pathfinding prefers cheaper cells, so you
-can make units favour sidewalks over roads, avoid mud, or keep away from danger zones without
-blocking those cells completely. Every cell costs `1` by default and costs are never lower than `1`.
+Besides walkable / blocked, every cell (X, Z column) has a **movement cost** used by A\*. The default is `1`. Higher values make paths avoid those cells when there is a reasonable alternative, without forbidding them: for example, prefer sidewalks over roads, or keep units away from a dangerous area.
 
-| Method | Parameters | Description |
-|--------|------------|-------------|
-| `fillCostFromImage()` | `string path, int threshold, float cost [, bool flipZ, bool flipX]` | Gives `cost` to every cell whose pixel is **not** dark (any channel at or above `threshold`). Same mapping and flips as `fillGrid3DFromImage` |
-| `setCellsCost()` | `table cells, float cost` | Sets `cost` on a list of cells given as a flat table `{x1, z1, x2, z2, ...}` |
-| `getCellCost()` | `int x, int z` | Returns the cost of a cell (`1` if unset or out of bounds) |
+Costs are always `≥ 1` (lower values are raised to 1) and apply to the whole column of cells.
+
+### fillCostFromImage
+
+Sets `cost` on every cell whose pixel in the image is **not** black (any channel ≥ `threshold`). Black cells keep their current cost.
 
 ```lua
-local grid = mesh:getGrid3D()
-
--- Roads (bright pixels in the mask) cost 4: units walk on them only when there is no better option
-grid:fillCostFromImage("../assets/nav/roads.png", 128, 4.0)
-
--- Mark a temporary danger zone
-grid:setCellsCost({ 10, 12, 11, 12, 12, 12 }, 10.0)
-
-print(grid:getCellCost(10, 12))   -- 10
+grid:fillCostFromImage(path, threshold, cost)
+grid:fillCostFromImage(path, threshold, cost, flipZ, flipX)
 ```
 
-Costs are swapped atomically, so they can be changed at runtime while path requests are running on
-worker threads.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `path` | `string` | Path to a PNG image, mapped over the whole grid |
+| `threshold` | `int` | Pixels with R, G and B below this value are skipped |
+| `cost` | `float` | Cost to assign (≥ 1) |
+| `flipZ`, `flipX` | `bool` | Flip the image along each axis (optional) |
+
+```lua
+-- Roads (white in the mask) cost 4: pedestrians walk on them only when needed
+grid:fillCostFromImage("../assets/nav/roads_mask.png", 128, 4.0)
+```
+
+### setCellsCost / getCellCost
+
+```lua
+grid:setCellsCost({ x1, z1, x2, z2, ... }, cost)   -- flat list of cell coordinates
+local c = grid:getCellCost(x, z)                   -- 1.0 outside the grid
+```
+
+```lua
+-- Mark a 3x3 danger zone around a cell
+local cells = {}
+for dx = -1, 1 do
+    for dz = -1, 1 do
+        cells[#cells + 1] = cx + dx
+        cells[#cells + 1] = cz + dz
+    end
+end
+grid:setCellsCost(cells, 10.0)
+```
+
+:::note
+Cost updates are published atomically, so they are safe to call while paths are being computed on worker threads. A path that is already being computed keeps the costs it started with.
+:::
 
 ---
 

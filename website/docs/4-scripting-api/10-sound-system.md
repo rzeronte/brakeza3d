@@ -116,17 +116,17 @@ Set the playback frequency of a specific channel. Useful for simulating engine R
 
 ```lua
     -- Range: 11025 (slow) to 44100 (normal) to 88200 (fast)
-    -- 44100 is the reference rate (= pitch 1.0)
+    -- Reference/"normal" frequency is 44100
     local speed = obj:getVelocity():length()
     local freq = 22050 + (speed / maxSpeed) * 22050
     Components:Sound():setChannelFrequency(channel, freq)
 ```
 
-If you prefer to think in pitch multipliers rather than frequencies, use `setChannelPitch`:
+Backed by the miniaudio audio engine (resampling pitch shift). Equivalent to `setChannelPitch(channel, freq / 44100)`:
 
 ```lua
-    -- 1.0 = normal, 0.5 = one octave down, 2.0 = one octave up
-    Components:Sound():setChannelPitch(channel, 1.0 + rpm / maxRpm)
+    -- pitch: 1.0 = normal speed/pitch, 0.5 = half speed (one octave down), 2.0 = double speed
+    Components:Sound():setChannelPitch(channel, 1.25)
 ```
 
 ### Channel Volume
