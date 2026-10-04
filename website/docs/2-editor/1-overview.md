@@ -99,3 +99,20 @@ While dragging, a **blue rectangle** is drawn on screen using the line shader so
 :::note Play mode
 Selection picking is active in **both editor and play mode**. When scripts are running you can still click to select objects from the viewport, and Lua scripts can read and modify the selection group at any time via the `ComponentRender` API.
 :::
+
+## Profiler
+---
+
+The **Profiler** window (see [Windows list](./2-layout-modes.md#windows-list)) is a runtime diagnostics tool.
+Besides per-component and per-script timings, caches, framebuffers, OpenGL state, thread pools and
+colliders, it includes a **render detail** panel:
+
+| Metric | Description |
+|--------|-------------|
+| Draw calls / triangles | Exact per-frame counts, counted at every draw call (instanced draws included) |
+| CPU time per pass | Average time of each render pass (G-Buffer, shadows, lighting, post-processing...) |
+| GPU time per pass | Real GPU time measured with `GL_TIME_ELAPSED` queries. Off by default (zero overhead); enable it with the checkbox |
+| History | Rolling history per pass with median, P95 and P99 |
+
+**Export CSV** writes the per-pass statistics (average, median, P95, P99 for CPU and GPU) to
+`logs/profiler_<timestamp>.csv`, so you can compare a scene before and after an optimization.

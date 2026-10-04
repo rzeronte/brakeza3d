@@ -179,6 +179,23 @@ function onStart()
 end
 ```
 
+Scenes, models and textures load **asynchronously** on worker threads. Two helpers let you follow
+or discard that work:
+
+| Function | Description |
+|----------|-------------|
+| `Brakeza:getPendingJobsCount()` | Number of loading jobs still queued, running or waiting for their callback. `0` means everything requested so far has finished loading (e.g. to hide a loading screen) |
+| `Brakeza:cancelPendingJobs()` | Discards queued jobs and pending callbacks (jobs already running finish). Call it before reloading a scene on restart, so work from the previous session is not applied to the new one |
+
+```lua
+function onUpdate()
+    if loading and Brakeza:getPendingJobsCount() == 0 then
+        loading = false
+        hideLoadingScreen()
+    end
+end
+```
+
 
 ## Linking Scripts
 ---
@@ -231,6 +248,7 @@ You can access it in your LUA scripts as follows:
 ```lua
 ...
 print("DeltaTime: " .. Brakeza:getDeltaTime())                  -- seconds
+print("DeltaTimeInMS: " .. Brakeza:getDeltaTimeMS())            -- milliseconds
 print("DeltaTimeInMicro: " .. Brakeza:getDeltaTimeMicro())      -- microseconds
 print("Execution Time: " .. Brakeza:getExecutionTime())         -- total execution time
 ...
@@ -251,6 +269,14 @@ If you want to terminate the application from code, you can do so as follows:
 Brakeza:Shutdown()
 ```
 
+To close the application with a specific **process exit code** (useful for automated runs, CI or
+test scenarios launched from a script), use `requestExit`:
+
+```lua
+Brakeza:requestExit(0)   -- success
+Brakeza:requestExit(1)   -- any non-zero code signals failure to the caller
+```
+
 
 ## Auto-loading Projects or Scenes
 ---
@@ -269,6 +295,46 @@ This will run the project automatically without the UI.
 :::note
 The project file path is relative to the base projects directory: **/assets/projects/**
 :::
+
+### Command line parameters
+
+Besides `-p`, the executable accepts two generic options:
+
+| Option | Description |
+|--------|-------------|
+| `--set key=value` | Passes a parameter to the project. Repeatable. The engine does not interpret it: its meaning is defined by the project's Lua scripts |
+| `--exit-after N` | Safety watchdog: force-quits the application N seconds after startup (exit code `2`). Useful for headless or automated runs |
+
+A project declares which parameters it accepts in a `cli_params` array inside its project JSON.
+Each entry has a `name`, a `type` (`bool`, `number` or `string`) and a `default`. A `--set` whose
+key is not declared is ignored with a warning.
+
+```json
+{
+  "name": "MyGame",
+  "cli_params": [
+    { "name": "level",     "type": "string", "default": "intro" },
+    { "name": "godMode",   "type": "bool",   "default": false },
+    { "name": "timeScale", "type": "number", "default": 1.0 }
+  ]
+}
+```
+
+Scripts read the resolved values (the `--set` value, or the default) with `Brakeza:getCliParam(name)`,
+which returns a value of the declared type, or `nil` if the parameter is not declared:
+
+```lua
+function onStart()
+    local level = Brakeza:getCliParam("level")
+    if Brakeza:getCliParam("godMode") then
+        print("God mode enabled")
+    end
+end
+```
+
+```bash
+> brakeza3d.exe -p MyGame.json --set level=forest --set godMode=true --exit-after 300
+```
 
 
 

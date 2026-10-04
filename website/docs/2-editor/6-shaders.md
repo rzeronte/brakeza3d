@@ -93,5 +93,5 @@ You can enable or disable each shader individually if desired.
 ## Project shaders settings widget
 ---
 
-As seen in section [2.3) Projects](./projects#project-settings-window), each project has its own `Project Setup` window, where associated shaders can be managed. From here, you can adjust shader settings.
+As seen in section [2.3) Projects](./3-projects.md#project-settings), each project has its own `Project Setup` window, where associated shaders can be managed. From here, you can adjust shader settings.
 

@@ -242,6 +242,16 @@ tw:writeTextAtlasCenterHorizontal(20, "PRESS SPACE TO CONTINUE", Color.new(1,1,1
 
 ---
 
+### measureTextWidthAtlas
+
+Returns the width in window pixels that a text would take with this writer's atlas at the given scale.
+Batched atlas calls such as `writeTextAtlasCache` have no centered variant; measure first and offset the X:
+
+```lua
+local w = tw:measureTextWidthAtlas("GAME OVER", 1.5)
+tw:writeTextAtlasCache((screenW - w) / 2, 200, "GAME OVER", Color.new(1, 0.2, 0.2, 1), 1.5)
+```
+
 ### flushTextBatch
 
 The atlas renderer batches draw calls internally. Call `flushTextBatch` once per frame after all atlas text calls to submit the batch to the GPU.
@@ -556,3 +566,4 @@ end
 | `writeTextAtlasMiddleScreen(text, color, scale)` | Atlas text centered on screen |
 | `writeTextAtlasCenterHorizontal(y, text, color, scale)` | Atlas text centered horizontally |
 | `flushTextBatch()` | Submit the atlas batch to the GPU (call once per frame after all atlas writes) |
+| `measureTextWidthAtlas(text, scale)` | Width in pixels of an atlas text (to center or align it) |

@@ -62,7 +62,7 @@ Values are updated only while the scripts are running.
 ## Project scripts settings widget
 ---
 
-As seen in section [2.3) Projects](./projects#project-settings-window), each project has its own `Project Setup` window, where associated scripts can be managed. From here, you can adjust script settings, usually the default values of their variables, if any.
+As seen in section [2.3) Projects](./3-projects.md#project-settings), each project has its own `Project Setup` window, where associated scripts can be managed. From here, you can adjust script settings, usually the default values of their variables, if any.
 
 ## Code editor window
 ---
