@@ -44,7 +44,7 @@ public:
     ~VideoPlayer();
 
     // Blocking mode: runs its own event+render loop (cutscenes).
-    void play();
+    void play(float fadeOutSeconds = 0.0f);   // bloqueante; fadeOut: fundido a negro al acabar/saltar
 
     // Non-blocking overlay mode: call start() once, then onUpdate() each engine frame.
     void start();

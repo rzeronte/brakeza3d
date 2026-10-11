@@ -229,7 +229,7 @@ void ShaderOGLOutline::stencilOutlineMesh(
     glUniform1f(expandThicknessUniform, thickness);
     glUniform3fv(expandColorUniform, 1, &col[0]);
     glUniform3fv(expandCenterUniform, 1, &submeshCenter[0]);
-    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count);
+    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count, "Outline:232");
 
     // ── Pass 2: draw ORIGINAL mesh → zero-out interior (leaving only the ring) ──
     glEnable(GL_BLEND);
@@ -245,7 +245,7 @@ void ShaderOGLOutline::stencilOutlineMesh(
     shaderColor->setMat4("model",      model);
     shaderColor->setVec3("color", glm::vec3(0.0f));
     shaderColor->setFloat("alpha", 1.0f);   // Color.fs tiene alpha (lo usa RenderTint): fijarlo aquí también
-    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count);
+    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, count, "Outline:248");
 
     // ── Restore ───────────────────────────────────────────────────────────
     glDisable(GL_BLEND);

@@ -221,6 +221,25 @@ bool ComponentCollisions::isRayCollisionWith(const Vertex3D &from, const Vertex3
     return false;
 }
 
+bool ComponentCollisions::rayTest(const Vertex3D &from, const Vertex3D &to, int group, int mask, Vertex3D &hitPoint, Object3D *&hitObject) const
+{
+    hitObject = nullptr;
+
+    btCollisionWorld::ClosestRayResultCallback rayCallback(from.toBullet(), to.toBullet());
+    rayCallback.m_collisionFilterGroup = group;
+    rayCallback.m_collisionFilterMask = mask;
+
+    dynamicsWorld->rayTest(from.toBullet(), to.toBullet(), rayCallback);
+
+    if (!rayCallback.hasHit()) return false;
+
+    const btVector3 &p = rayCallback.m_hitPointWorld;
+    hitPoint = Vertex3D(p.x(), p.y(), p.z());
+    hitObject = static_cast<Object3D *>(rayCallback.m_collisionObject->getUserPointer());
+
+    return true;
+}
+
 void ComponentCollisions::ClearDebugCache()
 {
     debugDrawLinesCache.clear();

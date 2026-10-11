@@ -189,7 +189,7 @@ ParticleEmitter* ObjectFactory::CreateParticleEmitter(const Vertex3D &position, 
             to,
             ParticlesContext(
             0.0f,
-            0.5f,
+            50.0f,   // partículas/s
             1.5f,
             25.0f,
             1,

@@ -119,10 +119,10 @@ function promotePending(dt)
 
                 local emitter = ObjectFactory.ParticleEmitter(proj:getPosition(), Color.new(0.7, 0.7, 0.7, 0.9), Color.new(0.2, 0.2, 0.2, 0.0))
                 if emitter ~= nil then
-                    emitter:setTexture("../assets/images/RTS/trail_smoke.png")
+                    emitter:setTexture("../assets/images/trail_smoke.png")
                     emitter:setFollowTarget(proj)
                     local ctx = emitter:getContext()
-                    ctx.PARTICLES_BY_SECOND  = 500
+                    ctx.PARTICLES_BY_SECOND  = 100   -- partículas/s
                     ctx.PARTICLE_LIFESPAN    = 5.0
                     ctx.GRAVITY              = 0.10
                     ctx.SMOKE_ANGLE_RANGE    = 80

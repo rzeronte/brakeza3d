@@ -120,6 +120,7 @@ void ComponentRender::RegisterShaders()
     shaders.shaderComputeParticles = new ShaderOGLComputeParticles();
     shaders.shaderGPUParticles     = new ShaderOGLGPUParticles();
     shaders.shaderCircle2D         = new ShaderOGLCircle2D();
+    shaders.shaderUIBatch          = new ShaderOGLUIBatch();
 
     std::vector<ShaderBaseOpenGL*> allShaders;
         allShaders.push_back(shaders.shaderOGLRender);
@@ -146,6 +147,7 @@ void ComponentRender::RegisterShaders()
         allShaders.push_back(shaders.shaderComputeParticles);
         allShaders.push_back(shaders.shaderGPUParticles);
         allShaders.push_back(shaders.shaderCircle2D);
+        allShaders.push_back(shaders.shaderUIBatch);
 
     for (auto &s : allShaders) {
         s->PrepareSync();
@@ -204,7 +206,7 @@ void ComponentRender::postUpdate()
     // PostProcessingShadersChain() (FogOfWar incluido), que no participan de la caché.
     InvalidateRenderStateCache();
     for (auto &o: sceneObjects) {
-        if (!o->isEnabled()) continue;
+        if (!o->isEnabled() || o->isRenderHidden()) continue;
         if (!isInFrustum(o)) continue;
         o->postUpdate();
     }
@@ -462,9 +464,10 @@ void ComponentRender::onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects)
     int visible = 0, culled = 0;
     for (const auto &o: sceneObjects) {
         if (!o->isEnabled()) continue;
-        const bool inFrustum = isInFrustum(o);
+        // renderHidden (niebla de guerra): igual que fuera de cámara -- scripts ya corrieron arriba
+        const bool inFrustum = !o->isRenderHidden() && isInFrustum(o);
         o->setVisibleInFrustum(inFrustum);
-        if (!inFrustum) { ++culled; continue; }
+        if (!inFrustum) { ++culled; o->onUpdateCulled(); continue; }
         ++visible;
         o->onUpdate();
     }
@@ -770,6 +773,13 @@ void ComponentRender::DrawLine(const Vertex3D &from, const Vertex3D &to, const C
 
 void ComponentRender::DrawLine2D(int x1, int y1, int x2, int y2, const Color &c, float weight) const
 {
+    flushUIBatch();
+    // Viewport del destino (capa "ui", tamaño de VENTANA), como el resto de dibujos 2D: sin esto se
+    // heredaba el de la pasada anterior (tamaño de RENDER) y, con una resolución de render distinta
+    // de la ventana, las líneas (p. ej. el recuadro de cámara del minimapa) salían desplazadas.
+    int vw, vh;
+    getTargetSize("ui", vw, vh);
+    ScopedTargetViewport vp(vw, vh);
     auto *win = Components::get()->Window();
     const float sx = (float)Config::get()->screenWidth  / (float)win->getWidth();
     const float sy = (float)Config::get()->screenHeight / (float)win->getHeight();
@@ -874,8 +884,20 @@ void ComponentRender::DrawImage2DFromImage(Image *img, int x, int y, int w, int 
 static GLuint s_fboOverride = 0;
 static int    s_overrideW = 0, s_overrideH = 0;
 
-void ComponentRender::setFBOOverride(GLuint fbo, int w, int h) { s_fboOverride = fbo; s_overrideW = w; s_overrideH = h; }
-void ComponentRender::clearFBOOverride()                        { s_fboOverride = 0; s_overrideW = 0; s_overrideH = 0; }
+// Cambiar el destino con lotes de UI pendientes los mandaría al FBO equivocado: se vacían antes
+static void flushUIBatchIfAny()
+{
+    auto* r = Components::get()->Render();
+    if (r) r->flushUIBatch();
+}
+
+void ComponentRender::setFBOOverride(GLuint fbo, int w, int h) { flushUIBatchIfAny(); s_fboOverride = fbo; s_overrideW = w; s_overrideH = h; }
+void ComponentRender::clearFBOOverride()                        { flushUIBatchIfAny(); s_fboOverride = 0; s_overrideW = 0; s_overrideH = 0; }
+
+void ComponentRender::flushUIBatch() const
+{
+    if (shaders.shaderUIBatch) shaders.shaderUIBatch->flush();
+}
 
 void ComponentRender::getTargetSize(const std::string& fb, int& w, int& h)
 {
@@ -891,8 +913,14 @@ ComponentRender::ScopedTargetViewport::ScopedTargetViewport(int w, int h)
     auto* win = Components::get()->Window();
     rw = win->getWidthRender();
     rh = win->getHeightRender();
-    changed = (w != rw || h != rh);
-    if (changed) glViewport(0, 0, w, h);
+    // Fijar SIEMPRE el viewport del destino: antes solo se fijaba si difería del tamaño de render,
+    // dando por hecho que el viewport actual ya era ese. No lo es al principio de los scripts (el
+    // frame anterior termina con el de la VENTANA en FlipGlobalToWindow): con una resolución de
+    // render distinta de la ventana, un dibujo a "foreground" que fuera el primero del frame
+    // heredaba el viewport de la ventana y salía ampliado desde la esquina inferior izquierda
+    // (p. ej. el marco del menú en la pantalla de opciones). Al salir se deja el de render.
+    changed = true;
+    glViewport(0, 0, w, h);
 }
 
 ComponentRender::ScopedTargetViewport::~ScopedTargetViewport()
@@ -915,6 +943,7 @@ GLuint ComponentRender::resolveEffectiveFBO(const std::string& fb) { return reso
 
 void ComponentRender::DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb, float alpha) const
 {
+    flushUIBatch();
     // The cache texture has the size of its target layer (UIManager creates it with getTargetSize)
     int tw, th;
     getTargetSize(fb, tw, th);
@@ -922,14 +951,52 @@ void ComponentRender::DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std:
     shaders.shaderOGLImage->renderTexture(tex, 0, 0, tw, th, tw, th, alpha, true, resolveFB(fb));
 }
 
+void ComponentRender::DrawUITextureRegionToFB(GLuint tex, int x, int y, int w, int h,
+                                              float u0, float v0, float u1, float v1, const std::string& fb, float alpha) const
+{
+    if (tex == 0 || w <= 0 || h <= 0) return;
+    int rw, rh;
+    getTargetSize(fb, rw, rh);
+    if (batchUIQuads()) {
+        ShaderOGLUIBatch::Key key;
+        key.fbo = resolveFB(fb); key.rw = rw; key.rh = rh;
+        key.texture = tex;
+        key.blend   = ShaderOGLUIBatch::Blend::Image;
+        shaders.shaderUIBatch->appendQuad(key, (float)x, (float)y, (float)w, (float)h, u0, v0, u1, v1,
+                                          Color(1.0f, 1.0f, 1.0f, alpha));
+        return;
+    }
+    flushUIBatch();
+    ScopedTargetViewport vp(rw, rh);
+    shaders.shaderOGLImage->renderTextureRegion(tex, x, y, w, h, rw, rh, u0, v0, u1, v1, alpha, resolveFB(fb));
+}
+
+bool ComponentRender::batchUIQuads() const
+{
+    return uiDeferDepth > 0 && uiQuadBatchingEnabled && uiBatchingEnabled && shaders.shaderUIBatch != nullptr;
+}
+
 void ComponentRender::DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const
 {
     auto *win = Components::get()->Window();
     int rw, rh;
     getTargetSize(fb, rw, rh);
-    ScopedTargetViewport vp(rw, rh);   // renderRect sets the viewport itself; this puts it back
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
+    if (batchUIQuads()) {
+        // Mismo redondeo que el camino inmediato; color del vértice * textura blanca = rectColor
+        ShaderOGLUIBatch::Key key;
+        key.fbo = resolveFB(fb); key.rw = rw; key.rh = rh;
+        key.texture = shaders.shaderUIBatch->getWhiteTexture();
+        key.blend   = (c.a <= 0.0f || c.a >= 1.0f) ? ShaderOGLUIBatch::Blend::RectAny
+                    : uiRectOverBlend              ? ShaderOGLUIBatch::Blend::Image
+                                                   : ShaderOGLUIBatch::Blend::Rect;
+        shaders.shaderUIBatch->appendQuad(key, (float)(int)(x * rx), (float)(int)(y * ry),
+                                          (float)(int)(w * rx), (float)(int)(h * ry), 0.f, 0.f, 1.f, 1.f, c);
+        return;
+    }
+    flushUIBatch();
+    ScopedTargetViewport vp(rw, rh);   // renderRect sets the viewport itself; this puts it back
     shaders.shaderOGLRect->renderRect(
         (int)(x * rx), (int)(y * ry),
         (int)(w * rx), (int)(h * ry),
@@ -977,6 +1044,8 @@ void ComponentRender::DrawImage2DToFB(const std::string &path, int x, int y, int
 void ComponentRender::DrawImage2DNineSliceToFB(Image *img, float x, float y, float w, float h,
                                                const float slice[4], float sliceScale, const std::string &fb, float alpha)
 {
+    const bool batched = batchUIQuads();
+    if (!batched) flushUIBatch();
     if (!img || !img->isLoaded()) return;
     const float imgW = (float)img->width(), imgH = (float)img->height();
     if (imgW <= 0.0f || imgH <= 0.0f || w <= 0.0f || h <= 0.0f) return;
@@ -1007,11 +1076,21 @@ void ComponentRender::DrawImage2DNineSliceToFB(Image *img, float x, float y, flo
     const float Y[4] = { Y0, Y1, Y2, Y3 };
 
     const GLuint fbo = resolveFB(fb);
+    ShaderOGLUIBatch::Key key;
+    key.fbo = fbo; key.rw = rw; key.rh = rh;
+    key.texture = img->getOGLTextureID();
+    key.blend   = ShaderOGLUIBatch::Blend::Image;
+    const Color tint(1.0f, 1.0f, 1.0f, alpha);   // Image.fs: vec4(1,1,1, alpha) * texture
     for (int row = 0; row < 3; row++) {
         for (int col = 0; col < 3; col++) {
             const int pw = (int)(X[col + 1] - X[col]);
             const int ph = (int)(Y[row + 1] - Y[row]);
             if (pw <= 0 || ph <= 0) continue;
+            if (batched) {
+                shaders.shaderUIBatch->appendQuad(key, (float)(int)X[col], (float)(int)Y[row], (float)pw, (float)ph,
+                                                  U[col], V[row], U[col + 1], V[row + 1], tint);
+                continue;
+            }
             shaders.shaderOGLImage->renderTextureRegion(
                 img->getOGLTextureID(),
                 (int)X[col], (int)Y[row], pw, ph,
@@ -1025,14 +1104,27 @@ void ComponentRender::DrawImage2DNineSliceToFB(Image *img, float x, float y, flo
 
 void ComponentRender::DrawImage2DFromImageToFB(Image* img, int x, int y, int w, int h, const std::string &fb, float alpha)
 {
+    const bool batched = batchUIQuads();
+    if (!batched) flushUIBatch();
     if (!img || !img->isLoaded()) return;
 
     auto *win = Components::get()->Window();
     int rw, rh;
     getTargetSize(fb, rw, rh);
-    ScopedTargetViewport vp(rw, rh);
     const float rx = (float)rw / (float)win->getWidth();
     const float ry = (float)rh / (float)win->getHeight();
+    if (batched) {
+        // Quad de renderTexture (inverse = false): UV (0,0) arriba-izquierda, (1,1) abajo-derecha
+        ShaderOGLUIBatch::Key key;
+        key.fbo = resolveFB(fb); key.rw = rw; key.rh = rh;
+        key.texture = img->getOGLTextureID();
+        key.blend   = ShaderOGLUIBatch::Blend::Image;
+        shaders.shaderUIBatch->appendQuad(key, (float)(int)(x * rx), (float)(int)(y * ry),
+                                          (float)(int)(w * rx), (float)(int)(h * ry),
+                                          0.f, 0.f, 1.f, 1.f, Color(1.0f, 1.0f, 1.0f, alpha));
+        return;
+    }
+    ScopedTargetViewport vp(rw, rh);
     shaders.shaderOGLImage->renderTexture(
         img->getOGLTextureID(),
         (int)(x * rx), (int)(y * ry),
@@ -1157,6 +1249,31 @@ Vertex3D ComponentRender::getSubmeshCenter(Object3D* obj, const std::string& sub
             glm::vec4 world = model * glm::vec4(localCenter.x, localCenter.y, localCenter.z, 1.0f);
             return Vertex3D(world.x, world.y, world.z);
         }
+    }
+    return obj->getPosition();
+}
+
+// Centro XZ de la AABB en mundo de la submalla y su Y máxima (el techo de un edificio de la ciudad).
+// Las 8 esquinas de la AABB local se pasan a mundo: vale con rotación/escala en el objeto.
+Vertex3D ComponentRender::getSubmeshTop(Object3D* obj, const std::string& submeshName) const
+{
+    if (!obj) return Vertex3D::zero();
+    auto* mesh = dynamic_cast<Mesh3D*>(obj);
+    if (!mesh) return obj->getPosition();
+
+    for (const auto& md : mesh->getMeshData()) {
+        if (md.name != submeshName) continue;
+        const glm::mat4 model = mesh->getModelMatrix();
+        const Vertex3D& mn = md.localAabb.min;
+        const Vertex3D& mx = md.localAabb.max;
+        glm::vec3 wMin(std::numeric_limits<float>::max()), wMax(-std::numeric_limits<float>::max());
+        for (int i = 0; i < 8; i++) {
+            const glm::vec4 c((i & 1) ? mx.x : mn.x, (i & 2) ? mx.y : mn.y, (i & 4) ? mx.z : mn.z, 1.0f);
+            const glm::vec3 w = glm::vec3(model * c);
+            wMin = glm::min(wMin, w);
+            wMax = glm::max(wMax, w);
+        }
+        return Vertex3D((wMin.x + wMax.x) * 0.5f, wMax.y, (wMin.z + wMax.z) * 0.5f);
     }
     return obj->getPosition();
 }
@@ -1822,7 +1939,7 @@ void ComponentRender::RunShadowPass() const
     std::vector<Mesh3D*> casters;
     auto sceneObjects = Brakeza::get()->copySceneObjects();
     for (auto* obj : sceneObjects) {
-        if (!obj->isEnabled()) continue;
+        if (!obj->isEnabled() || obj->isRenderHidden()) continue;
 
         if (auto* anim = dynamic_cast<Mesh3DAnimation*>(obj)) {
             if (anim->isEnableLights() && anim->getRenderSettings().shadowMap)
@@ -1843,6 +1960,11 @@ void ComponentRender::RunShadowPass() const
         std::vector<std::vector<AABB3D>> casterSubmeshWorldAabbs;
         casterSubmeshWorldAabbs.reserve(casters.size());
         for (auto* mesh : casters) {
+            // Mallas con geometría de sombra combinada: se cullean enteras (drawCastersInstanced)
+            if (shadowMergeEnabled && dynamic_cast<Mesh3DAnimation*>(mesh) == nullptr && mesh->getShadowMerged() != nullptr) {
+                casterSubmeshWorldAabbs.emplace_back();
+                continue;
+            }
             glm::mat4 model = mesh->getModelMatrix();
             std::vector<AABB3D> submeshAabbs;
             submeshAabbs.reserve(mesh->getMeshData().size());

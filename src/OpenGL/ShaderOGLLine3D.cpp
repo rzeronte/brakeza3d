@@ -80,7 +80,7 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
 
     glLineWidth(1.0f);
     glDrawArrays(GL_LINES, 0, static_cast<GLint>(vertices.size()));
-    Profiler::get()->incrementDrawCall(GL_LINES, static_cast<GLint>(vertices.size()));
+    Profiler::get()->incrementDrawCall(GL_LINES, static_cast<GLint>(vertices.size()), 1, "Line3D");
 
     glDisableVertexAttribArray(0);
     glBindVertexArray(0);

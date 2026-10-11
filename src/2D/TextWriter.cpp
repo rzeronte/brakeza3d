@@ -8,6 +8,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/Render/Profiler.h"
 
 TextWriter::TextWriter(SDL_Renderer *renderer, TTF_Font *font)
 :
@@ -76,6 +77,7 @@ void TextWriter::WriteTextTTF(int x, int y, int w, int h, const char *text, cons
 
 void TextWriter::beginTextCache(const std::string &name, int w, int h)
 {
+    Components::get()->Render()->flushUIBatch();
     auto &tc = textCaches[name];
     if (tc.fbo == 0 || tc.w != w || tc.h != h) {
         if (tc.fbo != 0) {
@@ -115,6 +117,7 @@ void TextWriter::endTextCache()
 
 void TextWriter::drawTextCache(const std::string &name, int x, int y)
 {
+    Components::get()->Render()->flushUIBatch();
     auto it = textCaches.find(name);
     if (it == textCaches.end() || it->second.fbo == 0) return;
     const TextCache &tc = it->second;
@@ -237,6 +240,7 @@ void TextWriter::destroyGlyphVBO()
 
 void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, float scale)
 {
+    Components::get()->Render()->flushUIBatch();
     if (!glyphAtlas || !glyphAtlas->isBuilt()) return;
 
     int len = (int)strlen(text);
@@ -251,8 +255,8 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
     float cursorX = 0;
     int idx = 0;
 
-    for (int i = 0; i < len; i++) {
-        char ch = text[i];
+    for (const char* p = text; *p; ) {
+        const unsigned int ch = GlyphNextCodepoint(p);   // UTF-8: "ó" son 2 bytes
 
         if (ch == ' ') {
             cursorX += glyphAtlas->getGlyphInfo(' ').advance * scale;
@@ -340,6 +344,7 @@ void TextWriter::writeTextAtlas(int x, int y, const char *text, const Color &c, 
 
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     glDrawArrays(GL_TRIANGLES, 0, idx / 4);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, idx / 4, 1, "TextWriter");
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glBindVertexArray(0);
@@ -364,8 +369,8 @@ int TextWriter::measureTextWidthAtlas(const char *text, float scale)
     float cursorX = 0;
     float maxRight = 0;
 
-    for (int i = 0; i < len; i++) {
-        char ch = text[i];
+    for (const char* p = text; *p; ) {
+        const unsigned int ch = GlyphNextCodepoint(p);   // UTF-8
 
         if (ch == ' ') {
             const GlyphInfo& space = glyphAtlas->getGlyphInfo(' ');
@@ -431,8 +436,8 @@ const std::vector<float>& TextWriter::getOrBuildGlyphVerts(const char *text, flo
     verts.reserve(len * 6 * 4);
 
     float cursorX = 0;
-    for (int i = 0; i < len; i++) {
-        char ch = text[i];
+    for (const char* p = text; *p; ) {
+        const unsigned int ch = GlyphNextCodepoint(p);   // UTF-8
         if (ch == ' ') { cursorX += glyphAtlas->getGlyphInfo(' ').advance * scale; continue; }
         const GlyphInfo& g = glyphAtlas->getGlyphInfo(ch);
         if (!g.valid) { cursorX += glyphAtlas->getGlyphInfo(' ').advance * scale; continue; }
@@ -480,6 +485,7 @@ void TextWriter::drawTextAtlasImmediate(int x, int y, const char *text, float sc
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * (int)sizeof(float), nullptr);
     glDrawArrays(GL_TRIANGLES, 0, numVerts);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, numVerts, 1, "TextWriter atlas");
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -567,12 +573,38 @@ void TextWriter::flushTextBatch()
     batchQueue.clear();
 }
 
+void TextWriter::appendTextAtlasToBatch(int x, int y, const char* text, const Color& c, float scale, const std::string& fb)
+{
+    if (!glyphAtlas || !glyphAtlas->isBuilt() || !text || text[0] == '\0') return;
+    auto* render = Components::get()->Render();
+    auto* batch  = render->getShaders()->shaderUIBatch;
+    if (!batch || !render->isUIBatching()) { writeTextAtlasToFB(x, y, text, c, scale, fb); return; }
+
+    const std::vector<float>& verts = getOrBuildGlyphVerts(text, scale);
+    if (verts.empty()) return;
+
+    // Mismos cálculos que writeTextAtlasToFB: destino y tamaño se resuelven AHORA (el override de FBO
+    // de la caché de widgets puede haber cambiado cuando se vacíe el lote)
+    auto* win = Components::get()->Window();
+    ShaderOGLUIBatch::Key key;
+    ComponentRender::getTargetSize(fb, key.rw, key.rh);
+    key.fbo     = ComponentRender::resolveEffectiveFBO(fb);
+    key.texture = glyphAtlas->getAtlasTexture();
+    key.blend   = ShaderOGLUIBatch::Blend::Text;
+    const float rx = (float)key.rw / (float)win->getWidth();
+    const float ry = (float)key.rh / (float)win->getHeight();
+    // Image.fs: color = vec4(tint.rgb, alpha * tint.a) * texture
+    const Color col(c.r, c.g, c.b, c.a * alpha);
+    batch->appendTriangles(key, verts.data(), (int)verts.size() / 4, (float)x * rx, (float)y * ry, rx, ry, col);
+}
+
 void TextWriter::writeTextAtlasToFB(int x, int y, const char* text, const Color& c, float scale, const std::string& fb)
 {
     if (!glyphAtlas || !glyphAtlas->isBuilt()) return;
 
     auto* win    = Components::get()->Window();
     auto* render = Components::get()->Render();
+    render->flushUIBatch();   // conservar el orden respecto a los textos en lote
     auto* shader = render->getShaders()->shaderOGLImage;
 
     int rw, rh;

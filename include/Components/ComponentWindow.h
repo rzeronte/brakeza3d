@@ -42,7 +42,10 @@ class ComponentWindow : public Component
     bool customRenderResolution = false;
 
     SDL_Window *window = nullptr;
+    // Renderer SOFTWARE fuera de pantalla (ver InitWindow): solo para las APIs que piden un
+    // SDL_Renderer (SDL_CreateTextureFromSurface...). NO presenta nada en la ventana.
     SDL_Renderer *renderer = nullptr;
+    SDL_Surface *rendererSurface = nullptr;
 
     TTF_Font *fontDefault = nullptr;
 
@@ -102,6 +105,7 @@ public:
     void SaveImGuiCurrentLayout() const;
     void ImGuiOnUpdate();
     void ToggleFullScreen() const;
+    void ApplyVSync(bool enabled) const;
     void CreatePickingColorBuffer();
     void ImGuiInitialize(const std::string &configFile);
     void UpdateMouseCursor() const;
@@ -117,6 +121,9 @@ public:
     [[nodiscard]] int getHeight() const                                     { return heightWindow; }
     [[nodiscard]] int getWidthRender() const                                { return widthRender; }
     [[nodiscard]] int getHeightRender() const                               { return heightRender; }
+    // true = resolución de render fija (menú "Render size" o "resolution.locked" del proyecto): al
+    // redimensionar la ventana solo cambian la ventana y la UI, el render se queda.
+    [[nodiscard]] bool isRenderResolutionLocked() const                     { return customRenderResolution; }
     [[nodiscard]] GLuint getSceneFramebuffer() const                        { return openGLBuffers.sceneFBO; }
     [[nodiscard]] GLuint getBackgroundFramebuffer() const                   { return openGLBuffers.backgroundFBO; }
     [[nodiscard]] GLuint getUIFramebuffer() const                           { return renderFBOOverride ? renderFBOOverride : openGLBuffers.uiFBO; }
@@ -126,6 +133,7 @@ public:
     [[nodiscard]] GLuint getSceneTexture() const                            { return openGLBuffers.sceneTexture; }
     [[nodiscard]] GLuint getGlobalTexture() const                           { return openGLBuffers.globalTexture; }
     [[nodiscard]] SDL_Window *getWindow() const                             { return window; }
+    [[nodiscard]] SDL_GLContext getGLContext() const                        { return context; }
     [[nodiscard]] SDL_Renderer *getRenderer() const                         { return renderer; }
     [[nodiscard]] TTF_Font *getFontDefault() const                          { return fontDefault; }
     [[nodiscard]] ImGuizmo::OPERATION getGuiZmoOperation() const            { return ImGuiOperationGuizmo; }

@@ -104,7 +104,7 @@ void ShaderOGLAxisQuad::drawImpl(const glm::vec3& pos,
     glDisable(GL_DEPTH_TEST);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "AxisQuad");
 
     glBindVertexArray(0);
 

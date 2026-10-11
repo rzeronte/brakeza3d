@@ -5,12 +5,65 @@
 #include <vector>
 #include <unordered_map>
 #include <tuple>
+#include <cstdint>
+#include <deque>
+#include <unordered_set>
 #include "../../../sol/sol.hpp"
 #include "../Color.h"
 #include <GL/glew.h>
 
 class ComponentInput;
 class Image;
+
+// ─────────────────────────────────────────────────────────────────────────────────────────────────
+// CACHÉ DE WIDGETS — qué se cachea, cómo y con qué límites
+//
+// Cada ELEMENTO es fijo (por defecto) o "live" (JSON "live": true):
+//   · fijo  → se hornea en la imagen cacheada del widget; solo se vuelve a pintar cuando cambian sus
+//             datos (y en "variants" sus datos forman la clave de la variante).
+//   · live  → nunca se cachea: se pinta en cada llamada, ENCIMA de lo cacheado. Para lo que cambia a
+//             menudo (barra de vida, contador, temporizador) o es interactivo (botón con hover).
+//   Un "widget"/"array" anidado marcado live es live entero; los elementos live de un hijo anidado
+//   cuentan como live del padre (el hijo se hornea dentro del padre).
+//
+// Cada WIDGET elige su modo (JSON "cache"; el antiguo "cacheable": true/false = "single"/"none"):
+//   · "none"     → se pinta entero en cada llamada. Siempre así si tiene un "scroll".
+//   · "single"   → UNA imagen (FBO del tamaño de la capa) con el último dato fijo dibujado. Para paneles
+//                  únicos (barra inferior, minimapa…). Si dos llamadas por frame le pasan datos fijos
+//                  distintos, se rehace dos veces por frame: para muchas copias, "variants".
+//   · "variants" → hasta "maxVariants" imágenes (por defecto 64) en un atlas por widget, una por cada
+//                  combinación distinta de los datos FIJOS (los de los elementos live no cuentan). Para
+//                  muchas copias del mismo widget (avatares, etiquetas, marcadores): 200 avatares con 6
+//                  retratos distintos = 6 variantes. Cada copia = 1 quad del atlas + sus elementos live,
+//                  todo al lote de UI. drawWidgetInstances() pinta N copias en una sola llamada.
+//
+// CUÁNDO COMPENSA "variants" (medido 2026-10-10, 200 avatares RTS de imagen + barra + nombre): cada copia
+// paga calcular la firma de sus datos fijos y buscarla (~5 µs), y la maquetación de sus elementos live
+// se recorre igual. Si lo fijo es UNA imagen (un quad en el lote) sale más caro que "none": 6-7 µs/copia
+// con "none" + drawWidgetInstances frente a 11-13 µs con "variants". Compensa cuando lo fijo es caro
+// de dibujar: varios textos, marcos 9-slice, anidados. Lo que sí ahorra siempre es drawWidgetInstances
+// (un lote para todas las copias: ~1000 llamadas de dibujo menos con 200 avatares).
+//
+// LIMITACIONES (cache "single"/"variants"; validateWidgetCache() las comprueba y el editor las muestra):
+//   1. Orden: lo live va SIEMPRE encima de todo lo cacheado (no puede quedar debajo de un elemento fijo).
+//   2. Interactivo: un elemento fijo se hornea en su estado normal. Botones fijos siguen recibiendo
+//      clics, pero sin hover/pulsado/sonido visibles; tooltips de imágenes fijas no salen. Si hace
+//      falta respuesta visual → live, o el widget en "none".
+//   3. Datos cambiantes en elementos fijos: cada valor distinto es una variante nueva. Al llegar a
+//      maxVariants (o llenarse el atlas) se vacían TODAS y se avisa en el log: ese elemento debería
+//      ser live. Lo mismo si cambia la escala: forma parte de la clave.
+//   4. Imágenes: se cargan en un hilo; si al hornear alguna no ha terminado, esa caché/variante se
+//      rehace en los dibujados siguientes hasta que esté completa (una ruta rota → se rehace siempre).
+//   5. Se rehace todo al cambiar el tamaño de ventana o de la capa destino, al recargar el JSON
+//      (editor) o con invalidateWidget(). Un widget "variants" debe dibujarse siempre en la misma
+//      capa (fb): el atlas tiene el tamaño de esa capa.
+//   6. Por copia solo cambian posición, opacidad y los elementos live: nada de rotar ni deformar.
+//   7. Solo se cachea el widget de primer nivel; los anidados se hornean dentro de él.
+//   8. drawWidgetInstances: los rects translúcidos se mezclan como las imágenes (operador "over")
+//      para no partir el lote; el color es idéntico, el alfa que queda en la capa puede variar
+//      mínimamente respecto a drawWidgetAtPos.
+// ─────────────────────────────────────────────────────────────────────────────────────────────────
+enum class UICacheMode { None, Single, Variants };
 
 // Per-element data used by the core renderer (no Lua dependency)
 struct UIElementData {
@@ -32,6 +85,7 @@ struct UIElementData {
     int         page      = -1;           // pagination: -1 = off, 0+ = show page N (N*count .. (N+1)*count-1)
     float       scrollTo  = -1.0f;        // "scroll" elements: >= 0 sets the scroll offset (px) this frame (Lua: { scrollTo = 0 })
     bool        hidden    = false;        // true: the element is neither drawn nor hit-tested this frame
+    float       scale     = 1.0f;         // "image" elements: size multiplier around the element's center (Lua: { scale = 1.05 }, e.g. a pulsing logo)
 
     bool operator==(const UIElementData& o) const {
         return provided == o.provided && colorProvided == o.colorProvided && hidden == o.hidden &&
@@ -39,6 +93,7 @@ struct UIElementData {
                path == o.path && pathOff == o.pathOff && tooltip == o.tooltip &&
                value == o.value && maxValue == o.maxValue && w == o.w && h == o.h &&
                count == o.count && page == o.page && scrollTo == o.scrollTo && iconList == o.iconList &&
+               scale == o.scale &&
                (!colorProvided || (color.r == o.color.r && color.g == o.color.g &&
                                    color.b == o.color.b && color.a == o.color.a));
     }
@@ -61,9 +116,36 @@ using UIWidgetRenderData = std::unordered_map<std::string, UIElementData>;
 class ComponentRender;
 class TextWriter;
 
+// Element type as an enum: the renderer compares it many times per element and pass (before, string
+// compares). The "type" string stays the source of truth (JSON, editor); kind is derived from it.
+enum class UIElementKind : uint8_t { Unknown, Text, Image, Rect, ProgressBar, Icons, Button, Widget, Array, Scroll };
+
+inline UIElementKind uiElementKindFromName(const std::string& t)
+{
+    if (t == "text")        return UIElementKind::Text;
+    if (t == "image")       return UIElementKind::Image;
+    if (t == "rect")        return UIElementKind::Rect;
+    if (t == "progressbar") return UIElementKind::ProgressBar;
+    if (t == "icons")       return UIElementKind::Icons;
+    if (t == "button")      return UIElementKind::Button;
+    if (t == "widget")      return UIElementKind::Widget;
+    if (t == "array")       return UIElementKind::Array;
+    if (t == "scroll")      return UIElementKind::Scroll;
+    return UIElementKind::Unknown;
+}
+
+// widget / array / scroll: render another widget inside
+inline bool uiElementIsContainer(UIElementKind k)
+{
+    return k == UIElementKind::Widget || k == UIElementKind::Array || k == UIElementKind::Scroll;
+}
+
 struct UIElement {
     std::string id;
     std::string type; // "text", "image", "rect", "progressbar", "icons"
+    // Derived from type: set on parse, by the editor when it changes the type, and on every
+    // renderWidgetAt scale pass (buildScaled), so a stale value never reaches the renderer.
+    UIElementKind kind{UIElementKind::Unknown};
     float x{0}, y{0};
     bool yAuto{false};
     float w{0}, h{0};
@@ -107,6 +189,7 @@ struct UIElement {
     float textOffsetX{0};
     float textOffsetY{0};
     float barFontScale{0.338f};
+    bool  barShowText{true};         // false = no "valor/máximo" text over the bar (JSON "barShowText")
     Color barBg{0.18f, 0.18f, 0.18f, 0.85f};
     Color barOk{0.0f, 0.78f, 0.12f, 1.0f};
     Color barMid{0.82f, 0.55f, 0.0f, 1.0f};
@@ -144,6 +227,7 @@ struct UIElement {
     float paddingBottom{0.0f};   // bottom margin: post-element space (yAuto) / adds to effective height (fixed)
 
     bool enabled{true};          // false → element is skipped entirely during rendering
+    bool live{false};            // true → never cached: drawn on every call over the cached image (see top of file)
 
     // text wrap ("text" elements): word-wrap to the element width w, measured with the widget's font
     bool  wrap{false};
@@ -169,18 +253,24 @@ struct UIWidget {
     UIWidgetRenderData defaultData;  // baked-in data from JSON "data" section
 
 
-    // Panel background and border (drawn by renderWidgetAt around the full widget)
+    // Panel background, frame and border (drawn by renderWidgetAt around the full widget), bottom to top:
+    //   bgColor -> bgImage (fondo, estirado) -> frameImage (marco 9-slice) -> elementos -> borde
+    // Fondo y marco son independientes y pueden convivir.
     Color bgColor    {0.0f, 0.0f, 0.0f, 0.0f};  // alpha=0 → no background
-    std::string bgImage;   // optional: image over the widget box (declared width × height), drawn after bgColor
-    float bgSlice[4]{0.0f, 0.0f, 0.0f, 0.0f};  // 9-slice cuts L,T,R,B in IMAGE px; all 0 = stretch the whole image
-    float bgSliceScale{1.0f};                   // screen px per image px for the borders (× widget scale)
-    float bgImageAlpha{1.0f};                   // opacity of bgImage (stretch and 9-slice), × the image's own alpha
+    std::string bgImage;   // optional: background image stretched over the widget box (declared width × height)
+    float bgImageAlpha{1.0f};                   // opacity of bgImage, × the image's own alpha
+    float bgImageInset{0.0f};                   // px (× widget scale): bgImage drawn inset from the edges, so it stays inside a frame with rounded/transparent corners
+    std::string frameImage;  // optional: 9-slice frame drawn OVER the background image, under the elements
+    float frameSlice[4]{0.0f, 0.0f, 0.0f, 0.0f};  // 9-slice cuts L,T,R,B in IMAGE px; all 0 = frameImage stretched
+    float frameSliceScale{1.0f};                    // screen px per image px for the borders (× widget scale)
+    float frameImageAlpha{1.0f};                    // opacity of frameImage, × the image's own alpha
     std::string font;      // optional: font file (.ttf/.otf) for this widget's text; empty = engine default. Nested widgets inherit it unless they set their own
     float refHeight{0.0f}; // design window height (px). >0 → text sizes × (window height / refHeight), so text follows resizes like the box does. 0 = fixed size. Nested widgets inherit it unless they set their own
     Color borderColor{1.0f, 1.0f, 1.0f, 1.0f};
     float borderWidth{0.0f};                       // 0 → no border
     std::string cursor;    // cursor name to set when mouse is anywhere within widget bounds
-    bool cacheable{true};  // false → never cache (interactive: hover/press state per frame)
+    UICacheMode cacheMode{UICacheMode::Single};   // JSON "cache" (see top of file)
+    int maxVariants{64};                          // "variants": max cached images before wiping them all
 
     // Runtime cache — not persisted, filled lazily on first dirty render
     mutable GLuint cacheFBO     {0};
@@ -190,7 +280,44 @@ struct UIWidget {
     mutable int    cacheWinW    {0};   // window size the cache was laid out at (layout follows the window)
     mutable int    cacheWinH    {0};
     mutable bool   cacheDirty   {true};
-    mutable UIWidgetRenderData cachedData;
+    mutable std::string cachedSig;     // "single": signature of the fixed data in the cache
+
+    // "variants": atlas (texture of the target layer's px, ≤ VARIANT_ATLAS_SIZE) + one cell per variant
+    struct VariantCell {
+        int ax{0}, ay{0}, w{0}, h{0};  // cell in the atlas (target px, ay from the top of the atlas)
+        int offX{0}, offY{0};          // cell top-left relative to the widget origin (target px)
+        float contentH{0.0f};          // content height (window px) → lastContentH
+        bool  incomplete{false};       // baked while an image was still loading → re-baked in place
+    };
+    mutable GLuint variantFBO{0};
+    mutable GLuint variantTex{0};
+    mutable int    variantAW{0}, variantAH{0};           // atlas size
+    mutable int    variantRW{0}, variantRH{0};           // target layer size it was built for
+    mutable int    variantWinW{0}, variantWinH{0};       // window size it was laid out at
+    mutable int    shelfX{0}, shelfY{0}, shelfH{0};      // shelf packer cursor
+    mutable bool   variantsDirty{true};                  // wipe all cells on next draw
+    mutable int    variantWipes{0};                      // times it overflowed (log + editor)
+    mutable std::unordered_map<std::string, VariantCell> variants;
+
+    // Elements already scaled (buildScaled copies every element): kept while the scale, text scale and
+    // box size are the same and nobody edited elements (UIManager::markElementsEdited)
+    mutable std::vector<UIElement> scaledEls;
+    mutable float    scaledKey[4]{-1.0f, -1.0f, -1.0f, -1.0f};
+    mutable uint64_t scaledSerial{0};
+    mutable int      scaledInUse{0};
+};
+
+// One copy for UIManager::drawWidgetInstances
+struct UIWidgetInstance {
+    float x{0.0f}, y{0.0f};   // window px (like drawWidgetAtPos)
+    float alpha{1.0f};        // × global alpha
+    UIWidgetRenderData data;
+};
+
+// drawWidgetInstances result: copy indexes (0-based, -1 = none) + element id (button) that got it
+struct UIInstancesResult {
+    int clicked{-1}, rightClicked{-1}, hovered{-1};
+    std::string clickedId, rightClickedId, hoveredId;
 };
 
 class UIManager {
@@ -204,8 +331,8 @@ public:
     void loadWidgetFromFile(const std::string& filePath);
     void loadWidgetsFromDir(const std::string& dir);
     void unloadWidget(const std::string& name);
-    // Fuerza el re-render de la caché FBO en el siguiente draw (solo afecta a widgets cacheables
-    // dibujados a primer nivel: los anidados no tienen caché propia, se re-renderizan con su padre).
+    // Fuerza el re-render de la caché en el siguiente draw ("single": su FBO; "variants": vacía todas
+    // las variantes). Solo widgets de primer nivel: los anidados se hornean con su padre.
     bool invalidateWidget(const std::string& name);
     void invalidateAllWidgets();
     // Design resolution of the UI (window px the layouts were made at). When set (> 0), text sizes
@@ -225,6 +352,28 @@ public:
     // Return {nextY, clickedButtonId, rightClickedButtonId} — ids are "" if not clicked.
     std::tuple<float, std::string, std::string, std::string> drawWidgetLua(const std::string& name, sol::table data, const std::string& fb = "foreground", float scaleOverride = 0.0f);
     std::tuple<float, std::string, std::string, std::string> drawWidgetAtPosLua(const std::string& name, float x, float y, sol::table data, const std::string& fb = "foreground", float scaleOverride = 0.0f);
+
+    // N copies of one widget in a single call, in list order (the last one on top), all in the same UI
+    // batch. Works with any cache mode; with "variants" each copy is one atlas quad + its live elements.
+    // hovered = the topmost copy whose drawn area contains the mouse (for picking without buttons).
+    UIInstancesResult drawWidgetInstances(const std::string& name, const std::vector<UIWidgetInstance>& instances,
+                                          const std::string& fb = "foreground", float scaleOverride = 0.0f);
+    // Lua: instances = { {x=, y=, alpha=?, data={...}}, ... }. Returns 1-based indexes (0 = none):
+    // clickedIdx, clickedId, rightClickedIdx, rightClickedId, hoveredIdx, hoveredId
+    std::tuple<int, std::string, int, std::string, int, std::string> drawWidgetInstancesLua(
+        const std::string& name, sol::table instances, const std::string& fb = "foreground", float scaleOverride = 0.0f);
+
+    // Cache problems of a widget (see LIMITACIONES at the top of this file), one line each; empty = ok.
+    // Logged once on the first cached draw; the editor lists them.
+    std::vector<std::string> validateWidgetCache(const std::string& name);
+    [[nodiscard]] static const char* cacheModeName(UICacheMode m);
+    [[nodiscard]] static UICacheMode cacheModeFromName(const std::string& s);
+    static void freeVariantAtlas(UIWidget& w);   // GL atlas + cells of a "variants" widget
+    // Element definitions may have changed (the UI editor calls it every frame its window is open):
+    // the scaled copies (UIWidget::scaledEls) are rebuilt on the next draw. Without it they are only
+    // rebuilt when the scale, text scale or window size change -- copying every UIElement of every
+    // widget each frame cost ~1 ms with the RTS bottom bar (2026-10-10).
+    void markElementsEdited() { elementsGeneration++; }
 
     // Call once at the very end of a frame's HUD drawing (after all drawWidget calls)
     // to render any pending tooltip on top of everything else.
@@ -297,6 +446,64 @@ private:
     void loadWidget(const std::string& filePath);
     void parseWidgetJSON(const std::string& filePath);   // parse + store; no ref-resolve, no height
     float renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRenderData& data, bool useDefaultData = true);
+
+    // ── Cache: live elements, variants ─────────────────────────────────────
+    static constexpr int VARIANT_ATLAS_SIZE = 1024;   // max atlas side (target px)
+    // Which elements a render pass touches: All; SkipLive (baking the cache: live ones are left out);
+    // OnlyLive (over the cached image: live ones drawn, the rest only hit-tested if liveHitTest)
+    enum class LivePass { All, SkipLive, OnlyLive };
+    LivePass livePass{LivePass::All};
+    bool liveHitTest{false};
+    bool suppressInput{false};      // baking/measuring a cache: no clicks, hover, sounds, tooltips, wheel
+    bool measuringBounds{false};    // accumulate drawn bounds (window px) into mb*
+    float mbx0{0}, mby0{0}, mbx1{0}, mby1{0};
+    bool  lastDrawnValid{false};    // area of the last top-level renderWidgetAt (window px) → instances hover
+    float ldx0{0}, ldy0{0}, ldx1{0}, ldy1{0};
+    uint64_t elementsGeneration{1}; // bumped by markElementsEdited(): scaled elements are rebuilt
+    std::unordered_map<std::string, bool> cacheValidated;   // widget → problems already logged
+
+    // ── Data of nested widgets ─────────────────────────────────────────────
+    // childData(parent, "id_") = the parent's entries under that prefix, without it (what a nested
+    // widget / array item / scroll receives). Before, filterDataByPrefix scanned and copied the whole
+    // parent map for every nested widget, twice (image and text passes) and for every array item:
+    // with the RTS bottom bar (~21 nested slots, ~95 entries) that was most of its ~1.6 ms.
+    // Memoized per top-level draw (cleared when renderWidgetAt starts at depth 0) and only for STABLE
+    // sources -- the top-level data and memo results, alive for the whole draw. Any other map (a
+    // temporary: pager data, an empty fallback) is filtered as before into childScratch, so a reused
+    // address can never return another map's entries. Stable sources are sorted once per draw and
+    // each prefix is a binary-searched range.
+    using UIDataEntry = std::pair<const std::string, UIElementData>;
+    const UIWidgetRenderData& childData(const UIWidgetRenderData& parent, const std::string& prefix);
+    std::unordered_set<const UIWidgetRenderData*> stableData;
+    std::unordered_map<const UIWidgetRenderData*, std::vector<const UIDataEntry*>> sortedData;
+    std::unordered_map<std::string, UIWidgetRenderData> childMemo;   // node-based: references stay valid
+    std::deque<UIWidgetRenderData> childScratch;                     // deque: push_back keeps references valid
+    void beginTopLevelDraw(const UIWidgetRenderData& data);
+
+    // Nested widgets/arrays: the parent's image pass draws only the child's image pass (and its
+    // hit-tests), the parent's text pass only the child's text pass. Before (until 2026-10-10) both
+    // parent passes drew the WHOLE child: every nested widget was drawn twice (four times two levels
+    // down) -- half of the RTS bottom bar's cost, and translucent nested images/rects came out more
+    // opaque than their JSON. Set by renderElement right before the call; renderWidgetAt reads and
+    // clears it on entry, so it only affects that direct child (pager, scroll, tooltip: whole).
+    enum class NestedPass { Both, ImagesOnly, TextOnly };
+    NestedPass pendingNestedPass{NestedPass::Both};
+
+    void renderElementFiltered(const UIElement& scaled, float baseX, float baseY, const UIElementData& data);
+    void accumulateBounds(const UIElement& sc, float baseX, float drawY, const UIElementData& data, float hDyn);
+    void unionBounds(float x0, float y0, float x1, float y1);
+    bool widgetHasLive(const UIWidget& w, int depth = 0) const;
+    bool isLiveDataKey(const UIWidget& w, const std::string& key, int depth = 0) const;
+    std::string fixedDataSignature(const UIWidget& w, const UIWidgetRenderData& data) const;
+    bool ensureVariantAtlas(UIWidget& w, int rW, int rH);   // false = can't create
+    bool allocVariantCell(UIWidget& w, int cw, int ch, int& ax, int& ay);
+    void wipeVariants(UIWidget& w);
+    void clearVariantCell(UIWidget& w, const UIWidget::VariantCell& c);   // transparent again, to re-bake it
+    // Set while baking a cache if an image it draws is still loading (Image loads in a thread job):
+    // that cache is re-baked on the next draw. Before (2026-10-06) the first bake missed the image
+    // and, with the same data, the cache never redid it (frames/icons missing from cached panels).
+    bool bakeMissingImage{false};
+    std::vector<std::string> collectCacheProblems(const UIWidget& w, const std::string& prefix, int depth) const;
     void drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha);
     Image* getCachedImage(const std::string& path);   // path → Image* (imagePointerCache)
     void renderElement(const UIElement& el, float baseX, float baseY, const UIElementData& data);

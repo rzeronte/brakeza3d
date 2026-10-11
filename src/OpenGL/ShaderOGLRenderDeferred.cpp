@@ -138,7 +138,7 @@ void ShaderOGLRenderDeferred::render(
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "RenderDeferred:141");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -212,7 +212,7 @@ void ShaderOGLRenderDeferred::renderInstanced(
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instanceModels.size() * sizeof(glm::mat4)),
         instanceModels.data(), GL_DYNAMIC_DRAW);
 
-    DrawMeshGeometryInstanced(GL_TRIANGLES, indexBuffer, indexCount, size, static_cast<GLsizei>(instanceModels.size()));
+    DrawMeshGeometryInstanced(GL_TRIANGLES, indexBuffer, indexCount, size, static_cast<GLsizei>(instanceModels.size()), "RenderDeferred:215");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -298,7 +298,7 @@ void ShaderOGLRenderDeferred::renderInstancedSkinned(
 
     // indexBuffer=0: la geometria animada nunca paso por el EBO deduplicado de Fase 2.2 (ver
     // comentario en include/3D/Mesh3D.h) -- siempre glDrawArraysInstanced.
-    DrawMeshGeometryInstanced(GL_TRIANGLES, 0, 0, size, static_cast<GLsizei>(instanceModels.size()));
+    DrawMeshGeometryInstanced(GL_TRIANGLES, 0, 0, size, static_cast<GLsizei>(instanceModels.size()), "RenderDeferred:301");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

@@ -20,6 +20,7 @@
 #include "../Loaders/ProjectLoader.h"
 #include "../Loaders/SceneLoader.h"
 #include "../OpenGL/ShaderOGLImage.h"
+#include "../OpenGL/ShaderOGLUIBatch.h"
 #include "../OpenGL/ShaderOGLRenderForward.h"
 #include "../OpenGL/Quad/ShaderOGLLine.h"
 #include "../OpenGL/ShaderOGLWire.h"
@@ -75,11 +76,18 @@ struct Shaders {
     ShaderOGLComputeParticles    *shaderComputeParticles  = nullptr;
     ShaderOGLGPUParticles        *shaderGPUParticles      = nullptr;
     ShaderOGLCircle2D            *shaderCircle2D          = nullptr;
+    ShaderOGLUIBatch             *shaderUIBatch           = nullptr;   // UI por lotes (textos de widgets)
 };
 
 class ComponentRender : public Component
 {
     int fps = 0;
+    bool uiBatchingEnabled = true;
+    bool uiQuadBatchingEnabled = true;   // imágenes/marcos/rects de widgets al lote (2026-10-10)
+    bool shadowMergeEnabled = true;      // geometría de sombra combinada por modelo (ShadowMergedGeometry, ModelData.h)
+    int  uiDeferDepth = 0;               // > 0 mientras UIManager pinta un widget (UIDeferScope)
+    bool uiRectOverBlend = false;        // rects translúcidos con la mezcla de las imágenes (UIManager::drawWidgetInstances)
+    [[nodiscard]] bool batchUIQuads() const;   // ¿imagen/rect de widget al lote ahora mismo?
     int fpsFrameCounter = 0;
     float frameTime = 0.f;
     inline static float sortFrameTime = 0.f;
@@ -198,7 +206,38 @@ public:
     void DrawLine2D(int x1, int y1, int x2, int y2, const Color &c, float weight) const;
     void DrawFilledRect(int x, int y, int w, int h, const Color &c) const;
     void DrawFilledRectToFB(int x, int y, int w, int h, const Color &c, const std::string &fb) const;
+    // Vacía el lote de UI pendiente (ShaderOGLUIBatch). Lo llama cualquier dibujo inmediato de la UI
+    // antes de pintar, para que el orden de pintado no cambie.
+    void flushUIBatch() const;
+    // Interruptor del dibujado por lotes de la UI (diagnóstico/A-B: Tests/HudPerfProbe.lua). false =
+    // los textos de los widgets se dibujan al momento, como antes.
+    void setUIBatching(bool enabled)                                      { uiBatchingEnabled = enabled; if (!enabled) flushUIBatch(); }
+    [[nodiscard]] bool isUIBatching() const                               { return uiBatchingEnabled; }
+    // Imágenes, marcos 9-slice y rectángulos de los widgets también al lote (2026-10-10). Solo mientras
+    // UIManager pinta un widget (UIDeferScope): fuera de un widget (p.ej. dibujos sueltos desde Lua)
+    // siguen siendo inmediatos, y al cerrar el widget más externo el lote se vacía -- el orden de
+    // pintado respecto al resto del frame no cambia. false = dibujo inmediato como antes (A/B).
+    void setUIQuadBatching(bool enabled)                                  { uiQuadBatchingEnabled = enabled; if (!enabled) flushUIBatch(); }
+    [[nodiscard]] bool isUIQuadBatching() const                           { return uiQuadBatchingEnabled; }
+    void setShadowMergeEnabled(bool enabled)                              { shadowMergeEnabled = enabled; }   // A/B (sonda)
+    [[nodiscard]] bool isShadowMergeEnabled() const                       { return shadowMergeEnabled; }
+    struct UIDeferScope {
+        ComponentRender* r;
+        explicit UIDeferScope(ComponentRender* render) : r(render) { if (r) r->uiDeferDepth++; }
+        ~UIDeferScope() { if (r && --r->uiDeferDepth == 0) r->flushUIBatch(); }
+        UIDeferScope(const UIDeferScope&) = delete;
+        UIDeferScope& operator=(const UIDeferScope&) = delete;
+    };
+    // Mientras está activo, los rects translúcidos de los widgets van al lote con la mezcla de las
+    // imágenes (mismo color; alfa de la capa con el operador "over") en vez de partir la tanda. Solo
+    // para UIManager::drawWidgetInstances, donde se alternan imagen y barra en cada copia.
+    void setUIRectOverBlend(bool on)                                      { uiRectOverBlend = on; }
+    [[nodiscard]] bool isUIRectOverBlend() const                          { return uiRectOverBlend; }
     void DrawWidgetCacheToFB(GLuint tex, int rW, int rH, const std::string& fb, float alpha = 1.0f) const;
+    // Región de una textura de FBO (UIManager: celda del atlas de variantes) en px del DESTINO, UV
+    // (u0,v0) arriba-izquierda. Al lote de UI si está activo; si no, dibujo inmediato.
+    void DrawUITextureRegionToFB(GLuint tex, int x, int y, int w, int h,
+                                 float u0, float v0, float u1, float v1, const std::string& fb, float alpha) const;
     // w/h: size of the override FBO (a widget cache), so the 2D draw helpers map onto it; 0 = the
     // size of the layer that was asked for
     static void setFBOOverride(GLuint fbo, int w = 0, int h = 0);
@@ -242,6 +281,7 @@ public:
     void drawOutlineSubmeshBatch(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
     void flushOutlines() const;
     [[nodiscard]] Vertex3D getSubmeshCenter(Object3D* obj, const std::string& submeshName) const;
+    [[nodiscard]] Vertex3D getSubmeshTop(Object3D* obj, const std::string& submeshName) const;
     void drawGroundDecal(Object3D* obj, const std::string& texturePath, float r, float g, float b, float a, float radius) const;
     void drawGroundDecalToFB(Object3D* obj, const std::string& texturePath, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawAxisQuad(Object3D* obj, float r, float g, float b, float a, float halfSize, ShaderOGLAxisQuad::Axis axis = ShaderOGLAxisQuad::AXIS_Y) const;

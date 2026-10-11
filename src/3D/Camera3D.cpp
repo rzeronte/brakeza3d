@@ -144,8 +144,14 @@ glm::mat4 Camera3D::getGLMMat4ProjectionMatrix()
 {
     float horizontalFOV = Config::get()->HORIZONTAL_FOV;
 
+    // Proporción de la VENTANA, no del render: la imagen renderizada (tamaño de render, p. ej. el
+    // "resolution" del proyecto) se estira a la ventana entera en FlipGlobalToWindow. Con la
+    // proporción del render, un render 800x600 (4:3) en una ventana 16:9 salía deformado. Así la
+    // resolución de render solo cambia la nitidez; el picking ya escala ratón ventana -> render.
     auto window = Components::get()->Window();
-    float aspectRatio = (float)window->getWidthRender() / (float)window->getHeightRender();
+    const int aw = window->getWidth()  > 0 ? window->getWidth()  : window->getWidthRender();
+    const int ah = window->getHeight() > 0 ? window->getHeight() : window->getHeightRender();
+    float aspectRatio = (float)aw / (float)ah;
 
     float verticalFOV = glm::degrees(2.0f * atan(tan(glm::radians(horizontalFOV) / 2.0f) / aspectRatio));
 

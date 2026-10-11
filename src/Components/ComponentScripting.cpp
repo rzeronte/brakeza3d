@@ -274,17 +274,27 @@ void ComponentScripting::RunScripts() const
     auto& sm         = profiler->getScriptMeasures();
 
     for (auto &script : projectScripts) {
-        const std::string key = "[G] " + script->getName() + "_update";
-        if (profileOn) Profiler::StartMeasure(sm, key);
-        script->RunGlobal("onUpdate");
-        if (profileOn) Profiler::EndMeasure(sm, key);
+        if (profileOn) {
+            const std::string key = "[G] " + script->getName() + "_update";
+            Profiler::StartMeasure(sm, key);
+            script->RunGlobal("onUpdate");
+            Profiler::EndMeasure(sm, key);
+            Profiler::CountTick(sm, key, script->getTicksPerSecond(), script->didTickThisFrame());
+        } else {
+            script->RunGlobal("onUpdate");
+        }
     }
 
     for (auto &script : sceneScripts) {
-        const std::string key = "[S] " + script->getName() + "_update";
-        if (profileOn) Profiler::StartMeasure(sm, key);
-        script->RunGlobal("onUpdate");
-        if (profileOn) Profiler::EndMeasure(sm, key);
+        if (profileOn) {
+            const std::string key = "[S] " + script->getName() + "_update";
+            Profiler::StartMeasure(sm, key);
+            script->RunGlobal("onUpdate");
+            Profiler::EndMeasure(sm, key);
+            Profiler::CountTick(sm, key, script->getTicksPerSecond(), script->didTickThisFrame());
+        } else {
+            script->RunGlobal("onUpdate");
+        }
     }
 }
 
@@ -295,17 +305,25 @@ void ComponentScripting::RunPostUpdateScripts() const
     auto& sm         = profiler->getScriptMeasures();
 
     for (auto &script : projectScripts) {
-        const std::string key = "[G] " + script->getName() + "_post";
-        if (profileOn) Profiler::StartMeasure(sm, key);
-        script->RunGlobal("postUpdate");
-        if (profileOn) Profiler::EndMeasure(sm, key);
+        if (profileOn) {
+            const std::string key = "[G] " + script->getName() + "_post";
+            Profiler::StartMeasure(sm, key);
+            script->RunGlobal("postUpdate");
+            Profiler::EndMeasure(sm, key);
+        } else {
+            script->RunGlobal("postUpdate");
+        }
     }
 
     for (auto &script : sceneScripts) {
-        const std::string key = "[S] " + script->getName() + "_post";
-        if (profileOn) Profiler::StartMeasure(sm, key);
-        script->RunGlobal("postUpdate");
-        if (profileOn) Profiler::EndMeasure(sm, key);
+        if (profileOn) {
+            const std::string key = "[S] " + script->getName() + "_post";
+            Profiler::StartMeasure(sm, key);
+            script->RunGlobal("postUpdate");
+            Profiler::EndMeasure(sm, key);
+        } else {
+            script->RunGlobal("postUpdate");
+        }
     }
 }
 

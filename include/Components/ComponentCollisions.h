@@ -21,6 +21,9 @@ public:
     ~ComponentCollisions() override;
 
     bool isRayCollisionWith(const Vertex3D &from, const Vertex3D &to, const Object3D *o) const;
+    // Rayo filtrado por grupo/máscara de colisión (mismo filtro bidireccional de Bullet que los
+    // cuerpos): devuelve si choca y, en ese caso, el punto y el objeto más cercanos.
+    bool rayTest(const Vertex3D &from, const Vertex3D &to, int group, int mask, Vertex3D &hitPoint, Object3D *&hitObject) const;
     void onStart() override;
     void preUpdate() override;
     void onUpdate() override;

@@ -74,7 +74,7 @@ void ShaderOGLWire::render(
     setVec3("color", c.toGLM());
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    DrawMeshGeometry(GL_LINES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_LINES, indexBuffer, indexCount, size, "Wire:77");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

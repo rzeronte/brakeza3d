@@ -146,7 +146,7 @@ void ShaderOGLRenderForward::render(
     render->ApplyDepthMask(settings.writeDepth);
     render->ApplyCulling(settings.culling);
 
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "RenderForward:149");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

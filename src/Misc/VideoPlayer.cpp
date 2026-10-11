@@ -3,6 +3,8 @@
 // Rewritten for FFmpeg 7.x / modern API
 //
 
+#include <algorithm>
+#include <vector>
 #include "../../include/Misc/VideoPlayer.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
@@ -201,9 +203,10 @@ void VideoPlayer::start()
 {
     if (!ready || decoding) return;
 
-    // SwsContext: decoded pixel format → RGBA (OpenGL)
+    // SwsContext: YUV420P → RGBA (OpenGL). Los frames de la cola ya vienen en YUV420P (decodeLoop
+    // los convierte con swsYUVCtx), no en el formato original del códec.
     swsRGBACtx = sws_getContext(
-        width, height, videoCtx->pix_fmt,
+        width, height, AV_PIX_FMT_YUV420P,
         width, height, AV_PIX_FMT_RGBA,
         SWS_BILINEAR, nullptr, nullptr, nullptr
     );
@@ -277,28 +280,83 @@ void VideoPlayer::stop()
 // ─────────────────────────────────────────────────────────────────────────────
 // Blocking playback loop (main thread): handles events, timing, SDL render
 // ─────────────────────────────────────────────────────────────────────────────
-void VideoPlayer::play()
+void VideoPlayer::play(float fadeOutSeconds)
 {
     if (!ready) return;
 
-    if (!yuvTexture) {
-        yuvTexture = SDL_CreateTexture(
-            Components::get()->Window()->getRenderer(),
-            SDL_PIXELFORMAT_IYUV, SDL_TEXTUREACCESS_STREAMING,
-            width, height
-        );
-        if (!yuvTexture) {
-            LOG_ERROR("VideoPlayer: SDL_CreateTexture failed: %s", SDL_GetError());
-            return;
-        }
+    // Se pinta con el OpenGL del propio motor, no con un SDL_Renderer: la ventana la presenta
+    // OpenGL (ver ComponentWindow::InitWindow). Un renderer direct3d creado sobre ella no se ve (se
+    // oía el vídeo pero no se veía) y el driver "opengl" de SDL pide un contexto 2.1 de
+    // compatibilidad: con el 4.3 del motor llama a SDL_RecreateWindow y rompe su contexto.
+    // Cada frame: YUV420P -> RGBA (swscale) -> textura -> glBlitFramebuffer a la ventana (escalado
+    // con bandas negras) -> SDL_GL_SwapWindow.
+    auto *window = Components::get()->Window()->getWindow();
+    SDL_GL_MakeCurrent(window, Components::get()->Window()->getGLContext());
+
+    SwsContext *toRGBA = sws_getContext(
+        width, height, AV_PIX_FMT_YUV420P,
+        width, height, AV_PIX_FMT_RGBA,
+        SWS_BILINEAR, nullptr, nullptr, nullptr
+    );
+    if (!toRGBA) {
+        LOG_ERROR("VideoPlayer: sws_getContext (RGBA) failed");
+        return;
     }
+    std::vector<uint8_t> rgba(static_cast<size_t>(width) * height * 4);
+
+    // Estado GL que se toca aquí, para dejarlo como estaba al acabar
+    GLint prevRead = 0, prevDraw = 0, prevTex = 0, prevUnpackAlign = 4, prevUnpackRow = 0;
+    glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &prevRead);
+    glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &prevDraw);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevTex);
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &prevUnpackAlign);
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &prevUnpackRow);
+    GLfloat prevClear[4];
+    glGetFloatv(GL_COLOR_CLEAR_VALUE, prevClear);
+    GLboolean prevMask[4];
+    glGetBooleanv(GL_COLOR_WRITEMASK, prevMask);
+    const GLboolean prevScissor = glIsEnabled(GL_SCISSOR_TEST);
+
+    glDisable(GL_SCISSOR_TEST);
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+
+    GLuint tex = 0, fbo = 0;
+    glGenTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, tex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+    glFramebufferTexture2D(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex, 0);
+
+    auto presentFrame = [&]() {
+        int dw = 0, dh = 0;
+        SDL_GL_GetDrawableSize(window, &dw, &dh);
+        // Escalado que conserva la proporción, centrado
+        const float scale = std::min(static_cast<float>(dw) / width, static_cast<float>(dh) / height);
+        const int w  = static_cast<int>(width * scale);
+        const int h  = static_cast<int>(height * scale);
+        const int x0 = (dw - w) / 2;
+        const int y0 = (dh - h) / 2;
+
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+        // Las filas del vídeo van de arriba abajo y las de GL de abajo arriba: destino invertido en Y
+        glBlitFramebuffer(0, 0, width, height, x0, y0 + h, x0 + w, y0, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        SDL_GL_SwapWindow(window);
+    };
 
     decoding = true;
     finished = false;
     decodeThread = std::thread(&VideoPlayer::decodeLoop, this);
 
-    auto *renderer  = Components::get()->Window()->getRenderer();
     auto startTicks = SDL_GetTicks64();
+    bool anyFrameShown = false;
 
     SDL_Event e;
     while (true) {
@@ -306,7 +364,8 @@ void VideoPlayer::play()
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT)
                 Config::get()->EXIT = true;
-            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE)
+            // Cualquier tecla o botón del ratón salta el vídeo
+            if ((e.type == SDL_KEYDOWN && e.key.repeat == 0) || e.type == SDL_MOUSEBUTTONDOWN)
                 finished = true;
         }
 
@@ -330,14 +389,15 @@ void VideoPlayer::play()
         }
 
         if (frame) {
-            SDL_UpdateYUVTexture(yuvTexture, nullptr,
-                frame->data[0], frame->linesize[0],
-                frame->data[1], frame->linesize[1],
-                frame->data[2], frame->linesize[2]);
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, yuvTexture, nullptr, nullptr);
-            SDL_RenderPresent(renderer);
+            uint8_t *dst[4]  = { rgba.data(), nullptr, nullptr, nullptr };
+            int dstStride[4] = { width * 4, 0, 0, 0 };
+            sws_scale(toRGBA, frame->data, frame->linesize, 0, height, dst, dstStride);
             delete frame;
+
+            glBindTexture(GL_TEXTURE_2D, tex);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+            presentFrame();
+            anyFrameShown = true;
         } else {
             SDL_Delay(1);
         }
@@ -348,6 +408,53 @@ void VideoPlayer::play()
     finished = true;
     queueCv.notify_all();
     if (decodeThread.joinable()) decodeThread.join();
+
+    // Fundido a negro sobre el último frame (al acabar o al saltarlo). El audio sigue con lo que ya
+    // tenía en cola y se corta al final del fundido.
+    if (fadeOutSeconds > 0.0f && anyFrameShown && !Config::get()->EXIT) {
+        const std::vector<uint8_t> lastFrame = rgba;
+        const Uint64 fadeStart = SDL_GetTicks64();
+        while (true) {
+            while (SDL_PollEvent(&e)) {
+                if (e.type == SDL_QUIT) Config::get()->EXIT = true;
+            }
+            if (Config::get()->EXIT) break;
+            const float t = static_cast<float>(SDL_GetTicks64() - fadeStart) / 1000.0f / fadeOutSeconds;
+            if (t >= 1.0f) break;
+            const float k = 1.0f - t;
+            for (size_t i = 0; i < rgba.size(); i += 4) {
+                rgba[i]     = static_cast<uint8_t>(lastFrame[i]     * k);
+                rgba[i + 1] = static_cast<uint8_t>(lastFrame[i + 1] * k);
+                rgba[i + 2] = static_cast<uint8_t>(lastFrame[i + 2] * k);
+            }
+            glBindTexture(GL_TEXTURE_2D, tex);
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
+            presentFrame();
+        }
+        // Último frame totalmente negro: el siguiente contenido (p. ej. el menú) puede entrar con
+        // su propio fundido desde negro
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        SDL_GL_SwapWindow(window);
+    }
+    if (audioDevId) {
+        SDL_ClearQueuedAudio(audioDevId);
+        SDL_PauseAudioDevice(audioDevId, 1);
+    }
+
+    // Recursos del vídeo fuera y estado GL restaurado
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, static_cast<GLuint>(prevRead));
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, static_cast<GLuint>(prevDraw));
+    glDeleteFramebuffers(1, &fbo);
+    glDeleteTextures(1, &tex);
+    glBindTexture(GL_TEXTURE_2D, static_cast<GLuint>(prevTex));
+    glPixelStorei(GL_UNPACK_ALIGNMENT, prevUnpackAlign);
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, prevUnpackRow);
+    glClearColor(prevClear[0], prevClear[1], prevClear[2], prevClear[3]);
+    glColorMask(prevMask[0], prevMask[1], prevMask[2], prevMask[3]);
+    if (prevScissor) glEnable(GL_SCISSOR_TEST);
+    sws_freeContext(toRGBA);
 
     // Drain leftover frames
     std::lock_guard<std::mutex> lock(queueMutex);

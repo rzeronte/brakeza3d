@@ -3,6 +3,7 @@
 #define SDL2_3D_ENGINE_MESH_H
 
 #include <mutex>
+#include "../Cache/ModelData.h"
 #include <atomic>
 #include <algorithm>
 #include <memory>
@@ -93,6 +94,10 @@ protected:
     std::atomic<bool> loadFailed = false;
 
     bool sharedTextures = false;
+
+    // Geometría de sombra combinada propia, solo si esta instancia no comparte ModelData (ver
+    // ShadowMergedGeometry y getShadowMerged)
+    ShadowMergedGeometry shadowMergedOwn;
     bool renderDefaultPipeline = true;
     bool frustumCullSubmeshes = false;
 
@@ -154,6 +159,9 @@ public:
     GLuint GetChainTempTexture() const { return chainTempTexture; }
 
     [[nodiscard]] bool isLoaded() const                                           { return loaded; }
+    // Geometría combinada para el shadow pass (ver ShadowMergedGeometry), del modelo compartido o
+    // propia; nullptr si no aplica (animada, un solo submesh, aún sin cargar). Hilo principal.
+    const ShadowMergedGeometry* getShadowMerged();
     [[nodiscard]] bool isLoadFailed() const                                       { return loadFailed; }
     [[nodiscard]] ObjectType getTypeObject() const override                       { return ObjectType::Mesh3D; }
     GUIType::Sheet getIcon() override                                             { return IconObject::MESH_3D; }

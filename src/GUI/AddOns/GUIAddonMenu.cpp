@@ -237,15 +237,7 @@ void GUIAddonMenu::MenuVideo()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_VSYNC), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("V-Sync", nullptr, &setup->V_SYNC);
     if (ImGui::IsItemEdited()) {
-        if (setup->V_SYNC) {
-            LOG_MESSAGE("Set V-Sync enabled");
-            SDL_GL_SetSwapInterval(1);
-            SDL_RenderSetVSync(Components::get()->Window()->getRenderer(), 1);
-        } else {
-            LOG_MESSAGE("Set V-Sync disabled");
-            SDL_GL_SetSwapInterval(0);
-            SDL_RenderSetVSync(Components::get()->Window()->getRenderer(), 0);
-        }
+        Components::get()->Window()->ApplyVSync(setup->V_SYNC);
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_LIMIT_FRAMERATE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Limit frame rate", nullptr,  &setup->LIMIT_FRAMERATE);

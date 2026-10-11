@@ -62,8 +62,11 @@ class ShaderOGLRenderForward: public ShaderBaseOpenGL
     GLint enableDirectionalLightShadowMapUniform = 0;
     GLint pcfKernelSizeUniform = 0;
 
-    static constexpr size_t MAX_POINT_LIGHTS = 1024;
-    static constexpr size_t MAX_SPOT_LIGHTS = 1024;
+    // = NR_POINT_LIGHTS / NR_SPOT_LIGHTS de GLSL/Shared/RenderCommons.glsl (deben coincidir). Con 1024
+    // los bloques medían 80 KB / 112 KB y no enlazaban en drivers con GL_MAX_UNIFORM_BLOCK_SIZE de
+    // 64 KB (Mesa visto; NVIDIA probable): 512 -> 40 KB / 56 KB.
+    static constexpr size_t MAX_POINT_LIGHTS = 512;
+    static constexpr size_t MAX_SPOT_LIGHTS = 512;
 
     bool buffersInitialized = false;
 

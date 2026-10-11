@@ -38,7 +38,9 @@ public:
             return;
         }
 
-        if (!image->getVideoPath().empty()) {
+        if (image->hasVideo()) {
+            // Ya reproduce un vídeo (loadVideo desde Lua justo tras crearlo): no arrancarlo otra vez
+        } else if (!image->getVideoPath().empty()) {
             image->loadVideo(image->getVideoPath());
         } else {
             Image2DSerializer::ApplyImageFromFile(image);

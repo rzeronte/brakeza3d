@@ -5,6 +5,7 @@
 #ifndef BRAKEZA3D_LUAINTEGRATION_H
 #define BRAKEZA3D_LUAINTEGRATION_H
 
+#include <chrono>
 #include "ObjectFactory.h"
 #include <iostream>
 #include "../../sol/sol.hpp"
@@ -24,6 +25,7 @@
 #include "../3D/Image3DAnimation.h"
 #include "../3D/Image3DAnimation360.h"
 #include "../3D/ParticleEmitter.h"
+#include "../Render/Profiler.h"
 #include "../3D/Sound3D.h"
 #include "../Misc/VideoPlayer.h"
 #include "../Threads/ThreadJobPathfinding.h"
@@ -102,6 +104,18 @@ inline void LUAIntegration(sol::state &lua)
             if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setPosition() llamado sobre un objeto invalido (Lua)"); return; }
             obj->setPosition(p);
         },
+        // Lo mismo con números sueltos (2026-10-10): sin crear un Vertex3D por llamada. Para bucles
+        // que leen/mueven cientos de objetos por frame (unidades, tráfico) -- cada userdata creado
+        // en Lua cuesta más que la propia lectura/escritura y alimenta al recolector de basura.
+        "getPositionXYZ", [](Object3D* obj) -> std::tuple<float, float, float> {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] getPositionXYZ() llamado sobre un objeto invalido (Lua)"); return {0.0f, 0.0f, 0.0f}; }
+            const Vertex3D& p = obj->getPosition();
+            return {p.x, p.y, p.z};
+        },
+        "setPositionXYZ", [](Object3D* obj, float x, float y, float z) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setPositionXYZ() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setPosition(Vertex3D(x, y, z));
+        },
         "setRotation", [](Object3D* obj, const M3& r) {
             if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setRotation() llamado sobre un objeto invalido (Lua)"); return; }
             obj->setRotation(r);
@@ -109,6 +123,15 @@ inline void LUAIntegration(sol::state &lua)
         "getTypeObject", &Object3D::getTypeObject,
         "getName", &Object3D::getName,
         "getId", &Object3D::getId,
+        // Índice espacial (Spatial.*): máscara de bits de la lógica de juego, 0 = fuera del índice
+        "setSpatialMask", [](Object3D* obj, double mask) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setSpatialMask() llamado sobre un objeto invalido (Lua)"); return; }
+            Brakeza::get()->getSpatialIndex().setMask(obj, (uint32_t) mask);
+        },
+        "getSpatialMask", [](Object3D* obj) -> double {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) return 0.0;
+            return (double) obj->getSpatialMask();
+        },
         "getRotation", &Object3D::getRotation,
         // setBelongToScene/setEnabled/setRemoved/setSelectable/setAlphaEnabled/setEnableLights
         // van todos via lambda con Object3D* + Brakeza::isValidObjectPointer(), NO puntero a
@@ -151,6 +174,15 @@ inline void LUAIntegration(sol::state &lua)
         "isRemoved", [](Object3D* obj) -> bool {
             if (!Brakeza::get()->isValidObjectPointer(obj)) return true;
             return obj->isRemoved();
+        },
+        // Oculto solo en render (niebla de guerra): sus scripts y colisiones siguen funcionando
+        "setRenderHidden", [](Object3D* obj, bool v) {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) { LOG_ERROR("[Object3D] setRenderHidden() llamado sobre un objeto invalido (Lua)"); return; }
+            obj->setRenderHidden(v);
+        },
+        "isRenderHidden", [](Object3D* obj) -> bool {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) return false;
+            return obj->isRenderHidden();
         },
         "setName", &Object3D::setName,
         "getScale", &Object3D::getScale,
@@ -290,7 +322,14 @@ inline void LUAIntegration(sol::state &lua)
         "setEnabled", &ComponentCamera::setEnabled,
         "getGLMMat4ViewMatrix", &ComponentCamera::getGLMMat4ViewMatrix,
         "getGLMMat4ProjectionMatrix", &ComponentCamera::getGLMMat4ProjectionMatrix,
-        "worldToScreen", &ComponentCamera::worldToScreen
+        "worldToScreen", &ComponentCamera::worldToScreen,
+        // Lo mismo con números sueltos: devuelve sx, sy, z (z > 0 = delante de la cámara) sin crear
+        // un Vertex3D de entrada ni un vec3 de salida. Para bucles que proyectan cientos de puntos
+        // por frame (avatares del HUD): cada userdata creado costaba más que la propia proyección.
+        "worldToScreenXYZ", [](const ComponentCamera& c, float x, float y, float z, int w, int h) -> std::tuple<float, float, float> {
+            const glm::vec3 s = c.worldToScreen(Vertex3D(x, y, z), w, h);
+            return {s.x, s.y, s.z};
+        }
     );
 
     lua.new_usertype<ComponentSound>("ComponentSound",
@@ -320,6 +359,21 @@ inline void LUAIntegration(sol::state &lua)
     lua.new_usertype<ComponentCollisions>("ComponentCollisions",
     sol::base_classes, sol::bases<Component>(),
         "isRayCollisionWith", &ComponentCollisions::isRayCollisionWith,
+        // hit, hitPoint, hitObject = Collisions:rayTest(from, to, group, mask)
+        "rayTest", [](const ComponentCollisions& c, const Vertex3D& from, const Vertex3D& to, int group, int mask) -> std::tuple<bool, Vertex3D, Object3D*> {
+            Vertex3D hitPoint;
+            Object3D* hitObject = nullptr;
+            bool hit = c.rayTest(from, to, group, mask, hitPoint, hitObject);
+            return { hit, hitPoint, hitObject };
+        },
+        // Solo contra el mundo estático (ciudad, suelo, muros: grupo StaticWorld, que solo acepta
+        // proyectiles en su máscara -- por eso el rayo va como Projectile). Las unidades no lo tapan.
+        "rayTestStatic", [](const ComponentCollisions& c, const Vertex3D& from, const Vertex3D& to) -> std::tuple<bool, Vertex3D, Object3D*> {
+            Vertex3D hitPoint;
+            Object3D* hitObject = nullptr;
+            bool hit = c.rayTest(from, to, Config::Projectile, Config::StaticWorld, hitPoint, hitObject);
+            return { hit, hitPoint, hitObject };
+        },
         "setEnableDebugMode", &ComponentCollisions::setEnableDebugMode,
         "setEnabled", &ComponentCollisions::setEnabled
     );
@@ -358,6 +412,13 @@ inline void LUAIntegration(sol::state &lua)
         "DrawImage2D",    &ComponentRender::DrawImage2D,
         "DrawImage2DToFB", &ComponentRender::DrawImage2DToFB,
         "DrawImage2DFromImage", &ComponentRender::DrawImage2DFromImage,
+        // Como DrawImage2DFromImage pero en una capa concreta ("ui", "foreground"...). Lambda con
+        // alpha opcional: sol2 no aplica los argumentos por defecto de C++ (el minimapa dibuja su
+        // niebla en "ui", encima de la barra inferior).
+        "DrawImage2DFromImageToFB", [](ComponentRender& r, Image* img, int x, int y, int w, int h,
+                                       const std::string& fb, sol::optional<float> alpha) {
+            r.DrawImage2DFromImageToFB(img, x, y, w, h, fb, alpha.value_or(1.0f));
+        },
         // Fuerza la carga+subida a GPU de una imagen sin dibujarla, para "calentar" el cache
         // (ImageCache::getOrLoad es síncrono -- ver ComponentRender::getOrLoadImage) ANTES de que
         // haga falta mostrarla de golpe (p.ej. fondos de pantalla de carga: precargarlos en el
@@ -414,12 +475,20 @@ inline void LUAIntegration(sol::state &lua)
         "clearOutlineBatch",       &ComponentRender::clearOutlineBatch,
         "drawOutlineSubmeshBatch", &ComponentRender::drawOutlineSubmeshBatch,
         "flushOutlines",           &ComponentRender::flushOutlines,
+        "setUIBatching",           &ComponentRender::setUIBatching,
+        "setUIQuadBatching",       &ComponentRender::setUIQuadBatching,
+        "setShadowMergeEnabled",   &ComponentRender::setShadowMergeEnabled,
+        "isUIBatching",            &ComponentRender::isUIBatching,
         // getSubmeshCenter recibe un Object3D* desde Lua igual que los 6 setters de arriba --
         // mismo riesgo de puntero colgante tras un reinicio de partida, mismo fix:
         // isValidObjectPointer() en vez de (solo) obj==nullptr.
         "getSubmeshCenter", [](ComponentRender& self, Object3D* obj, const std::string& submeshName) -> Vertex3D {
             if (!Brakeza::get()->isValidObjectPointer(obj)) return Vertex3D::zero();
             return self.getSubmeshCenter(obj, submeshName);
+        },
+        "getSubmeshTop", [](ComponentRender& self, Object3D* obj, const std::string& submeshName) -> Vertex3D {
+            if (!Brakeza::get()->isValidObjectPointer(obj)) return Vertex3D::zero();
+            return self.getSubmeshTop(obj, submeshName);
         },
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
@@ -439,6 +508,19 @@ inline void LUAIntegration(sol::state &lua)
             float scaleOverride = (scaleArg.valid() && scaleArg.get_type() == sol::type::number)
                              ? scaleArg.as<float>() : 0.0f;
             return r.getUIManager()->drawWidgetAtPosLua(name, x, y, data, fb, scaleOverride);
+        },
+        // N copias de un widget en una llamada (todas al mismo lote de UI): instances = {{x=, y=,
+        // alpha=?, data={...}}, ...}. Con "cache": "variants" cada copia es un quad del atlas + sus
+        // elementos "live" (ver el bloque CACHÉ DE WIDGETS de UIManager.h). Devuelve índices 1-based
+        // (0 = ninguno): clickedIdx, clickedId, rightClickedIdx, rightClickedId, hoveredIdx, hoveredId.
+        "drawWidgetInstances", [](ComponentRender& r, const std::string& name, sol::table instances, sol::object fbArg, sol::object scaleArg)
+                -> std::tuple<int, std::string, int, std::string, int, std::string> {
+            if (!r.getUIManager()) return {0, "", 0, "", 0, ""};
+            std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
+                             ? fbArg.as<std::string>() : "foreground";
+            float scaleOverride = (scaleArg.valid() && scaleArg.get_type() == sol::type::number)
+                             ? scaleArg.as<float>() : 0.0f;
+            return r.getUIManager()->drawWidgetInstancesLua(name, instances, fb, scaleOverride);
         },
         // Tamaño declarado de un widget (fracciones de ventana, 0 si no existe): para colocarlo
         // desde Lua (p.ej. centrarlo) respetando lo que se edite en el UI Manager.
@@ -593,9 +675,11 @@ inline void LUAIntegration(sol::state &lua)
     );
 
     lua.new_usertype<Brakeza>("Brakeza3D",
-        "getDeltaTime", &Brakeza::getDeltaTime,
-        "getDeltaTimeMicro",  &Brakeza::getDeltaTimeMicro,
-        "getDeltaTimeMS",  &Brakeza::getDeltaTimeMS,
+        // Delta que ve el script: el del frame, o el acumulado desde su última ejecución si el
+        // script tiene ticks_per_second > 0 (Brakeza::getScriptDeltaTime)
+        "getDeltaTime", &Brakeza::getScriptDeltaTime,
+        "getDeltaTimeMicro",  &Brakeza::getScriptDeltaTimeMicro,
+        "getDeltaTimeMS",  &Brakeza::getScriptDeltaTimeMS,
         "getExecutionTime", &Brakeza::getExecutionTime,
         "uniqueObjectLabel", &Brakeza::UniqueObjectLabel,
         "Shutdown", &Brakeza::Shutdown,
@@ -617,6 +701,26 @@ inline void LUAIntegration(sol::state &lua)
         },
         "AddObject3D",  &Brakeza::AddObject3D,
         "getObjectByName",    &Brakeza::getObjectByName,
+        // Diagnóstico: todos los objetos de escena como tablas {name, type (ObjectType),
+        // x, y, z, scripts (nº de scripts enganchados), removed, enabled}
+        "getSceneObjectsInfo", [](Brakeza* b, sol::this_state st) -> sol::table {
+            sol::state_view lua(st);
+            sol::table out = lua.create_table();
+            int i = 1;
+            for (auto *o : b->copySceneObjects()) {
+                if (o == nullptr) continue;
+                sol::table t = lua.create_table();
+                t["name"]    = o->getName();
+                t["type"]    = static_cast<int>(o->getTypeObject());
+                const Vertex3D p = o->getPosition();
+                t["x"] = p.x; t["y"] = p.y; t["z"] = p.z;
+                t["scripts"] = static_cast<int>(o->getScripts().size());
+                t["removed"] = o->isRemoved();
+                t["enabled"] = o->isEnabled();
+                out[i++] = t;
+            }
+            return out;
+        },
         "getObjectById",      &Brakeza::getObjectById,
         "getObjectAtScreen",  &Brakeza::getObjectAtScreen,
         "removeAllObjects",      &Brakeza::removeAllObjects,
@@ -885,13 +989,15 @@ inline void LUAIntegration(sol::state &lua)
                                 sol::optional<bool> scripts,
                                 sol::optional<bool> shaders,
                                 sol::optional<bool> camera,
-                                sol::optional<bool> renderSettings) {
+                                sol::optional<bool> renderSettings,
+                                sol::optional<bool> startScripts) {
             SceneLoader::LoadSceneAdditive(
                 FilePath::SceneFile(path),
                 scripts.value_or(false),
                 shaders.value_or(false),
                 camera.value_or(false),
-                renderSettings.value_or(false)
+                renderSettings.value_or(false),
+                startScripts.value_or(false)
             );
         },
         "loadSceneADS", [](SceneLoader*, std::string name) {
@@ -979,7 +1085,7 @@ inline void LUAIntegration(sol::state &lua)
     sol::constructors<
             ParticlesContext(),
                 ParticlesContext(
-                   float, float, float, int, int, int, int, int, int, int, float
+                   float, float, float, int, float, float, int, int, float, float, float
            )
         >(),
         "GRAVITY", &ParticlesContext::GRAVITY,
@@ -994,6 +1100,12 @@ inline void LUAIntegration(sol::state &lua)
         "VELOCITY_NOISE", &ParticlesContext::VELOCITY_NOISE,
         "DECELERATION_FACTOR", &ParticlesContext::DECELERATION_FACTOR,
         "PARTICLE_SIZE_SCALE", &ParticlesContext::PARTICLE_SIZE_SCALE,
+        "SIZE_START", &ParticlesContext::SIZE_START,
+        "SIZE_END", &ParticlesContext::SIZE_END,
+        "ROTATION_RANDOM_START", &ParticlesContext::ROTATION_RANDOM_START,
+        "ROTATION_SPEED_MIN", &ParticlesContext::ROTATION_SPEED_MIN,
+        "ROTATION_SPEED_MAX", &ParticlesContext::ROTATION_SPEED_MAX,
+        "ROTATION_RANDOM_DIR", &ParticlesContext::ROTATION_RANDOM_DIR,
         "defaultParticlesContext", &ParticlesContext::defaultParticlesContext
     );
 
@@ -1176,11 +1288,94 @@ inline void LUAIntegration(sol::state &lua)
         "TextWriter",         &ObjectFactory::CreateTextWriter,
         "ScriptLUA",          &ObjectFactory::CreateScriptLUA,
         "Sound3D",            &ObjectFactory::CreateSound3D,
-        "PlayVideoCutscene",  [](ObjectFactory*, const std::string &path) {
+        // Bloqueante: reproduce el vídeo a pantalla completa hasta que acaba o se pulsa una tecla /
+        // botón del ratón. fadeOut (opcional, segundos): fundido a negro al terminar.
+        // Uso: ObjectFactory.PlayVideoCutscene("../assets/videos/x.mp4", 0.6)
+        "PlayVideoCutscene",  [](const std::string &path, sol::optional<float> fadeOut) {
             VideoPlayer vp(path);
-            vp.play();
+            vp.play(fadeOut.value_or(0.0f));
         }
     );
+
+    // Lectura del profiler desde Lua (diagnóstico: Tests/RenderPerfProbe.lua). snapshot() devuelve
+    // { cpu = {medida = ms del último frame}, gpu = {pasada = ms} } con las medidas por componente
+    // (<Componente>_pre/_update/_post y pasadas de render) y las de GPU (con setGpuTiming(true)).
+    lua["ProfilerLua"] = lua.create_table();
+    lua["ProfilerLua"]["setGpuTiming"] = [](bool v) { Profiler::get()->setGpuTimingEnabled(v); };
+    lua["ProfilerLua"]["setScriptDetail"] = [](bool v) { Profiler::get()->setScriptDetailEnabled(v); };
+    // Cuenta las llamadas glDraw* del frame (snapshot().drawCalls = las del frame anterior)
+    lua["ProfilerLua"]["setCountDrawCalls"] = [](bool v) { Profiler::get()->setCountDrawCalls(v); };
+    // Draw calls del último frame por "etapa | sitio" (requiere setCountDrawCalls(true))
+    lua["ProfilerLua"]["drawCallsBySource"] = [](sol::this_state st) -> sol::table {
+        sol::state_view lv(st);
+        sol::table out = lv.create_table();
+        for (const auto& [k, v] : Profiler::get()->getLastDrawCallsBySource()) out[k] = v;
+        return out;
+    };
+    // Reloj de alta resolución (segundos, steady_clock) para cronometrar secciones de un script:
+    //   local t0 = ProfilerLua.now() ... local ms = (ProfilerLua.now() - t0) * 1000
+    // Lua aquí no tiene la librería os (ni os.clock), y getExecutionTime solo cambia una vez por frame.
+    lua["ProfilerLua"]["now"] = []() -> double {
+        return std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
+    };
+    lua["ProfilerLua"]["snapshot"] = [](sol::this_state st) -> sol::table {
+        sol::state_view lua(st);
+        sol::table out = lua.create_table();
+        sol::table cpu = lua.create_table();
+        for (auto& [name, m] : Profiler::get()->getComponentMeasures()) cpu[name] = m.diffTime;
+        sol::table gpu = lua.create_table();
+        for (auto& [name, m] : Profiler::get()->getGpuMeasures()) gpu[name] = m.lastGpuMs;
+        sol::table scripts = lua.create_table();   // "[G] Nombre_update", "[O] objeto/script_update"...
+        for (auto& [name, m] : Profiler::get()->getScriptMeasures()) scripts[name] = m.diffTime;
+        out["cpu"] = cpu;
+        out["gpu"] = gpu;
+        out["scripts"] = scripts;
+        out["drawCalls"] = Profiler::get()->getLastDrawCalls();
+        return out;
+    };
+
+    // Índice espacial bajo demanda (ver SpatialIndex.h). Los objetos entran con obj:setSpatialMask(bits);
+    // la primera consulta de cada frame lo reconstruye. Resultados como números (id, x, y, z, d2), sin
+    // crear userdata por resultado: el objeto se pide aparte (Brakeza:getObjectById) solo si hace falta.
+    //   local id, x, y, z, d2 = Spatial.nearest(x, z, r, mask [, excludeId] [, enabledOnly])  -- nil si no hay
+    //   local n = Spatial.queryInto(out, x, z, r, mask [, maxN] [, sorted] [, enabledOnly])
+    //          out[(i-1)*5 + 1..5] = id, x, y, z, d2 para i = 1..n (la tabla se reutiliza; lo que sobra no se borra)
+    //   local n = Spatial.count(x, z, r, mask [, enabledOnly])
+    lua["Spatial"] = lua.create_table();
+    lua["Spatial"]["setCellSize"] = [](float size) { Brakeza::get()->getSpatialIndex().setCellSize(size); };
+    lua["Spatial"]["getCellSize"] = []() -> float { return Brakeza::get()->getSpatialIndex().getCellSize(); };
+    lua["Spatial"]["size"] = []() -> int { return Brakeza::get()->getSpatialIndex().size(); };
+    lua["Spatial"]["nearest"] = [](sol::this_state st, float x, float z, float r, double mask,
+                                   sol::optional<unsigned int> excludeId, sol::optional<bool> enabledOnly) -> sol::variadic_results {
+        sol::variadic_results res;
+        SpatialIndex::Hit h{};
+        if (Brakeza::get()->getSpatialIndex().nearest(x, z, r, (uint32_t) mask, excludeId.value_or(0), enabledOnly.value_or(false), h)) {
+            res.push_back(sol::make_object(st, h.id));
+            res.push_back(sol::make_object(st, h.x));
+            res.push_back(sol::make_object(st, h.y));
+            res.push_back(sol::make_object(st, h.z));
+            res.push_back(sol::make_object(st, h.d2));
+        } else {
+            res.push_back(sol::make_object(st, sol::lua_nil));
+        }
+        return res;
+    };
+    lua["Spatial"]["queryInto"] = [](sol::table out, float x, float z, float r, double mask,
+                                     sol::optional<int> maxN, sol::optional<bool> sorted, sol::optional<bool> enabledOnly) -> int {
+        const auto &hits = Brakeza::get()->getSpatialIndex().query(x, z, r, (uint32_t) mask, maxN.value_or(0), sorted.value_or(false), enabledOnly.value_or(false));
+        int k = 1;
+        for (const auto &h : hits) {
+            out.raw_set(k, h.id, k + 1, h.x, k + 2, h.y, k + 3, h.z, k + 4, h.d2);
+            k += 5;
+        }
+        return (int) hits.size();
+    };
+    lua["Spatial"]["count"] = [](float x, float z, float r, double mask, sol::optional<bool> enabledOnly) -> int {
+        return Brakeza::get()->getSpatialIndex().count(x, z, r, (uint32_t) mask, enabledOnly.value_or(false));
+    };
+    lua["Spatial"]["drawDebug"] = [](float r, float g, float b, float a) {
+        Brakeza::get()->getSpatialIndex().drawDebug(r, g, b, a);
+    };
 
     lua["ShadowConfig"] = lua.create_table();
     lua["ShadowConfig"]["setFrustumSize"]   = [](float v) { Config::get()->SHADOW_MAPPING_FRUSTUM_SIZE = v; };

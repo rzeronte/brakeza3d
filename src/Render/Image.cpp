@@ -92,8 +92,14 @@ void Image::DrawFlat(int x, int y, int w, int h, GLuint fbo) const
 
     auto window = Components::get()->Window();
 
-    const int renderW = window->getWidthRender();
-    const int renderH = window->getHeightRender();
+    // Tamaño del DESTINO: la capa de UI mide como la ventana; el resto, como el render. Antes se
+    // usaba siempre el de render sin fijar el viewport, y solo cuadraba heredando el de la ventana
+    // del frame anterior (p. ej. el vídeo de intro, Image2D en la capa de UI): con una resolución
+    // de render distinta de la ventana ocupaba solo una parte hasta redimensionar.
+    const bool toUI = (fbo == window->getUIFramebuffer());
+    const int renderW = toUI ? window->getWidth()  : window->getWidthRender();
+    const int renderH = toUI ? window->getHeight() : window->getHeightRender();
+    ComponentRender::ScopedTargetViewport vp(renderW, renderH);
 
     SDL_Rect dstRect;
     dstRect.x = x * renderW / Config::get()->screenWidth;

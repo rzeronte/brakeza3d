@@ -123,7 +123,7 @@ void ShaderOGLCustomCodeMesh3D::renderMesh(
         glBeginTransformFeedback(GL_TRIANGLES);
     }
 
-    DrawMeshGeometry(GL_TRIANGLES, hasFeedback ? 0 : indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, hasFeedback ? 0 : indexBuffer, indexCount, size, "CustomCodeMesh3D:126");
 
     if (hasFeedback) {
         glEndTransformFeedback();

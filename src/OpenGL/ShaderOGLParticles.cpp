@@ -35,6 +35,7 @@ void ShaderOGLParticles::render(
     GLuint billboard_vertex_buffer,
     GLuint particles_position_buffer,
     GLuint particles_color_buffer,
+    GLuint particles_rotation_buffer,
     GLuint textureID,
     int particlesCount
 )
@@ -95,16 +96,23 @@ void ShaderOGLParticles::render(
             nullptr                          // array buffer offset
     );
 
+    // 4th attribute buffer : ángulo de cada partícula (radianes, giro en el plano de la pantalla)
+    glEnableVertexAttribArray(3);
+    glBindBuffer(GL_ARRAY_BUFFER, particles_rotation_buffer);
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 0, nullptr);
+
     glVertexAttribDivisor(0, 0); // particles vertices: always reuse the same 4 vertices -> 0
     glVertexAttribDivisor(1, 1); // positions: one per quad (its center)                 -> 1
     glVertexAttribDivisor(2, 1); // color: one per quad                                  -> 1
+    glVertexAttribDivisor(3, 1); // rotation: one per quad                               -> 1
 
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particlesCount);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLE_STRIP, 4, particlesCount);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLE_STRIP, 4, particlesCount, "Particles");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+    glDisableVertexAttribArray(3);
 
     glDisable(GL_BLEND);
 

@@ -146,6 +146,7 @@ void Brakeza::MainLoop()
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::frameCount++;
 
         Profiler::get()->ResetTotalFrameTime();                              // Reset profiler measures
+        ++frameIndex;
 
         ControlFrameRate();                                                  // Control framerate based on SDL_Delay
         UpdateTimer();                                                       // Refresh main timer
@@ -253,6 +254,7 @@ void Brakeza::OnStartComponents() const
 void Brakeza::PreUpdateComponents() const
 {
     for (auto &c : componentsManager->getComponents()) {
+        Profiler::get()->setDrawScopeComponent(c->getLabel() + ProfilerConstants::SUFFIX_PRE);
         Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_PRE);
         c->preUpdate();
         Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_PRE);
@@ -262,6 +264,7 @@ void Brakeza::PreUpdateComponents() const
 void Brakeza::OnUpdateComponents() const
 {
     for (auto &c : componentsManager->getComponents()) {
+        Profiler::get()->setDrawScopeComponent(c->getLabel() + ProfilerConstants::SUFFIX_UPDATE);
         Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_UPDATE);
         c->onUpdate();
         Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_UPDATE);
@@ -271,10 +274,12 @@ void Brakeza::OnUpdateComponents() const
 void Brakeza::PostUpdateComponents() const
 {
     for (auto &c: componentsManager->getComponents()) {
+        Profiler::get()->setDrawScopeComponent(c->getLabel() + ProfilerConstants::SUFFIX_POST);
         Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_POST);
         c->postUpdate();
         Profiler::EndMeasure(Profiler::get()->getComponentMeasures(), c->getLabel() + ProfilerConstants::SUFFIX_POST);
     }
+    Profiler::get()->setDrawScopeComponent("after components");
 }
 
 void Brakeza::onEndComponents() const
@@ -407,10 +412,15 @@ bool Brakeza::ReadArgs(int argc, char **argv)
                 cxxopts::value<std::vector<std::string>>())
         ("exit-after", "Force-quit N seconds after startup (safety watchdog for headless/automated runs)",
                 cxxopts::value<float>())
+        ("log-console", "Enable the general log (ImGui console, stdout, Lua print). Off by default")
+        ("observer-ai", "Enable EngineObserver (brakeza_events.jsonl + periodic state dump). Off by default")
         ("h,help", "Help")
     ;
 
     auto result = options.parse(argc, argv);
+
+    if (result.count("log-console")) Config::get()->ENABLE_LOGGING_CONSOLE = true;
+    if (result.count("observer-ai")) Config::get()->OBSERVER_AI_ENABLED = true;
 
     if (result.count("help")) {
         std::cout << options.help() << std::endl;

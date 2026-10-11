@@ -47,7 +47,7 @@ void ShaderOGLBonesTransforms::render(
     glBeginTransformFeedback(GL_TRIANGLES);
 
     glDrawArrays(GL_TRIANGLES, 0, meshData.vertices.size());
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, meshData.vertices.size());
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, meshData.vertices.size(), 1, "BonesTransforms (bake)");
 
     glEndTransformFeedback();
 

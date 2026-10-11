@@ -128,7 +128,7 @@ void ShaderOGLGroundDecal::draw(Object3D* obj, const std::string& texturePath, c
     glPolygonOffset(-10.0f, -10.0f);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "GroundDecal");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

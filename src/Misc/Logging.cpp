@@ -26,7 +26,8 @@ void Logging::Message(const std::string &message, ...)
 
 void Logging::OutputVa(const char *message, bool forceSTD, va_list args)
 {
-    if (!Config::get()->ENABLE_LOGGING_CONSOLE) return;
+    // Con el log apagado solo pasan los errores (forceSTD), a la salida estándar
+    if (!Config::get()->ENABLE_LOGGING_CONSOLE && !forceSTD) return;
 
     va_list args_copy;
     va_copy(args_copy, args);
@@ -37,7 +38,7 @@ void Logging::OutputVa(const char *message, bool forceSTD, va_list args)
     char* buffer = new char[size + 1];
     vsnprintf(buffer, size + 1, message, args);
 
-    if (Brakeza::get()->GUI() != nullptr) {
+    if (Config::get()->ENABLE_LOGGING_CONSOLE && Brakeza::get()->GUI() != nullptr) {
         Brakeza::get()->GUI()->getConsole()->AddLog("%s", buffer);
     }
 

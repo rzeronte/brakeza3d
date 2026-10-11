@@ -1,0 +1,144 @@
+{
+  "_comment": "Catalog shown by DemoBrowser.lua. One entry per demo, in browsing order. 'scene' must also be listed in assets/projects/TutorialsProject.json. Files, scripts, shaders and object counts are read from the scene JSON at runtime, so only describe the demo here.",
+  "demos": [
+    {
+      "scene": "../assets/scenes/FBXLightsImportTest.json",
+      "title": "Lights imported from FBX",
+      "summary": "A scene whose point and spot lights come from a Blender/FBX file instead of being placed in the editor. The scene JSON only stores a lightsFile path; the lights are regenerated from the FBX on every load.",
+      "controls": [],
+      "learn": [
+        "lightsFile in the scene JSON -> SceneLoader::LoadLightsFileAssociation",
+        "FBX light import: include/Loaders/FBXLightLoader.h",
+        "Imported lights are not saved back into the scene file"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/ShowRoomTest.json",
+      "title": "Show room",
+      "summary": "A small set of meshes and lights to look at the deferred renderer: G-Buffer, ADS lighting, shadows and a chromatic aberration post-processing shader on top.",
+      "controls": [],
+      "learn": [
+        "Deferred pipeline: src/Components/ComponentRender.cpp",
+        "Scene shader chain: include/Render/PostProcessingManager.h",
+        "Post-processing shader stored in the scene shaders list"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/LightsTest.json",
+      "title": "Lights and day/night cycle",
+      "summary": "Point and spot lights plus a global (directional) light that a scene script rotates to simulate a 30 s day/night cycle, changing ambient and diffuse colours over time.",
+      "controls": [],
+      "learn": [
+        "Scene script: CycleDayNightDemo.lua (onStart/onUpdate)",
+        "render:getGlobalIlluminationDirection / setGlobalIllumination*",
+        "Limits: 64 point lights + 64 spot lights"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/ParticleTest.json",
+      "title": "Particle emitters",
+      "summary": "Sixteen particle emitters with different settings (speed, gravity, colours, lifetime) next to reference meshes. Every emitter is configured from the editor and saved in the scene.",
+      "controls": [],
+      "learn": [
+        "include/3D/ParticleEmitter.h (max 512 particles per emitter)",
+        "Emitter settings are part of the object JSON",
+        "Object Properties window (F10 in the editor) to tweak them live"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/PerformanceTest.json",
+      "title": "Performance test",
+      "summary": "Spawns objects in batches to stress the engine: static meshes, physics bodies, particle emitters, point lights or animated meshes, with an FPS readout.",
+      "controls": [
+        "1-5      choose what to spawn",
+        "Space    toggle continuous spawning",
+        "Delete   spawn one batch now",
+        "R        remove spawned objects",
+        "S        shadows on new objects",
+        "H        show/hide its HUD",
+        "Up/Down  batch size +-5     [ / ]  +-10",
+        "Left/Right  spawn rate      M / N  object cap"
+      ],
+      "learn": [
+        "Scene script: PerformanceTest.lua",
+        "ObjectFactory.* to create objects from Lua",
+        "Profiler window in the editor to see where the frame goes"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/RainCubesTest.json",
+      "title": "Rain of physics cubes",
+      "summary": "Three emitter objects run an object script that spawns a physics cube every half second. The cubes are Bullet rigid bodies that fall and pile up on the floor.",
+      "controls": [],
+      "learn": [
+        "Object script: RainCubesDemo.lua (this is the owner object)",
+        "mesh:setMass / SetupRigidBodyCollider (Dynamic body mode)",
+        "Script variables (frequency) come from the JSON types file of the script"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/SwarmBoidsTest.json",
+      "title": "Swarm (boids)",
+      "summary": "A Swarm object steering thirty meshes with the classic boids rules: separation, alignment and cohesion. The members are ordinary meshes referenced by the swarm.",
+      "controls": [],
+      "learn": [
+        "include/3D/Swarm.h",
+        "Swarm members are resolved after loading (ThreadJobResolveSwarms)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/TextRenderingTest.json",
+      "title": "Text rendering",
+      "summary": "Every way of drawing text: TTF auto-size, TTF with explicit size, batched glyph atlas, centred and aligned text, and cached text.",
+      "controls": [
+        "0      toggle everything",
+        "1-6    toggle each method",
+        "R      rebuild the glyph atlas"
+      ],
+      "learn": [
+        "Scene script: TextRenderingTest.lua",
+        "render:getTextWriter() -> writeTextAtlas / writeTextTTF*",
+        "Atlas text is the cheapest for HUDs that change every frame"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/PostProcessingTest.json",
+      "title": "Post-processing chain",
+      "summary": "Eight full-screen shaders chained one after another, each tinting a different quarter of the screen. Shows how the ping-pong buffers pass the image from one shader to the next.",
+      "controls": [],
+      "learn": [
+        "Scene shaders run after the light pass (frame step 6)",
+        "UVs are screen space: gl_FragCoord.xy / textureSize",
+        "Shader node editor and code editor in the editor GUI"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/ProjectileTest.json",
+      "title": "Projectiles and collisions",
+      "summary": "A launcher fires physics projectiles; an object script logs on screen every collision it receives.",
+      "controls": [
+        "A / D   aim left / right",
+        "W / S   aim up / down",
+        "Q / E   less / more power",
+        "Z / X   smaller / bigger projectile",
+        "F       fire"
+      ],
+      "learn": [
+        "Scene script: ProjectileLauncher.lua",
+        "Object script: ProjectileLauncherCaptureCollision.lua",
+        "onCollisionEnter/Stay/Exit(info) callbacks"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/UITest.json",
+      "title": "UI widgets",
+      "summary": "The JSON widget system: a nested widget, a list widget and single cards drawn at a position, all fed with data from Lua every frame.",
+      "controls": [],
+      "learn": [
+        "Scene script: UIWidgetsDemo.lua",
+        "Widget JSON files in assets/ui/",
+        "render:drawWidget / drawWidgetAtPos / drawWidgetInstances"
+      ]
+    }
+  ]
+}

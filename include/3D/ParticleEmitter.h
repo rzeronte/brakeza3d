@@ -23,6 +23,7 @@ class ParticleEmitter : public Object3D
     bool active = true;
     bool stopAdd = false;
     int LastUsedParticle = 0;
+    float spawnAccumulator = 0.0f;   // fracción de partícula pendiente entre frames (ParticlesToSpawn)
     Object3D* followTarget    = nullptr;
     float selfDestructTimer   = -1.0f;
 
@@ -38,6 +39,7 @@ class ParticleEmitter : public Object3D
     GLuint billboard_vertex_buffer   = 0;
     GLuint particles_position_buffer = 0;
     GLuint particles_color_buffer    = 0;
+    GLuint particles_rotation_buffer = 0;   // 1 float (ángulo, radianes) por partícula
 
     // GPU mode
     bool   gpuMode    = false;
@@ -62,6 +64,8 @@ public:
     );
 
     void onUpdate() override;
+    void onUpdateCulled() override;
+    void UpdateFollowAndLifetime();
     void DrawPropertiesGUI() override;
     void InitGLBuffers();
     int FindUnusedParticle();
@@ -70,7 +74,9 @@ public:
     void Draw();
     void DrawGPU();
     void postUpdate() override;
-    glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, int noiseRange);
+    glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, float noiseRange);
+    glm::vec3 AddNoiseKeepingSpeed(const glm::vec3 &velocity, float noiseRange);
+    int ParticlesToSpawn(float delta);
 
     void setContext(const ParticlesContext &context);
     void setColorTo(const Color &colorTo);

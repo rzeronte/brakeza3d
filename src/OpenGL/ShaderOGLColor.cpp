@@ -124,7 +124,7 @@ void ShaderOGLColor::RenderColor(
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "Color:127");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -176,7 +176,7 @@ void ShaderOGLColor::RenderTint(
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "Color:179");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -235,7 +235,7 @@ void ShaderOGLColor::RenderColorInstanced(
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(instanceColors.size() * sizeof(glm::vec3)),
         instanceColors.data(), GL_DYNAMIC_DRAW);
 
-    DrawMeshGeometryInstanced(GL_TRIANGLES, indexBuffer, indexCount, size, static_cast<GLsizei>(instanceModels.size()));
+    DrawMeshGeometryInstanced(GL_TRIANGLES, indexBuffer, indexCount, size, static_cast<GLsizei>(instanceModels.size()), "Color:238");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -305,7 +305,7 @@ void ShaderOGLColor::RenderColorInstancedSkinned(
         allBoneMatrices.data(), GL_DYNAMIC_DRAW);
 
     // indexBuffer=0: geometria animada nunca paso por el EBO deduplicado -- siempre glDrawArraysInstanced.
-    DrawMeshGeometryInstanced(GL_TRIANGLES, 0, 0, size, static_cast<GLsizei>(instanceModels.size()));
+    DrawMeshGeometryInstanced(GL_TRIANGLES, 0, 0, size, static_cast<GLsizei>(instanceModels.size()), "Color:308");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

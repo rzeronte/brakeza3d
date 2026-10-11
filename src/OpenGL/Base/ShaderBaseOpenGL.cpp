@@ -385,32 +385,32 @@ void ShaderBaseOpenGL::setVAOBoneAttributes(GLuint vertexBoneDataBuffer, int bon
     glVertexAttribPointer(weightsLocation, 4, GL_FLOAT, GL_FALSE, sizeof(VertexBoneData), (const GLvoid*)offsetof(VertexBoneData, Weights));
 }
 
-void ShaderBaseOpenGL::DrawMeshGeometry(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount)
+void ShaderBaseOpenGL::DrawMeshGeometry(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, const char *site)
 {
     if (indexBuffer != 0) {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
         glDrawElements(mode, indexCount, GL_UNSIGNED_INT, nullptr);
-        Profiler::get()->incrementDrawCall(mode, indexCount);
+        Profiler::get()->incrementDrawCall(mode, indexCount, 1, site);
         return;
     }
 
     glDrawArrays(mode, 0, vertexCount);
-    Profiler::get()->incrementDrawCall(mode, vertexCount);
+    Profiler::get()->incrementDrawCall(mode, vertexCount, 1, site);
 }
 
 // Fase 4: mismo criterio glDrawElements/glDrawArrays que DrawMeshGeometry, versión instanciada
 // para runs de 2+ entradas idénticas de la cola de opacos (ver ComponentRender::FlushOpaqueQueue).
-void ShaderBaseOpenGL::DrawMeshGeometryInstanced(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, GLsizei instanceCount)
+void ShaderBaseOpenGL::DrawMeshGeometryInstanced(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, GLsizei instanceCount, const char *site)
 {
     if (indexBuffer != 0) {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
         glDrawElementsInstanced(mode, indexCount, GL_UNSIGNED_INT, nullptr, instanceCount);
-        Profiler::get()->incrementDrawCall(mode, indexCount, instanceCount);
+        Profiler::get()->incrementDrawCall(mode, indexCount, instanceCount, site);
         return;
     }
 
     glDrawArraysInstanced(mode, 0, vertexCount, instanceCount);
-    Profiler::get()->incrementDrawCall(mode, vertexCount, instanceCount);
+    Profiler::get()->incrementDrawCall(mode, vertexCount, instanceCount, site);
 }
 
 void ShaderBaseOpenGL::setMat4Uniform(GLuint uniform, const glm::mat4 &mat)

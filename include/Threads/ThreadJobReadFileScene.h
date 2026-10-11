@@ -25,6 +25,7 @@ class ThreadJobReadFileScene : public ThreadJobBase
     bool loadShaders;
     bool loadCamera;
     bool loadRenderSettings;
+    bool startScripts;
     Scene *scene = nullptr;
 
 public:
@@ -35,7 +36,8 @@ public:
         bool loadScripts        = true,
         bool loadShaders        = true,
         bool loadCamera         = true,
-        bool loadRenderSettings = true
+        bool loadRenderSettings = true,
+        bool startScripts       = false
     )
     :
         filename(file),
@@ -44,7 +46,8 @@ public:
         loadScripts(loadScripts),
         loadShaders(loadShaders),
         loadCamera(loadCamera),
-        loadRenderSettings(loadRenderSettings)
+        loadRenderSettings(loadRenderSettings),
+        startScripts(startScripts)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -92,7 +95,7 @@ public:
         }
 
         if (loadScripts)
-            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneScript>(json, scene));
+            Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneScript>(json, scene, startScripts));
 
         if (loadShaders)
             Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobReadSceneShaders>(json, scene));

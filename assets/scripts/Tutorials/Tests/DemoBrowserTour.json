@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Tutorials/Tests/DemoBrowserTour.lua",
+	"typesFile":	"../assets/scripts/Tutorials/Tests/DemoBrowserTour.json",
+	"name":	"DemoBrowserTour",
+	"type":	"Global",
+	"types":	[]
+}

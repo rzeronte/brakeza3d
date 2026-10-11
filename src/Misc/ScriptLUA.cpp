@@ -103,22 +103,48 @@ void ScriptLUA::InitEnvironment(sol::environment &environment)
     }
 }
 
-bool ScriptLUA::ShouldTick() const
+// ticks_per_second > 0: el script no se ejecuta cada frame sino ~N veces por segundo (2026-10-09).
+//   · Solo onUpdate decide y acumula tiempo; postUpdate se ejecuta si y solo si onUpdate se ejecutó
+//     ese frame (antes las dos llamadas sumaban al mismo acumulador: el tiempo contaba doble).
+//   · onStart, onEnd y los eventos (onCollision...) se ejecutan SIEMPRE (antes también se los
+//     saltaba: se perdían colisiones y el onEnd).
+//   · Al ejecutarse, el script ve en Brakeza:getDeltaTime() el tiempo transcurrido desde su
+//     ejecución anterior (tickDelta), no el del frame: si no, lo que integra con dt iba más lento.
+bool ScriptLUA::ShouldTick(const std::string& func) const
 {
     if (ticksPerSecond <= 0) return true;
-    tickAccumulator += Brakeza::get()->getDeltaTime();
-    const float interval = 1.0f / static_cast<float>(ticksPerSecond);
-    if (tickAccumulator >= interval) {
-        tickAccumulator -= interval;
-        return true;
+    if (func == "onUpdate") {
+        tickAccumulator += Brakeza::get()->getDeltaTime();
+        const float interval = 1.0f / static_cast<float>(ticksPerSecond);
+        tickedThisFrame = tickAccumulator >= interval;
+        if (tickedThisFrame) {
+            tickDelta       = tickAccumulator;
+            tickAccumulator = 0.0f;
+        }
+        return tickedThisFrame;
     }
-    return false;
+    if (func == "postUpdate") return tickedThisFrame;
+    return true;
+}
+
+namespace {
+    // Mientras corre onUpdate/postUpdate de un script con ticks, Lua ve su delta acumulado
+    // (Brakeza::getScriptDeltaTime). Guarda y restaura el anterior (llamadas anidadas entre scripts).
+    struct ScriptDeltaScope {
+        float prev;
+        bool  active;
+        ScriptDeltaScope(bool on, float delta) : prev(Brakeza::get()->getScriptDeltaOverride()), active(on) {
+            if (active) Brakeza::get()->setScriptDeltaOverride(delta);
+        }
+        ~ScriptDeltaScope() { if (active) Brakeza::get()->setScriptDeltaOverride(prev); }
+    };
 }
 
 void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
 {
     if (paused) return;
-    if (func != "onStart" && !ShouldTick()) return;
+    if (!ShouldTick(func)) return;
+    ScriptDeltaScope deltaScope(ticksPerSecond > 0 && (func == "onUpdate" || func == "postUpdate"), tickDelta);
 
     if (!environment.valid()) {
         LOG_ERROR("[ScriptLUA] Environment is INVALID for script '%s'", scriptFilename.c_str());
@@ -171,7 +197,8 @@ void ScriptLUA::ensureGlobalEnvironment()
 void ScriptLUA::RunGlobal(const std::string& func)
 {
     if (paused) return;
-    if (func != "onStart" && !ShouldTick()) return;
+    if (!ShouldTick(func)) return;
+    ScriptDeltaScope deltaScope(ticksPerSecond > 0 && (func == "onUpdate" || func == "postUpdate"), tickDelta);
     sol::state &lua = Components::get()->Scripting()->getLua();
 
     ensureGlobalEnvironment();

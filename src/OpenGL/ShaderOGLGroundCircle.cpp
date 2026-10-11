@@ -108,7 +108,7 @@ void ShaderOGLGroundCircle::draw(Object3D* obj, const Color& color, float radius
     glDisable(GL_DEPTH_TEST);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "GroundCircle (blob)");
 
     glBindVertexArray(0);
 

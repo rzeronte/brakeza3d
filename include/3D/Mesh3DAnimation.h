@@ -115,8 +115,10 @@ public:
 
     bool AssimpLoadAnimation(const std::string &filename);
     void onUpdate() override;
+    void onUpdateCulled() override;
     void postUpdate() override;
     void UpdateFrameTransformations();
+    bool AdvanceAnimationClock();
     void ProcessNodeAnimation(aiNode *node);
     void ProcessMeshAnimation(int i, aiMesh *mesh);
     void ReadNodesFromRoot();
@@ -133,7 +135,11 @@ public:
     void CheckIfEndAnimation();
     void FillOGLBuffers() override;
     void FillAnimationBoneDataOGLBuffers();
-    void UpdateOpenGLBones();
+    // bake=false: solo calcula las matrices de huesos (boneTransformCachePerMesh); sin la pasada de
+    // transform feedback que hornea la pose en feedbackBuffer (ver NeedsBakedPose)
+    void UpdateOpenGLBones(bool bake = true);
+    // ¿Alguien leerá feedbackBuffer este frame? (fase 3 del instancing, 2026-10-10)
+    [[nodiscard]] bool NeedsBakedPose() const;
     void UpdateBoundingBox() override;
     void setAnimationByName(const std::string& name);
     void setLoop(bool value);
@@ -161,6 +167,9 @@ public:
     // este frame por UpdateOpenGLBones() (glm, listas para subir a un TBO), reutilizadas por
     // ComponentRender::EnqueueOpaque sin recalcular nada.
     [[nodiscard]] const std::vector<glm::mat4>& getBoneTransformCache(size_t meshIdx) const { return boneTransformCachePerMesh[meshIdx]; }
+    // Vacío hasta la primera actualización de huesos: comprobar antes de getBoneTransformCache
+    // desde pasadas que incluyen objetos que quizá nunca se actualizaron (shadow pass, fuera de cámara)
+    [[nodiscard]] size_t getBoneTransformCacheCount() const { return boneTransformCachePerMesh.size(); }
     [[nodiscard]] Vertex3D getBoneWorldPosition(const std::string& boneName) const;
     [[nodiscard]] M3 getBoneWorldRotation(const std::string& boneName) const;
     [[nodiscard]] std::vector<std::string> getBoneNames() const;

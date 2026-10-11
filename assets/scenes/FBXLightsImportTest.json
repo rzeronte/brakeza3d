@@ -1,0 +1,75 @@
+{
+	"screenshot":	"",
+	"lightsFile":	"../assets/models/lights/TEST_LIGHTS_LIGHTS.fbx",
+	"ads":	{
+		"direction":	{
+			"x":	0.3529999852180481,
+			"y":	-0.76999998092651367,
+			"z":	-0.37134084105491638
+		},
+		"diffuse":	{
+			"x":	0.0450819730758667,
+			"y":	0.0450819730758667,
+			"z":	0.0450819730758667
+		},
+		"specular":	{
+			"x":	0.10000000149011612,
+			"y":	0.10000000149011612,
+			"z":	0.10000000149011612
+		},
+		"ambient":	{
+			"x":	0.040983617305755615,
+			"y":	0.040983617305755615,
+			"z":	0.040983617305755615
+		}
+	},
+	"objects":	[{
+			"name":	"TEST_LIGHTS_mesh",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"rotation":	{
+				"x":	-90,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	771,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/lights/TEST_LIGHTS_MESHES.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	12,
+			"y":	9,
+			"z":	12
+		},
+		"rotation":	{
+			"x":	22,
+			"y":	45,
+			"z":	0
+		}
+	}
+}
