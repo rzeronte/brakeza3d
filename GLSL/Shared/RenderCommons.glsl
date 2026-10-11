@@ -2,8 +2,8 @@
 // renderCommons.glsl - Código común de rendering
 // ============================================================
 
-#define NR_POINT_LIGHTS 1024
-#define NR_SPOT_LIGHTS 1024
+#define NR_POINT_LIGHTS 512   // = ShaderOGLRenderForward::MAX_POINT_LIGHTS (bloque de 40 KB, < 64 KB)
+#define NR_SPOT_LIGHTS 512    // = ShaderOGLRenderForward::MAX_SPOT_LIGHTS (bloque de 56 KB, < 64 KB)
 
 // ============================================================
 // ESTRUCTURAS

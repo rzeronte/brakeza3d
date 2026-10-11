@@ -12,6 +12,8 @@ class ShaderOGLGPUParticles : public ShaderBaseOpenGL {
     GLuint uTextureSampler           = 0;
     GLuint uColorFrom                = 0;
     GLuint uColorTo                  = 0;
+    GLuint uSizeStart                = 0;
+    GLuint uSizeEnd                  = 0;
 public:
     ShaderOGLGPUParticles();
     void PrepareMainThread() override;
@@ -22,6 +24,8 @@ public:
         GLuint textureID,
         const Color& colorFrom,
         const Color& colorTo,
+        float sizeStart,
+        float sizeEnd,
         int numParticles,
         int stride
     );

@@ -21,6 +21,15 @@ namespace {
         GLsizei indexCount = 0;
         int vertexCount = 0;
         glm::mat4 model{};
+        // Unidad animada con skinning en el shader (ver ShadowPass.vs): vertexBuffer es la geometría
+        // compartida en pose de reposo y boneMatrices la pose de ESTA instancia en este frame
+        // (Mesh3DAnimation::boneTransformCachePerMesh) -- así se agrupa con las del mismo modelo.
+        // Geometría combinada del modelo (ShadowMergedGeometry): solo posiciones, sin uv/normal
+        bool positionsOnly = false;
+        bool isSkinned = false;
+        GLuint vertexBoneDataBuffer = 0;
+        int boneCount = 0;
+        const std::vector<glm::mat4>* boneMatrices = nullptr;
     };
 }
 
@@ -41,6 +50,9 @@ void ShaderOGLShadowPass::LoadUniforms()
     matrixViewUniform = glGetUniformLocation(programID, "lightSpaceMatrix");
     matrixModelUniform = glGetUniformLocation(programID, "model");
     useInstancingUniform = glGetUniformLocation(programID, "useInstancing");
+    useSkinningUniform = glGetUniformLocation(programID, "useSkinning");
+    bonesPerInstanceUniform = glGetUniformLocation(programID, "bonesPerInstance");
+    boneMatricesSamplerUniform = glGetUniformLocation(programID, "boneMatrices");
 }
 
 void ShaderOGLShadowPass::PrepareMainThread()
@@ -61,6 +73,16 @@ void ShaderOGLShadowPass::PrepareMainThread()
             reinterpret_cast<void*>(sizeof(glm::vec4) * i));
         glVertexAttribDivisor(3 + i, 1);
     }
+
+    // TBO de matrices de huesos (unidades animadas instanciadas): glTexBuffer una sola vez, el
+    // contenido se respecifica con glBufferData en cada lote -- igual que ShaderOGLRenderDeferred.
+    glGenBuffers(1, &boneMatrixBuffer);
+    glGenTextures(1, &boneMatrixTexture);
+    glBindTexture(GL_TEXTURE_BUFFER, boneMatrixTexture);
+    glBindBuffer(GL_TEXTURE_BUFFER, boneMatrixBuffer);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, boneMatrixBuffer);
+    glBindTexture(GL_TEXTURE_BUFFER, 0);
+    glBindBuffer(GL_TEXTURE_BUFFER, 0);
 }
 
 void ShaderOGLShadowPass::renderMeshIntoArrayTextures(Mesh3D *o, bool feedbackFBO, LightSpot* light, int indexLight ) const
@@ -123,8 +145,10 @@ void ShaderOGLShadowPass::renderIntoDirectionalLightTexture(
     auto shaderRender = Components::get()->Render()->getShaders()->shaderOGLRender;
     setMat4Uniform(matrixViewUniform, shaderRender->getDirectionalLightMatrix(light));
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
+    setBoolUniform(useInstancingUniform, false);   // los uniforms persisten: fijar el modo
+    setBoolUniform(useSkinningUniform, false);
 
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "ShadowPass:127");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -160,9 +184,11 @@ void ShaderOGLShadowPass::renderIntoArrayDepthTextures(
 
     setMat4Uniform(matrixViewUniform, light->getLightSpaceMatrix());
     setMat4Uniform(matrixModelUniform, o->getModelMatrix());
+    setBoolUniform(useInstancingUniform, false);   // los uniforms persisten: fijar el modo
+    setBoolUniform(useSkinningUniform, false);
 
     glFramebufferTextureLayer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, shadowMapArrayTex, 0, layer);
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "ShadowPass:165");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -187,8 +213,34 @@ void ShaderOGLShadowPass::drawCastersInstanced(
     for (size_t i = 0; i < casters.size(); i++) {
         auto* mesh = casters[i];
         const auto& submeshAabbs = casterSubmeshWorldAabbs[i];
-        const bool feedbackFBO = dynamic_cast<Mesh3DAnimation*>(mesh) != nullptr;
+        auto* anim = dynamic_cast<Mesh3DAnimation*>(mesh);
         const glm::mat4 model = mesh->getModelMatrix();
+
+        // Modelo estático con geometría combinada: una entrada por instancia (el modelo entero); las
+        // instancias del mismo modelo se agrupan en una llamada instanciada más abajo. Cull con la
+        // caja del modelo entero (RunShadowPass no calcula cajas por submesh para estos casters).
+        const ShadowMergedGeometry* merged = (anim == nullptr && Components::get()->Render()->isShadowMergeEnabled())
+            ? mesh->getShadowMerged() : nullptr;
+        if (merged != nullptr) {
+            AABB3D localAabb;
+            localAabb.min = Vertex3D(merged->localMin.x, merged->localMin.y, merged->localMin.z);
+            localAabb.max = Vertex3D(merged->localMax.x, merged->localMax.y, merged->localMax.z);
+            localAabb.updateVertices();
+            AABB3D worldAabb;
+            for (int c = 0; c < 8; c++) {
+                glm::vec4 wp = model * glm::vec4(localAabb.vertices[c].toGLM(), 1.0f);
+                worldAabb.vertices[c] = Vertex3D(wp.x / wp.w, wp.y / wp.w, wp.z / wp.w);
+            }
+            if (!Frustum::isAABBVisibleInVP(&worldAabb, lightVP)) continue;
+            ShadowQueueEntry entry;
+            entry.vertexBuffer = merged->buffer;
+            entry.vertexCount = merged->vertexCount;
+            entry.model = model;
+            entry.positionsOnly = true;
+            queue.push_back(entry);
+            continue;
+        }
+
         const auto& meshData = mesh->getMeshData();
         for (size_t j = 0; j < meshData.size(); j++) {
             AABB3D worldAabb = submeshAabbs[j];
@@ -196,13 +248,33 @@ void ShaderOGLShadowPass::drawCastersInstanced(
             const auto& m = meshData[j];
 
             ShadowQueueEntry entry;
-            entry.vertexBuffer = feedbackFBO ? m.feedbackBuffer : m.vertexBuffer;
             entry.uvBuffer = m.uvBuffer;
-            entry.normalBuffer = feedbackFBO ? m.feedbackNormalBuffer : m.normalBuffer;
-            entry.indexBuffer = feedbackFBO ? 0 : m.indexBuffer;
-            entry.indexCount = feedbackFBO ? 0 : m.indexCount;
             entry.vertexCount = static_cast<int>(m.vertices.size());
             entry.model = model;
+            // Animada con pose calculada este frame: skinning en el shader sobre la geometría
+            // compartida (se agrupa con las demás del mismo modelo). Sin pose: ver más abajo.
+            const std::vector<glm::mat4>* bones = nullptr;
+            if (anim != nullptr && m.vertexBoneDataBuffer != 0 && j < anim->getBoneTransformCacheCount()) {
+                const auto& cache = anim->getBoneTransformCache(j);
+                if (!cache.empty()) bones = &cache;
+            }
+            if (bones != nullptr) {
+                entry.vertexBuffer = m.vertexBuffer;
+                entry.normalBuffer = m.normalBuffer;
+                entry.isSkinned = true;
+                entry.vertexBoneDataBuffer = m.vertexBoneDataBuffer;
+                entry.boneCount = static_cast<int>(bones->size());
+                entry.boneMatrices = bones;
+            } else {
+                // Sin pose: geometría original (submesh sin huesos = igual que su pose; objeto aún
+                // sin actualizar = pose de reposo). No feedbackBuffer: solo se hornea si algún
+                // consumidor lo pide (Mesh3DAnimation::NeedsBakedPose), podría estar desfasado.
+                // Las animadas nunca usan el EBO (siempre glDrawArrays), igual que en el G-Buffer.
+                entry.vertexBuffer = m.vertexBuffer;
+                entry.normalBuffer = m.normalBuffer;
+                entry.indexBuffer = anim != nullptr ? 0 : m.indexBuffer;
+                entry.indexCount = anim != nullptr ? 0 : m.indexCount;
+            }
             queue.push_back(entry);
         }
     }
@@ -210,14 +282,34 @@ void ShaderOGLShadowPass::drawCastersInstanced(
     if (queue.empty()) return;
 
     std::sort(queue.begin(), queue.end(), [](const ShadowQueueEntry &a, const ShadowQueueEntry &b) {
-        return a.vertexBuffer < b.vertexBuffer;
+        if (a.vertexBuffer != b.vertexBuffer) return a.vertexBuffer < b.vertexBuffer;
+        return a.isSkinned < b.isSkinned;
     });
 
     auto sameBatch = [](const ShadowQueueEntry &a, const ShadowQueueEntry &b) {
         return a.vertexBuffer == b.vertexBuffer && a.uvBuffer == b.uvBuffer &&
                a.normalBuffer == b.normalBuffer && a.indexBuffer == b.indexBuffer &&
-               a.indexCount == b.indexCount;
+               a.indexCount == b.indexCount && a.isSkinned == b.isSkinned &&
+               a.vertexBoneDataBuffer == b.vertexBoneDataBuffer && a.boneCount == b.boneCount &&
+               a.positionsOnly == b.positionsOnly;
     };
+
+    // Geometría combinada: solo hay buffer de posiciones (atributo 0); el shader de sombras no lee
+    // normal ni uv, así que se desactivan en vez de apuntarlas a un buffer inexistente.
+    auto bindGeometry = [this](const ShadowQueueEntry &e) {
+        if (!e.positionsOnly) {
+            setVAOAttributes(e.vertexBuffer, e.uvBuffer, e.normalBuffer);
+            return;
+        }
+        glEnableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER, e.vertexBuffer);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+    };
+
+    // Los uniforms persisten entre draws (y entre frames): el modo se fija en cada rama.
+    setBoolUniform(useSkinningUniform, false);
 
     size_t i = 0;
     while (i < queue.size()) {
@@ -225,18 +317,57 @@ void ShaderOGLShadowPass::drawCastersInstanced(
         while (j < queue.size() && sameBatch(queue[i], queue[j])) ++j;
 
         const auto& first = queue[i];
-        if (j - i == 1) {
+        if (first.isSkinned) {
+            // Siempre instanciado, también con un solo elemento (gl_InstanceID = 0), igual que el
+            // G-Buffer (ComponentRender::DrawRenderQueue).
+            std::vector<glm::mat4> models;
+            std::vector<glm::mat4> allBoneMatrices;
+            models.reserve(j - i);
+            allBoneMatrices.reserve((j - i) * first.boneCount);
+            for (size_t k = i; k < j; k++) {
+                models.push_back(queue[k].model);
+                const auto& b = *queue[k].boneMatrices;
+                allBoneMatrices.insert(allBoneMatrices.end(), b.begin(), b.end());
+            }
+
+            setBoolUniform(useInstancingUniform, true);
+            setBoolUniform(useSkinningUniform, true);
+            setIntUniform(bonesPerInstanceUniform, first.boneCount);
+            setIntUniform(boneMatricesSamplerUniform, 0);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_BUFFER, boneMatrixTexture);
+
+            setVAOAttributes(first.vertexBuffer, first.uvBuffer, first.normalBuffer);
+            setVAOBoneAttributes(first.vertexBoneDataBuffer);
+
+            glBindBuffer(GL_ARRAY_BUFFER, instanceModelBuffer);
+            glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(models.size() * sizeof(glm::mat4)),
+                models.data(), GL_DYNAMIC_DRAW);
+            glBindBuffer(GL_TEXTURE_BUFFER, boneMatrixBuffer);
+            glBufferData(GL_TEXTURE_BUFFER, static_cast<GLsizeiptr>(allBoneMatrices.size() * sizeof(glm::mat4)),
+                allBoneMatrices.data(), GL_DYNAMIC_DRAW);
+            glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+            DrawMeshGeometryInstanced(GL_TRIANGLES, 0, 0, first.vertexCount,
+                static_cast<GLsizei>(models.size()), "ShadowPass skinned");
+
+            glDisableVertexAttribArray(7);
+            glDisableVertexAttribArray(8);
+            glBindTexture(GL_TEXTURE_BUFFER, 0);
+            setBoolUniform(useSkinningUniform, false);
+        } else if (j - i == 1) {
             setBoolUniform(useInstancingUniform, false);
             setMat4Uniform(matrixModelUniform, first.model);
-            setVAOAttributes(first.vertexBuffer, first.uvBuffer, first.normalBuffer);
-            DrawMeshGeometry(GL_TRIANGLES, first.indexBuffer, first.indexCount, first.vertexCount);
+            bindGeometry(first);
+            DrawMeshGeometry(GL_TRIANGLES, first.indexBuffer, first.indexCount, first.vertexCount,
+                first.positionsOnly ? "ShadowPass merged" : "ShadowPass:232");
         } else {
             std::vector<glm::mat4> models;
             models.reserve(j - i);
             for (size_t k = i; k < j; k++) models.push_back(queue[k].model);
 
             setBoolUniform(useInstancingUniform, true);
-            setVAOAttributes(first.vertexBuffer, first.uvBuffer, first.normalBuffer);
+            bindGeometry(first);
 
             glBindBuffer(GL_ARRAY_BUFFER, instanceModelBuffer);
             glBufferData(
@@ -248,7 +379,7 @@ void ShaderOGLShadowPass::drawCastersInstanced(
 
             DrawMeshGeometryInstanced(
                 GL_TRIANGLES, first.indexBuffer, first.indexCount, first.vertexCount,
-                static_cast<GLsizei>(models.size())
+                static_cast<GLsizei>(models.size()), first.positionsOnly ? "ShadowPass merged instanced" : "ShadowPass:249"
             );
         }
         i = j;

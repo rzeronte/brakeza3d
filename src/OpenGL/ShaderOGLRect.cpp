@@ -79,7 +79,7 @@ void ShaderOGLRect::renderRect(int x, int y, int w, int h, int worldW, int world
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "Rect");
     glBindVertexArray(0);
 
     glDisable(GL_BLEND);

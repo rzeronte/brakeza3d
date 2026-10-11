@@ -8,6 +8,7 @@
 #define SOL_SAFE_GETTER 0
 #define SOL_SAFE_FUNCTION_CALLS 0
 
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <glm/detail/type_mat4x4.hpp>
@@ -46,6 +47,13 @@ protected:
     bool removed = false;
     bool belongToScene = false;
     bool visibleInFrustum = true;
+    // Oculto solo para el render (p. ej. bajo la niebla de guerra): se trata como fuera de cámara
+    // (onUpdateCulled, sin G-Buffer/transparencias/sombras) pero sus scripts y colisiones siguen.
+    bool renderHidden = false;
+    // Índice espacial (ver SpatialIndex): máscara de la lógica de juego (0 = fuera del índice) y
+    // posición en su lista de miembros (-1 = no está). Solo los toca SpatialIndex.
+    uint32_t spatialMask = 0;
+    int spatialSlot = -1;
     bool multiScene = false;
     bool alphaEnabled = false;
     Scene *scene = nullptr;
@@ -134,6 +142,9 @@ public:
     [[nodiscard]] bool isRemoved() const                                { return removed;}
     [[nodiscard]] bool isVisibleInFrustum() const                       { return visibleInFrustum; }
     void setVisibleInFrustum(bool value)                                { visibleInFrustum = value; }
+    [[nodiscard]] bool isRenderHidden() const                           { return renderHidden; }
+    void setRenderHidden(bool value)                                    { renderHidden = value; }
+    [[nodiscard]] uint32_t getSpatialMask() const                       { return spatialMask; }
     [[nodiscard]] bool &isEnabled()                                     { return enabled; }
     [[nodiscard]] bool isSelectable() const                             { return selectable; }
     void setSelectable(bool value)                                      { selectable = value; }
@@ -169,10 +180,14 @@ public:
 
     virtual void setEnabled(bool value);
     virtual void onUpdate();
+    // Sustituye a onUpdate() cuando el objeto está fuera del frustum: solo debe avanzar estado
+    // dependiente del tiempo (relojes de animación...), nunca dibujar.
+    virtual void onUpdateCulled();
     virtual void postUpdate();
     virtual void DrawPropertiesGUI();
 
     friend class Object3DSerializer;
+    friend class SpatialIndex;
     friend class Object3DGUI;
 
 };

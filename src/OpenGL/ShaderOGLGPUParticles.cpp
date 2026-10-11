@@ -30,6 +30,8 @@ void ShaderOGLGPUParticles::LoadUniforms()
     uTextureSampler = glGetUniformLocation(programID, "myTextureSampler");
     uColorFrom      = glGetUniformLocation(programID, "colorFrom");
     uColorTo        = glGetUniformLocation(programID, "colorTo");
+    uSizeStart      = glGetUniformLocation(programID, "sizeStart");
+    uSizeEnd        = glGetUniformLocation(programID, "sizeEnd");
 }
 
 void ShaderOGLGPUParticles::render(
@@ -38,6 +40,8 @@ void ShaderOGLGPUParticles::render(
     GLuint textureID,
     const Color& colorFrom,
     const Color& colorTo,
+    float sizeStart,
+    float sizeEnd,
     int numParticles,
     int stride
 )
@@ -71,6 +75,8 @@ void ShaderOGLGPUParticles::render(
 
     glUniform4f(uColorFrom, colorFrom.r, colorFrom.g, colorFrom.b, colorFrom.a);
     glUniform4f(uColorTo,   colorTo.r,   colorTo.g,   colorTo.b,   colorTo.a);
+    glUniform1f(uSizeStart, sizeStart);
+    glUniform1f(uSizeEnd,   sizeEnd);
 
     const int OCPARTICLE_STRIDE = stride;
 
@@ -100,8 +106,13 @@ void ShaderOGLGPUParticles::render(
     glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, OCPARTICLE_STRIDE, (void*)offsetof(OCParticle, force));
     glVertexAttribDivisor(5, 1);
 
+    // loc 6: ángulo (OCParticle.rotation.x, radianes)
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 1, GL_FLOAT, GL_FALSE, OCPARTICLE_STRIDE, (void*)offsetof(OCParticle, rotation));
+    glVertexAttribDivisor(6, 1);
+
     glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, numParticles);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLE_STRIP, 4, numParticles);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLE_STRIP, 4, numParticles, "GPUParticles");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
@@ -109,6 +120,7 @@ void ShaderOGLGPUParticles::render(
     glDisableVertexAttribArray(3);
     glDisableVertexAttribArray(4);
     glDisableVertexAttribArray(5);
+    glDisableVertexAttribArray(6);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 

@@ -95,7 +95,7 @@ void ShaderNodesMesh3D::RenderMesh(
 
     // Renderizar
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, vertexCount);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, vertexCount, 1, "NodesMesh3D");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

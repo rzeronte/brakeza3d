@@ -87,8 +87,8 @@ public:
     // estatica compartida) o cae de vuelta a glDrawArrays (mallas animadas / sin ModelData
     // compartido, indexBuffer == 0) -- unico punto que decide entre las dos rutas, para no
     // repetir el mismo `if` en cada shader.
-    static void DrawMeshGeometry(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount);
-    static void DrawMeshGeometryInstanced(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, GLsizei instanceCount);
+    static void DrawMeshGeometry(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, const char *site = nullptr);
+    static void DrawMeshGeometryInstanced(GLenum mode, GLuint indexBuffer, GLsizei indexCount, GLsizei vertexCount, GLsizei instanceCount, const char *site = nullptr);
 
 private:
     [[nodiscard]] GLint getUniformLocation(const std::string &name) const;

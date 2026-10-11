@@ -32,8 +32,9 @@ void UIManager::init(ComponentRender* r, const std::string& dir)
 
 // Writer for a widget's "font". One TextWriter (+ its own glyph atlas) per font file, created on
 // first use and kept for the whole process: never destroyed mid-frame, so no atlas in use can go
-// away. Widget text is drawn immediately (writeTextAtlasToFB), not batched, so switching writers
-// between widgets can't mix atlases. Unknown/unloadable font → engine default, logged once.
+// away. Widget text goes to the UI batch (TextWriter::appendTextAtlasToBatch -> ShaderOGLUIBatch):
+// the atlas texture is part of the batch key, so switching writers flushes and atlases never mix.
+// Unknown/unloadable font → engine default, logged once.
 TextWriter* UIManager::writerForFont(const std::string& fontPath)
 {
     if (fontPath.empty()) return defaultTw;
@@ -53,12 +54,22 @@ TextWriter* UIManager::writerForFont(const std::string& fontPath)
     return writer ? writer : defaultTw;
 }
 
+void UIManager::freeVariantAtlas(UIWidget& w)
+{
+    if (w.variantFBO) { glDeleteFramebuffers(1, &w.variantFBO); w.variantFBO = 0; }
+    if (w.variantTex) { glDeleteTextures(1, &w.variantTex);     w.variantTex = 0; }
+    w.variantAW = w.variantAH = w.variantRW = w.variantRH = 0;
+    w.variants.clear();
+    w.variantsDirty = true;
+}
+
 static void freeWidgetCache(UIWidget& w)
 {
     if (w.cacheFBO)     { glDeleteFramebuffers(1, &w.cacheFBO);  w.cacheFBO = 0; }
     if (w.cacheTexture) { glDeleteTextures(1, &w.cacheTexture);  w.cacheTexture = 0; }
     w.cacheRW = 0;  w.cacheRH = 0;  w.cacheDirty = true;
-    w.cachedData.clear();
+    w.cachedSig.clear();
+    UIManager::freeVariantAtlas(w);
 }
 
 void UIManager::loadWidgets()
@@ -138,6 +149,7 @@ bool UIManager::invalidateWidget(const std::string& name)
     auto it = widgets.find(name);
     if (it == widgets.end()) return false;
     it->second.cacheDirty = true;
+    it->second.variantsDirty = true;
     return true;
 }
 
@@ -158,7 +170,7 @@ float UIManager::getDesignTextScale() const
 
 void UIManager::invalidateAllWidgets()
 {
-    for (auto& [_, w] : widgets) w.cacheDirty = true;
+    for (auto& [_, w] : widgets) { w.cacheDirty = true; w.variantsDirty = true; }
 }
 
 // ---------------------------------------------------------------------------
@@ -215,20 +227,44 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
     };
     parseColor4(cJSON_GetObjectItem(root, "bgColor"),     widget.bgColor);
     parseColor4(cJSON_GetObjectItem(root, "borderColor"), widget.borderColor);
+    // "xxxSlice": [L, T, R, B] (image px) or a single number for all four sides
+    auto parseSlice = [](cJSON* item, float out[4]) {
+        if (item && cJSON_IsArray(item)) {
+            for (int k = 0; k < 4 && k < cJSON_GetArraySize(item); k++)
+                out[k] = (float)cJSON_GetArrayItem(item, k)->valuedouble;
+        } else if (item && cJSON_IsNumber(item)) {
+            for (int k = 0; k < 4; k++) out[k] = (float)item->valuedouble;
+        }
+    };
+    // Fondo (siempre estirado)
     cJSON* bgImageItem = cJSON_GetObjectItem(root, "bgImage");
     if (bgImageItem && bgImageItem->valuestring) widget.bgImage = bgImageItem->valuestring;
-    // "bgSlice": [L, T, R, B] (image px) or a single number for all four sides
-    cJSON* bgSliceItem = cJSON_GetObjectItem(root, "bgSlice");
-    if (bgSliceItem && cJSON_IsArray(bgSliceItem)) {
-        for (int k = 0; k < 4 && k < cJSON_GetArraySize(bgSliceItem); k++)
-            widget.bgSlice[k] = (float)cJSON_GetArrayItem(bgSliceItem, k)->valuedouble;
-    } else if (bgSliceItem && cJSON_IsNumber(bgSliceItem)) {
-        for (float& v : widget.bgSlice) v = (float)bgSliceItem->valuedouble;
-    }
-    cJSON* bgSliceScaleItem = cJSON_GetObjectItem(root, "bgSliceScale");
-    if (bgSliceScaleItem) widget.bgSliceScale = (float)bgSliceScaleItem->valuedouble;
     cJSON* bgImageAlphaItem = cJSON_GetObjectItem(root, "bgImageAlpha");
     if (bgImageAlphaItem) widget.bgImageAlpha = std::clamp((float)bgImageAlphaItem->valuedouble, 0.0f, 1.0f);
+    cJSON* bgImageInsetItem = cJSON_GetObjectItem(root, "bgImageInset");
+    if (bgImageInsetItem) widget.bgImageInset = std::max(0.0f, (float)bgImageInsetItem->valuedouble);
+    // Marco 9-slice
+    cJSON* frameImageItem = cJSON_GetObjectItem(root, "frameImage");
+    if (frameImageItem && frameImageItem->valuestring) widget.frameImage = frameImageItem->valuestring;
+    parseSlice(cJSON_GetObjectItem(root, "frameSlice"), widget.frameSlice);
+    cJSON* frameSliceScaleItem = cJSON_GetObjectItem(root, "frameSliceScale");
+    if (frameSliceScaleItem) widget.frameSliceScale = (float)frameSliceScaleItem->valuedouble;
+    cJSON* frameImageAlphaItem = cJSON_GetObjectItem(root, "frameImageAlpha");
+    if (frameImageAlphaItem) widget.frameImageAlpha = std::clamp((float)frameImageAlphaItem->valuedouble, 0.0f, 1.0f);
+    // Formato antiguo: "bgImage" + "bgSlice" era el marco 9-slice (fondo y marco no podían convivir).
+    // Se lee como marco; al guardar desde el editor queda con las claves nuevas.
+    float legacySlice[4]{0.0f, 0.0f, 0.0f, 0.0f};
+    parseSlice(cJSON_GetObjectItem(root, "bgSlice"), legacySlice);
+    const bool legacyNineSlice = legacySlice[0] > 0.0f || legacySlice[1] > 0.0f || legacySlice[2] > 0.0f || legacySlice[3] > 0.0f;
+    if (legacyNineSlice && widget.frameImage.empty() && !widget.bgImage.empty()) {
+        widget.frameImage = widget.bgImage;
+        for (int k = 0; k < 4; k++) widget.frameSlice[k] = legacySlice[k];
+        cJSON* legacyScale = cJSON_GetObjectItem(root, "bgSliceScale");
+        if (legacyScale) widget.frameSliceScale = (float)legacyScale->valuedouble;
+        widget.frameImageAlpha = widget.bgImageAlpha;
+        widget.bgImage.clear();
+        widget.bgImageAlpha = 1.0f;
+    }
     cJSON* fontItem = cJSON_GetObjectItem(root, "font");
     if (fontItem && fontItem->valuestring) widget.font = fontItem->valuestring;
     cJSON* refHeightItem = cJSON_GetObjectItem(root, "refHeight");
@@ -237,8 +273,14 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
     if (bwItem) widget.borderWidth = (float)bwItem->valuedouble;
     cJSON* wCursorItem = cJSON_GetObjectItem(root, "cursor");
     if (wCursorItem && wCursorItem->valuestring) widget.cursor = wCursorItem->valuestring;
+    // "cache": "none" | "single" | "variants"; the old "cacheable": true/false = "single"/"none"
+    cJSON* cacheItem = cJSON_GetObjectItem(root, "cache");
     cJSON* cacheableItem = cJSON_GetObjectItem(root, "cacheable");
-    if (cacheableItem && cJSON_IsBool(cacheableItem)) widget.cacheable = cJSON_IsTrue(cacheableItem);
+    if (cacheItem && cJSON_IsString(cacheItem)) widget.cacheMode = cacheModeFromName(cacheItem->valuestring);
+    else if (cacheableItem && cJSON_IsBool(cacheableItem))
+        widget.cacheMode = cJSON_IsTrue(cacheableItem) ? UICacheMode::Single : UICacheMode::None;
+    cJSON* maxVarItem = cJSON_GetObjectItem(root, "maxVariants");
+    if (maxVarItem && cJSON_IsNumber(maxVarItem)) widget.maxVariants = std::max(1, maxVarItem->valueint);
 
     cJSON* elementsArr = cJSON_GetObjectItem(root, "elements");
     if (elementsArr && cJSON_IsArray(elementsArr)) {
@@ -252,6 +294,7 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             if (type) {
                 el.type = type->valuestring;
                 if (el.type == "hpbar") el.type = "progressbar";  // backward compat
+                el.kind = uiElementKindFromName(el.type);
             }
             cJSON* xItem = cJSON_GetObjectItem(item, "x"); if (xItem) el.x = (float)xItem->valuedouble;
             cJSON* yItem = cJSON_GetObjectItem(item, "y"); if (yItem) el.y = (float)yItem->valuedouble;
@@ -289,6 +332,7 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             cJSON* toy = cJSON_GetObjectItem(item, "textOffsetY"); if (toy) el.textOffsetY = (float)toy->valuedouble;
             cJSON* bfs = cJSON_GetObjectItem(item, "barFontScale"); if (!bfs) bfs = cJSON_GetObjectItem(item, "hpFontScale");
             if (bfs) el.barFontScale = (float)bfs->valuedouble;
+            cJSON* bst = cJSON_GetObjectItem(item, "barShowText"); if (bst && cJSON_IsBool(bst)) el.barShowText = cJSON_IsTrue(bst);
             cJSON* barBg  = cJSON_GetObjectItem(item, "barBg");  if (barBg)  el.barBg  = ToolsJSON::getColorByJSON(barBg);
             cJSON* barOk  = cJSON_GetObjectItem(item, "barOk");  if (barOk)  el.barOk  = ToolsJSON::getColorByJSON(barOk);
             cJSON* barMid = cJSON_GetObjectItem(item, "barMid"); if (barMid) el.barMid = ToolsJSON::getColorByJSON(barMid);
@@ -360,6 +404,8 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             if (paddingBottom) el.paddingBottom = (float)paddingBottom->valuedouble;
             cJSON* enabledItem = cJSON_GetObjectItem(item, "enabled");
             if (enabledItem && cJSON_IsBool(enabledItem)) el.enabled = cJSON_IsTrue(enabledItem);
+            cJSON* liveItem = cJSON_GetObjectItem(item, "live");
+            if (liveItem && cJSON_IsBool(liveItem)) el.live = cJSON_IsTrue(liveItem);
             cJSON* wrapItem = cJSON_GetObjectItem(item, "wrap");
             if (wrapItem && cJSON_IsBool(wrapItem)) el.wrap = cJSON_IsTrue(wrapItem);
             cJSON* lineSp = cJSON_GetObjectItem(item, "lineSpacing"); if (lineSp) el.lineSpacing = (float)lineSp->valuedouble;
@@ -370,7 +416,7 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             cJSON* scBarC = cJSON_GetObjectItem(item, "scrollbarColor");
             if (scBarC) el.scrollbarColor = ToolsJSON::getColorByJSON(scBarC);
             // Scroll content moves with the wheel every frame: a widget holding one can't be FBO-cached.
-            if (el.type == "scroll") widget.cacheable = false;
+            if (el.kind == UIElementKind::Scroll) widget.cacheMode = UICacheMode::None;
             widget.elements.push_back(el);
         }
     }
@@ -419,7 +465,7 @@ void UIManager::loadWidget(const std::string& filePath)
     // Searches: same dir first, then all loadedDirs (includes subdirs).
     std::string parentDir = std::filesystem::path(filePath).parent_path().string() + "/";
     for (auto& el : widget.elements) {
-        if ((el.type == "widget" || el.type == "array" || el.type == "scroll") && !el.widgetRef.empty()) {
+        if (uiElementIsContainer(el.kind) && !el.widgetRef.empty()) {
             if (!widgets.count(el.widgetRef)) {
                 std::string refPath = parentDir + el.widgetRef + ".json";
                 if (!std::filesystem::exists(refPath)) {
@@ -441,13 +487,16 @@ void UIManager::loadWidget(const std::string& filePath)
 
 float UIManager::getElementHeight(const UIElement& el)
 {
-    if (el.type == "text")        return el.fontScale * 20.0f;
-    if (el.type == "image")       return el.h * el.imageScale;
-    if (el.type == "rect")        return (el.h > 0) ? el.h : 0;
-    if (el.type == "progressbar") return el.barH;
-    if (el.type == "icons")       return el.iconSize + el.iconGap;
-    if (el.type == "button")      return el.h;
-    if (el.type == "scroll")      return el.h;
+    switch (el.kind) {
+        case UIElementKind::Text:        return el.fontScale * 20.0f;
+        case UIElementKind::Image:       return el.h * el.imageScale;
+        case UIElementKind::Rect:        return (el.h > 0) ? el.h : 0;
+        case UIElementKind::ProgressBar: return el.barH;
+        case UIElementKind::Icons:       return el.iconSize + el.iconGap;
+        case UIElementKind::Button:      return el.h;
+        case UIElementKind::Scroll:      return el.h;
+        default: break;
+    }
     // "widget"/"array": measured in pixels by renderWidgetAt's getHeightDynamic (needs the render
     // scale and the data's item count, which this static helper doesn't have).
     return 0;
@@ -458,8 +507,17 @@ float UIManager::getElementHeight(const UIElement& el)
 
 float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRenderData& data, bool useDefaultData)
 {
-    if (widgetRenderDepth == 0) { lastClickedId = ""; lastRightClickedId = ""; lastHoveredId = ""; hoveredCursorName = ""; }
+    // Pass requested by the parent for THIS call only (nested widget/array): see NestedPass
+    const NestedPass onlyPass = pendingNestedPass;
+    pendingNestedPass = NestedPass::Both;
+    if (widgetRenderDepth == 0) {
+        lastClickedId = ""; lastRightClickedId = ""; lastHoveredId = ""; hoveredCursorName = "";
+        beginTopLevelDraw(data);
+    }
     widgetRenderDepth++;
+    // Imágenes, marcos y rects del widget (y de sus anidados) van al lote de UI; se vacía al salir del
+    // widget más externo (ComponentRender::UIDeferScope) -- antes, una llamada de dibujo por cada uno.
+    ComponentRender::UIDeferScope uiDefer(render);
     // Pixel offset applied here (not in drawWidget/drawWidgetAtPos) so it also works when the
     // widget is rendered nested (widget/array elements, scroll, tooltip, pager).
     x += w.offsetX;
@@ -497,6 +555,7 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
 
     auto buildScaled = [s, ts, cw, ch](const UIElement& el) {
         UIElement sc = el;
+        sc.kind           = uiElementKindFromName(el.type);   // the editor may have changed type
         sc.x              = (el.x * cw + el.paddingLeft * cw) * s;
         sc.y              = el.y * ch * s;
         sc.w              = el.w * cw * s;
@@ -520,6 +579,30 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
         return sc;
     };
 
+    // Scaled elements (UIWidget::scaledEls), rebuilt only when scale / text scale / box size change or
+    // the editor touched elements (markElementsEdited): N copies of a widget, and frame after frame,
+    // don't copy and scale every element again. A widget nested inside itself (scaledInUse) gets a local
+    // copy so the vector being iterated is never rebuilt under it.
+    std::vector<UIElement> localScaled;
+    const std::vector<UIElement>* scaledEls = &w.scaledEls;
+    {
+        const bool stale = w.scaledSerial != elementsGeneration || w.scaledEls.size() != w.elements.size() ||
+                           w.scaledKey[0] != s || w.scaledKey[1] != ts || w.scaledKey[2] != cw || w.scaledKey[3] != ch;
+        if (stale) {
+            std::vector<UIElement>& out = (w.scaledInUse > 0) ? localScaled : w.scaledEls;
+            out.clear();
+            out.reserve(w.elements.size());
+            for (const auto& el : w.elements) out.push_back(buildScaled(el));
+            if (w.scaledInUse > 0) {
+                scaledEls = &localScaled;
+            } else {
+                w.scaledKey[0] = s;  w.scaledKey[1] = ts;  w.scaledKey[2] = cw;  w.scaledKey[3] = ch;
+                w.scaledSerial = elementsGeneration;
+            }
+        }
+    }
+    w.scaledInUse++;
+
     auto resolveData = [&](const UIElement& el) -> const UIElementData& {
         auto dit = data.find(el.id);
         if (dit != data.end()) return dit->second;
@@ -535,14 +618,14 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
     // these two branches returned widget-FRACTION values -- e.g. 0.019 instead of ~19 px -- so a yAuto
     // element after a nested widget/array barely moved down.)
     auto getHeightDynamic = [&](const UIElement& sc, const UIElementData& elData) -> float {
-        if (sc.type == "widget") {
+        if (sc.kind == UIElementKind::Widget) {
             auto it2 = widgets.find(sc.widgetRef);
             if (it2 == widgets.end()) return 0.0f;
             float ss = it2->second.scale > 0 ? it2->second.scale : 1.0f;
             // child box: renderWidgetAt uses window height × its height × accumulated scale
             return (float)winPtr->getHeight() * it2->second.height * ss * s;
         }
-        if (sc.type == "array") {
+        if (sc.kind == UIElementKind::Array) {
             auto it2 = widgets.find(sc.widgetRef);
             if (it2 != widgets.end()) {
                 float ss = it2->second.scale > 0 ? it2->second.scale : 1.0f;
@@ -563,7 +646,7 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
             }
         }
         // Wrapped text: as tall as its lines (the text comes from data, so it can't be static)
-        if (sc.type == "text" && sc.wrap && sc.w > 0.0f) {
+        if (sc.kind == UIElementKind::Text && sc.wrap && sc.w > 0.0f) {
             const std::string& txt = elData.text.empty() ? sc.staticText : elData.text;
             if (txt.empty()) return 0.0f;
             auto lines = wrapText(txt, sc.w, sc.fontScale, sc.maxLines);
@@ -576,9 +659,10 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
 
     float dynamicH = ch * s;
     float dynamicW = cw * s;
+    const bool topLevel = widgetRenderDepth == 1;
 
     // Widget-level cursor: checked every frame (not cached — it's a side effect, not rendering).
-    if (!w.cursor.empty() && !textPass) {
+    if (!w.cursor.empty() && !textPass && !suppressInput) {
         int mx = input ? input->getRawMouseX() : -1;
         int my = input ? input->getRawMouseY() : -1;
         if (mx >= (int)x && mx <= (int)(x + dynamicW) && my >= (int)y && my <= (int)(y + dynamicH)
@@ -587,49 +671,73 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
     }
 
     // Lambda encapsulating all draw operations for this widget (background + elements + border).
-    // Called either directly (non-cacheable) or inside the dirty-render path (cacheable).
+    // Called directly ("none" / nested), to bake a cache (livePass SkipLive), over a cached image
+    // (OnlyLive) or to measure what a variant bakes (measuringBounds). x/y are read when it runs.
     auto renderContent = [&]() {
-        if (!hitTestOnly && w.bgColor.a > 0.0f)
+        // Background, frame and border are fixed: baked with the cache, not drawn again over it
+        const bool baseVisuals = !hitTestOnly && livePass != LivePass::OnlyLive && onlyPass != NestedPass::TextOnly;
+        if (measuringBounds) unionBounds(x, y, x + dynamicW, y + dynamicH);
+        if (baseVisuals && w.bgColor.a > 0.0f)
             render->DrawFilledRectToFB((int)x, (int)y, (int)dynamicW, (int)dynamicH, applyGA(w.bgColor), currentFB);
         // Optional background image: stretched over the widget box (its declared width × height --
-        // dynamicH is the declared height, it does NOT grow with content), under every element.
+        // dynamicH is the declared height, it does NOT grow with content), under the frame and every
+        // element. bgImageInset pulls it in from the edges (e.g. to stay inside a rounded frame).
         // Same helper/alpha as "image" elements.
-        if (!hitTestOnly && !w.bgImage.empty() && w.bgImageAlpha > 0.0f) {
-            const float bgAlpha = globalAlpha * w.bgImageAlpha;
-            const bool nineSlice = w.bgSlice[0] > 0.0f || w.bgSlice[1] > 0.0f || w.bgSlice[2] > 0.0f || w.bgSlice[3] > 0.0f;
-            if (nineSlice)   // frame mode: corners keep their size (scaled with the widget), edges/center stretch
-                render->DrawImage2DNineSliceToFB(getCachedImage(w.bgImage), x, y, dynamicW, dynamicH,
-                                                 w.bgSlice, w.bgSliceScale * s, currentFB, bgAlpha);
+        if (baseVisuals && !w.bgImage.empty() && w.bgImageAlpha > 0.0f) {
+            const float inset = std::min(w.bgImageInset * s, std::min(dynamicW, dynamicH) * 0.5f);
+            drawImageCached(w.bgImage, (int)(x + inset), (int)(y + inset),
+                            (int)(dynamicW - 2.0f * inset), (int)(dynamicH - 2.0f * inset),
+                            globalAlpha * w.bgImageAlpha);
+        }
+        // Optional frame OVER the background: 9-slice (corners keep their size, scaled with the
+        // widget; edges/center stretch), or the whole image stretched when there are no cuts.
+        if (baseVisuals && !w.frameImage.empty() && w.frameImageAlpha > 0.0f) {
+            const float frameAlpha = globalAlpha * w.frameImageAlpha;
+            Image* frameImg = getCachedImage(w.frameImage);
+            if (frameImg && !frameImg->isLoaded()) bakeMissingImage = true;
+            const bool nineSlice = w.frameSlice[0] > 0.0f || w.frameSlice[1] > 0.0f || w.frameSlice[2] > 0.0f || w.frameSlice[3] > 0.0f;
+            if (nineSlice)
+                render->DrawImage2DNineSliceToFB(frameImg, x, y, dynamicW, dynamicH,
+                                                 w.frameSlice, w.frameSliceScale * s, currentFB, frameAlpha);
             else
-                drawImageCached(w.bgImage, (int)x, (int)y, (int)dynamicW, (int)dynamicH, bgAlpha);
+                drawImageCached(w.frameImage, (int)x, (int)y, (int)dynamicW, (int)dynamicH, frameAlpha);
         }
 
-        // Pass 1: rects, images, icons (no text) — also runs hit-test
+        // Pass 1: rects, images, icons (no text) — also runs hit-test. Skipped in a text-only call
+        // (the parent's text pass: this widget's images and hit-tests already ran in its image pass).
         textPass = false;
         float autoY = y;
-        for (auto& el : w.elements) {
-            UIElement scaled = buildScaled(el);
+        for (size_t i = 0; onlyPass != NestedPass::TextOnly && i < w.elements.size(); i++) {
+            const UIElement& el = w.elements[i];
+            const UIElement& scaled = (*scaledEls)[i];
             if (el.yAuto) autoY += scaled.paddingTop;
             float drawY = el.yAuto ? autoY : y + scaled.y + scaled.paddingTop;
-            renderElement(scaled, x, drawY, resolveData(el));
-            if (el.enabled) contentBottom = std::max(contentBottom, drawY + getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom);
-            if (el.yAuto) autoY += getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom;
+            const UIElementData& ed = resolveData(el);
+            renderElementFiltered(scaled, x, drawY, ed);
+            const float hDyn = getHeightDynamic(scaled, ed);
+            if (el.enabled) contentBottom = std::max(contentBottom, drawY + hDyn + scaled.paddingBottom);
+            if (measuringBounds && !(el.live && livePass == LivePass::SkipLive))
+                accumulateBounds(scaled, x, drawY, ed, hDyn);
+            if (el.yAuto) autoY += hDyn + scaled.paddingBottom;
         }
 
-        // Pass 2: text only — skipped entirely in hit-test-only mode
-        if (!hitTestOnly) {
+        // Pass 2: text only — skipped entirely in hit-test-only mode and in an image-only call (the
+        // parent draws this widget's text in its own text pass, over the parent's images)
+        if (!hitTestOnly && onlyPass != NestedPass::ImagesOnly) {
             textPass = true;
             autoY = y;
-            for (auto& el : w.elements) {
-                UIElement scaled = buildScaled(el);
+            for (size_t i = 0; i < w.elements.size(); i++) {
+                const UIElement& el = w.elements[i];
+                const UIElement& scaled = (*scaledEls)[i];
                 if (el.yAuto) autoY += scaled.paddingTop;
                 float drawY = el.yAuto ? autoY : y + scaled.y + scaled.paddingTop;
-                renderElement(scaled, x, drawY, resolveData(el));
-                if (el.yAuto) autoY += getHeightDynamic(scaled, resolveData(el)) + scaled.paddingBottom;
+                const UIElementData& ed = resolveData(el);
+                renderElementFiltered(scaled, x, drawY, ed);
+                if (el.yAuto) autoY += getHeightDynamic(scaled, ed) + scaled.paddingBottom;
             }
         }
 
-        if (!hitTestOnly && w.borderWidth > 0.0f) {
+        if (baseVisuals && w.borderWidth > 0.0f) {
             int bw = (int)w.borderWidth;
             Color bc = applyGA(w.borderColor);
             int ix = (int)x, iy = (int)y, iw = (int)dynamicW, ih = (int)dynamicH;
@@ -639,7 +747,8 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
             render->DrawFilledRectToFB(ix+iw-bw, iy,       bw, ih, bc, currentFB);
         }
 
-        if (!hitTestOnly && !debugHighlightName.empty()) {
+        // Editor overlay: drawn live (never baked into a cache)
+        if (!hitTestOnly && livePass != LivePass::SkipLive && onlyPass != NestedPass::TextOnly && !debugHighlightName.empty()) {
             auto hit = widgets.find(debugHighlightName);
             if (hit != widgets.end() && &hit->second == &w) {
                 int ix = (int)x, iy = (int)y, iw = (int)dynamicW, ih = (int)dynamicH;
@@ -652,10 +761,34 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
                 render->DrawFilledRectToFB(ix+iw-hbw, iy,        hbw, ih,  hbc, currentFB);
             }
         }
+        // Sin vaciar el lote al final del widget (antes se vaciaba al cerrar cada widget ANIDADO: una
+        // llamada de dibujo por hueco/elemento de array). El lote conserva el orden; se vacía al
+        // cambiar de destino o mezcla, antes de cualquier dibujo inmediato, al hornear una caché
+        // (clearFBOOverride / DrawWidgetCacheToFB) y al cerrar el widget de primer nivel (UIDeferScope).
     };
 
-    // ── FBO Cache path (only at top-level depth, non-interactive widgets) ──────
-    if (w.cacheable && widgetRenderDepth == 1) {
+    // Over a cached image: live elements drawn, fixed ones only hit-tested (clicks on baked buttons)
+    auto renderLivePass = [&](bool hitTest) {
+        const LivePass prevPass = livePass;
+        const bool prevHT = liveHitTest;
+        livePass = LivePass::OnlyLive;
+        liveHitTest = hitTest;
+        renderContent();
+        livePass = prevPass;
+        liveHitTest = prevHT;
+    };
+
+    const bool cached = topLevel && !hitTestOnly && w.cacheMode != UICacheMode::None;
+    const bool hasLive = cached && widgetHasLive(w);
+    if (cached && !cacheValidated[w.filePath]) {
+        cacheValidated[w.filePath] = true;
+        for (const auto& p : collectCacheProblems(w, "", 0))
+            LOG_MESSAGE("[UIManager] cache '%s' (%s): %s", w.filePath.c_str(), cacheModeName(w.cacheMode), p.c_str());
+    }
+    bool areaSet = false;
+
+    // ── "single": one FBO the size of the target layer ──────────────────────
+    if (cached && w.cacheMode == UICacheMode::Single) {
         // The cache matches its TARGET layer ("ui" = window sized, the rest = render sized), so the
         // blit is 1:1 and the draws inside map onto it (setFBOOverride with its size below)
         int rW, rH;
@@ -690,7 +823,10 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
             w.cacheDirty = true;
         }
 
-        if (w.cacheDirty || data != w.cachedData) {
+        // Only the FIXED elements' data decides a re-render: live ones are drawn every call anyway
+        std::string sig = fixedDataSignature(w, data);
+        if (w.cacheDirty || sig != w.cachedSig) {
+            render->flushUIBatch();   // pending quads were meant for the old target
             // Clear cache FBO (transparent)
             glBindFramebuffer(GL_FRAMEBUFFER, w.cacheFBO);
             Profiler::get()->incrementFboChanges();
@@ -705,26 +841,134 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
             // OPAQUE (globalAlpha 1) and setWidgetAlpha is applied when blitting it below: before, a
             // widget faded in with setWidgetAlpha (npcDialogue with the letterbox bars) was cached
             // at its first, almost transparent alpha and stayed like that until its data changed.
+            // Baked without input (no clicks/hover/sounds): the live pass below does the hit-test.
             const float fadeAlpha = globalAlpha;
+            const LivePass prevPass = livePass;
+            const bool prevSuppress = suppressInput;
             globalAlpha = 1.0f;
+            livePass = LivePass::SkipLive;
+            suppressInput = true;
+            bakeMissingImage = false;
             render->setFBOOverride(w.cacheFBO, rW, rH);
             renderContent();
             render->clearFBOOverride();
             globalAlpha = fadeAlpha;
+            livePass = prevPass;
+            suppressInput = prevSuppress;
 
-            w.cachedData = data;
-            w.cacheDirty = false;
+            w.cachedSig = std::move(sig);
+            w.cacheDirty = bakeMissingImage;   // an image was still loading: bake again next draw
         }
 
         // Always blit the cached texture to the current target FB
         render->DrawWidgetCacheToFB(w.cacheTexture, rW, rH, currentFB, globalAlpha);
 
-        // Hit-test pass: no GPU draw calls, only mouse interaction detection
-        hitTestOnly = true;
-        renderContent();
-        hitTestOnly = false;
+        // Live elements on top + hit-test of the fixed ones (no GPU draw for those)
+        renderLivePass(true);
+
+    // ── "variants": one atlas cell per distinct fixed data ──────────────────
+    } else if (cached && w.cacheMode == UICacheMode::Variants) {
+        int rW, rH;
+        ComponentRender::getTargetSize(currentFB, rW, rH);
+        const float rx = (float)rW / (float)winPtr->getWidth();
+        const float ry = (float)rH / (float)winPtr->getHeight();
+        bool drawn = false;
+        if (ensureVariantAtlas(w, rW, rH)) {
+            std::string sig = fixedDataSignature(w, data);
+            char scaleSig[48];
+            snprintf(scaleSig, sizeof(scaleSig), "#%.5f|%.5f", s, ts);   // scale is part of the key
+            sig += scaleSig;
+            auto vit = w.variants.find(sig);
+            // Missing, or baked while one of its images was still loading (Image loads in a thread
+            // job): re-baked in its own cell until complete
+            const bool rebake = vit != w.variants.end() && vit->second.incomplete;
+            if (vit == w.variants.end() || rebake) {
+                const float sx = x, sy = y;
+                const bool prevSuppress = suppressInput;
+                const LivePass prevPass = livePass;
+                const float prevContentBottom = contentBottom;
+                suppressInput = true;
+                livePass = LivePass::SkipLive;
+
+                UIWidget::VariantCell cell;
+                bool haveCell = false;
+                if (rebake) {
+                    cell = vit->second;
+                    haveCell = true;
+                    clearVariantCell(w, cell);
+                } else {
+                    // 1) Measure what gets baked (fixed elements + nested widgets) without drawing anything
+                    const bool prevHT = hitTestOnly, prevMeasuring = measuringBounds;
+                    hitTestOnly = true;  measuringBounds = true;
+                    mbx0 = mby0 = 1e9f;  mbx1 = mby1 = -1e9f;
+                    renderContent();
+                    cell.contentH = std::max(0.0f, contentBottom - y);
+                    contentBottom = prevContentBottom;
+                    hitTestOnly = prevHT;  measuringBounds = prevMeasuring;
+
+                    // Cell = measured area in target px relative to the widget origin, 1 px margin
+                    cell.offX = (int)std::floor((mbx0 - x) * rx) - 1;
+                    cell.offY = (int)std::floor((mby0 - y) * ry) - 1;
+                    cell.w = (int)std::ceil((mbx1 - x) * rx) + 1 - cell.offX;
+                    cell.h = (int)std::ceil((mby1 - y) * ry) + 1 - cell.offY;
+                    haveCell = mbx1 > mbx0 && mby1 > mby0 && allocVariantCell(w, cell.w, cell.h, cell.ax, cell.ay);
+                }
+                if (haveCell) {
+                    // 2) Bake it with the same layout, moved so its top-left lands on the cell. The
+                    // override keeps the TARGET size (same px mapping as drawing it directly); the
+                    // atlas occupies the bottom rows of that viewport → atlas row ay = target row
+                    // (rH - atlasH + ay) from the top.
+                    const float fadeAlpha = globalAlpha;
+                    globalAlpha = 1.0f;
+                    bakeMissingImage = false;
+                    render->setFBOOverride(w.variantFBO, rW, rH);
+                    x = (float)(cell.ax - cell.offX) / rx;
+                    y = (float)(rH - w.variantAH + cell.ay - cell.offY) / ry;
+                    renderContent();
+                    render->clearFBOOverride();
+                    x = sx;  y = sy;
+                    contentBottom = prevContentBottom;
+                    globalAlpha = fadeAlpha;
+                    cell.incomplete = bakeMissingImage;
+                    if (rebake) vit->second = cell;
+                    else        vit = w.variants.emplace(std::move(sig), cell).first;
+                }
+                suppressInput = prevSuppress;
+                livePass = prevPass;
+            }
+            if (vit != w.variants.end()) {
+                const UIWidget::VariantCell& c = vit->second;
+                const int tx = (int)(x * rx) + c.offX;
+                const int ty = (int)(y * ry) + c.offY;
+                const float AW = (float)w.variantAW, AH = (float)w.variantAH;
+                render->DrawUITextureRegionToFB(w.variantTex, tx, ty, c.w, c.h,
+                                                (float)c.ax / AW,          1.0f - (float)c.ay / AH,
+                                                (float)(c.ax + c.w) / AW,  1.0f - (float)(c.ay + c.h) / AH,
+                                                currentFB, globalAlpha);
+                contentBottom = std::max(contentBottom, y + c.contentH);
+                ldx0 = (float)tx / rx;  ldy0 = (float)ty / ry;
+                ldx1 = (float)(tx + c.w) / rx;  ldy1 = (float)(ty + c.h) / ry;
+                areaSet = true;
+                // Fixed elements are only hit-tested when the mouse is over this copy
+                const int mx = input ? input->getRawMouseX() : -1;
+                const int my = input ? input->getRawMouseY() : -1;
+                const bool mouseIn = !suppressInput && input && (float)mx >= ldx0 && (float)mx <= ldx1 &&
+                                     (float)my >= ldy0 && (float)my <= ldy1 && pointerInClip(mx, my);
+                if (hasLive || mouseIn) renderLivePass(mouseIn);
+                drawn = true;
+            }
+        }
+        if (!drawn) renderContent();   // no atlas / bigger than the atlas: drawn like "none"
     } else {
         renderContent();
+    }
+
+    if (topLevel) {
+        lastDrawnValid = true;
+        if (!areaSet) {   // declared box, grown down to the content
+            ldx0 = x;  ldy0 = y;
+            ldx1 = x + dynamicW;  ldy1 = std::max(y + dynamicH, contentBottom);
+        }
     }
 
     textPass = prevTextPass;
@@ -733,6 +977,7 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
     currentRenderScale = prevRenderScale;
     currentTextScale = prevTextScale;
     tw = prevTw;
+    w.scaledInUse--;
     // Set AFTER nested calls (they overwrite it): the caller reads this widget's own value.
     lastContentH = std::max(0.0f, contentBottom - y);
     widgetRenderDepth--;
@@ -758,6 +1003,7 @@ float UIManager::drawWidget(const std::string& name, const UIWidgetRenderData& d
     if (scaleOverride > 0.0f) w.scale = w.scale * scaleOverride;
     float result = renderWidgetAt(w, ox, oy, data);
     w.scale = prevScale;
+    render->flushUIBatch();
     return result;
 }
 
@@ -776,7 +1022,413 @@ float UIManager::drawWidgetAtPos(const std::string& name, float x, float y, cons
     if (scaleOverride > 0.0f) w.scale = w.scale * scaleOverride;
     float result = renderWidgetAt(w, x, y, data);
     w.scale = prevScale;
+    render->flushUIBatch();
     return result;
+}
+
+// ---------------------------------------------------------------------------
+// Cache: live elements, "variants" atlas, instances (see the top of UIManager.h)
+
+const char* UIManager::cacheModeName(UICacheMode m)
+{
+    switch (m) {
+        case UICacheMode::None:     return "none";
+        case UICacheMode::Variants: return "variants";
+        default:                    return "single";
+    }
+}
+
+UICacheMode UIManager::cacheModeFromName(const std::string& s)
+{
+    if (s == "none")     return UICacheMode::None;
+    if (s == "variants") return UICacheMode::Variants;
+    return UICacheMode::Single;
+}
+
+
+// Element under the current livePass (see LivePass in UIManager.h)
+void UIManager::renderElementFiltered(const UIElement& el, float baseX, float baseY, const UIElementData& data)
+{
+    if (livePass == LivePass::All)      { renderElement(el, baseX, baseY, data); return; }
+    if (livePass == LivePass::SkipLive) { if (!el.live) renderElement(el, baseX, baseY, data); return; }
+
+    // OnlyLive: a live element is drawn whole (a live container with everything inside)
+    if (el.live) {
+        livePass = LivePass::All;
+        renderElement(el, baseX, baseY, data);
+        livePass = LivePass::OnlyLive;
+        return;
+    }
+    if (uiElementIsContainer(el.kind)) {
+        // Fixed container: go in only if it holds live elements or there is something to hit-test
+        if (!liveHitTest) {
+            auto it = widgets.find(el.widgetRef);
+            if (it == widgets.end() || !widgetHasLive(it->second, 1)) return;
+        }
+        renderElement(el, baseX, baseY, data);
+        return;
+    }
+    if (!liveHitTest) return;
+    const bool prevHT = hitTestOnly;
+    hitTestOnly = true;
+    renderElement(el, baseX, baseY, data);
+    hitTestOnly = prevHT;
+}
+
+void UIManager::unionBounds(float x0, float y0, float x1, float y1)
+{
+    mbx0 = std::min(mbx0, std::min(x0, x1));
+    mby0 = std::min(mby0, std::min(y0, y1));
+    mbx1 = std::max(mbx1, std::max(x0, x1));
+    mby1 = std::max(mby1, std::max(y0, y1));
+}
+
+// Window-px area a leaf element draws (same geometry as its render* function). Containers add their
+// own content through their renderWidgetAt.
+void UIManager::accumulateBounds(const UIElement& sc, float baseX, float drawY, const UIElementData& d, float hDyn)
+{
+    if (!sc.enabled || d.hidden) return;
+    const UIElementKind t = sc.kind;
+    float x0 = baseX + sc.x, y0 = drawY;
+    float x1 = x0, y1 = drawY + hDyn;
+
+    if (t == UIElementKind::Text) {
+        const std::string& text = d.text.empty() ? sc.staticText : d.text;
+        if (text.empty()) return;
+        TextWriter* wr = sc.font.empty() ? tw : writerForFont(sc.font);
+        if (sc.wrap && sc.w > 0.0f) {
+            x1 = x0 + sc.w;
+        } else {
+            const float textW = (float)wr->measureTextWidthAtlas(text.c_str(), sc.fontScale);
+            float tx = x0;
+            if (sc.w > 0.0f && sc.textAlign == "center")     tx += (sc.w - textW) * 0.5f;
+            else if (sc.w > 0.0f && sc.textAlign == "right") tx += sc.w - textW;
+            x0 = tx;
+            x1 = tx + textW;
+            y1 = drawY + std::max(hDyn, textLineHeight(sc.fontScale));
+        }
+    } else if (t == UIElementKind::Image) {
+        float iw = sc.w * sc.imageScale, ih = sc.h * sc.imageScale;
+        if (d.scale > 0.0f && d.scale != 1.0f) {
+            const float cx = x0 + iw * 0.5f, cy = y0 + ih * 0.5f;
+            iw *= d.scale;  ih *= d.scale;
+            x0 = cx - iw * 0.5f;  y0 = cy - ih * 0.5f;
+        }
+        x1 = x0 + iw;  y1 = y0 + ih;
+    } else if (t == UIElementKind::Rect) {
+        auto* win = Components::get()->Window();
+        const float w = sc.wPct > 0 ? (float)win->getWidth()  * sc.wPct : d.w > 0 ? d.w : sc.w;
+        const float h = sc.hPct > 0 ? (float)win->getHeight() * sc.hPct : d.h > 0 ? d.h : sc.h;
+        if      (sc.alignH == "center") x0 -= w * 0.5f;
+        else if (sc.alignH == "right")  x0 -= w;
+        if      (sc.alignV == "center") y0 -= h * 0.5f;
+        else if (sc.alignV == "bottom") y0 -= h;
+        x1 = x0 + w;  y1 = y0 + h;
+    } else if (t == UIElementKind::ProgressBar) {
+        if (!d.provided) return;
+        x1 = x0 + sc.barW;  y1 = y0 + sc.barH;
+        if (sc.barShowText) {
+            const std::string label = std::to_string((int)d.value) + "/" + std::to_string((int)d.maxValue);
+            const float lx = x0 + sc.textOffsetX, ly = drawY + sc.textOffsetY;
+            unionBounds(lx, ly, lx + (float)tw->measureTextWidthAtlas(label.c_str(), sc.barFontScale),
+                        ly + textLineHeight(sc.barFontScale));
+        }
+    } else if (t == UIElementKind::Icons) {
+        x1 = x0 + (float)d.iconList.size() * (sc.iconSize + sc.iconGap);
+        y1 = y0 + sc.iconSize;
+    } else if (t == UIElementKind::Button) {
+        x1 = x0 + (sc.w > 0 ? sc.w : 80.0f);
+        y1 = y0 + (sc.h > 0 ? sc.h : 20.0f);
+    } else if (t == UIElementKind::Scroll) {
+        x1 = x0 + sc.w;  y1 = y0 + sc.h;
+    } else {
+        return;
+    }
+    unionBounds(x0, y0, x1, y1);
+}
+
+bool UIManager::widgetHasLive(const UIWidget& w, int depth) const
+{
+    for (const auto& el : w.elements) {
+        if (!el.enabled) continue;
+        if (el.live) return true;
+        if (depth < 4 && uiElementIsContainer(el.kind)) {
+            auto it = widgets.find(el.widgetRef);
+            if (it != widgets.end() && widgetHasLive(it->second, depth + 1)) return true;
+        }
+    }
+    return false;
+}
+
+// Does this data key feed a live element? "id" of a live element, "<widgetId>_<childKey>" into a
+// nested widget/scroll and "<arrayPrefix><n>_<childKey>" into an array item (same keys renderElement
+// hands to the children).
+bool UIManager::isLiveDataKey(const UIWidget& w, const std::string& key, int depth) const
+{
+    if (depth > 4) return false;
+    for (const auto& el : w.elements) {
+        if (key == el.id) return el.live;
+        if (el.kind == UIElementKind::Widget || el.kind == UIElementKind::Scroll) {
+            const size_t n = el.id.size();
+            if (key.size() > n + 1 && key.compare(0, n, el.id) == 0 && key[n] == '_') {
+                if (el.live) return true;
+                auto it = widgets.find(el.widgetRef);
+                return it != widgets.end() && isLiveDataKey(it->second, key.substr(n + 1), depth + 1);
+            }
+        } else if (el.kind == UIElementKind::Array) {
+            const size_t p = el.arrayPrefix.size();
+            if (key.size() > p && key.compare(0, p, el.arrayPrefix) == 0) {
+                size_t q = p;
+                while (q < key.size() && key[q] >= '0' && key[q] <= '9') q++;
+                if (q > p && q + 1 < key.size() && key[q] == '_') {
+                    if (el.live) return true;
+                    auto it = widgets.find(el.widgetRef);
+                    return it != widgets.end() && isLiveDataKey(it->second, key.substr(q + 1), depth + 1);
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// Everything in an element's data that changes its pixels (not the tooltip text nor scrollTo)
+static void appendDataSignature(std::string& out, const UIElementData& d)
+{
+    char buf[192];
+    snprintf(buf, sizeof(buf), "%d%d%d%d|%g|%g|%g|%g|%d|%d|%g|",
+             (int)d.provided, (int)d.colorProvided, (int)d.enabled, (int)d.hidden,
+             d.w, d.h, d.value, d.maxValue, d.count, d.page, d.scale);
+    out += buf;
+    if (d.colorProvided) {
+        snprintf(buf, sizeof(buf), "%g,%g,%g,%g|", d.color.r, d.color.g, d.color.b, d.color.a);
+        out += buf;
+    }
+    out += d.text;    out += '\x1f';
+    out += d.path;    out += '\x1f';
+    out += d.pathOff; out += '\x1f';
+    out += d.key;     out += '\x1f';
+    for (const auto& icon : d.iconList) { out += icon; out += '\x1e'; }
+}
+
+// Signature of the data that a cache bakes: every entry except the ones that feed live elements,
+// in key order (two maps with the same content give the same string).
+std::string UIManager::fixedDataSignature(const UIWidget& w, const UIWidgetRenderData& data) const
+{
+    std::vector<const std::pair<const std::string, UIElementData>*> entries;
+    entries.reserve(data.size());
+    for (const auto& kv : data)
+        if (!isLiveDataKey(w, kv.first)) entries.push_back(&kv);
+    std::sort(entries.begin(), entries.end(), [](auto* a, auto* b) { return a->first < b->first; });
+    std::string sig;
+    sig.reserve(entries.size() * 64);
+    for (const auto* kv : entries) {
+        sig += kv->first;
+        sig += '{';
+        appendDataSignature(sig, kv->second);
+        sig += '}';
+    }
+    return sig;
+}
+
+// Atlas of a "variants" widget for a target layer of rW × rH. Rebuilt when that size changes; all
+// cells wiped when the window layout changes or the widget was invalidated.
+bool UIManager::ensureVariantAtlas(UIWidget& w, int rW, int rH)
+{
+    if (rW <= 0 || rH <= 0) return false;
+    if (w.variantFBO == 0 || w.variantRW != rW || w.variantRH != rH) {
+        render->flushUIBatch();   // pending quads may sample the old atlas
+        freeVariantAtlas(w);
+        w.variantAW = std::min(VARIANT_ATLAS_SIZE, rW);
+        w.variantAH = std::min(VARIANT_ATLAS_SIZE, rH);
+        glGenTextures(1, &w.variantTex);
+        glBindTexture(GL_TEXTURE_2D, w.variantTex);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w.variantAW, w.variantAH, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glGenFramebuffers(1, &w.variantFBO);
+        glBindFramebuffer(GL_FRAMEBUFFER, w.variantFBO);
+        Profiler::get()->incrementFboChanges();
+        render->setLastFrameBufferUsed(w.variantFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, w.variantTex, 0);
+        const bool complete = glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        Profiler::get()->incrementFboChanges();
+        render->setLastFrameBufferUsed(0);
+        if (!complete) {
+            LOG_MESSAGE("[UIManager] cache '%s': cannot create the variants atlas (%dx%d)", w.filePath.c_str(), w.variantAW, w.variantAH);
+            freeVariantAtlas(w);
+            return false;
+        }
+        w.variantRW = rW;
+        w.variantRH = rH;
+        w.variantsDirty = true;
+    }
+    auto* win = Components::get()->Window();
+    if (w.variantWinW != win->getWidth() || w.variantWinH != win->getHeight()) {
+        w.variantWinW = win->getWidth();
+        w.variantWinH = win->getHeight();
+        w.variantsDirty = true;
+    }
+    if (w.variantsDirty) wipeVariants(w);
+    return true;
+}
+
+void UIManager::wipeVariants(UIWidget& w)
+{
+    render->flushUIBatch();   // quads already queued this frame still sample the old cells
+    glBindFramebuffer(GL_FRAMEBUFFER, w.variantFBO);
+    Profiler::get()->incrementFboChanges();
+    render->setLastFrameBufferUsed(w.variantFBO);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    render->setLastFrameBufferUsed(0);
+    w.variants.clear();
+    w.shelfX = w.shelfY = w.shelfH = 0;
+    w.variantsDirty = false;
+}
+
+void UIManager::clearVariantCell(UIWidget& w, const UIWidget::VariantCell& c)
+{
+    render->flushUIBatch();
+    glBindFramebuffer(GL_FRAMEBUFFER, w.variantFBO);
+    Profiler::get()->incrementFboChanges();
+    render->setLastFrameBufferUsed(w.variantFBO);
+    // Atlas rows go bottom-up: the cell's top (ay from the top) is row variantAH - ay
+    glEnable(GL_SCISSOR_TEST);
+    glScissor(c.ax, w.variantAH - c.ay - c.h, c.w, c.h);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    Profiler::get()->incrementFboChanges();
+    render->setLastFrameBufferUsed(0);
+    applyScissor();   // back to the active scroll clip, or scissor off
+}
+
+// Shelf packer. Full (or maxVariants reached) → wipe every cell and start again (logged: a fixed
+// element is probably getting data that changes; it should be live).
+bool UIManager::allocVariantCell(UIWidget& w, int cw, int ch, int& ax, int& ay)
+{
+    if (cw <= 0 || ch <= 0 || cw > w.variantAW || ch > w.variantAH) {
+        if (!cacheValidated[w.filePath + "#toobig"]) {
+            cacheValidated[w.filePath + "#toobig"] = true;
+            LOG_MESSAGE("[UIManager] cache '%s': a variant (%dx%d px) does not fit the atlas (%dx%d): drawn without cache",
+                        w.filePath.c_str(), cw, ch, w.variantAW, w.variantAH);
+        }
+        return false;
+    }
+    auto place = [&]() -> bool {
+        if (w.shelfX + cw > w.variantAW) { w.shelfY += w.shelfH; w.shelfX = 0; w.shelfH = 0; }
+        if (w.shelfY + ch > w.variantAH) return false;
+        ax = w.shelfX;
+        ay = w.shelfY;
+        w.shelfX += cw;
+        w.shelfH = std::max(w.shelfH, ch);
+        return true;
+    };
+    if ((int)w.variants.size() < w.maxVariants && place()) return true;
+
+    w.variantWipes++;
+    if (w.variantWipes == 1 || w.variantWipes % 100 == 0)
+        LOG_MESSAGE("[UIManager] cache '%s': %d variants, atlas full or maxVariants (%d) reached -> all wiped (%d times). "
+                    "A fixed element is getting changing data: mark it \"live\"",
+                    w.filePath.c_str(), (int)w.variants.size(), w.maxVariants, w.variantWipes);
+    wipeVariants(w);
+    return place();
+}
+
+// Same on screen: two fully transparent colors are equal whatever their RGB
+static bool sameColor(const Color& a, const Color& b)
+{
+    if (a.a <= 0.0f && b.a <= 0.0f) return true;
+    return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+}
+
+// LIMITACIONES 2 (interactive elements baked) for the fixed elements of a cached widget, nested ones
+// included (prefix "child/").
+std::vector<std::string> UIManager::collectCacheProblems(const UIWidget& w, const std::string& prefix, int depth) const
+{
+    std::vector<std::string> out;
+    if (depth > 4) return out;
+    for (const auto& el : w.elements) {
+        if (!el.enabled || el.live) continue;
+        const std::string name = prefix + el.id;
+        if (el.kind == UIElementKind::Button) {
+            const bool hoverVisual = !sameColor(el.btnHover, el.btnBg) || !sameColor(el.btnPressed, el.btnBg) ||
+                (el.borderWidth > 0.0f && (!sameColor(el.borderColorHover, el.borderColor) ||
+                                           !sameColor(el.borderColorPressed, el.borderColor)));
+            bool optTooltip = false;
+            for (const auto& o : el.options) optTooltip |= !o.tooltip.empty() || !o.tooltipWidget.empty();
+            if (hoverVisual || !el.sound.empty() || !el.tooltip.empty() || optTooltip)
+                out.push_back("button '" + name + "' is fixed: baked without hover/press colors, sound or tooltip "
+                              "(clicks still work) -> mark it live, or cache none");
+        } else if (el.kind == UIElementKind::Image && !el.tooltip.empty()) {
+            out.push_back("image '" + name + "' has a tooltip: fixed images show no tooltip -> mark it live");
+        } else if (el.kind == UIElementKind::Scroll) {
+            out.push_back("scroll '" + name + "' is fixed: a scroll moves every frame -> mark it live, or cache none");
+        }
+        if ((el.kind == UIElementKind::Widget || el.kind == UIElementKind::Array) && !el.widgetRef.empty()) {
+            auto it = widgets.find(el.widgetRef);
+            if (it != widgets.end()) {
+                auto sub = collectCacheProblems(it->second, name + "/", depth + 1);
+                out.insert(out.end(), sub.begin(), sub.end());
+            }
+        }
+    }
+    return out;
+}
+
+std::vector<std::string> UIManager::validateWidgetCache(const std::string& name)
+{
+    auto it = widgets.find(name);
+    if (it == widgets.end() || it->second.cacheMode == UICacheMode::None) return {};
+    return collectCacheProblems(it->second, "", 0);
+}
+
+UIInstancesResult UIManager::drawWidgetInstances(const std::string& name, const std::vector<UIWidgetInstance>& instances,
+                                                 const std::string& fb, float scaleOverride)
+{
+    UIInstancesResult res;
+    auto it = widgets.find(name);
+    if (it == widgets.end()) {
+        printf("[UIManager] WARN: widget '%s' not found\n", name.c_str());
+        return res;
+    }
+    UIWidget& w = it->second;
+    currentFB = fb;
+    const float prevScale = w.scale;
+    if (scaleOverride > 0.0f) w.scale = w.scale * scaleOverride;
+
+    // One batch for every copy: the outer scope keeps it open until the end (each renderWidgetAt
+    // would otherwise flush it), and translucent rects don't split it (LIMITACIONES 7)
+    ComponentRender::UIDeferScope uiDefer(render);
+    const bool prevOver = render->isUIRectOverBlend();
+    render->setUIRectOverBlend(true);
+
+    const int mx = input ? input->getRawMouseX() : -1;
+    const int my = input ? input->getRawMouseY() : -1;
+    for (size_t i = 0; i < instances.size(); i++) {
+        const UIWidgetInstance& inst = instances[i];
+        const float prevGA = globalAlpha;
+        globalAlpha *= std::clamp(inst.alpha, 0.0f, 1.0f);
+        lastDrawnValid = false;
+        renderWidgetAt(w, inst.x, inst.y, inst.data);
+        globalAlpha = prevGA;
+        if (res.clicked < 0 && !lastClickedId.empty())           { res.clicked = (int)i;      res.clickedId = lastClickedId; }
+        if (res.rightClicked < 0 && !lastRightClickedId.empty()) { res.rightClicked = (int)i; res.rightClickedId = lastRightClickedId; }
+        if (lastDrawnValid && (float)mx >= ldx0 && (float)mx <= ldx1 && (float)my >= ldy0 && (float)my <= ldy1) {
+            res.hovered = (int)i;                 // later copies are drawn on top
+            res.hoveredId = lastHoveredId;
+        }
+    }
+
+    render->setUIRectOverBlend(prevOver);
+    w.scale = prevScale;
+    return res;
 }
 
 static UIWidgetRenderData filterDataByPrefix(const UIWidgetRenderData& data, const std::string& prefix)
@@ -787,6 +1439,48 @@ static UIWidgetRenderData filterDataByPrefix(const UIWidgetRenderData& data, con
             out[k.substr(prefix.size())] = v;
     }
     return out;
+}
+
+// Start of a top-level draw: the memo of nested data belongs to the previous one (see childData)
+void UIManager::beginTopLevelDraw(const UIWidgetRenderData& data)
+{
+    stableData.clear();
+    sortedData.clear();
+    childMemo.clear();
+    childScratch.clear();
+    stableData.insert(&data);   // alive for the whole draw (the caller owns it)
+}
+
+const UIWidgetRenderData& UIManager::childData(const UIWidgetRenderData& parent, const std::string& prefix)
+{
+    if (stableData.count(&parent) == 0) {   // temporary map: filter it as before, no memo
+        childScratch.push_back(filterDataByPrefix(parent, prefix));
+        return childScratch.back();
+    }
+
+    std::string key = std::to_string((uintptr_t)&parent);
+    key += '|';
+    key += prefix;
+    auto hit = childMemo.find(key);
+    if (hit != childMemo.end()) return hit->second;
+
+    // Parent entries sorted by key, once per draw: keys sharing a prefix are a contiguous range
+    auto& sorted = sortedData[&parent];
+    if (sorted.empty() && !parent.empty()) {
+        sorted.reserve(parent.size());
+        for (const auto& kv : parent) sorted.push_back(&kv);
+        std::sort(sorted.begin(), sorted.end(), [](const UIDataEntry* a, const UIDataEntry* b) { return a->first < b->first; });
+    }
+    UIWidgetRenderData out;
+    auto it = std::lower_bound(sorted.begin(), sorted.end(), prefix,
+                               [](const UIDataEntry* e, const std::string& p) { return e->first < p; });
+    for (; it != sorted.end() && (*it)->first.compare(0, prefix.size(), prefix) == 0; ++it) {
+        if ((*it)->first.size() > prefix.size())
+            out.emplace((*it)->first.substr(prefix.size()), (*it)->second);
+    }
+    UIWidgetRenderData& stored = childMemo.emplace(std::move(key), std::move(out)).first->second;
+    stableData.insert(&stored);   // its own children are memoized too
+    return stored;
 }
 
 void UIManager::renderElement(const UIElement& el, float baseX, float baseY, const UIElementData& data)
@@ -850,25 +1544,27 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
     };
 
     if (textPass) {
-        if (el.type == "text")        renderText(el, baseX, baseY, data);
-        if (el.type == "progressbar") renderProgressBar(el, baseX, baseY, data);
-        if (el.type == "button")      renderButton(el, baseX, baseY, data);
-        if (el.type == "widget" || el.type == "array") {
+        if (el.kind == UIElementKind::Text)        renderText(el, baseX, baseY, data);
+        if (el.kind == UIElementKind::ProgressBar) renderProgressBar(el, baseX, baseY, data);
+        if (el.kind == UIElementKind::Button)      renderButton(el, baseX, baseY, data);
+        if (el.kind == UIElementKind::Widget || el.kind == UIElementKind::Array) {
             if (renderDepth < 4) {
                 auto it = widgets.find(el.widgetRef);
                 if (it != widgets.end()) {
                     renderDepth++;
-                    if (el.type == "widget") {
+                    if (el.kind == UIElementKind::Widget) {
                         const UIWidgetRenderData& fullData = currentData ? *currentData : UIWidgetRenderData{};
-                        auto sub = filterDataByPrefix(fullData, el.id + "_");
+                        const UIWidgetRenderData& sub = childData(fullData, el.id + "_");
                         if (sub.empty() && !data.provided) { renderDepth--; return; }
+                        pendingNestedPass = NestedPass::TextOnly;
                         renderWidgetAt(it->second, baseX + el.x, baseY + el.y, sub, true);
                     } else {
                         auto [stepX, stepY] = arrayStep(it->second);
                         const float topOff = itemsTopOffset(it->second);
                         const UIWidgetRenderData& fullData = currentData ? *currentData : UIWidgetRenderData{};
                         for (int i = 0; i < resolvedCount; i++) {
-                            auto sub = filterDataByPrefix(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
+                            const UIWidgetRenderData& sub = childData(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
+                            pendingNestedPass = NestedPass::TextOnly;
                             renderWidgetAt(it->second,
                                 baseX + el.x + (float)i * stepX,
                                 baseY + el.y + topOff + (float)i * stepY, sub, false);
@@ -881,23 +1577,27 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
         }
         return;
     }
-    if (el.type == "image")       { renderImage(el, baseX, baseY, data);       return; }
-    if (el.type == "rect")        { renderRect(el, baseX, baseY, data);        return; }
-    if (el.type == "progressbar") { renderProgressBar(el, baseX, baseY, data); return; }
-    if (el.type == "icons")       { renderIcons(el, baseX, baseY, data);       return; }
-    if (el.type == "button")      { renderButton(el, baseX, baseY, data);      return; }
+    switch (el.kind) {
+        case UIElementKind::Image:       renderImage(el, baseX, baseY, data);       return;
+        case UIElementKind::Rect:        renderRect(el, baseX, baseY, data);        return;
+        case UIElementKind::ProgressBar: renderProgressBar(el, baseX, baseY, data); return;
+        case UIElementKind::Icons:       renderIcons(el, baseX, baseY, data);       return;
+        case UIElementKind::Button:      renderButton(el, baseX, baseY, data);      return;
+        default: break;
+    }
     // Scroll: only in pass 1 -- the child widget draws its own text inside renderWidgetAt, so a
     // second full render in the text pass would just double the cost and the hit-tests.
-    if (el.type == "scroll")      { if (renderDepth < 4) { renderDepth++; renderScroll(el, baseX, baseY, data); renderDepth--; } return; }
-    if (el.type == "widget" || el.type == "array") {
+    if (el.kind == UIElementKind::Scroll) { if (renderDepth < 4) { renderDepth++; renderScroll(el, baseX, baseY, data); renderDepth--; } return; }
+    if (el.kind == UIElementKind::Widget || el.kind == UIElementKind::Array) {
         if (renderDepth >= 4) return;
         auto it = widgets.find(el.widgetRef);
         if (it == widgets.end()) return;
         renderDepth++;
-        if (el.type == "widget") {
+        if (el.kind == UIElementKind::Widget) {
             const UIWidgetRenderData& fullData = currentData ? *currentData : UIWidgetRenderData{};
-            auto sub = filterDataByPrefix(fullData, el.id + "_");
+            const UIWidgetRenderData& sub = childData(fullData, el.id + "_");
             if (sub.empty() && !data.provided) { renderDepth--; return; }
+            pendingNestedPass = NestedPass::ImagesOnly;
             renderWidgetAt(it->second, baseX + el.x, baseY + el.y, sub, true);
         } else {
             auto [stepX, stepY] = arrayStep(it->second);
@@ -907,7 +1607,10 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
             float cw = (float)winPtr->getWidth()  * it->second.width  * ss * currentRenderScale;
             float ch = (float)winPtr->getHeight() * it->second.height * ss * currentRenderScale;
             const float topOff = itemsTopOffset(it->second);
-            if (el.bgColor.a > 0.0f) {
+            // Array background/borders are fixed visuals: not in hit-test/measure passes nor again
+            // over a cached image (OnlyLive)
+            const bool arrayVisuals = !hitTestOnly && livePass != LivePass::OnlyLive;
+            if (arrayVisuals && el.bgColor.a > 0.0f) {
                 float totalW = (el.arrayAlign == "horizontal") ? (float)(resolvedCount - 1) * stepX + cw : cw;
                 float totalH = (el.arrayAlign == "horizontal") ? ch : (float)(resolvedCount - 1) * stepY + ch;
                 render->DrawFilledRectToFB((int)(baseX + el.x), (int)(baseY + el.y + topOff), (int)totalW, (int)totalH, applyGA(el.bgColor), currentFB);
@@ -917,9 +1620,10 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
                 std::string prevHoverId = lastHoveredId;
                 float ix = baseX + el.x + (float)i * stepX;
                 float iy = baseY + el.y + topOff + (float)i * stepY;
-                auto sub = filterDataByPrefix(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
+                const UIWidgetRenderData& sub = childData(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
+                pendingNestedPass = NestedPass::ImagesOnly;
                 renderWidgetAt(it->second, ix, iy, sub, false);
-                if (el.borderWidth > 0.0f) {
+                if (arrayVisuals && el.borderWidth > 0.0f) {
                     int bord = (int)el.borderWidth;
                     Color bc = applyGA(el.borderColor);
                     render->DrawFilledRectToFB((int)ix,       (int)iy,       (int)cw, bord,   bc, currentFB);
@@ -998,7 +1702,7 @@ void UIManager::renderText(const UIElement& el, float x, float y, const UIElemen
                 if      (el.textAlign == "center") lx += (int)((el.w - (float)lineW) * 0.5f);
                 else if (el.textAlign == "right")  lx += (int)(el.w - (float)lineW);
             }
-            if (!line.empty()) tw->writeTextAtlasToFB(lx, (int)ly, line.c_str(), col, el.fontScale, currentFB);
+            if (!line.empty()) tw->appendTextAtlasToBatch(lx, (int)ly, line.c_str(), col, el.fontScale, currentFB);
             ly += lineAdvance;
         }
         return;
@@ -1014,7 +1718,7 @@ void UIManager::renderText(const UIElement& el, float x, float y, const UIElemen
     // Inside a scroll viewport the cached path is skipped: rebuilding the text cache binds its own
     // FBO and clears it, and the active glScissor (window-space rect) would clip that clear/draw.
     if (!el.cached || !clipStack.empty()) {
-        tw->writeTextAtlasToFB(tx, (int)y, text.c_str(), col, el.fontScale, currentFB);
+        tw->appendTextAtlasToBatch(tx, (int)y, text.c_str(), col, el.fontScale, currentFB);
         return;
     }
 
@@ -1134,6 +1838,7 @@ void UIManager::popClip()
 // render step ever sees it enabled.
 void UIManager::applyScissor() const
 {
+    render->flushUIBatch();   // el recorte se aplica al vaciar: lo pendiente va con el recorte anterior
     if (clipStack.empty()) { glDisable(GL_SCISSOR_TEST); return; }
     auto* win = Components::get()->Window();
     int tw, th;
@@ -1178,7 +1883,7 @@ void UIManager::renderScroll(const UIElement& el, float x, float y, const UIElem
     const int my = input ? input->getRawMouseY() : -1;
     const bool over = (float)mx >= vx && (float)mx <= vx + vw && (float)my >= vy && (float)my <= vy + vh
                       && pointerInClip(mx, my);
-    if (over) {
+    if (over && !suppressInput) {
         lastScrollHoverTime = (float)SDL_GetTicks() / 1000.0f;
         const int wheel = input->getMouseWheelY();
         if (wheel != 0 && !hitTestOnly) st.offset -= (float)wheel * el.scrollStep * currentRenderScale;
@@ -1188,7 +1893,7 @@ void UIManager::renderScroll(const UIElement& el, float x, float y, const UIElem
 
     static const UIWidgetRenderData emptyData;
     const UIWidgetRenderData& fullData = currentData ? *currentData : emptyData;
-    auto sub = filterDataByPrefix(fullData, el.id + "_");
+    const UIWidgetRenderData& sub = childData(fullData, el.id + "_");
 
     pushClip({ vx, vy, vw, vh });
     renderWidgetAt(it->second, vx, vy - st.offset, sub, true);
@@ -1223,6 +1928,7 @@ Image* UIManager::getCachedImage(const std::string& path)
 void UIManager::drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha)
 {
     Image* img = getCachedImage(path);
+    if (img && !img->isLoaded()) bakeMissingImage = true;   // a cache baking now must be redone
     if (img)
         render->DrawImage2DFromImageToFB(img, x, y, w, h, currentFB, alpha);
 }
@@ -1234,6 +1940,15 @@ void UIManager::renderImage(const UIElement& el, float x, float y, const UIEleme
     if (path.empty()) return;
     int ix = (int)(x + el.x), iy = (int)y;
     int iw = (int)(el.w * el.imageScale), ih = (int)(el.h * el.imageScale);
+    // data.scale: escala alrededor del centro del elemento (animaciones desde Lua, p.ej. un logo que
+    // "late"). El borde y el tooltip usan el rectángulo escalado.
+    if (data.scale > 0.0f && data.scale != 1.0f) {
+        const float cx = (float)ix + (float)iw * 0.5f, cy = (float)iy + (float)ih * 0.5f;
+        iw = (int)((float)iw * data.scale);
+        ih = (int)((float)ih * data.scale);
+        ix = (int)(cx - (float)iw * 0.5f);
+        iy = (int)(cy - (float)ih * 0.5f);
+    }
     drawImageCached(path, ix, iy, iw, ih, globalAlpha);
     if (el.borderWidth > 0.0f) {
         int bw = (int)el.borderWidth;
@@ -1244,7 +1959,7 @@ void UIManager::renderImage(const UIElement& el, float x, float y, const UIEleme
         render->DrawFilledRectToFB(ix+iw-bw,  iy,        bw, ih, bc, currentFB);
     }
     const std::string& tt = !data.tooltip.empty() ? data.tooltip : el.tooltip;
-    if (!tt.empty() && input) {
+    if (!tt.empty() && input && !suppressInput) {
         int mx = input->getRawMouseX(), my = input->getRawMouseY();
         if (mx >= ix && mx <= ix+iw && my >= iy && my <= iy+ih && pointerInClip(mx, my))
             pendingTooltip = { tt, mx, my, true, "", {}, currentFB };
@@ -1292,10 +2007,11 @@ void UIManager::renderProgressBar(const UIElement& el, float x, float y, const U
     if (!data.provided) return;
 
     if (textPass) {
+        if (!el.barShowText) return;
         std::string label = std::to_string((int)data.value) + "/" + std::to_string((int)data.maxValue);
         const Color col = applyGA(data.colorProvided ? data.color : el.staticTextColor);
-        tw->writeTextAtlasToFB((int)(x + el.x + el.textOffsetX), (int)(y + el.textOffsetY),
-                               label.c_str(), col, el.barFontScale, currentFB);
+        tw->appendTextAtlasToBatch((int)(x + el.x + el.textOffsetX), (int)(y + el.textOffsetY),
+                                   label.c_str(), col, el.barFontScale, currentFB);
         return;
     }
 
@@ -1337,7 +2053,8 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
     int mx = input ? input->getRawMouseX() : -1;
     int my = input ? input->getRawMouseY() : -1;
     // pointerInClip: a button scrolled out of a "scroll" viewport must not react to the mouse.
-    bool hovered = mx >= (int)bx && mx <= (int)(bx + bw) &&
+    // suppressInput: baking/measuring a cache -- drawn in its normal state, no interaction
+    bool hovered = !suppressInput && mx >= (int)bx && mx <= (int)(bx + bw) &&
                    my >= (int)by && my <= (int)(by + bh) && pointerInClip(mx, my);
     bool pressed = hovered && input && input->isLeftMouseButtonPressed();
     bool clicked = hovered && input && input->isMouseButtonUp();
@@ -1349,7 +2066,7 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
             Components::get()->Sound()->PlaySound(el.sound, ComponentSound::CHANNEL_UI_HOVER, 0);
     }
     if (hovered && !el.cursor.empty()) hoveredCursorName = el.cursor;
-    lastHoverState[hoverKey] = hovered;
+    if (!suppressInput) lastHoverState[hoverKey] = hovered;
 
     // Resolve active option (by key, or options[0] as editor/fallback preview)
     const UIElementOption* activeOpt = nullptr;
@@ -1384,8 +2101,8 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
             if (tw && tw->getGlyphAtlas() && tw->getGlyphAtlas()->isBuilt()) {
                 const GlyphAtlas* ga = tw->getGlyphAtlas();
                 float cx = 0.0f;
-                for (char c : resolvedText) {
-                    const GlyphInfo& g = ga->getGlyphInfo(c);
+                for (const char* p = resolvedText.c_str(); *p; ) {
+                    const GlyphInfo& g = ga->getGlyphInfo(GlyphNextCodepoint(p));   // UTF-8
                     cx += (g.valid ? g.advance : ga->getGlyphInfo(' ').advance) * scale;
                 }
                 textW = cx;
@@ -1407,7 +2124,7 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
             ty += (int)el.btnTextOffsetY;
             const Color col = applyGA((activeOpt && activeOpt->colorSet) ? activeOpt->color
                 : data.colorProvided ? data.color : el.staticTextColor);
-            tw->writeTextAtlasToFB(tx, ty, resolvedText.c_str(), col, scale, currentFB);
+            tw->appendTextAtlasToBatch(tx, ty, resolvedText.c_str(), col, scale, currentFB);
         }
         return;
     }
@@ -1541,8 +2258,8 @@ void UIManager::flushTooltip(float dt)
     if (tw->getGlyphAtlas() && tw->getGlyphAtlas()->isBuilt()) {
         const GlyphAtlas* ga = tw->getGlyphAtlas();
         float cx = 0.0f;
-        for (char c : pendingTooltip.text) {
-            const GlyphInfo& g = ga->getGlyphInfo(c);
+        for (const char* p = pendingTooltip.text.c_str(); *p; ) {
+            const GlyphInfo& g = ga->getGlyphInfo(GlyphNextCodepoint(p));   // UTF-8
             cx += (float)(g.valid ? g.advance : ga->getGlyphInfo(' ').advance) * scale;
         }
         textW = cx;
@@ -1603,6 +2320,9 @@ UIElementData UIManager::solTableToElementData(sol::table t)
 
     sol::object hObj = t["h"];
     if (hObj.valid()) d.h = hObj.as<float>();
+
+    sol::object scaleObj = t["scale"];
+    if (scaleObj.valid() && scaleObj.get_type() == sol::type::number) d.scale = scaleObj.as<float>();
 
     sol::object valueObj = t["value"];
     if (valueObj.valid()) d.value = valueObj.as<float>();
@@ -1671,4 +2391,26 @@ std::tuple<float, std::string, std::string, std::string> UIManager::drawWidgetAt
 
     float nextY = drawWidgetAtPos(name, x, y, solTableToRenderData(data), fb, scaleOverride);
     return {nextY, lastClickedId, lastRightClickedId, lastHoveredId};
+}
+
+std::tuple<int, std::string, int, std::string, int, std::string> UIManager::drawWidgetInstancesLua(
+    const std::string& name, sol::table instances, const std::string& fb, float scaleOverride)
+{
+    std::vector<UIWidgetInstance> list;
+    const size_t n = instances.size();
+    list.reserve(n);
+    for (size_t i = 1; i <= n; i++) {
+        sol::object o = instances[i];
+        if (o.get_type() != sol::type::table) continue;
+        sol::table t = o.as<sol::table>();
+        UIWidgetInstance inst;
+        inst.x     = t.get_or("x", 0.0f);
+        inst.y     = t.get_or("y", 0.0f);
+        inst.alpha = t.get_or("alpha", 1.0f);
+        sol::object d = t["data"];
+        if (d.get_type() == sol::type::table) inst.data = solTableToRenderData(d.as<sol::table>());
+        list.push_back(std::move(inst));
+    }
+    const UIInstancesResult r = drawWidgetInstances(name, list, fb, scaleOverride);
+    return {r.clicked + 1, r.clickedId, r.rightClicked + 1, r.rightClickedId, r.hovered + 1, r.hoveredId};
 }

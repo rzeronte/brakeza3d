@@ -9,6 +9,7 @@
 #include "Components/Component.h"
 #include "GUI/GUIManager.h"
 #include "Render/ThreadPool.h"
+#include "Misc/SpatialIndex.h"
 
 class Brakeza
 {
@@ -16,6 +17,8 @@ class Brakeza
     float last_ticks = 0;
     float current_ticks = 0;
     float executionTime = 0;
+    float scriptDeltaOverride = -1.f;   // < 0 = sin override (ver getScriptDeltaTime)
+    uint64_t frameIndex = 0;            // frames del bucle principal (SpatialIndex reconstruye una vez por frame)
 
     Components *componentsManager;
     Config::LineCommandOptions cliOptions;
@@ -44,6 +47,7 @@ class Brakeza
     std::unordered_set<Object3D *> livePointers;
 
     GUIManager managerGUI;
+    SpatialIndex spatialIndex;          // bajo demanda: vacío y sin coste si ningún script lo usa
     ThreadPool pool;
     ThreadPool poolImages;
 
@@ -70,6 +74,8 @@ public:
     void PreMainLoop();
 
     Timer *getTimer() { return &this->timer; }
+    uint64_t getFrameIndex() const { return frameIndex; }
+    SpatialIndex &getSpatialIndex() { return spatialIndex; }
     Object3D *getObjectById(unsigned int id) const;
     Object3D *getObjectByName(const std::string &label) const;
     void removeObjectFromIndex(Object3D *obj);
@@ -110,6 +116,16 @@ public:
     // milisegundos que antes usaba (por casualidad) el valor sin corregir de getDeltaTimeMicro().
     float getDeltaTimeMicro() const                             { return deltaTime * 1000.f; }
     float getDeltaTimeMS() const                                { return deltaTime; }
+
+    // Delta de tiempo que VE UN SCRIPT LUA (Brakeza:getDeltaTime/MS/Micro). Normalmente el del frame;
+    // mientras corre un script con ticks_per_second > 0, el tiempo acumulado desde su ejecución
+    // anterior (ScriptLUA::RunEnvironment/RunGlobal fijan y restauran el override). El código C++
+    // del motor sigue usando getDeltaTime() (el del frame).
+    float getScriptDeltaTime() const      { return scriptDeltaOverride >= 0.f ? scriptDeltaOverride : getDeltaTime(); }
+    float getScriptDeltaTimeMS() const    { return getScriptDeltaTime() * 1000.f; }
+    float getScriptDeltaTimeMicro() const { return getScriptDeltaTime() * 1000000.f; }
+    float getScriptDeltaOverride() const  { return scriptDeltaOverride; }
+    void  setScriptDeltaOverride(float s) { scriptDeltaOverride = s; }
     Components *getComponentsManager() const                    { return componentsManager; }
     GUIManager *GUI()                                           { return &managerGUI; }
     Object3D *getObjectByIndex(int index) const;

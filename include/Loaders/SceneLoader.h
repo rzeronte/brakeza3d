@@ -33,6 +33,12 @@ public:
     // path actualmente asociado a la escena cargada -- se guarda como campo "lightsFile" en el
     // JSON de la escena (SaveScene) y se usa para reimportar sin tener que ir al menú cada vez.
     static std::string currentLightsFile;
+    // Atenuación opcional para las luces de ese fichero (campo "lightsAttenuation" de la escena:
+    // { constant, linear, quadratic }). FBXLightLoader pone siempre la tabla por defecto (1, 0.09,
+    // 0.032), pensada para distancias cortas: en un interior escalado (p.ej. ~9 u/m) el suelo apenas
+    // recibe luz. Sin el campo, se respeta la del cargador.
+    static bool hasLightsAttenuation;
+    static float lightsAttenuation[3];
     static void LoadLightsFileAssociation(const cJSON *contentJSON, Scene *scene);
     static void ReimportLightsFile(const std::string &path, Scene *scene = nullptr);
 
@@ -42,7 +48,8 @@ public:
         bool loadScripts        = false,
         bool loadShaders        = false,
         bool loadCamera         = false,
-        bool loadRenderSettings = false
+        bool loadRenderSettings = false,
+        bool startScripts       = false     // con los scripts ya en marcha: onStart de cada script de escena al registrarlo
     );
 
     static void setSceneActive(const std::string& name, bool active);

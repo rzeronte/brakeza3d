@@ -3,6 +3,7 @@
 //
 
 #include <algorithm>
+#include <cctype>
 #include "../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
@@ -20,6 +21,31 @@ bool GUIAddonProjectSetup::additiveLoadShaders = false;
 bool GUIAddonProjectSetup::additiveLoadCamera = false;
 bool GUIAddonProjectSetup::additiveLoadRenderSettings = false;
 static std::string s_additiveScenePath;
+char GUIAddonProjectSetup::projectScriptsFilter[128] = "";
+char GUIAddonProjectSetup::sceneScriptsFilter[128] = "";
+char GUIAddonProjectSetup::sceneShadersFilter[128] = "";
+
+void GUIAddonProjectSetup::DrawFilterBar(const char *id, char *buffer, size_t size)
+{
+    ImGui::PushID(id);
+    float buttonWidth = GUIType::Sizes::ICON_SIZE_MENUS.x + ImGui::GetStyle().FramePadding.x * 2;
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x - buttonWidth - ImGui::GetStyle().ItemSpacing.x);
+    ImGui::InputTextWithHint("##filter", "Search...", buffer, size);
+    ImGui::SameLine();
+    GUI::DrawButton("Clear search", IconGUI::OBJECTS_VIEWER_CLEAR_FILTER, GUIType::Sizes::ICON_SIZE_MENUS,
+        false, [buffer] { buffer[0] = '\0'; }, buffer[0] == '\0');
+    ImGui::PopID();
+}
+
+bool GUIAddonProjectSetup::MatchesFilter(const std::string &text, const char *filter)
+{
+    if (filter == nullptr || filter[0] == '\0') return true;
+    auto lower = [](unsigned char c) { return (char) std::tolower(c); };
+    std::string t(text), f(filter);
+    std::transform(t.begin(), t.end(), t.begin(), lower);
+    std::transform(f.begin(), f.end(), f.begin(), lower);
+    return t.find(f) != std::string::npos;
+}
 
 void GUIAddonProjectSetup::DrawWinProjectSettings()
 {
@@ -292,6 +318,7 @@ void GUIAddonProjectSetup::DrawProjectScriptsNode()
             ImGui::Spacing();
             Drawable::WarningMessage("There are not scripts attached to project");
         } else {
+            DrawFilterBar("projectScripts", projectScriptsFilter, sizeof(projectScriptsFilter));
             DrawProjectScripts();
         }
         CustomImGui::CustomTreePop();
@@ -388,6 +415,7 @@ void GUIAddonProjectSetup::DrawSceneScriptsNode()
         if (scripts.empty()) {
             Drawable::WarningMessage("There are not scenes attached");
         } else {
+            DrawFilterBar("sceneScripts", sceneScriptsFilter, sizeof(sceneScriptsFilter));
             DrawSceneScripts();
         }
         CustomImGui::CustomTreePop();
@@ -455,6 +483,7 @@ void GUIAddonProjectSetup::DrawSceneShadersNode()
         if (shaders.empty()) {
             Drawable::WarningMessage("There are not shaders attached");
         } else {
+            DrawFilterBar("sceneShaders", sceneShadersFilter, sizeof(sceneShadersFilter));
             DrawSceneCustomShaders();
         }
         CustomImGui::CustomTreePop();
@@ -593,8 +622,12 @@ void GUIAddonProjectSetup::DrawProjectScripts()
     auto scripting = Components::get()->Scripting();
     auto scripts = scripting->getProjectScripts();
     ImGui::Spacing();
+    int shown = 0;
     for (unsigned int i = 0; i < scripts.size(); i++) {
         auto currentScript = scripts[i];
+        if (!MatchesFilter(currentScript->getName(), projectScriptsFilter) &&
+            !MatchesFilter(currentScript->getScriptFilename(), projectScriptsFilter)) continue;
+        shown++;
         ImGui::PushID(i);
 
         // Evaluar estados ANTES de crear el config
@@ -652,6 +685,7 @@ void GUIAddonProjectSetup::DrawProjectScripts()
 
         ImGui::PopID();
     }
+    if (shown == 0) Drawable::WarningMessage("No results for this search");
 }
 
 void GUIAddonProjectSetup::DrawSceneScripts()
@@ -659,8 +693,12 @@ void GUIAddonProjectSetup::DrawSceneScripts()
     auto scripting = Components::get()->Scripting();
     auto scripts = scripting->getSceneScripts();
 
+    int shown = 0;
     for (unsigned int i = 0; i < scripts.size(); i++) {
         auto currentScript = scripts[i];
+        if (!MatchesFilter(currentScript->getName(), sceneScriptsFilter) &&
+            !MatchesFilter(currentScript->getScriptFilename(), sceneScriptsFilter)) continue;
+        shown++;
         ImGui::PushID(i);
 
         // Evaluar estados ANTES de crear el config
@@ -729,6 +767,7 @@ void GUIAddonProjectSetup::DrawSceneScripts()
 
         ImGui::PopID();
     }
+    if (shown == 0) Drawable::WarningMessage("No results for this search");
 }
 
 void GUIAddonProjectSetup::DrawSceneCustomShaders()
@@ -736,8 +775,11 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
     auto render = Components::get()->Render();
     auto shaders = render->getSceneShaders();
 
+    int shown = 0;
     for (int i = 0; i < (int)shaders.size(); i++) {
         auto currentShader = shaders[i];
+        if (!MatchesFilter(currentShader->getLabel(), sceneShadersFilter)) continue;
+        shown++;
         ImGui::PushID(i);
 
         // Evaluar estados ANTES de crear el config
@@ -808,6 +850,7 @@ void GUIAddonProjectSetup::DrawSceneCustomShaders()
 
         ImGui::PopID();
     }
+    if (shown == 0) Drawable::WarningMessage("No results for this search");
 }
 
 void GUIAddonProjectSetup::DrawProjectEditPopup()

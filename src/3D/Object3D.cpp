@@ -93,18 +93,36 @@ void Object3D::onUpdate()
     }
 }
 
+void Object3D::onUpdateCulled()
+{
+    if (isRemoved() || !isEnabled()) return;
+
+    for (auto &a: attachedObjects) {
+        if (!a->isEnabled()) continue;
+        a->onUpdateCulled();
+    }
+}
+
 void Object3D::RunScripts()
 {
+    // Sin scripts no hay nada que hacer -- y antes se construía igualmente la cadena del profiler
+    // para CADA objeto habilitado de la escena, cada frame. Las claves "[O] objeto/script_update"
+    // solo se construyen con el detalle de scripts del profiler activo (2026-10-09).
+    if (scripts.empty()) return;
     auto* profiler  = Profiler::get();
-    bool  profileOn = profiler->isScriptDetailEnabled();
-    auto& sm        = profiler->getScriptMeasures();
-    const std::string objPrefix = "[O] " + getName() + "/";
+    const bool profileOn = profiler->isScriptDetailEnabled();
 
     for (auto &script: scripts) {
-        const std::string key = objPrefix + script->getName() + "_update";
-        if (profileOn) Profiler::StartMeasure(sm, key);
-        script->RunEnvironment(luaEnvironment, "onUpdate");
-        if (profileOn) Profiler::EndMeasure(sm, key);
+        if (profileOn) {
+            const std::string key = "[O] " + getName() + "/" + script->getName() + "_update";
+            auto& sm = profiler->getScriptMeasures();
+            Profiler::StartMeasure(sm, key);
+            script->RunEnvironment(luaEnvironment, "onUpdate");
+            Profiler::EndMeasure(sm, key);
+            Profiler::CountTick(sm, key, script->getTicksPerSecond(), script->didTickThisFrame());
+        } else {
+            script->RunEnvironment(luaEnvironment, "onUpdate");
+        }
         if (isGUISelected()) {
             //script->RunEnvironment(luaEnvironment, "onClick");
         }
@@ -123,17 +141,21 @@ void Object3D::postUpdate()
         Drawable::drawObject3DAxis(this,true,true,true);
     }
 
-    {
+    if (!scripts.empty()) {
+        // Claves del profiler solo con el detalle de scripts activo (ver RunScripts)
         auto* profiler  = Profiler::get();
-        bool  profileOn = profiler->isScriptDetailEnabled();
-        auto& sm        = profiler->getScriptMeasures();
-        const std::string objPrefix = "[O] " + getName() + "/";
+        const bool profileOn = profiler->isScriptDetailEnabled();
 
         for (auto &script: scripts) {
-            const std::string key = objPrefix + script->getName() + "_post";
-            if (profileOn) Profiler::StartMeasure(sm, key);
-            script->RunEnvironment(luaEnvironment, "postUpdate");
-            if (profileOn) Profiler::EndMeasure(sm, key);
+            if (profileOn) {
+                const std::string key = "[O] " + getName() + "/" + script->getName() + "_post";
+                auto& sm = profiler->getScriptMeasures();
+                Profiler::StartMeasure(sm, key);
+                script->RunEnvironment(luaEnvironment, "postUpdate");
+                Profiler::EndMeasure(sm, key);
+            } else {
+                script->RunEnvironment(luaEnvironment, "postUpdate");
+            }
         }
     }
 }
@@ -615,6 +637,7 @@ Object3D::~Object3D()
     // para que isValidObjectPointer() ya lo vea invalido desde el instante mas temprano
     // posible. Ver Brakeza::livePointers / isValidObjectPointer().
     Brakeza::get()->unregisterLiveObject(this);
+    if (spatialSlot >= 0) Brakeza::get()->getSpatialIndex().unregister(this);
 
     // Log con nombre + puntero: el SEH handler (main.cpp) imprime la direccion de memoria
     // exacta que causo un 0xC0000005 -- cruzarla contra este log identifica que objeto se

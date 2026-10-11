@@ -64,6 +64,9 @@ public:
     void flushTextBatch();
     void flushTextBatchToFB(const std::string& fb);
     void writeTextAtlasToFB(int x, int y, const char *text, const Color &c, float scale, const std::string& fb);
+    // Igual que writeTextAtlasToFB pero se añade al lote de UI (ShaderOGLUIBatch) en vez de dibujarse
+    // al momento: los textos seguidos con la misma fuente y destino salen en un solo draw call.
+    void appendTextAtlasToBatch(int x, int y, const char *text, const Color &c, float scale, const std::string& fb);
     int measureTextWidthAtlas(const char *text, float scale);
 
 private:

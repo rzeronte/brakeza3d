@@ -19,6 +19,8 @@ ModelData::~ModelData()
         if (glIsBuffer(m.indexBuffer))
             glDeleteBuffers(1, &m.indexBuffer);
     }
+    if (shadowMerged.buffer != 0 && glIsBuffer(shadowMerged.buffer))
+        glDeleteBuffers(1, &shadowMerged.buffer);
 }
 
 void ModelData::cloneInto(Mesh3D& target) const

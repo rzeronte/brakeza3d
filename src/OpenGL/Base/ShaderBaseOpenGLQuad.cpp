@@ -97,7 +97,7 @@ void ShaderBaseOpenGLQuad::DrawQuad() const
 {
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "Quad");
     glBindVertexArray(0);
 }
 

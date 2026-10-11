@@ -1,7 +1,16 @@
 #pragma once
 
+#include <string>
+
 class GUIAddonProjectSetup {
 public:
+    // Search filters for the script/shader lists (case-insensitive substring)
+    static char projectScriptsFilter[128];
+    static char sceneScriptsFilter[128];
+    static char sceneShadersFilter[128];
+    static void DrawFilterBar(const char *id, char *buffer, size_t size);
+    static bool MatchesFilter(const std::string &text, const char *filter);
+
     static void DrawWinProjectSettings();
 
     static void DrawProjectSettingsNode();

@@ -11,6 +11,19 @@
 #include "../../include/Misc/ToolsJSON.h"
 #include <set>
 
+std::vector<ProjectLoader::SkippedProjectScript> ProjectLoader::skippedProjectScripts;
+
+// Un --set key=value "activa" un script condicionado si llega con un valor distinto de vacío,
+// "false" y "0" (bool true, ciclos > 0...). Se mira rawParams directamente: los scripts se leen
+// antes que cli_params.
+bool ProjectLoader::IsCliParamActive(const std::string &param)
+{
+    const auto &rawParams = Brakeza::get()->getCliOptions().rawParams;
+    auto it = rawParams.find(param);
+    if (it == rawParams.end()) return false;
+    const std::string &v = it->second;
+    return !v.empty() && v != "false" && v != "0";
+}
 
 void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
 {
@@ -52,13 +65,22 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
         Config::get()->ENGINE_TITLE = sceneName;
     }
 
-    // sceneScripts
+    // sceneScripts. Una entrada con "onlyWithCliParam": "<param>" solo se carga si ese parámetro
+    // llega activo por --set (scripts de test/escenarios automáticos): en una partida normal ni se
+    // compila ni corre.
+    skippedProjectScripts.clear();
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts") != nullptr) {
         cJSON *currentScript;
         cJSON_ArrayForEach(currentScript, cJSON_GetObjectItemCaseSensitive(contentJSON, "scripts")) {
             std::string name = cJSON_GetObjectItemCaseSensitive(currentScript, "name")->valuestring;
             std::string codeScript = cJSON_GetObjectItemCaseSensitive(currentScript, "codeFile")->valuestring;
             std::string typesFile = cJSON_GetObjectItemCaseSensitive(currentScript, "typesFile")->valuestring;
+            cJSON *condItem = cJSON_GetObjectItemCaseSensitive(currentScript, "onlyWithCliParam");
+            if (condItem && cJSON_IsString(condItem) && !IsCliParamActive(condItem->valuestring)) {
+                skippedProjectScripts.push_back({ name, codeScript, typesFile, condItem->valuestring });
+                LOG_MESSAGE("[ProjectLoader] Script '%s' not loaded (only with --set %s)", name.c_str(), condItem->valuestring);
+                continue;
+            }
             Components::get()->Scripting()->AddProjectLUAScript(new ScriptLUA(name, codeScript, typesFile));
         }
     }
@@ -75,11 +97,19 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
     // RESOLUTION
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution") != nullptr) {
         auto resolutionJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "resolution");
+        const int rw = cJSON_GetObjectItemCaseSensitive(resolutionJSON, "width")->valueint;
+        const int rh = cJSON_GetObjectItemCaseSensitive(resolutionJSON, "height")->valueint;
 
-        Components::get()->Window()->setInitialRendererSize(
-            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "width")->valueint,
-            cJSON_GetObjectItemCaseSensitive(resolutionJSON, "height")->valueint
-        );
+        // "locked": true -> resolución de render FIJA para este proyecto: setRendererSize() la marca
+        // como personalizada (al redimensionar la ventana solo se adaptan ventana y UI) y recrea ya
+        // los buffers a ese tamaño -- se crearon al arrancar la ventana, antes de cargar el proyecto.
+        // Sin "locked" (por defecto): tamaño inicial que sigue a la ventana, como siempre.
+        const cJSON* lockedJSON = cJSON_GetObjectItemCaseSensitive(resolutionJSON, "locked");
+        if (cJSON_IsTrue(lockedJSON)) {
+            Components::get()->Window()->setRendererSize(rw, rh);
+        } else {
+            Components::get()->Window()->setInitialRendererSize(rw, rh);
+        }
     }
 
     // GRAVITY
@@ -203,6 +233,15 @@ void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
         cJSON_AddStringToObject(scriptSceneSON, "name", script->getScriptFilename().c_str());
         cJSON_AddItemToArray(sceneScriptsArray, scriptSceneSON);
     }
+    // Los condicionados que no se cargaron (onlyWithCliParam) se conservan tal cual
+    for (auto &s : skippedProjectScripts) {
+        cJSON *scriptJSON = cJSON_CreateObject();
+        cJSON_AddStringToObject(scriptJSON, "name", s.name.c_str());
+        cJSON_AddStringToObject(scriptJSON, "codeFile", s.codeFile.c_str());
+        cJSON_AddStringToObject(scriptJSON, "typesFile", s.typesFile.c_str());
+        cJSON_AddStringToObject(scriptJSON, "onlyWithCliParam", s.cliParam.c_str());
+        cJSON_AddItemToArray(sceneScriptsArray, scriptJSON);
+    }
     cJSON_AddItemToObject(root, "scripts", sceneScriptsArray);
 
     // scenes
@@ -225,6 +264,7 @@ void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
     cJSON *resolutionJSON = cJSON_CreateObject();
     cJSON_AddNumberToObject(resolutionJSON, "width", window->getWidthRender());
     cJSON_AddNumberToObject(resolutionJSON, "height", window->getHeightRender());
+    if (window->isRenderResolutionLocked()) cJSON_AddBoolToObject(resolutionJSON, "locked", true);
     cJSON_AddItemToObject(root, "resolution", resolutionJSON);
 
     // thread pools

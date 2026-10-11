@@ -118,7 +118,7 @@ void ShaderOGLImage::renderTextureRegion(
 
     glBindVertexArray(regionVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "Image");
     glBindVertexArray(0);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -169,7 +169,7 @@ void ShaderOGLImage::renderTexture(
 
     glBindVertexArray(quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6);
+    Profiler::get()->incrementDrawCall(GL_TRIANGLES, 6, 1, "Image");
 
     glBindVertexArray(0);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

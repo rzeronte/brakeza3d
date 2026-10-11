@@ -182,6 +182,7 @@ add_executable(Brakeza3D
         src/Misc/Counter.cpp include/Misc/Counter.h
         src/Render/Grid3D.cpp include/Render/Grid3D.h
         src/Render/Octree.cpp include/Render/Octree.h
+        src/Misc/SpatialIndex.cpp include/Misc/SpatialIndex.h
         src/Misc/SoundPackage.cpp include/Misc/SoundPackage.h
         src/Misc/TextureAtlas.cpp include/Misc/TextureAtlas.h
         src/Render/GlyphAtlas.cpp include/Render/GlyphAtlas.h
@@ -232,6 +233,7 @@ add_executable(Brakeza3D
         src/OpenGL/Code/ShaderOGLCustomCodePostprocessing.cpp include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h
         src/OpenGL/Quad/ShaderOGLDepthMap.cpp include/OpenGL/Quad/ShaderOGLDepthMap.h
         src/OpenGL/ShaderOGLImage.cpp include/OpenGL/ShaderOGLImage.h
+        src/OpenGL/ShaderOGLUIBatch.cpp include/OpenGL/ShaderOGLUIBatch.h
         src/OpenGL/Quad/ShaderOGLLightPass.cpp include/OpenGL/Quad/ShaderOGLLightPass.h
         src/OpenGL/Quad/ShaderOGLLine.cpp include/OpenGL/Quad/ShaderOGLLine.h
         src/OpenGL/ShaderOGLLine3D.cpp include/OpenGL/ShaderOGLLine3D.h

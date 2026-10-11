@@ -56,7 +56,7 @@ void ShaderOGLShading::render(glm::mat4 modelMatrix, GLuint vertexBuffer, GLuint
 
     setVAOAttributes(vertexBuffer, uvBuffer, normalBuffer);
 
-    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size);
+    DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, size, "Shading:59");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

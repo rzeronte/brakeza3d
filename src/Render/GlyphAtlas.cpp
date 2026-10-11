@@ -16,6 +16,8 @@ GlyphAtlas::~GlyphAtlas()
 
 bool GlyphAtlas::build(TTF_Font* font, int atlasSize)
 {
+    // ASCII + Latin-1 = ~190 glifos: 512x512 se queda corto con fuentes grandes (35 px)
+    if (atlasSize < 1024) atlasSize = 1024;
     LOG_MESSAGE("[GlyphAtlas] Building glyph atlas (size: %dx%d)...", atlasSize, atlasSize);
 
     atlas = new TextureAtlas(atlasSize, atlasSize);
@@ -25,7 +27,8 @@ bool GlyphAtlas::build(TTF_Font* font, int atlasSize)
     LOG_MESSAGE("[GlyphAtlas] Font metrics: lineHeight=%d, ascent=%d", lineHeight, ascent);
 
     int packed = 0, failed = 0;
-    for (int c = 32; c <= 126; c++) {
+    for (int c = 32; c <= 255; c++) {
+        if (c > 126 && c < 160) continue;   // DEL + controles C1: sin glifo
         SDL_Color white = {255, 255, 255, 255};
         SDL_Surface* glyphSurf = TTF_RenderGlyph_Blended(font, (Uint16)c, white);
         if (!glyphSurf) {
@@ -85,11 +88,11 @@ bool GlyphAtlas::build(TTF_Font* font, int atlasSize)
     return true;
 }
 
-const GlyphInfo& GlyphAtlas::getGlyphInfo(char c) const
+const GlyphInfo& GlyphAtlas::getGlyphInfo(unsigned int codepoint) const
 {
-    if (c < 32 || c > 126) {
+    if (codepoint < 32 || codepoint > 255) {
         static GlyphInfo invalid;
         return invalid;
     }
-    return glyphs[(int)c];
+    return glyphs[codepoint];
 }

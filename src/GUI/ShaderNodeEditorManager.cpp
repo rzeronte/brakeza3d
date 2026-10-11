@@ -1114,7 +1114,7 @@ void ShaderNodeEditorManager::RenderMesh(
     glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, vertexCount);
+    ShaderBaseOpenGL::DrawMeshGeometry(GL_TRIANGLES, indexBuffer, indexCount, vertexCount, "NodeEditorManager:1117");
 
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);

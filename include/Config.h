@@ -107,18 +107,19 @@ public:
     bool ENABLE_GAMEPAD_CONTROLLER = true;
     bool ENABLE_FRUSTUM_CULLING = true;
     bool ENABLE_SOUND = true;
-    bool ENABLE_LOGGING_CONSOLE = true;
+    // Log general (consola de ImGui + salida estándar + print de Lua). Apagado por defecto (coste por
+    // línea: std::endl vacía el búfer); se activa con --log-console o desde el menú Logging. Los errores
+    // salen siempre por la salida estándar (Logging::Error, forceSTD).
+    bool ENABLE_LOGGING_CONSOLE = false;
     bool ENABLE_LOGGING_STD = true;
     // Logs por objeto de alta frecuencia (destructores de Object3D/Mesh3D/Collider). Apagado por
     // defecto: al volver al menú se destruyen ~1000 objetos y 2-3 líneas por objeto con
     // std::endl congelaban ~1 s el frame. Activar al perseguir un crash (el SEH handler imprime
     // la dirección y el log de ~Object3D la cruza con el objeto destruido).
     bool ENABLE_LOGGING_VERBOSE = false;
-    // TEMPORAL (2026-08-26): activado por defecto para capturar brakeza_events.jsonl durante el
-    // crash "attempt to index a number value" al arrancar con autoload -- PlayLUAScripts() corre
-    // ANTES de que EngineObserver::init() se llamara antes de este cambio, así que sin esto el
-    // log quedaba vacío justo en la ventana donde revienta. Revertir a false una vez localizado.
-    bool OBSERVER_AI_ENABLED = true;
+    // EngineObserver (brakeza_events.jsonl + estado cada 60 frames): diagnóstico para la IA. Apagado por
+    // defecto; se activa con --observer-ai o desde el menú Logging.
+    bool OBSERVER_AI_ENABLED = false;
     bool ENABLE_IMGUI = true;
     bool ENABLE_IMGUI_TOOLBAR = true;
     bool ENABLE_IMGUI_STATUSBAR = true;

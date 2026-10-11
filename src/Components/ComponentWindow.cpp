@@ -46,8 +46,11 @@ void ComponentWindow::preUpdate()
 {
     Component::preUpdate();
 
-    //UpdateWindowSize();
-    //glViewport(0,0, widthWindow, heightWindow);
+    // Viewport de RENDER al empezar el frame (Window es el primer componente, antes que los
+    // scripts): el frame anterior terminó con el de la VENTANA (FlipGlobalToWindow). Con una
+    // resolución de render distinta de la ventana, los dibujos 2D de los scripts que no fijan su
+    // propio viewport lo heredaban y salían ampliados desde la esquina inferior izquierda.
+    glViewport(0, 0, widthRender, heightRender);
 }
 
 void ComponentWindow::onUpdate()
@@ -102,8 +105,9 @@ void ComponentWindow::onEnd()
 {
     if (hoverPBO) { glDeleteBuffers(1, &hoverPBO); hoverPBO = 0; }
     TTF_CloseFont(fontDefault);
+    if (renderer) SDL_DestroyRenderer(renderer);
+    if (rendererSurface) SDL_FreeSurface(rendererSurface);
     SDL_DestroyWindow(window);
-    SDL_DestroyRenderer(renderer);
     SDL_Quit();
 }
 
@@ -157,8 +161,19 @@ void ComponentWindow::InitWindow()
     context = SDL_GL_CreateContext(window);
     SDL_GL_MakeCurrent(window, context);
 
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    SDL_GetRendererOutputSize(renderer, &widthRender, &heightRender);
+    // Antes: SDL_CreateRenderer(window, ...) -> en Windows elige Direct3D y deja un dispositivo y un
+    // swapchain D3D (con su propio vsync) sobre la MISMA ventana que el contexto OpenGL. El motor no
+    // dibuja con él (solo el reproductor de vídeo): las SDL_Texture que se crean con este renderer
+    // (Image, GlyphAtlas, TextureAtlas, TextureAnimated) no se pintan nunca. Ahora es un renderer
+    // software sobre una superficie 1x1 fuera de pantalla: esas APIs siguen funcionando (texturas en
+    // RAM) y la ventana solo la presenta OpenGL. VideoPlayer::play() crea su propio renderer de
+    // ventana mientras dura un vídeo.
+    rendererSurface = SDL_CreateRGBSurfaceWithFormat(0, 1, 1, 32, SDL_PIXELFORMAT_RGBA32);
+    renderer = SDL_CreateSoftwareRenderer(rendererSurface);
+    if (renderer == nullptr) {
+        LOG_ERROR("[Window] SDL_CreateSoftwareRenderer failed: %s", SDL_GetError());
+    }
+    SDL_GL_GetDrawableSize(window, &widthRender, &heightRender);
 
     LOG_MESSAGE("[Window] Current video driver: %s", SDL_GetCurrentVideoDriver());
 
@@ -175,8 +190,25 @@ void ComponentWindow::InitWindow()
     // vsync ON pese a que el checkbox del menú (GUIAddonMenu::MenuVideo) mostrara "desactivado",
     // hasta que el usuario lo tocara a mano esa sesión. Ahora respeta el valor cargado desde el
     // arranque, igual que hace el propio toggle del menú.
-    SDL_GL_SetSwapInterval(Config::get()->V_SYNC ? 1 : 0);
-    SDL_RenderSetVSync(renderer, Config::get()->V_SYNC ? 1 : 0);
+    ApplyVSync(Config::get()->V_SYNC);
+}
+
+// V-Sync adaptativo: sincroniza con el monitor cuando el frame llega a tiempo y, si llega tarde,
+// lo presenta sin esperar al siguiente refresco (puede verse algo de tearing en ese frame). Con el
+// vsync clásico (intervalo 1 + doble buffer) un frame que tarda un poco más que un refresco espera
+// al siguiente, y los FPS caen de golpe a Hz/2, Hz/3... (144 Hz con el juego a 120 fps -> 72).
+// Si el driver no soporta el modo adaptativo (WGL/GLX_EXT_swap_control_tear), vsync normal.
+void ComponentWindow::ApplyVSync(bool enabled) const
+{
+    if (!enabled) {
+        SDL_GL_SetSwapInterval(0);
+        LOG_MESSAGE("[Window] V-Sync disabled");
+    } else if (SDL_GL_SetSwapInterval(-1) == 0) {
+        LOG_MESSAGE("[Window] V-Sync enabled (adaptive)");
+    } else {
+        SDL_GL_SetSwapInterval(1);
+        LOG_MESSAGE("[Window] V-Sync enabled (adaptive not supported: %s)", SDL_GetError());
+    }
 }
 
 void ComponentWindow::InitFontsTTF()

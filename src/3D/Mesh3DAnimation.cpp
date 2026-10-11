@@ -29,7 +29,10 @@ void Mesh3DAnimation::onUpdate()
 
     UpdateFrameTransformations();
 
-    UpdateOpenGLBones();
+    // La pose horneada (transform feedback, una llamada por submesh) solo si este frame la va a
+    // leer alguien -- el G-Buffer, el picking y las sombras ya hacen el skinning en su shader con
+    // las matrices de huesos (TBO). Ver NeedsBakedPose.
+    UpdateOpenGLBones(NeedsBakedPose());
 
     if (boneColliderEnabled) {
         UpdateBoneColliders();
@@ -121,7 +124,23 @@ void Mesh3DAnimation::postUpdate()
     }
 }
 
-void Mesh3DAnimation::UpdateOpenGLBones()
+// Consumidores que todavía leen feedbackBuffer (la pose horneada): render no instanciado (sin
+// luces), transparentes (postUpdate), modos de depuración (puntos/shading/wireframe), shaders de
+// objeto propios y el outline (selección en el editor, clic derecho). Si alguno cambia a skinning
+// por TBO, sale de aquí. Si se añade un consumidor nuevo de feedbackBuffer, tiene que entrar aquí:
+// sin él, leería la pose de la última vez que se horneó.
+bool Mesh3DAnimation::NeedsBakedPose() const
+{
+    const auto* cfg = Config::get();
+    if (cfg->TRIANGLE_MODE_PIXELS || cfg->TRIANGLE_MODE_SHADING || cfg->TRIANGLE_MODE_WIREFRAME) return true;
+    if (cfg->TRIANGLE_MODE_TEXTURIZED && (isTransparent() || !(cfg->ENABLE_LIGHTS && isEnableLights()))) return true;
+    if (!customShaders.empty()) return true;
+    if (isGUISelected()) return true;
+    if (Components::get()->Render()->getLastRightClickedObject() == this) return true;
+    return false;
+}
+
+void Mesh3DAnimation::UpdateOpenGLBones(bool bake)
 {
     if (!scene) return;
 
@@ -144,20 +163,42 @@ void Mesh3DAnimation::UpdateOpenGLBones()
             glmCache[b] = Tools::aiMat4toGLMMat4(meshTransforms[b]);
         }
 
-        shaderBones->render(m, glmCache, fbo);
+        if (bake) shaderBones->render(m, glmCache, fbo);
     }
 }
 
-void Mesh3DAnimation::UpdateFrameTransformations()
+void Mesh3DAnimation::onUpdateCulled()
 {
-    if (!scene || !scene->HasAnimations()) return;
+    Object3D::onUpdateCulled();
+
+    if (!isEnabled() || isRemoved()) return;
+
+    // Fuera de cámara no se calculan huesos ni se dibuja, pero el reloj de la animación tiene que
+    // seguir corriendo: si se congela, una unidad que muere fuera de pantalla deja su animación de
+    // muerte en el frame 0 y la reproduce entera al volver a entrar en cámara (varias "muriendo de
+    // golpe"), y los scripts que esperan isAnimationEnds() se quedan atascados.
+    AdvanceAnimationClock();
+}
+
+// Avanza runningTime/finished y aplica removeAtEndAnimation. Devuelve false si el objeto se ha
+// marcado para eliminar (no hay que seguir actualizándolo este frame).
+bool Mesh3DAnimation::AdvanceAnimationClock()
+{
+    if (!scene || !scene->HasAnimations()) return false;
 
     CheckIfEndAnimation();
 
     if (isRemoveAtEndAnimation() && isAnimationEnds()) {
         getParent()->setRemoved(true);
-        return;
+        return false;
     }
+
+    return true;
+}
+
+void Mesh3DAnimation::UpdateFrameTransformations()
+{
+    if (!AdvanceAnimationClock()) return;
 
     UpdateBonesFinalTransformations(runningTime);
 }

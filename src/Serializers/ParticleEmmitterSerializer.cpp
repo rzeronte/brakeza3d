@@ -32,6 +32,12 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(contextParticles, "VELOCITY_NOISE", light->getContextPointer().VELOCITY_NOISE);
     cJSON_AddNumberToObject(contextParticles, "DECELERATION_FACTOR", light->getContextPointer().DECELERATION_FACTOR);
     cJSON_AddNumberToObject(contextParticles, "PARTICLE_SIZE_SCALE", light->getContextPointer().PARTICLE_SIZE_SCALE);
+    cJSON_AddNumberToObject(contextParticles, "SIZE_START", light->getContextPointer().SIZE_START);
+    cJSON_AddNumberToObject(contextParticles, "SIZE_END", light->getContextPointer().SIZE_END);
+    cJSON_AddBoolToObject(contextParticles, "ROTATION_RANDOM_START", light->getContextPointer().ROTATION_RANDOM_START);
+    cJSON_AddNumberToObject(contextParticles, "ROTATION_SPEED_MIN", light->getContextPointer().ROTATION_SPEED_MIN);
+    cJSON_AddNumberToObject(contextParticles, "ROTATION_SPEED_MAX", light->getContextPointer().ROTATION_SPEED_MAX);
+    cJSON_AddBoolToObject(contextParticles, "ROTATION_RANDOM_DIR", light->getContextPointer().ROTATION_RANDOM_DIR);
     cJSON_AddItemToObject(root, "context", contextParticles);
 
     cJSON_AddItemToObject(root, "colorFrom", ToolsJSON::ColorToJSON(light->getColorFrom()));
@@ -68,7 +74,7 @@ Object3D * ParticleEmmitterSerializer::ObjectByJson(cJSON *json)
             Color::green(),
             ParticlesContext(
             0.0f,
-            0.5f,
+            50.0f,   // partículas/s
             1.5f,
             25.0f,
             1,
@@ -106,15 +112,28 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLES_BY_SECOND")->valuedouble),
         static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "PARTICLE_LIFESPAN")->valuedouble),
         cJSON_GetObjectItemCaseSensitive(contextJSON, "SMOKE_ANGLE_RANGE")->valueint,
-        cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_VELOCITY")->valueint,
-        cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_VELOCITY")->valueint,
+        static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_VELOCITY")->valuedouble),
+        static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_VELOCITY")->valuedouble),
         cJSON_GetObjectItemCaseSensitive(contextJSON, "MIN_ALPHA")->valueint,
         cJSON_GetObjectItemCaseSensitive(contextJSON, "MAX_ALPHA")->valueint,
-        cJSON_GetObjectItemCaseSensitive(contextJSON, "POSITION_NOISE")->valueint,
-        cJSON_GetObjectItemCaseSensitive(contextJSON, "VELOCITY_NOISE")->valueint,
+        static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "POSITION_NOISE")->valuedouble),
+        static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "VELOCITY_NOISE")->valuedouble),
         static_cast<float>(cJSON_GetObjectItemCaseSensitive(contextJSON, "DECELERATION_FACTOR")->valuedouble),
         sizeScaleItem ? static_cast<float>(sizeScaleItem->valuedouble) : 1.0f  // escenas antiguas no tienen este campo
     );
+    auto sizeStartItem = cJSON_GetObjectItemCaseSensitive(contextJSON, "SIZE_START");
+    auto sizeEndItem   = cJSON_GetObjectItemCaseSensitive(contextJSON, "SIZE_END");
+    context.SIZE_START = sizeStartItem ? static_cast<float>(sizeStartItem->valuedouble) : 1.0f;
+    context.SIZE_END   = sizeEndItem   ? static_cast<float>(sizeEndItem->valuedouble)   : 1.0f;
+    // Rotación (escenas antiguas no la tienen: sin giro)
+    auto rotStartItem = cJSON_GetObjectItemCaseSensitive(contextJSON, "ROTATION_RANDOM_START");
+    auto rotMinItem   = cJSON_GetObjectItemCaseSensitive(contextJSON, "ROTATION_SPEED_MIN");
+    auto rotMaxItem   = cJSON_GetObjectItemCaseSensitive(contextJSON, "ROTATION_SPEED_MAX");
+    auto rotDirItem   = cJSON_GetObjectItemCaseSensitive(contextJSON, "ROTATION_RANDOM_DIR");
+    context.ROTATION_RANDOM_START = cJSON_IsTrue(rotStartItem);
+    context.ROTATION_SPEED_MIN    = rotMinItem ? static_cast<float>(rotMinItem->valuedouble) : 0.0f;
+    context.ROTATION_SPEED_MAX    = rotMaxItem ? static_cast<float>(rotMaxItem->valuedouble) : 0.0f;
+    context.ROTATION_RANDOM_DIR   = cJSON_IsTrue(rotDirItem);
 
     emitter->setContext(context);
 
@@ -164,7 +183,7 @@ void ParticleEmmitterSerializer::MenuLoad(const std::string &file)
             Color::green(),
             ParticlesContext(
             0.0f,
-            0.5f,
+            50.0f,   // partículas/s
             1.5f,
             25.0f,
             1,

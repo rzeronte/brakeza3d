@@ -4,8 +4,8 @@
 	"name": "ParticlesTutorial",
 	"types": [{
 			"name": "particlesPerSecond",
-			"type": "int",
-			"value": 50
+			"type": "float",
+			"value": 250
 		}, {
 			"name": "particleLifespan",
 			"type": "float",

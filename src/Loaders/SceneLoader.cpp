@@ -37,6 +37,8 @@
 std::atomic<bool> SceneLoader::isLoading{false};
 std::atomic<bool> SceneLoader::isClearing{false};
 std::string SceneLoader::currentLightsFile;
+bool SceneLoader::hasLightsAttenuation = false;
+float SceneLoader::lightsAttenuation[3] = {1.0f, 0.09f, 0.032f};
 
 SceneLoader::SceneLoader()
 {
@@ -101,7 +103,14 @@ static void ImportCurrentLightsFile(Scene *scene)
 
     auto lights = FBXLightLoader::LoadLightsFromFile(SceneLoader::currentLightsFile);
     for (auto *light : lights) {
-        if (auto *lp = dynamic_cast<LightPoint*>(light)) lp->setImportedFromLightsFile(true);
+        if (auto *lp = dynamic_cast<LightPoint*>(light)) {     // LightSpot hereda de LightPoint
+            lp->setImportedFromLightsFile(true);
+            if (SceneLoader::hasLightsAttenuation) {
+                lp->setConstant(SceneLoader::lightsAttenuation[0]);
+                lp->setLinear(SceneLoader::lightsAttenuation[1]);
+                lp->setCuadratic(SceneLoader::lightsAttenuation[2]);
+            }
+        }
         Brakeza::get()->AddObject3D(light, light->getName());
         if (scene != nullptr) {
             light->setBelongToScene(true);
@@ -118,6 +127,19 @@ void SceneLoader::LoadLightsFileAssociation(const cJSON *contentJSON, Scene *sce
     currentLightsFile = (lightsFileJSON != nullptr && cJSON_IsString(lightsFileJSON) && lightsFileJSON->valuestring != nullptr)
         ? lightsFileJSON->valuestring
         : "";
+
+    // "lightsAttenuation": { "constant", "linear", "quadratic" } (opcional, ver SceneLoader.h)
+    hasLightsAttenuation = false;
+    cJSON *attJSON = cJSON_GetObjectItemCaseSensitive(contentJSON, "lightsAttenuation");
+    if (attJSON != nullptr && cJSON_IsObject(attJSON)) {
+        const char *keys[3] = {"constant", "linear", "quadratic"};
+        const float defaults[3] = {1.0f, 0.09f, 0.032f};
+        for (int i = 0; i < 3; i++) {
+            cJSON *v = cJSON_GetObjectItemCaseSensitive(attJSON, keys[i]);
+            lightsAttenuation[i] = (v != nullptr && cJSON_IsNumber(v)) ? static_cast<float>(v->valuedouble) : defaults[i];
+        }
+        hasLightsAttenuation = true;
+    }
 
     ImportCurrentLightsFile(scene);
 }
@@ -159,7 +181,8 @@ void SceneLoader::LoadSceneAdditive(
     bool loadScripts,
     bool loadShaders,
     bool loadCamera,
-    bool loadRenderSettings
+    bool loadRenderSettings,
+    bool startScripts
 )
 {
     if (isLoading) {
@@ -171,7 +194,7 @@ void SceneLoader::LoadSceneAdditive(
     isLoading = true;
     auto *scene = new Scene(filename.str());
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
-        std::make_shared<ThreadJobReadFileScene>(filename, scene, true, loadScripts, loadShaders, loadCamera, loadRenderSettings)
+        std::make_shared<ThreadJobReadFileScene>(filename, scene, true, loadScripts, loadShaders, loadCamera, loadRenderSettings, startScripts)
     );
 }
 
@@ -258,6 +281,13 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
 
     // Asociación con fichero de luces FBX (ver FBXLightLoader / LoadLightsFileAssociation)
     cJSON_AddStringToObject(root, "lightsFile", currentLightsFile.c_str());
+    if (hasLightsAttenuation && !currentLightsFile.empty()) {
+        cJSON *attJSON = cJSON_CreateObject();
+        cJSON_AddNumberToObject(attJSON, "constant", lightsAttenuation[0]);
+        cJSON_AddNumberToObject(attJSON, "linear", lightsAttenuation[1]);
+        cJSON_AddNumberToObject(attJSON, "quadratic", lightsAttenuation[2]);
+        cJSON_AddItemToObject(root, "lightsAttenuation", attJSON);
+    }
 
     //Objects
     cJSON *objectsArray = cJSON_CreateArray();

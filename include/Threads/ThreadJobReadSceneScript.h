@@ -14,11 +14,17 @@ class ThreadJobReadSceneScript : public ThreadJobBase
 {
     cJSON *json;
     Scene *scene;
+    // Carga en caliente (scripts ya en marcha): sin esto un script de escena nunca recibe onStart --
+    // solo se llama al pulsar Play -- y su primer onUpdate corre con los globales sin inicializar.
+    // Opcional para no cambiar el comportamiento de las cargas existentes (un proyecto puede tener el
+    // mismo script como script de escena y de proyecto, y no debe arrancarlo dos veces).
+    bool startScripts;
 public:
-    ThreadJobReadSceneScript(cJSON *json, Scene *scene = nullptr)
+    ThreadJobReadSceneScript(cJSON *json, Scene *scene = nullptr, bool startScripts = false)
     :
         json(cJSON_Duplicate(json, 1)),
-        scene(scene)
+        scene(scene),
+        startScripts(startScripts)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -54,6 +60,9 @@ public:
 
                 script->setScene(scene);
                 Components::get()->Scripting()->AddSceneLUAScript(script);
+                if (startScripts && Components::get()->Scripting()->isExecuting()) {
+                    script->RunGlobal("onStart");
+                }
             }
         }
         LOG_MESSAGE("[ThreadJobReadSceneScript] Callback END");

@@ -14,6 +14,12 @@ struct Measure {
     double diffTime = 0.0f;
     std::vector<float> frameTimeHistory;
     const int MAX_HISTORY = 120;
+    // Solo scripts (claves _update): ejecuciones reales de onUpdate por segundo y el
+    // ticks_per_second configurado (0 = cada frame, -1 = desconocido). Ver Profiler::CountTick.
+    int configuredTps = -1;
+    int tickCount = 0;
+    double tickWindowStart = 0.0;
+    float measuredTps = 0.0f;
 };
 
 // GL_TIME_ELAPSED nunca se lee en el mismo frame en que se emite (sincronizaria CPU/GPU).
@@ -67,6 +73,15 @@ class Profiler
     int lastTriangles = 0;
     bool countDrawCalls = false;
 
+    // Desglose de draw calls por origen (solo con countDrawCalls): clave "etapa | sitio".
+    // Etapa = fase del componente en curso (Render_update, Scripting_post...) + la pasada del
+    // render si hay una abierta (GBuffer, ShadowPass...: las mismas marcas que el timing GPU).
+    // Sitio = quién emite el glDraw* (la clase real del shader en ShaderBaseOpenGL).
+    std::string drawScopeComponent = "frame";
+    std::string drawScopeStep;
+    std::unordered_map<std::string, int> drawCallsBySource;
+    std::unordered_map<std::string, int> lastDrawCallsBySource;
+
 public:
     Profiler() = default;
 
@@ -94,8 +109,11 @@ public:
     void setScriptDetailEnabled(bool v);
     void incrementFboChanges();
     void incrementProgramChanges();
-    void incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCount = 1);
+    void incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCount = 1, const char *site = nullptr);
+    void setDrawScopeComponent(const std::string &scope) { if (countDrawCalls) drawScopeComponent = scope; }
+    [[nodiscard]] const std::unordered_map<std::string, int>& getLastDrawCallsBySource() const { return lastDrawCallsBySource; }
     [[nodiscard]] int getLastDrawCalls() const;
+    void setCountDrawCalls(bool v) { countDrawCalls = v; }   // Lua: ProfilerLua.setCountDrawCalls
     [[nodiscard]] int getLastTriangles() const;
     [[nodiscard]] MeasuresMap& getComponentMeasures();
     [[nodiscard]] MeasuresMap& getScriptMeasures();
@@ -109,6 +127,7 @@ public:
     static void InitMeasure(MeasuresMap &map, const std::string & label);
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);
+    static void CountTick(MeasuresMap &map, const std::string& name, int configuredTps, bool ticked);
     void StartGpuMeasure(const std::string& name);
     void EndGpuMeasure(const std::string& name);
     static void DrawBreakDownComponent(Measure &pre, Measure &update, Measure &post, double total, float height);

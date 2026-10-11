@@ -37,6 +37,20 @@ struct MeshEntryData {
     GLsizei indexCount = 0;
 };
 
+// Geometría de sombra combinada (2026-10-10): posiciones de TODAS las mallas de un modelo
+// concatenadas en espacio local, en un solo buffer. El shadow pass es solo profundidad -- sin
+// texturas ni materiales nada distingue un submesh de otro --, así que dibuja el modelo entero en
+// una llamada, instanciada entre todas sus instancias (ver ShaderOGLShadowPass::drawCastersInstanced).
+// Se crea al primer uso en el hilo principal (Mesh3D::getShadowMerged). Una copia por modelo:
+// vive en ModelData si las instancias lo comparten, o en la propia instancia si no.
+struct ShadowMergedGeometry {
+    GLuint buffer = 0;
+    GLsizei vertexCount = 0;
+    bool tried = false;
+    glm::vec3 localMin{0.0f};
+    glm::vec3 localMax{0.0f};
+};
+
 struct MaterialEntryData {
     bool hasDiffuseTexture = false;
     std::string diffuseTexturePath;
@@ -48,6 +62,7 @@ struct ModelData {
     std::vector<MeshEntryData> meshes;
     std::vector<MaterialEntryData> materials;
     std::string sourceFile;
+    ShadowMergedGeometry shadowMerged;   // ver ShadowMergedGeometry
 
     void cloneInto(Mesh3D& target) const;
 

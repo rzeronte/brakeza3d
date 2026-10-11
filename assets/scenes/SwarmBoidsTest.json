@@ -614,8 +614,8 @@
 			"globalBiasSeparation":	1,
 			"globalBiasAlignment":	1,
 			"globalBiasCohesion":	1,
-			"boids":	[],
-			"predators":	[],
+			"boids":	["Boid_1", "Boid_2", "Boid_3", "Boid_4", "Boid_5", "Boid_6", "Boid_7", "Boid_8", "Boid_9", "Boid_10", "Boid_11", "Boid_12", "Boid_13", "Boid_14", "Boid_15", "Boid_16", "Boid_17", "Boid_18", "Boid_19", "Boid_20", "Boid_21", "Boid_22", "Boid_23", "Boid_24", "Boid_25", "Boid_26", "Boid_27", "Boid_28", "Boid_29", "Boid_30"],
+			"predators":	["Predator_1"],
 			"type":	12
 		}, {
 			"name":	"Boid_10",

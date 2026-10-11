@@ -5,6 +5,7 @@
 layout(location = 0) in vec3 squareVertices;
 layout(location = 1) in vec4 xyzs; // Position of the center of the particule and size of the square
 layout(location = 2) in vec4 color; // Position of the center of the particule and size of the square
+layout(location = 3) in float angle; // rotación de la partícula en el plano de la pantalla (radianes)
 
 // Output data ; will be interpolated for each fragment.
 out vec2 UV;
@@ -20,10 +21,15 @@ void main()
     float particleSize = xyzs.w; // because we encoded it this way.
     vec3 particleCenter_wordspace = xyzs.xyz;
 
+    // Giro del quad sobre sí mismo antes de orientarlo a la cámara (UV sin girar: gira la textura)
+    float c = cos(angle), s = sin(angle);
+    vec2 corner = vec2(c * squareVertices.x - s * squareVertices.y,
+                       s * squareVertices.x + c * squareVertices.y);
+
     vec3 vertexPosition_worldspace =
     particleCenter_wordspace
-    + CameraRight_worldspace * squareVertices.x * particleSize
-    + CameraUp_worldspace * squareVertices.y * particleSize;
+    + CameraRight_worldspace * corner.x * particleSize
+    + CameraUp_worldspace * corner.y * particleSize;
 
     // Output position of the vertex
     gl_Position = VP * vec4(vertexPosition_worldspace, 1.0f);

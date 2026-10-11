@@ -6,8 +6,19 @@
 		"y":	-9.8000001907348633,
 		"z":	0
 	},
-	"scripts":	[],
+	"scripts":	[{
+			"name":	"DemoBrowser",
+			"codeFile":	"../assets/scripts/Tutorials/Global/DemoBrowser.lua",
+			"typesFile":	"../assets/scripts/Tutorials/Global/DemoBrowser.json"
+		}, {
+			"name":	"DemoBrowserTour",
+			"codeFile":	"../assets/scripts/Tutorials/Tests/DemoBrowserTour.lua",
+			"typesFile":	"../assets/scripts/Tutorials/Tests/DemoBrowserTour.json",
+			"onlyWithCliParam":	"demoBrowserTour"
+		}],
 	"scenes":	[{
+			"path":	"../assets/scenes/FBXLightsImportTest.json"
+		}, {
 			"path":	"../assets/scenes/ShowRoomTest.json"
 		}, {
 			"path":	"../assets/scenes/LightsTest.json"
@@ -28,6 +39,15 @@
 		}, {
 			"path":	"../assets/scenes/UITest.json"
 		}],
+	"cli_params":	[{
+			"name":	"demoBrowserTour",
+			"type":	"bool",
+			"default":	false
+		}, {
+			"name":	"demoTourDwell",
+			"type":	"float",
+			"default":	4.0
+		}],
 	"sound":	{
 		"volume_fx":	50,
 		"volume_music":	40
@@ -40,14 +60,14 @@
 		"compute":	{
 			"num_threads":	4,
 			"max_concurrent_tasks":	4,
-			"max_callbacks_per_frame":	8,
+			"max_callbacks_per_frame":	64,
 			"max_enqueued_tasks":	4096,
 			"max_enqueued_callbacks":	4096
 		},
 		"images":	{
 			"num_threads":	4,
 			"max_concurrent_tasks":	4,
-			"max_callbacks_per_frame":	8,
+			"max_callbacks_per_frame":	64,
 			"max_enqueued_tasks":	4096,
 			"max_enqueued_callbacks":	4096
 		}

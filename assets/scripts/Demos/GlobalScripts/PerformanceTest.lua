@@ -126,7 +126,7 @@ local function spawnParticleEmitter()
     em:setName(name)
     em:setBelongToScene(false)
     local ctx = ParticlesContext.new()
-    ctx.PARTICLES_BY_SECOND  = 80
+    ctx.PARTICLES_BY_SECOND  = 340   -- partículas/s
     ctx.PARTICLE_LIFESPAN    = 1.5
     ctx.MIN_VELOCITY         = 1.5
     ctx.MAX_VELOCITY         = 4.0

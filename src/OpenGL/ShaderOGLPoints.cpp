@@ -75,7 +75,7 @@ void ShaderOGLPoints::render(glm::mat4 modelMatrix, GLuint vertexBuffer, int num
 
     setVAOAttributes(vertexBuffer);
 
-    DrawMeshGeometry(GL_POINTS, indexBuffer, indexCount, numberPoints);
+    DrawMeshGeometry(GL_POINTS, indexBuffer, indexCount, numberPoints, "Points:78");
 
     glDisableVertexAttribArray(0);
 

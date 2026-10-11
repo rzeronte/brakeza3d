@@ -33,6 +33,14 @@ class ShaderOGLShadowPass : public ShaderBaseOpenGL
     GLuint instanceModelBuffer = 0;
     GLuint useInstancingUniform = 0;
 
+    // Unidades animadas instanciadas (2026-10-10): matrices de huesos de todo el lote en un TBO,
+    // mismo patrón que ShaderOGLRenderDeferred (Fase 1). Creados una vez en PrepareMainThread().
+    GLuint boneMatrixBuffer = 0;
+    GLuint boneMatrixTexture = 0;
+    GLuint useSkinningUniform = 0;
+    GLuint bonesPerInstanceUniform = 0;
+    GLuint boneMatricesSamplerUniform = 0;
+
     // renderSceneDirectionalLight/renderSceneSpotLight comparten este cuerpo (antes duplicado
     // byte a byte): cull por AABB contra el VP de la luz + agrupar submeshes consecutivos que
     // comparten geometría en un solo draw instanciado (ver ComponentRender::FlushOpaqueQueue,

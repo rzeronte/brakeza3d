@@ -10,7 +10,8 @@
 struct Particle {
     glm::vec3 pos, speed;
     unsigned char r,g,b,a; // Color
-    float size, angle, weight;
+    float size, angle, weight;     // angle: rotación en el plano de la pantalla (radianes)
+    float spin;                    // velocidad de giro (radianes/s)
     float life; // Remaining life of the particle. if <0 : dead and unused.
     float cameradistance; // *Squared* distance to the camera. if dead : -1.0f
 
@@ -38,6 +39,7 @@ public:
         GLuint billboard_vertex_buffer,
         GLuint particles_position_buffer,
         GLuint particles_color_buffer,
+        GLuint particles_rotation_buffer,
         GLuint textureID,
         int particlesCount
     );

@@ -88,10 +88,12 @@ class ScriptLUA
     sol::environment globalEnvironment;
     std::unordered_map<std::string, sol::protected_function> globalFuncCache;
     int ticksPerSecond = 0;
-    mutable float tickAccumulator = 0.0f;
+    mutable float tickAccumulator = 0.0f;   // tiempo desde la última ejecución de onUpdate
+    mutable float tickDelta = 0.0f;         // delta que ve el script en la ejecución actual
+    mutable bool  tickedThisFrame = true;   // el último onUpdate se ejecutó (postUpdate le sigue)
 
     void ensureGlobalEnvironment();
-    [[nodiscard]] bool ShouldTick() const;
+    [[nodiscard]] bool ShouldTick(const std::string& func) const;
 
 public:
     std::string content;
@@ -149,6 +151,8 @@ public:
     void setScene(Scene* s)                        { scene = s; }
     [[nodiscard]] int getTicksPerSecond() const    { return ticksPerSecond; }
     void setTicksPerSecond(int tps)                { ticksPerSecond = (tps < 0 ? 0 : tps); tickAccumulator = 0.0f; }
+    // ¿Se ejecutó onUpdate en este frame? (sin límite de ticks: siempre, salvo en pausa). Para el profiler.
+    [[nodiscard]] bool didTickThisFrame() const    { return !paused && (ticksPerSecond <= 0 || tickedThisFrame); }
 
     friend class ScriptLuaGUI;
 };

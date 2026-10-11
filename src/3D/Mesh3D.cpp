@@ -2,6 +2,8 @@
 
 #include <vector>
 #include <mutex>
+#include <cfloat>
+#include <glm/common.hpp>
 #include <assimp/cimport.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include "../../include/3D/Mesh3D.h"
@@ -34,6 +36,48 @@ Mesh3D::Mesh3D(const FilePath::ModelFile& modelFile)
     sourceFile(modelFile)
 {
     shaderChain = new Mesh3DShaderChain();
+}
+
+// Geometría de sombra combinada (ver ShadowMergedGeometry en ModelData.h). Una sola copia por
+// modelo: la del ModelData compartido si lo hay (todas sus instancias la reutilizan y el shadow
+// pass las instancia juntas), si no la de esta instancia. Un solo submesh no se combina: su buffer
+// ya es exactamente eso y el shadow pass ya lo agrupa entre instancias.
+static void buildShadowMerged(const std::vector<Mesh3DData>& meshes, ShadowMergedGeometry& g, const std::string& label)
+{
+    size_t total = 0;
+    for (const auto& m : meshes) total += m.vertices.size();
+    if (total == 0) return;
+
+    std::vector<glm::vec4> merged;
+    merged.reserve(total);
+    glm::vec3 lo(FLT_MAX), hi(-FLT_MAX);
+    for (const auto& m : meshes) {
+        merged.insert(merged.end(), m.vertices.begin(), m.vertices.end());
+        for (const auto& v : m.vertices) {
+            lo = glm::min(lo, glm::vec3(v));
+            hi = glm::max(hi, glm::vec3(v));
+        }
+    }
+    glGenBuffers(1, &g.buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, g.buffer);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(merged.size() * sizeof(glm::vec4)), merged.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    g.vertexCount = static_cast<GLsizei>(merged.size());
+    g.localMin = lo;
+    g.localMax = hi;
+    LOG_MESSAGE("[Mesh3D] '%s': geometria de sombra combinada (%zu submeshes, %zu vertices, %.1f MB)",
+        label.c_str(), meshes.size(), merged.size(), merged.size() * sizeof(glm::vec4) / (1024.0 * 1024.0));
+}
+
+const ShadowMergedGeometry* Mesh3D::getShadowMerged()
+{
+    if (!loaded || getTypeObject() != ObjectType::Mesh3D || meshes.size() < 2) return nullptr;
+    ShadowMergedGeometry& g = sharedModel ? sharedModel->shadowMerged : shadowMergedOwn;
+    if (!g.tried) {
+        g.tried = true;
+        buildShadowMerged(meshes, g, sharedModel ? sharedModel->sourceFile : getName());
+    }
+    return g.buffer != 0 ? &g : nullptr;
 }
 
 Mesh3D::~Mesh3D()
@@ -74,6 +118,9 @@ Mesh3D::~Mesh3D()
         if (glIsBuffer(m.feedbackNormalBuffer))
             glDeleteBuffers(1, &m.feedbackNormalBuffer);
     }
+
+    if (shadowMergedOwn.buffer != 0 && glIsBuffer(shadowMergedOwn.buffer))
+        glDeleteBuffers(1, &shadowMergedOwn.buffer);
 
     UnregisterSubmeshPicking();
 

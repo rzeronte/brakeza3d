@@ -1088,6 +1088,8 @@ void Profiler::DrawScriptDetail()
         char typeTag;   // 'G'=project, 'S'=scene, 'O'=object
         float updateMs = 0.f;
         float postMs   = 0.f;
+        float measuredTps = 0.f;
+        int configuredTps = -1;
         float totalMs() const { return updateMs + postMs; }
     };
 
@@ -1108,8 +1110,13 @@ void Profiler::DrawScriptDetail()
             entries[base] = {base, dname, tag};
         }
         float ms = AverageHistory(measure);
-        if (isUpdate) entries[base].updateMs = ms;
-        else          entries[base].postMs   = ms;
+        if (isUpdate) {
+            entries[base].updateMs      = ms;
+            entries[base].measuredTps   = measure.measuredTps;
+            entries[base].configuredTps = measure.configuredTps;
+        } else {
+            entries[base].postMs = ms;
+        }
     }
 
     if (entries.empty()) {
@@ -1165,7 +1172,7 @@ void Profiler::DrawScriptDetail()
     // Helper: draw one section table
     auto DrawTable = [&](const char* tableId, const std::vector<ScriptEntry*>& list) {
         if (list.empty()) { ImGui::TextDisabled("  (none)"); return; }
-        if (!ImGui::BeginTable(tableId, 6,
+        if (!ImGui::BeginTable(tableId, 7,
             ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp))
             return;
         ImGui::TableSetupColumn("Script",       ImGuiTableColumnFlags_WidthStretch);
@@ -1173,6 +1180,7 @@ void Profiler::DrawScriptDetail()
         ImGui::TableSetupColumn("onUpdate ms",  ImGuiTableColumnFlags_WidthFixed,   80.f);
         ImGui::TableSetupColumn("postUpdate ms",ImGuiTableColumnFlags_WidthFixed,   80.f);
         ImGui::TableSetupColumn("Total ms",     ImGuiTableColumnFlags_WidthFixed,   80.f);
+        ImGui::TableSetupColumn("Ticks/s",      ImGuiTableColumnFlags_WidthFixed,   90.f);
         ImGui::TableSetupColumn("History",      ImGuiTableColumnFlags_WidthFixed,  120.f);
         ImGui::TableHeadersRow();
 
@@ -1193,7 +1201,17 @@ void Profiler::DrawScriptDetail()
             ImGui::TableSetColumnIndex(3); ImGui::Text("%.3f", e->postMs);
             ImGui::TableSetColumnIndex(4); ImGui::TextColored(col, "%.3f", total);
 
+            // Ejecuciones reales por segundo / ticks_per_second del JSON ("frame" = sin límite)
             ImGui::TableSetColumnIndex(5);
+            if (e->configuredTps < 0)       ImGui::TextDisabled("-");
+            else if (e->configuredTps == 0) ImGui::Text("%.1f / frame", e->measuredTps);
+            else                            ImGui::Text("%.1f / %d", e->measuredTps, e->configuredTps);
+            if (ImGui::IsItemHovered())
+                ImGui::SetTooltip("onUpdate executions per second (measured over 1 s) / configured ticks_per_second\n"
+                                  "'frame' = no limit, runs every frame. Values above the frame rate are impossible:\n"
+                                  "with ticks_per_second >= FPS the script still runs every frame.");
+
+            ImGui::TableSetColumnIndex(6);
             {
                 auto it = scriptMeasures.find(e->baseKey + "_update");
                 if (it != scriptMeasures.end()) {
@@ -1914,12 +1932,14 @@ void Profiler::ResetTotalFrameTime()
     lastTriangles = triangles;
     drawCalls = 0;
     triangles = 0;
+    lastDrawCallsBySource.swap(drawCallsBySource);
+    drawCallsBySource.clear();
 }
 
 void Profiler::incrementFboChanges()     { if (countFboSwitches) fboChanges++; }
 void Profiler::incrementProgramChanges() { if (countProgramSwitches) programChanges++; }
 
-void Profiler::incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCount)
+void Profiler::incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCount, const char *site)
 {
     if (!countDrawCalls) return;
 
@@ -1927,6 +1947,12 @@ void Profiler::incrementDrawCall(GLenum mode, GLsizei count, GLsizei instanceCou
     // (instanciada o no) -- el contador de "draw calls" debe reflejar eso, no el
     // numero de instancias dibujadas en esa llamada (para eso ya esta "triangles").
     drawCalls++;
+
+    std::string key = drawScopeComponent;
+    if (!drawScopeStep.empty()) { key += "/"; key += drawScopeStep; }
+    key += " | ";
+    key += site != nullptr ? site : "?";
+    drawCallsBySource[key]++;
 
     int trisPerInstance = 0;
     switch (mode) {
@@ -1982,6 +2008,7 @@ void Profiler::setGpuTimingEnabled(bool v)
 
 void Profiler::StartGpuMeasure(const std::string &name)
 {
+    if (countDrawCalls) drawScopeStep = name;   // etapa del desglose de draw calls
     if (!gpuTimingEnabled) return;
 
     GpuMeasure &m = gpuMeasures[name];
@@ -2012,6 +2039,7 @@ void Profiler::StartGpuMeasure(const std::string &name)
 
 void Profiler::EndGpuMeasure(const std::string &name)
 {
+    if (countDrawCalls && drawScopeStep == name) drawScopeStep.clear();
     if (!gpuTimingEnabled) return;
 
     auto it = gpuMeasures.find(name);
@@ -2098,6 +2126,23 @@ void Profiler::EndMeasure(MeasuresMap &map, const std::string &name)
     map[name].endTime = Ticks();
     map[name].diffTime = map[name].endTime - map[name].startTime;
 
+}
+
+// Ritmo real de un script: cuenta los frames en que su onUpdate se ejecutó y lo promedia en
+// ventanas de 1 s (con ticks_per_second > 0 el motor se salta frames, ver ScriptLUA::ShouldTick).
+void Profiler::CountTick(MeasuresMap &map, const std::string &name, int configuredTps, bool ticked)
+{
+    auto &m = map[name];
+    m.configuredTps = configuredTps;
+    if (ticked) m.tickCount++;
+    const double now = Ticks();
+    if (m.tickWindowStart <= 0.0) { m.tickWindowStart = now; return; }
+    const double elapsed = now - m.tickWindowStart;
+    if (elapsed >= 1.0) {
+        m.measuredTps = (float)(m.tickCount / elapsed);
+        m.tickCount = 0;
+        m.tickWindowStart = now;
+    }
 }
 
 int Profiler::getNumberOfImages() const
