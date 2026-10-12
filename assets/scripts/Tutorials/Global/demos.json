@@ -2,17 +2,6 @@
   "_comment": "Catalog shown by DemoBrowser.lua. One entry per demo, in browsing order. 'scene' must also be listed in assets/projects/TutorialsProject.json. Files, scripts, shaders and object counts are read from the scene JSON at runtime, so only describe the demo here.",
   "demos": [
     {
-      "scene": "../assets/scenes/FBXLightsImportTest.json",
-      "title": "Lights imported from FBX",
-      "summary": "A scene whose point and spot lights come from a Blender/FBX file instead of being placed in the editor. The scene JSON only stores a lightsFile path; the lights are regenerated from the FBX on every load.",
-      "controls": [],
-      "learn": [
-        "lightsFile in the scene JSON -> SceneLoader::LoadLightsFileAssociation",
-        "FBX light import: include/Loaders/FBXLightLoader.h",
-        "Imported lights are not saved back into the scene file"
-      ]
-    },
-    {
       "scene": "../assets/scenes/ShowRoomTest.json",
       "title": "Show room",
       "summary": "A small set of meshes and lights to look at the deferred renderer: G-Buffer, ADS lighting, shadows and a chromatic aberration post-processing shader on top.",
@@ -79,11 +68,12 @@
     {
       "scene": "../assets/scenes/SwarmBoidsTest.json",
       "title": "Swarm (boids)",
-      "summary": "A Swarm object steering thirty meshes with the classic boids rules: separation, alignment and cohesion. The members are ordinary meshes referenced by the swarm.",
+      "summary": "A Swarm object steering thirty meshes with the classic boids rules: separation, alignment and cohesion. The members are ordinary meshes referenced by the swarm. The red cube is the swarm's predator: it flies a figure-eight through the flock and the boids steer away from it.",
       "controls": [],
       "learn": [
         "include/3D/Swarm.h",
-        "Swarm members are resolved after loading (ThreadJobResolveSwarms)"
+        "Swarm members are resolved after loading (ThreadJobResolveSwarms)",
+        "Predator motion: assets/scripts/Tutorials/Object/07_PathMotion.lua"
       ]
     },
     {

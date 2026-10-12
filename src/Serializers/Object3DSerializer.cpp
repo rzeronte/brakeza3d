@@ -25,6 +25,7 @@ cJSON * Object3DSerializer::JsonByObject(Object3D* o)
     cJSON_AddNumberToObject(root, "alpha", o->getAlpha());
     cJSON_AddBoolToObject(root, "enabled", o->isEnabled());
     cJSON_AddBoolToObject(root, "selectable", o->isSelectable());
+    if (o->getFolderId() != 0) cJSON_AddNumberToObject(root, "folder", o->getFolderId());   // carpeta de su escena
     cJSON_AddItemToObject(root, "position", ToolsJSON::Vertex3DToJSON(o->getPosition()));
     cJSON_AddItemToObject(root, "rotation", ToolsJSON::Vertex3DToJSON(o->getRotation().getVertex3DAngles()));
 
@@ -96,6 +97,10 @@ void Object3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
 
     // Selectable
     o->setSelectable(true);
+    if (cJSON_GetObjectItem(json, "folder") != nullptr) {
+        o->setFolderId(cJSON_GetObjectItem(json, "folder")->valueint);
+    }
+
     if (cJSON_GetObjectItem(json, "selectable") != nullptr) {
         o->setSelectable(static_cast<bool>(cJSON_GetObjectItem(json, "selectable")->valueint));
     }

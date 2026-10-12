@@ -58,6 +58,10 @@ struct CustomTreeNodeConfig {
     ImVec4 badgeColor = ImVec4(0.4f, 0.8f, 1.0f, 1.0f);
     std::function<void()> onDoubleClick = nullptr;
     bool* forceOpenPtr = nullptr;  // Puntero opcional para controlar apertura
+    // Se llama justo después del botón principal de la fila (último item = la fila): para colgar
+    // ahí BeginDragDropSource / BeginPopupContextItem. Más tarde no sirve: la zona de soltar
+    // (##dragdrop) se dibuja encima y el hover lo tiene siempre este botón.
+    std::function<void()> onNodeItem = nullptr;
 
     CustomTreeNodeConfig(const char* label) : label(label) {}
 };
@@ -249,6 +253,7 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
     ImGui::PopID();
 
     bool hovered = ImGui::IsItemHovered() && !action_button_hovered;
+    if (config.onNodeItem) config.onNodeItem();
 
     // Solo procesar click del nodo si no se clickeó un botón de acción
     if (node_clicked && !action_button_clicked && !config.isLeaf)

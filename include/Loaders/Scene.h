@@ -15,6 +15,15 @@
 class Object3D;
 class ShaderBaseCustom;
 
+// Carpeta organizativa de la escena (solo editor / datos: no es un Object3D, no se dibuja ni
+// cuesta nada en juego). Anidables: parent = id de la carpeta padre, 0 = raíz. Los objetos apuntan
+// a su carpeta con Object3D::folderId (0 = sin carpeta). Se guardan en el JSON de escena ("folders").
+struct SceneFolder {
+    int id = 0;
+    std::string name;
+    int parent = 0;
+};
+
 class Scene
 {
 public:
@@ -35,6 +44,22 @@ public:
     [[nodiscard]] bool isHidden() const                     { return hidden; }
     [[nodiscard]] SceneChecker getChecker() const           { return checker; }
     [[nodiscard]] std::vector<Object3D*>& getObjects()      { return objects; }
+
+    // ── Carpetas ──
+    [[nodiscard]] const std::vector<SceneFolder>& getFolders() const { return folders; }
+    [[nodiscard]] const SceneFolder* getFolder(int id) const;
+    int  createFolder(const std::string &folderName, int parent = 0);
+    void renameFolder(int id, const std::string &folderName);
+    // false si el destino es ella misma o una de sus subcarpetas (no se permiten ciclos)
+    bool moveFolder(int id, int newParent);
+    // Sus subcarpetas y objetos pasan a la carpeta padre: borrar una carpeta nunca borra objetos
+    void deleteFolder(int id);
+    // ¿id es ancestor o está dentro de ancestor (a cualquier profundidad)?
+    [[nodiscard]] bool isFolderInside(int id, int ancestor) const;
+    // Carga desde JSON (SceneLoader): sustituye la lista entera
+    void setFolders(const std::vector<SceneFolder> &list);
+    // Mete un objeto en una carpeta de esta escena (0 = raíz); si no tenía escena, pasa a ser de esta
+    void moveObjectToFolder(Object3D *obj, int folderId);
 
     // Deferred-delete: mientras haya ThreadJob (ThreadJobLoadObject/ReadSceneScript/
     // ReadSceneShaders) todavía en vuelo con un puntero crudo a esta Scene, no se puede
@@ -66,6 +91,8 @@ private:
     std::unordered_map<Object3D*, bool>        savedEnabledStates;
     std::unordered_map<ShaderBaseCustom*, bool> savedShaderStates;
     std::vector<Object3D*> objects;
+    std::vector<SceneFolder> folders;
+    int nextFolderId = 1;
 };
 
 #endif //BRAKEZA3D_SCENE_H

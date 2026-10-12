@@ -210,5 +210,6 @@ function drawHUD()
     tw:writeTextTTFAutoSize(20, 86,  string.format("Power: %6.1f",     power),                    C_VALUE, 0.55)
     tw:writeTextTTFAutoSize(20, 106, string.format("Size:  %6.1f",     projSize),                 C_VALUE, 0.55)
     tw:writeTextTTFAutoSize(20, 130, string.format("Active: %d  Pending: %d", #active, #pending), C_COUNT, 0.50)
-    tw:writeTextTTFAutoSize(20, wh - 28, "A/D: yaw   W/S: pitch   Q/E: power   Z/X: size   F: fire", C_HINT, 0.45)
+    -- 90 px desde abajo: por encima de la barra del DemoBrowser (56 px) del proyecto de tutoriales
+    tw:writeTextTTFAutoSize(20, wh - 90, "A/D: yaw   W/S: pitch   Q/E: power   Z/X: size   F: fire", C_HINT, 0.45)
 end

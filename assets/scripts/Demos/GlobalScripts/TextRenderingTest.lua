@@ -42,13 +42,20 @@ local SAMPLE     = "Hello Brakeza3D 0123"
 -- cache tracking
 local cacheBuilt = false
 
--- layout (100px margins all around)
-local MARGIN    = 100
-local COL1_X    = MARGIN
-local COL2_X    = MARGIN + 320
-local COL3_X    = MARGIN + 640
-local ROW_H     = 28
-local BASE_Y    = MARGIN
+-- layout: zonas fijas que no se cruzan (pantalla ~1920x1010; a la derecha queda libre el panel de
+-- información del DemoBrowser y abajo su barra de 56 px)
+--   arriba izquierda : [1] AutoSize + [2] TTF size
+--   arriba centro    : [3] Atlas
+--   franja central   : [4] Centered (centra sobre la pantalla entera, por eso va sola)
+--   abajo izquierda  : [5] Text Cache
+--   abajo            : leyenda + FPS
+local COL1_X    = 40
+local COL2_X    = 760
+local TOP_Y     = 30
+local CHAR_W    = 20.5      -- ancho aprox. de un carácter de Courier a escala 1.0 (para la leyenda)
+
+-- alto de línea para un texto TTF/atlas a escala s
+local function lh(s) return math.floor(32 * s + 8) end
 
 -- ── rebuild glyph atlas ───────────────────────────────────────────────────
 local function rebuildAtlas()
@@ -59,7 +66,7 @@ end
 
 -- ── section helper ────────────────────────────────────────────────────────
 local function drawSectionLabel(label, x, y, color)
-    tw:writeTextTTFAutoSize(x, y, label, color, 0.70)
+    tw:writeTextTTFAutoSize(x, y, label, color, 0.60)
 end
 
 -- ── draw ──────────────────────────────────────────────────────────────────
@@ -69,126 +76,122 @@ function draw()
     local sw = win:getWidth();  if sw == 0 then sw = 1280 end
     local sh = win:getHeight(); if sh == 0 then sh = 720  end
 
-    local row = 0
-    local function nextRow(n) row = row + (n or 1); return BASE_Y + row * ROW_H end
-
-    -- ── 1: TTF AutoSize ────────────────────────────────────────────────────
-    row = 0
+    -- ── 1 + 2: columna izquierda, de arriba abajo ─────────────────────────
+    local y = TOP_Y
     if showAuto then
-        drawSectionLabel("[1] TTF AutoSize — writeTextTTFAutoSize", COL1_X, nextRow(), C_AUTO)
-
-        tw:writeTextTTFAutoSize(COL1_X + 10, nextRow(), SAMPLE .. "  (scale 1.0)", C_AUTO, 1.00)
-        tw:writeTextTTFAutoSize(COL1_X + 10, nextRow(), SAMPLE .. "  (scale 0.8)",  C_AUTO, 0.80)
-        tw:writeTextTTFAutoSize(COL1_X + 10, nextRow(), SAMPLE .. "  (scale 0.6)",  C_AUTO, 0.60)
-        tw:writeTextTTFAutoSize(COL1_X + 10, nextRow(), SAMPLE .. "  (scale 0.4)",  C_AUTO, 0.40)
-        tw:writeTextTTFAutoSize(COL1_X + 10, nextRow(), SAMPLE .. "  (scale 0.25)", C_AUTO, 0.25)
+        drawSectionLabel("[1] TTF AutoSize - writeTextTTFAutoSize", COL1_X, y, C_AUTO); y = y + lh(0.6)
+        for _, sc in ipairs({ 0.80, 0.60, 0.45, 0.35, 0.25 }) do
+            tw:writeTextTTFAutoSize(COL1_X + 10, y, SAMPLE .. string.format("  (scale %.2f)", sc), C_AUTO, sc)
+            y = y + lh(sc)
+        end
+        y = y + 12
     end
-
-    -- ── 2: TTF explicit size ───────────────────────────────────────────────
     if showSize then
-        drawSectionLabel("[2] TTF Size — writeTextTTF", COL1_X, nextRow(), C_SIZE)
-
-        tw:writeTextTTF(COL1_X + 10, nextRow(), 300, 40, SAMPLE, C_SIZE)
-        tw:writeTextTTF(COL1_X + 10, nextRow(), 200, 28, SAMPLE, C_SIZE)
-        tw:writeTextTTF(COL1_X + 10, nextRow(), 150, 20, SAMPLE, C_SIZE)
-        tw:writeTextTTF(COL1_X + 10, nextRow(), 100, 14, SAMPLE, C_SIZE)
+        drawSectionLabel("[2] TTF Size - writeTextTTF", COL1_X, y, C_SIZE); y = y + lh(0.6)
+        for _, sz in ipairs({ { 300, 40 }, { 200, 28 }, { 150, 20 }, { 100, 14 } }) do
+            tw:writeTextTTF(COL1_X + 10, y, sz[1], sz[2], SAMPLE, C_SIZE)
+            y = y + sz[2] + 6
+        end
     end
 
-    -- ── 3: Text Atlas (column 2) ───────────────────────────────────────────
+    -- ── 3: Text Atlas (columna central) ───────────────────────────────────
     if showAtlas then
-        local ax = COL2_X
-        local ay = BASE_Y + ROW_H * 0
+        local ax, ay = COL2_X, TOP_Y
+        render:DrawFilledRect(ax - 10, ay - 6, 600, 300, Color.new(0.05, 0.05, 0.30, 0.60))
+        drawSectionLabel("[3] Text Atlas - writeTextAtlas (batched)", ax, ay, C_ATLAS)
+        ay = ay + lh(0.6)
 
-        -- dark background behind the whole atlas section
-        render:DrawFilledRect(ax - 10, ay - 4, 290, ROW_H * 12 + 20, Color.new(0.05, 0.05, 0.30, 0.60))
-
-        drawSectionLabel("[3] Text Atlas — writeTextAtlas (batched)", ax, ay, C_ATLAS)
-
-        -- Courier font atlas (mixed case — realistic scenario)
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 1, "Hello Brakeza3D! HUD text with ascenders", C_ATLAS, 0.80)
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 2, "FPS: 60  HP: 100  SCORE: 9999", C_ATLAS, 0.70)
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 3, "Player hit by enemy: -25 HP", C_ATLAS, 0.60)
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 4, "0123456789 !@#$%^&*() abcdefghijklmnopqrstuvwxyz", C_ATLAS, 0.55)
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 5, "ABC DEF GHI JKL MNO PQR STU VW XYZ  (scale 0.40)", C_ATLAS, 0.40)
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 6, "Mixed case with Caps: 0.25", C_ATLAS, 0.25)
+        local lines = {
+            { "Hello Brakeza3D! HUD text with ascenders", 0.60 },
+            { "FPS: 60  HP: 100  SCORE: 9999", 0.55 },
+            { "Player hit by enemy: -25 HP", 0.50 },
+            { "0123456789 !@#$%^&*() abcdefghijklmnopqrstuvwxyz", 0.40 },
+            { "ABC DEF GHI JKL MNO PQR STU VW XYZ  (scale 0.35)", 0.35 },
+            { "Mixed case with Caps: 0.25", 0.25 },
+        }
+        for _, l in ipairs(lines) do
+            tw:writeTextAtlas(ax + 10, ay, l[1], C_ATLAS, l[2]); ay = ay + lh(l[2])
+        end
 
         -- live counter to prove it updates every frame
-        local execTime = string.format("%.3f", Brakeza:getExecutionTime())
-        tw:writeTextAtlas(ax + 10, ay + ROW_H * 7, "Engine time: " .. execTime .. "s  (live — changes each frame!)", Color.new(0.30, 1.00, 1.00, 1.0), 0.65)
+        local execTime = string.format("%.1f", Brakeza:getExecutionTime())
+        tw:writeTextAtlas(ax + 10, ay, "Engine time: " .. execTime .. "s (live)", Color.new(0.30, 1.00, 1.00, 1.0), 0.55)
+        ay = ay + lh(0.55) + 10
 
         -- engine default glyph atlas (TroubleFont) - different visual style
         local engTw = render:getTextWriter()
         if engTw and engTw:getGlyphAtlas() and engTw:getGlyphAtlas():isBuilt() then
             local ga = engTw:getGlyphAtlas()
-            engTw:writeTextAtlas(ax + 10, ay + ROW_H * 9, "Engine TroubleFont atlas (GL tex " .. ga:getAtlasTexture() .. ")", Color.new(0.50, 0.80, 1.00, 1.0), 0.65)
-            engTw:writeTextAtlas(ax + 10, ay + ROW_H * 10, "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789", Color.new(0.50, 0.80, 1.00, 1.0), 0.55)
+            engTw:writeTextAtlas(ax + 10, ay, "Engine TroubleFont atlas (GL tex " .. ga:getAtlasTexture() .. ")", Color.new(0.50, 0.80, 1.00, 1.0), 0.55)
+            engTw:writeTextAtlas(ax + 10, ay + lh(0.55), "ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789", Color.new(0.50, 0.80, 1.00, 1.0), 0.50)
         else
-            tw:writeTextAtlas(ax + 10, ay + ROW_H * 9, "Engine glyph atlas NOT BUILT — check logs", Color.new(1.00, 0.30, 0.30, 1.0), 0.65)
+            tw:writeTextAtlas(ax + 10, ay, "Engine glyph atlas NOT BUILT - check logs", Color.new(1.00, 0.30, 0.30, 1.0), 0.55)
         end
     end
 
-    -- ── 4: Centered / Aligned (column 3) ───────────────────────────────────
+    -- ── 4: Centered (franja central, sola) ─────────────────────────────────
+    -- writeTextTTFMiddleScreen también existe (centro de la pantalla), pero centra con la resolución
+    -- interna del motor, que Lua no conoce, y con escalas < 1 no centra en horizontal (TextWriter.cpp
+    -- convierte la escala a int): no se usa aquí para no pisar las otras secciones.
+    local my = 360
     if showCent then
-        drawSectionLabel("[4] Centered — writeTextTTFMiddleScreen / writeTTFCenterHorizontal", COL3_X, BASE_Y + ROW_H * 0, C_CENTER)
-
-        tw:writeTextTTFMiddleScreen("MiddleScreen — " .. SAMPLE, C_CENTER, 0.65)
-        tw:writeTTFCenterHorizontal(BASE_Y + ROW_H * 2, "CenterH row 2 — " .. SAMPLE, C_CENTER, 0.55)
-        tw:writeTTFCenterHorizontal(BASE_Y + ROW_H * 3, "CenterH row 3 — " .. SAMPLE, C_CENTER, 0.45)
-        tw:writeTTFCenterHorizontal(BASE_Y + ROW_H * 4, "CenterH row 4 — " .. SAMPLE, C_CENTER, 0.35)
+        tw:writeTTFCenterHorizontal(my,      "[4] Centered - writeTTFCenterHorizontal", C_CENTER, 0.60)
+        tw:writeTTFCenterHorizontal(my + 34, "CenterH - " .. SAMPLE .. " (0.60)", C_CENTER, 0.60)
+        tw:writeTTFCenterHorizontal(my + 64, "CenterH - " .. SAMPLE .. " (0.50)", C_CENTER, 0.50)
+        tw:writeTTFCenterHorizontal(my + 90, "CenterH - " .. SAMPLE .. " (0.40)", C_CENTER, 0.40)
     end
 
-    -- ── 5: Text Cache (below col 1) ────────────────────────────────────────
-    local row5_start = BASE_Y + ROW_H * 12
+    -- ── 5: Text Cache (abajo a la izquierda) ───────────────────────────────
+    local cy = my + 140
     if showCache then
-        drawSectionLabel("[5] Text Cache — beginTextCache / endTextCache / drawTextCache", COL1_X, row5_start, C_CACHE)
+        drawSectionLabel("[5] Text Cache - beginTextCache / endTextCache / drawTextCache", COL1_X, cy, C_CACHE)
 
         if not cacheBuilt then
-            tw:beginTextCache("tc_header", 380, 30)
-                tw:writeTextTTFAutoSize(0, 0, "CACHED HEADER — this text is baked into an FBO", C_CACHE, 0.65)
+            tw:beginTextCache("tc_header", 700, 30)
+                tw:writeTextTTFAutoSize(0, 0, "CACHED HEADER - this text is baked into an FBO", C_CACHE, 0.55)
             tw:endTextCache()
 
-            tw:beginTextCache("tc_body", 380, 150)
-                local y = 0
-                tw:writeTextTTFAutoSize(0, y, "Cached body line 1: persistent, no per-frame cost", C_CACHE, 0.55); y = y + 26
-                tw:writeTextTTFAutoSize(0, y, "Cached body line 2: only the drawTextCache blit",  C_CACHE, 0.55); y = y + 26
-                tw:writeTextTTFAutoSize(0, y, "Cached body line 3: happens each frame",            C_CACHE, 0.55); y = y + 26
-                tw:writeTextTTFAutoSize(0, y, "Cached body line 4: content is static",             C_CACHE, 0.55); y = y + 26
-                tw:writeTextTTFAutoSize(0, y, "Cached body line 5: only rebuilt if dirty flag",    C_CACHE, 0.55)
+            tw:beginTextCache("tc_body", 700, 140)
+                local by = 0
+                tw:writeTextTTFAutoSize(0, by, "Cached body line 1: persistent, no per-frame cost", C_CACHE, 0.50); by = by + 26
+                tw:writeTextTTFAutoSize(0, by, "Cached body line 2: only the drawTextCache blit",  C_CACHE, 0.50); by = by + 26
+                tw:writeTextTTFAutoSize(0, by, "Cached body line 3: happens each frame",            C_CACHE, 0.50); by = by + 26
+                tw:writeTextTTFAutoSize(0, by, "Cached body line 4: content is static",             C_CACHE, 0.50); by = by + 26
+                tw:writeTextTTFAutoSize(0, by, "Cached body line 5: only rebuilt if dirty flag",    C_CACHE, 0.50)
             tw:endTextCache()
             cacheBuilt = true
         end
 
-        tw:drawTextCache("tc_header", COL1_X + 10, row5_start + ROW_H * 1)
-        tw:drawTextCache("tc_body",   COL1_X + 10, row5_start + ROW_H * 3)
+        tw:drawTextCache("tc_header", COL1_X + 10, cy + lh(0.6))
+        tw:drawTextCache("tc_body",   COL1_X + 10, cy + lh(0.6) + 36)
     end
 
-    -- ── FPS (always, using atlas, within margins) ──────────────────────────
-    local fps = render:getFps()
-    local fpsColor = fps >= 50 and Color.new(0.20, 1.00, 0.30, 1.0) or (fps >= 30 and Color.new(1.00, 0.80, 0.00, 1.0) or Color.new(1.00, 0.20, 0.20, 1.0))
-    tw:writeTextAtlas(sw - MARGIN - 100, MARGIN - 40, "FPS: " .. fps, fpsColor, 0.70)
-
-    -- ── legend (within bottom margin) ──────────────────────────────────────
+    -- ── leyenda + FPS (encima de la barra del DemoBrowser) ────────────────
+    local ly = sh - 100
     local function leg_color(on, c) if on then return c else return C_DIM end end
     if showLegend then
-    local ly = sh - MARGIN
-    local LEG = { MARGIN, MARGIN + 160, MARGIN + 320, MARGIN + 480, MARGIN + 640, MARGIN + 800, MARGIN + 960, MARGIN + 1120 }
-    tw:writeTextTTFAutoSize(LEG[1],           ly, "0",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[1] + 20,      ly, "toggle ALL",      leg_color(show, C_GREY), 0.55)
-    tw:writeTextTTFAutoSize(LEG[2],           ly, "1",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[2] + 20,      ly, "TTF AutoSize",    leg_color(showAuto, C_AUTO), 0.55)
-    tw:writeTextTTFAutoSize(LEG[3],           ly, "2",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[3] + 20,      ly, "TTF Size",        leg_color(showSize, C_SIZE), 0.55)
-    tw:writeTextTTFAutoSize(LEG[4],           ly, "3",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[4] + 20,      ly, "Atlas (batched)", leg_color(showAtlas, C_ATLAS), 0.55)
-    tw:writeTextTTFAutoSize(LEG[5],           ly, "4",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[5] + 20,      ly, "Center",          leg_color(showCent, C_CENTER), 0.55)
-    tw:writeTextTTFAutoSize(LEG[6],           ly, "5",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[6] + 20,      ly, "Cache",           leg_color(showCache, C_CACHE), 0.55)
-    tw:writeTextTTFAutoSize(LEG[7],           ly, "6",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[7] + 20,      ly, "Legend",          leg_color(showLegend, C_GREY), 0.55)
-    tw:writeTextTTFAutoSize(LEG[8],           ly, "R",               C_KEY,                0.55)
-    tw:writeTextTTFAutoSize(LEG[8] + 20,      ly, "rebuild atlas",   C_GREY,               0.55)
+        local entries = {
+            { "0", "toggle ALL",      leg_color(show, C_GREY) },
+            { "1", "TTF AutoSize",    leg_color(showAuto, C_AUTO) },
+            { "2", "TTF Size",        leg_color(showSize, C_SIZE) },
+            { "3", "Atlas (batched)", leg_color(showAtlas, C_ATLAS) },
+            { "4", "Center",          leg_color(showCent, C_CENTER) },
+            { "5", "Cache",           leg_color(showCache, C_CACHE) },
+            { "6", "Legend",          leg_color(showLegend, C_GREY) },
+            { "R", "rebuild atlas",   C_GREY },
+        }
+        local s = 0.50
+        local x = COL1_X
+        for _, e in ipairs(entries) do
+            tw:writeTextTTFAutoSize(x, ly, e[1], C_KEY, s)
+            tw:writeTextTTFAutoSize(x + math.floor(2 * CHAR_W * s), ly, e[2], e[3], s)
+            x = x + math.floor((#e[2] + 5) * CHAR_W * s)
+        end
     end
+
+    local fps = render:getFps()
+    local fpsColor = fps >= 50 and Color.new(0.20, 1.00, 0.30, 1.0) or (fps >= 30 and Color.new(1.00, 0.80, 0.00, 1.0) or Color.new(1.00, 0.20, 0.20, 1.0))
+    tw:writeTextAtlas(sw - 180, ly, "FPS: " .. fps, fpsColor, 0.60)
 end
 
 -- ── lifecycle ─────────────────────────────────────────────────────────────

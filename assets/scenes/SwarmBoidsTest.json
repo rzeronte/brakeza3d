@@ -287,7 +287,14 @@
 				"blend_function_dst":	771
 			},
 			"isCollisionsEnabled":	false,
-			"scripts":	[],
+			"scripts":	[{
+					"codeFile":	"../assets/scripts/Tutorials/Object/07_PathMotion.lua",
+					"typesFile":	"../assets/scripts/Tutorials/Object/07_PathMotion.json",
+					"name":	"PathMotion",
+					"type":	"Object",
+					"ticks_per_second":	0,
+					"types":	[]
+				}],
 			"model":	"../assets/models//RoundedRedCube.fbx",
 			"enableLights":	true,
 			"renderDefaultPipeline":	true,

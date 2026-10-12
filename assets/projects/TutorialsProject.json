@@ -17,8 +17,6 @@
 			"onlyWithCliParam":	"demoBrowserTour"
 		}],
 	"scenes":	[{
-			"path":	"../assets/scenes/FBXLightsImportTest.json"
-		}, {
 			"path":	"../assets/scenes/ShowRoomTest.json"
 		}, {
 			"path":	"../assets/scenes/LightsTest.json"
