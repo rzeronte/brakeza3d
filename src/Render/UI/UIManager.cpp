@@ -350,6 +350,8 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             if (arrayCount) el.arrayCount = arrayCount->valueint;
             cJSON* arrayAlign = cJSON_GetObjectItem(item, "arrayAlign");
             if (arrayAlign && arrayAlign->valuestring) el.arrayAlign = arrayAlign->valuestring;
+            cJSON* arrayColumns = cJSON_GetObjectItem(item, "arrayColumns");
+            if (arrayColumns) el.arrayColumns = std::max(1, arrayColumns->valueint);
             cJSON* arrayDistribute = cJSON_GetObjectItem(item, "arrayDistribute");
             if (arrayDistribute) el.arrayDistribute = (arrayDistribute->type == cJSON_True);
             cJSON* arrayPaginate = cJSON_GetObjectItem(item, "arrayPaginate");
@@ -642,6 +644,10 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
                 if (sc.arrayAlign == "horizontal") return childH;
                 float step = childH + sc.arrayOffset;
                 float navH = (sc.arrayPaginate && totPages > 1) ? childH : 0.0f;
+                if (sc.arrayAlign == "grid") {   // rows, not items
+                    const int cols = std::max(1, sc.arrayColumns);
+                    return step * (float)((cnt + cols - 1) / cols) + navH;
+                }
                 return step * (float)cnt + navH;
             }
         }
@@ -1504,23 +1510,37 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
     int  itemsOnPage  = (isPaginated && totalItems > 0) ? std::min(pageSize, std::max(0, totalItems - pageOffset)) : 0;
     int  resolvedCount = isPaginated ? itemsOnPage : ((data.count > 0) ? data.count : pageSize);
 
+    // "grid": arrayColumns items per row, filled left to right and then top to bottom; arrayOffset is
+    // the gap in both directions. Paging, background and borders work the same as in a list.
+    const bool isGrid   = el.arrayAlign == "grid";
+    const int  gridCols = std::max(1, el.arrayColumns);
+    const int  gridRows = isGrid ? (resolvedCount + gridCols - 1) / gridCols : 0;
+
     auto arrayStep = [&](UIWidget& child) -> std::pair<float,float> {
         float stepX = 0.0f, stepY = 0.0f;
-        if (el.arrayDistribute) {
-            auto* win = Components::get()->Window();
+        auto* win = Components::get()->Window();
+        float ss = child.scale > 0 ? child.scale : 1.0f;
+        if (isGrid) {
+            stepX = el.arrayDistribute ? (float)win->getWidth() / (float)gridCols
+                                       : (float)win->getWidth() * child.width * ss * currentRenderScale + el.arrayOffset;
+            stepY = (float)win->getHeight() * child.height * ss * currentRenderScale + el.arrayOffset;
+        } else if (el.arrayDistribute) {
             if (el.arrayAlign == "horizontal")
                 stepX = (float)win->getWidth() / (float)resolvedCount;
             else
                 stepY = (float)win->getHeight() / (float)resolvedCount;
         } else {
-            auto* win = Components::get()->Window();
-            float ss = child.scale > 0 ? child.scale : 1.0f;
             if (el.arrayAlign == "horizontal")
                 stepX = (float)win->getWidth()  * child.width  * ss * currentRenderScale + el.arrayOffset;
             else
                 stepY = (float)win->getHeight() * child.height * ss * currentRenderScale + el.arrayOffset;
         }
         return {stepX, stepY};
+    };
+    // Offset of item i from the array origin
+    auto itemOffset = [&](int i, float stepX, float stepY) -> std::pair<float,float> {
+        if (isGrid) return { (float)(i % gridCols) * stepX, (float)(i / gridCols) * stepY };
+        return { (float)i * stepX, (float)i * stepY };
     };
 
     // Pager bar of a paginated array: widget + the scale that makes it as wide as one item (cw).
@@ -1565,9 +1585,8 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
                         for (int i = 0; i < resolvedCount; i++) {
                             const UIWidgetRenderData& sub = childData(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
                             pendingNestedPass = NestedPass::TextOnly;
-                            renderWidgetAt(it->second,
-                                baseX + el.x + (float)i * stepX,
-                                baseY + el.y + topOff + (float)i * stepY, sub, false);
+                            auto [ox, oy] = itemOffset(i, stepX, stepY);
+                            renderWidgetAt(it->second, baseX + el.x + ox, baseY + el.y + topOff + oy, sub, false);
                         }
                         // arrayPager widget renders its own text pass; nothing to do here.
                     }
@@ -1613,13 +1632,18 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
             if (arrayVisuals && el.bgColor.a > 0.0f) {
                 float totalW = (el.arrayAlign == "horizontal") ? (float)(resolvedCount - 1) * stepX + cw : cw;
                 float totalH = (el.arrayAlign == "horizontal") ? ch : (float)(resolvedCount - 1) * stepY + ch;
+                if (isGrid) {
+                    totalW = (float)(std::min(resolvedCount, gridCols) - 1) * stepX + cw;
+                    totalH = (float)(gridRows - 1) * stepY + ch;
+                }
                 render->DrawFilledRectToFB((int)(baseX + el.x), (int)(baseY + el.y + topOff), (int)totalW, (int)totalH, applyGA(el.bgColor), currentFB);
             }
             for (int i = 0; i < resolvedCount; i++) {
                 std::string prevId      = lastClickedId;
                 std::string prevHoverId = lastHoveredId;
-                float ix = baseX + el.x + (float)i * stepX;
-                float iy = baseY + el.y + topOff + (float)i * stepY;
+                auto [ox, oy] = itemOffset(i, stepX, stepY);
+                float ix = baseX + el.x + ox;
+                float iy = baseY + el.y + topOff + oy;
                 const UIWidgetRenderData& sub = childData(fullData, el.arrayPrefix + std::to_string(pageOffset + i) + "_");
                 pendingNestedPass = NestedPass::ImagesOnly;
                 renderWidgetAt(it->second, ix, iy, sub, false);
@@ -1640,7 +1664,8 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
             // (arrayPagerTop: above the items, which were moved down by topOff)
             if (pagerW) {
                 float navX = baseX + el.x;
-                float navY = (topOff > 0.0f) ? baseY + el.y : baseY + el.y + (float)resolvedCount * stepY;
+                float navY = (topOff > 0.0f) ? baseY + el.y
+                           : baseY + el.y + (float)(isGrid ? gridRows : resolvedCount) * stepY;
                 // Scale widget to match the array element pixel width
                 float pagerScale = pagerScaleFor(cw);
                 bool prevEnabled = currentPage > 0;
@@ -1733,7 +1758,9 @@ void UIManager::renderText(const UIElement& el, float x, float y, const UIElemen
     const std::string signature = text + sig;
     if (textCacheContent[cacheKey] != signature) {
         int tw_px = tw->measureTextWidthAtlas(text.c_str(), el.fontScale);
-        int th_px = (int)(el.fontScale * 32.0f);
+        // Alto real de una línea del atlas (antes fontScale * 32 fijo: con fuentes de más de 32 px de
+        // línea, p. ej. la de 35 pt por defecto, la textura se quedaba corta y cortaba el pie de las letras)
+        int th_px = (int)std::ceil(textLineHeight(el.fontScale)) + 1;
         tw->beginTextCache(cacheKey, std::max(tw_px, 1), std::max(th_px, 1));
         tw->writeTextAtlas(0, 0, text.c_str(), col, el.fontScale);
         tw->endTextCache();

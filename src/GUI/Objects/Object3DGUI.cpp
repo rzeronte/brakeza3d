@@ -123,6 +123,20 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 if (ImGui::DragFloat3("Scale", sv, 0.01f, -360.f, 360.f, "%.3f")) {
                     o->scale3D = Vertex3D(sv[0], sv[1], sv[2]);
                 }
+
+                // Escala general: el valor es la media de los tres ejes y al cambiarlo se multiplican los
+                // tres por el mismo factor, así se conservan las proporciones de un objeto escalado por ejes
+                float uniform = o->getScale();
+                if (ImGui::DragFloat("Scale (all)", &uniform, 0.01f, 0.001f, 1000.f, "%.3f")) {
+                    const float current = o->getScale();
+                    if (std::fabs(current) > 1e-6f) {
+                        const float k = uniform / current;
+                        o->scale3D = Vertex3D(o->scale3D.x * k, o->scale3D.y * k, o->scale3D.z * k);
+                    } else {
+                        o->scale3D = Vertex3D(uniform, uniform, uniform);
+                    }
+                }
+                if (ImGui::IsItemHovered()) ImGui::SetTooltip("Scales the three axes together, keeping their proportions");
             }
         }
     }

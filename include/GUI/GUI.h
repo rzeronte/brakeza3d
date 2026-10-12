@@ -20,6 +20,8 @@ namespace GUIType
     struct DragDropTarget {
         inline static const char* SCRIPT_ITEM = "SCRIPT_ITEM";
         inline static const char* SHADER_ITEM = "SHADER_ITEM";
+        inline static const char* OBJECT_ITEM = "OBJECT_ITEM";   // payload: unsigned int (id de Object3D)
+        inline static const char* FOLDER_ITEM = "FOLDER_ITEM";   // payload: FolderDragPayload
         inline static const char* IMAGE_ITEM  = "IMAGE_ITEM";
         inline static const char* SCENE_ITEM  = "SCENE_ITEM";
         inline static const char* VIDEO_ITEM  = "VIDEO_ITEM";
@@ -35,7 +37,8 @@ namespace GUIType
 
     enum ViewerObjectsMode {
         LIST,
-        TREE
+        TREE,
+        FOLDERS     // carpetas organizativas de la escena (Scene::folders)
     };
 
     struct ViewerObjectType

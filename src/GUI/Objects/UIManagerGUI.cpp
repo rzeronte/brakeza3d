@@ -1082,14 +1082,24 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         if (el.arrayCount < 1) el.arrayCount = 1;
         if (ImGui::IsItemHovered()) ImGui::SetTooltip("Number of child widget copies to render.");
 
-        static const char* aligns[] = { "vertical", "horizontal" };
-        int aIdx = (el.arrayAlign == "horizontal") ? 1 : 0;
+        static const char* aligns[] = { "vertical", "horizontal", "grid" };
+        int aIdx = (el.arrayAlign == "horizontal") ? 1 : (el.arrayAlign == "grid") ? 2 : 0;
         ImGui::SameLine();
         ImGui::SetNextItemWidth(110);
-        if (ImGui::Combo("align##elaalign", &aIdx, aligns, 2)) el.arrayAlign = aligns[aIdx];
+        if (ImGui::Combo("align##elaalign", &aIdx, aligns, 3)) el.arrayAlign = aligns[aIdx];
         if (ImGui::IsItemHovered()) ImGui::SetTooltip(
             "vertical   -> items stacked top to bottom.\n"
-            "horizontal -> items placed left to right.");
+            "horizontal -> items placed left to right.\n"
+            "grid       -> 'columns' items per row, then the next row.");
+        if (el.arrayAlign == "grid") {
+            ImGui::SameLine();
+            ImGui::SetNextItemWidth(80);
+            ImGui::InputInt("columns##elacols", &el.arrayColumns);
+            if (el.arrayColumns < 1) el.arrayColumns = 1;
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip(
+                "Items per row. Filled left to right, then top to bottom.\n"
+                "offset = gap between items in both directions.");
+        }
 
         ImGui::SeparatorText("Pagination");
 
@@ -1465,6 +1475,8 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
                 cJSON_AddStringToObject(item, "widgetRef", el.widgetRef.c_str());
             cJSON_AddNumberToObject(item, "arrayCount", el.arrayCount);
             cJSON_AddStringToObject(item, "arrayAlign", el.arrayAlign.c_str());
+            if (el.arrayAlign == "grid")
+                cJSON_AddNumberToObject(item, "arrayColumns", el.arrayColumns);
             if (el.arrayDistribute)
                 cJSON_AddTrueToObject(item, "arrayDistribute");
             if (el.arrayPaginate)

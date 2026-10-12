@@ -82,6 +82,7 @@ public:
         }
 
         SceneLoader::LoadLightsFileAssociation(json, scene);
+        SceneLoader::LoadFolders(json, scene);
 
         auto objects = cJSON_GetObjectItemCaseSensitive(json, "objects");
 

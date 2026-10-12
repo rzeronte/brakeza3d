@@ -54,6 +54,8 @@ protected:
     // posición en su lista de miembros (-1 = no está). Solo los toca SpatialIndex.
     uint32_t spatialMask = 0;
     int spatialSlot = -1;
+    // Carpeta organizativa de su escena (Scene::folders, solo editor). 0 = sin carpeta.
+    int folderId = 0;
     bool multiScene = false;
     bool alphaEnabled = false;
     Scene *scene = nullptr;
@@ -145,6 +147,8 @@ public:
     [[nodiscard]] bool isRenderHidden() const                           { return renderHidden; }
     void setRenderHidden(bool value)                                    { renderHidden = value; }
     [[nodiscard]] uint32_t getSpatialMask() const                       { return spatialMask; }
+    [[nodiscard]] int getFolderId() const                               { return folderId; }
+    void setFolderId(int id)                                            { folderId = id; }
     [[nodiscard]] bool &isEnabled()                                     { return enabled; }
     [[nodiscard]] bool isSelectable() const                             { return selectable; }
     void setSelectable(bool value)                                      { selectable = value; }

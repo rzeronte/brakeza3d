@@ -204,7 +204,8 @@ struct UIElement {
 
     // array
     int   arrayCount{1};
-    std::string arrayAlign{"vertical"}; // "horizontal" | "vertical"
+    std::string arrayAlign{"vertical"}; // "horizontal" | "vertical" | "grid"
+    int   arrayColumns{4};              // "grid": items per row (filled left to right, then top to bottom)
     bool  arrayDistribute{false};       // true  → reparte items en todo el ancho (H) o alto (V) de ventana
     float arrayOffset{0};              // false → px extra entre items en la dirección de alineación
     std::string arrayPrefix;           // prefix for row data keys (default "": row i uses "i_", prefix "d" → "d0_")

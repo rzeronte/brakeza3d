@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <algorithm>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/3D/Object3D.h"
@@ -527,7 +528,14 @@ void Object3D::RunResolveCollisionScripts(CollisionInfo with)
 
     sol::object luaValue = sol::make_object(lua, with);
 
-    for (auto &script : scripts) {
+    // Un onCollision puede quitar (RemoveScript -> delete) o añadir scripts (AttachAndInitScript ->
+    // realoja el vector) o eliminar el objeto: recorrer una copia y comprobar antes de cada llamada
+    // que el script sigue enganchado. Crash 0xC0000005 en ScriptLUA::RunEnvironment (this nulo)
+    // llamado desde aquí, 2026-10-12.
+    const std::vector<ScriptLUA *> snapshot = scripts;
+    for (auto *script : snapshot) {
+        if (isRemoved()) break;
+        if (script == nullptr || std::find(scripts.begin(), scripts.end(), script) == scripts.end()) continue;
         script->RunEnvironment(luaEnvironment, "onCollision", luaValue);
     }
 }

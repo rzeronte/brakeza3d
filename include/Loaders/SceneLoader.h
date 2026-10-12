@@ -40,6 +40,8 @@ public:
     static bool hasLightsAttenuation;
     static float lightsAttenuation[3];
     static void LoadLightsFileAssociation(const cJSON *contentJSON, Scene *scene);
+    // Carpetas organizativas de la escena ("folders": [{id, name, parent}]), ver SceneFolder
+    static void LoadFolders(const cJSON *contentJSON, Scene *scene);
     static void ReimportLightsFile(const std::string &path, Scene *scene = nullptr);
 
     static void LoadScene(const FilePath::SceneFile& filename);

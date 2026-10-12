@@ -158,6 +158,26 @@ void SceneLoader::ReimportLightsFile(const std::string &path, Scene *scene)
     ImportCurrentLightsFile(scene);
 }
 
+void SceneLoader::LoadFolders(const cJSON *contentJSON, Scene *scene)
+{
+    if (scene == nullptr || contentJSON == nullptr) return;
+    std::vector<SceneFolder> list;
+    const cJSON *folders = cJSON_GetObjectItemCaseSensitive(contentJSON, "folders");
+    const cJSON *f;
+    cJSON_ArrayForEach(f, folders) {
+        const cJSON *id   = cJSON_GetObjectItemCaseSensitive(f, "id");
+        const cJSON *name = cJSON_GetObjectItemCaseSensitive(f, "name");
+        const cJSON *par  = cJSON_GetObjectItemCaseSensitive(f, "parent");
+        if (!cJSON_IsNumber(id) || id->valueint <= 0) continue;
+        SceneFolder sf;
+        sf.id     = id->valueint;
+        sf.name   = cJSON_IsString(name) ? name->valuestring : "Folder";
+        sf.parent = cJSON_IsNumber(par) ? par->valueint : 0;
+        list.push_back(sf);
+    }
+    scene->setFolders(list);
+}
+
 void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
 {
     if (isLoading) {
@@ -305,6 +325,28 @@ void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
         cJSON_AddItemToArray(objectsArray, objectJson);
     }
     cJSON_AddItemToObject(root, "objects", objectsArray);
+
+    // Carpetas organizativas: las de la escena que se guarda (la cargada desde este fichero; si no
+    // hay ninguna, la primera cargada)
+    Scene *folderScene = nullptr;
+    for (auto *s : Components::get()->Scripting()->getLoadedScenes()) {
+        if (folderScene == nullptr) folderScene = s;
+        if (std::filesystem::path(s->getFilePath()).filename() == std::filesystem::path(filename.str()).filename()) {
+            folderScene = s;
+            break;
+        }
+    }
+    if (folderScene != nullptr && !folderScene->getFolders().empty()) {
+        cJSON *foldersArray = cJSON_CreateArray();
+        for (const auto &f : folderScene->getFolders()) {
+            cJSON *fj = cJSON_CreateObject();
+            cJSON_AddNumberToObject(fj, "id", f.id);
+            cJSON_AddStringToObject(fj, "name", f.name.c_str());
+            cJSON_AddNumberToObject(fj, "parent", f.parent);
+            cJSON_AddItemToArray(foldersArray, fj);
+        }
+        cJSON_AddItemToObject(root, "folders", foldersArray);
+    }
 
     //shaders
     cJSON *shadersArrayJSON = cJSON_CreateArray();
