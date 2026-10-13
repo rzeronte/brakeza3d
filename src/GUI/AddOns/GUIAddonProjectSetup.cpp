@@ -870,6 +870,7 @@ void GUIAddonProjectSetup::DrawProjectEditPopup()
 
         if (project == nullptr) {
             ImGui::Text("No project loaded");
+            GUIHelpers::PopupSeparator();
             if (ImGui::Button("Close")) {
                 ImGui::CloseCurrentPopup();
             }

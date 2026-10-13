@@ -25,10 +25,10 @@ public:
                 if (Float("Height", &o->heightScale, 0.005f, 0.0f, 1.0f, "%.3f", "Fraction of the screen height (0-1).")) {
                     o->setSize(o->widthScale, o->heightScale);
                 }
-                if (Int("Offset X", &o->x, 1.0f, 0, 0, "%d", "Position in pixels.")) {
+                if (Int("Offset X", &o->x, 1.0f, 0, 0, "%d", "Position in pixels of the 1280x720 reference screen (scaled to the real window).")) {
                     o->setScreenPosition(o->x, o->y);
                 }
-                if (Int("Offset Y", &o->y, 1.0f, 0, 0, "%d", "Position in pixels.")) {
+                if (Int("Offset Y", &o->y, 1.0f, 0, 0, "%d", "Position in pixels of the 1280x720 reference screen (scaled to the real window).")) {
                     o->setScreenPosition(o->x, o->y);
                 }
                 Check("Draw in background", &o->drawInBackground, "Draw behind the 3D scene instead of over it.");

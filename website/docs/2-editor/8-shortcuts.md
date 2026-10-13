@@ -9,16 +9,23 @@ This section covers all the keyboard and mouse shortcuts available in the Brakez
 | Key | Action |
 |-----|--------|
 | F1 | Play / Stop LUA scripts |
-| F2 | Reload LUA scripts |
-| F3 | Clear Scene (remove all objects) |
-| F4 | Clean Scene |
+| F2 | Show / hide the **Logs/Console** window |
 | F5 | Toggle ImGui visibility |
-| Ctrl + P | Toggle Post-Processing Chain |
 | F6 | Switch to DEFAULT layout |
 | F7 | Switch to CODING layout |
 | F8 | Switch to DESIGN layout |
-| F11 | Toggle Fullscreen mode |
+| F9 | Show / hide **Scene Objects** |
+| F10 | Show / hide **Object Properties** |
+| F11 | Show / hide **Project Setup** |
+| F12 | Show / hide **File Browser** |
+| Ctrl + P | Toggle Post-Processing Chain |
+| Left Ctrl + ` (backtick) | Maximize / restore the focused window |
 | Right Ctrl | Hold to use shortcuts while LUA is executing |
+
+:::note
+**Reload scripts**, **Clear (all objects)** and **Clean (not scene objects)** no longer have a key: use the scripts menu.
+The window shortcut also appears in each window title, for example `Logs/Console (F2)`.
+:::
 
 ---
 

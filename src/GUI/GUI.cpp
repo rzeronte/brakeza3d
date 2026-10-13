@@ -230,8 +230,8 @@ void GUI::ShowPopUp(const char* title, const char *message, const std::function<
     GUIHelpers::CenterNextWindow();
 
     if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text(message);
-        ImGui::Separator();
+        ImGui::Text("%s", message);
+        GUIHelpers::PopupSeparator();
 
         if (ImGui::Button("OK", ImVec2(120, 0))) {
             onConfirm();

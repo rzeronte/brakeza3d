@@ -158,6 +158,10 @@ public:
     [[nodiscard]] bool isRemoveAtEndAnimation() const       { return removeOnAnimationEnd; }
     [[nodiscard]] bool isLoop() const                       { return loop; }
     [[nodiscard]] bool isAnimationEnds() const              { return finished; }
+    // Vuelve al primer frame del clip actual aunque ya estuviera sonando (setAnimationByName con el mismo clip no lo reinicia)
+    void restartAnimation();
+    // Duración real en segundos del clip actual, ya dividida por la velocidad de animación
+    [[nodiscard]] float getAnimationDuration() const;
     [[nodiscard]] int getNumAnimations() const              { return scene ? static_cast<int>(scene->mNumAnimations) : 0; }
     [[nodiscard]] std::string getAnimationName(int i) const { return (scene && i >= 0 && i < static_cast<int>(scene->mNumAnimations)) ? scene->mAnimations[i]->mName.C_Str() : ""; }
     [[nodiscard]] float getCurrentAnimationMaxTime() const;
