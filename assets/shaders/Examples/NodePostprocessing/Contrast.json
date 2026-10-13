@@ -28,7 +28,7 @@
 				"color": { "r": 0.6, "g": 0.4, "b": 0.3, "a": 1.0 },
 				"inputs": [{ "id": 6, "name": "Color", "type": 5 }],
 				"outputs": [{ "id": 7, "name": "Result", "type": 5 }],
-				"userData": {}
+				"userData": {"contrast": 1.6}
 			},
 			{
 				"id": 8,

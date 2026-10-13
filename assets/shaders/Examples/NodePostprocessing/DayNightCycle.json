@@ -1,0 +1,552 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/DayNightCycle.json",
+	"name": "DayNightCycle",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 3,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 4,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Day",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 6,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 1.0,
+					"g": 0.85,
+					"b": 0.6
+				}
+			},
+			{
+				"id": 7,
+				"name": "Night",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 8,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.35,
+					"g": 0.45,
+					"b": 0.8
+				}
+			},
+			{
+				"id": 9,
+				"name": "Day light",
+				"type": "Multiply",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 10,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 11,
+						"name": "B",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 12,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 15,
+				"name": "Night light",
+				"type": "Multiply",
+				"position": {
+					"x": 330,
+					"y": 250
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 16,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 17,
+						"name": "B",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 18,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 21,
+				"name": "Time",
+				"type": "Time",
+				"position": {
+					"x": 60,
+					"y": 630
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.5,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 22,
+						"name": "Time",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 23,
+				"name": "Cycle speed",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 330,
+					"y": 440
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 24,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 25,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 26,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 28,
+				"name": "0.4",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 820
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 29,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.4
+				}
+			},
+			{
+				"id": 31,
+				"name": "Sin",
+				"type": "Sin",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 32,
+						"name": "Input",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 33,
+						"name": "Output",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 35,
+				"name": "Half",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 36,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 37,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 38,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 40,
+				"name": "0.5",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1010
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 41,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.5
+				}
+			},
+			{
+				"id": 43,
+				"name": "0.5",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1200
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 44,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.5
+				}
+			},
+			{
+				"id": 45,
+				"name": "0..1",
+				"type": "AddFloat",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 46,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 47,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 48,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 51,
+				"name": "Day-Night",
+				"type": "Mix",
+				"position": {
+					"x": 1410,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 52,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 53,
+						"name": "B",
+						"type": 5
+					},
+					{
+						"id": 54,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 55,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 59,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1680,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 60,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 13,
+				"startPinId": 3,
+				"endPinId": 10
+			},
+			{
+				"id": 14,
+				"startPinId": 6,
+				"endPinId": 11
+			},
+			{
+				"id": 19,
+				"startPinId": 3,
+				"endPinId": 16
+			},
+			{
+				"id": 20,
+				"startPinId": 8,
+				"endPinId": 17
+			},
+			{
+				"id": 27,
+				"startPinId": 22,
+				"endPinId": 24
+			},
+			{
+				"id": 30,
+				"startPinId": 29,
+				"endPinId": 25
+			},
+			{
+				"id": 34,
+				"startPinId": 26,
+				"endPinId": 32
+			},
+			{
+				"id": 39,
+				"startPinId": 33,
+				"endPinId": 36
+			},
+			{
+				"id": 42,
+				"startPinId": 41,
+				"endPinId": 37
+			},
+			{
+				"id": 49,
+				"startPinId": 38,
+				"endPinId": 46
+			},
+			{
+				"id": 50,
+				"startPinId": 44,
+				"endPinId": 47
+			},
+			{
+				"id": 56,
+				"startPinId": 12,
+				"endPinId": 52
+			},
+			{
+				"id": 57,
+				"startPinId": 18,
+				"endPinId": 53
+			},
+			{
+				"id": 58,
+				"startPinId": 48,
+				"endPinId": 54
+			},
+			{
+				"id": 61,
+				"startPinId": 55,
+				"endPinId": 60
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

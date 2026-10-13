@@ -1,0 +1,533 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/NeonPulse.json",
+	"name": "NeonPulse",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Neon",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 2,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 1.0,
+					"g": 0.1,
+					"b": 0.8
+				}
+			},
+			{
+				"id": 3,
+				"name": "Time",
+				"type": "Time",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.5,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 4,
+						"name": "Time",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Pulse speed",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 6,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 7,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 8,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "3",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 11,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 3.0
+				}
+			},
+			{
+				"id": 13,
+				"name": "Sin",
+				"type": "Sin",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 14,
+						"name": "Input",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 15,
+						"name": "Output",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 17,
+				"name": "Amplitude",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 18,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 19,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 20,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 22,
+				"name": "0.4",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 630
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 23,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.4
+				}
+			},
+			{
+				"id": 25,
+				"name": "Base",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 820
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 26,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.8
+				}
+			},
+			{
+				"id": 27,
+				"name": "Brightness",
+				"type": "AddFloat",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 28,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 29,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 30,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 33,
+				"name": "Pulsing glow",
+				"type": "ScaleColor",
+				"position": {
+					"x": 1410,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 34,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 35,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 36,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 39,
+				"name": "Fresnel",
+				"type": "Fresnel",
+				"position": {
+					"x": 60,
+					"y": 1010
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 40,
+						"name": "Fresnel",
+						"type": 1
+					}
+				],
+				"userData": {
+					"power": 2.0
+				}
+			},
+			{
+				"id": 41,
+				"name": "Rim",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 1200
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 42,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 1.0,
+					"g": 0.9,
+					"b": 1.0
+				}
+			},
+			{
+				"id": 43,
+				"name": "Rim",
+				"type": "ScaleColor",
+				"position": {
+					"x": 330,
+					"y": 250
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 44,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 45,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 46,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 49,
+				"name": "Add",
+				"type": "Add",
+				"position": {
+					"x": 1680,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 50,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 51,
+						"name": "B",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 52,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 55,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1950,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 56,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 9,
+				"startPinId": 4,
+				"endPinId": 6
+			},
+			{
+				"id": 12,
+				"startPinId": 11,
+				"endPinId": 7
+			},
+			{
+				"id": 16,
+				"startPinId": 8,
+				"endPinId": 14
+			},
+			{
+				"id": 21,
+				"startPinId": 15,
+				"endPinId": 18
+			},
+			{
+				"id": 24,
+				"startPinId": 23,
+				"endPinId": 19
+			},
+			{
+				"id": 31,
+				"startPinId": 20,
+				"endPinId": 28
+			},
+			{
+				"id": 32,
+				"startPinId": 26,
+				"endPinId": 29
+			},
+			{
+				"id": 37,
+				"startPinId": 2,
+				"endPinId": 34
+			},
+			{
+				"id": 38,
+				"startPinId": 30,
+				"endPinId": 35
+			},
+			{
+				"id": 47,
+				"startPinId": 42,
+				"endPinId": 44
+			},
+			{
+				"id": 48,
+				"startPinId": 40,
+				"endPinId": 45
+			},
+			{
+				"id": 53,
+				"startPinId": 36,
+				"endPinId": 50
+			},
+			{
+				"id": 54,
+				"startPinId": 46,
+				"endPinId": 51
+			},
+			{
+				"id": 57,
+				"startPinId": 52,
+				"endPinId": 56
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

@@ -16,7 +16,7 @@ public:
     }
 
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
-        editor->AddInputPin(node, "Vec2", PinType::Vector);
+        editor->AddInputPin(node, "Vec2", PinType::Vec2);
         editor->AddOutputPin(node, "X", PinType::Float);
         editor->AddOutputPin(node, "Y", PinType::Float);
     }
@@ -34,18 +34,12 @@ public:
         std::string inputVar = editor->TraverseNode(node->inputs[0]->id, code);
         if (inputVar.empty()) inputVar = "vec2(0.0)";
 
-        std::string varNameX = "var" + std::to_string(node->id) + "_x";
-        std::string varNameY = "var" + std::to_string(node->id) + "_y";
+        // El gestor pide cada salida por separado y cachea por pin: se genera solo la solicitada
+        const bool wantsX = sourcePin && sourcePin->id == node->outputs[0]->id;
+        const std::string varName = "var" + std::to_string(node->id) + (wantsX ? "_x" : "_y");
 
-        code << "    float " << varNameX << " = " << inputVar << ".x;\n";
-        code << "    float " << varNameY << " = " << inputVar << ".y;\n";
-
-        // Devolver según qué output se solicita
-        if (sourcePin && sourcePin->id == node->outputs[0]->id) {
-            return varNameX;
-        } else {
-            return varNameY;
-        }
+        code << "    float " << varName << " = " << inputVar << (wantsX ? ".x" : ".y") << ";\n";
+        return varName;
     }
 };
 

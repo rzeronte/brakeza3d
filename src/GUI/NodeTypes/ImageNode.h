@@ -28,8 +28,14 @@ public:
         editor->DeleteImageForNode(node->id);
     }
 
+    void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) override {
+        // La imagen en sí la carga el gestor (imagePath); aquí solo se refleja la ruta en la UI del nodo
+        std::string* filepath = (std::string*)node->userData;
+        if (filepath) *filepath = NodeJson::String(in, "imagePath");
+    }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
-        editor->AddInputPin(node, "UV", PinType::Vector);
+        editor->AddInputPin(node, "UV", PinType::Vec2);
         editor->AddOutputPin(node, "Color", PinType::Vector);
         editor->AddOutputPin(node, "Alpha", PinType::Float);
     }
@@ -154,6 +160,8 @@ public:
         ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
+        // Color y Alpha son salidas distintas (vec3 / float): cada una con su propia variable
+        if (sourcePin->name == "Alpha") varName += "_a";
         auto& textures = editor->GetNodeTextures();
 
         if (textures.find(node->id) != textures.end() && textures[node->id].image) {
@@ -175,7 +183,11 @@ public:
                      << ", " << uvCoords << ").rgb;\n";
             }
         } else {
-            code << "    vec3 " << varName << " = vec3(1.0, 0.0, 1.0);\n";
+            if (sourcePin->name == "Alpha") {
+                code << "    float " << varName << " = 1.0;\n";
+            } else {
+                code << "    vec3 " << varName << " = vec3(1.0, 0.0, 1.0);\n";
+            }
         }
 
         return varName;

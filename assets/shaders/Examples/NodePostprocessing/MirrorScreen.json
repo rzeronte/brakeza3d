@@ -1,0 +1,370 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/MirrorScreen.json",
+	"name": "MirrorScreen",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Vec2Decompose",
+				"type": "Vec2Decompose",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.4,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 4,
+						"name": "Vec2",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 5,
+						"name": "X",
+						"type": 1
+					},
+					{
+						"id": 6,
+						"name": "Y",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 8,
+				"name": "Center",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 9,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.5
+				}
+			},
+			{
+				"id": 10,
+				"name": "X - 0.5",
+				"type": "SubtractFloat",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.4,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 11,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 12,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 13,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 16,
+				"name": "Abs",
+				"type": "Abs",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 17,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 18,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 20,
+				"name": "Center",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 21,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.5
+				}
+			},
+			{
+				"id": 22,
+				"name": "0.5 - |X - 0.5|",
+				"type": "SubtractFloat",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.4,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 23,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 24,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 25,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 28,
+				"name": "Mirrored UV",
+				"type": "Vec2Compose",
+				"position": {
+					"x": 1410,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 29,
+						"name": "X",
+						"type": 1
+					},
+					{
+						"id": 30,
+						"name": "Y",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 31,
+						"name": "Vec2",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 34,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 1680,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 35,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 36,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 37,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 39,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1950,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 40,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 7,
+				"startPinId": 2,
+				"endPinId": 4
+			},
+			{
+				"id": 14,
+				"startPinId": 5,
+				"endPinId": 11
+			},
+			{
+				"id": 15,
+				"startPinId": 9,
+				"endPinId": 12
+			},
+			{
+				"id": 19,
+				"startPinId": 13,
+				"endPinId": 17
+			},
+			{
+				"id": 26,
+				"startPinId": 21,
+				"endPinId": 23
+			},
+			{
+				"id": 27,
+				"startPinId": 18,
+				"endPinId": 24
+			},
+			{
+				"id": 32,
+				"startPinId": 25,
+				"endPinId": 29
+			},
+			{
+				"id": 33,
+				"startPinId": 6,
+				"endPinId": 30
+			},
+			{
+				"id": 38,
+				"startPinId": 31,
+				"endPinId": 35
+			},
+			{
+				"id": 41,
+				"startPinId": 36,
+				"endPinId": 40
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

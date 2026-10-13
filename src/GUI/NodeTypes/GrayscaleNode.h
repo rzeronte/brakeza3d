@@ -30,18 +30,21 @@ public:
         if (node->inputs.empty()) return "";
 
         std::string varName = "var" + std::to_string(node->id);
-        std::string varNameRGB = varName + "_rgb";
 
         std::string inputColor = editor->TraverseNode(node->inputs[0]->id, code);
         if (inputColor.empty()) inputColor = "vec3(0.0)";
 
         // Luminance weights (Rec. 709)
-        code << "    float " << varName << " = dot(" << inputColor << ", vec3(0.2126, 0.7152, 0.0722));\n";
-        code << "    vec3 " << varNameRGB << " = vec3(" << varName << ");\n";
+        const std::string luminance = "dot(" + inputColor + ", vec3(0.2126, 0.7152, 0.0722))";
 
+        // El gestor pide cada salida por separado y cachea por pin: se genera solo la solicitada
         if (sourcePin && sourcePin->name == "RGB") {
+            const std::string varNameRGB = varName + "_rgb";
+            code << "    vec3 " << varNameRGB << " = vec3(" << luminance << ");\n";
             return varNameRGB;
         }
+
+        code << "    float " << varName << " = " << luminance << ";\n";
         return varName;
     }
 };

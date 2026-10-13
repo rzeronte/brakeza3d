@@ -4,8 +4,16 @@
 
 #include "../../../include/OpenGL/Nodes/ShaderBaseNodes.h"
 
+#include <cstdlib>
+
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/Tools.h"
+
+ShaderBaseNodes::~ShaderBaseNodes()
+{
+    delete nodeManager;
+    nodeManager = nullptr;
+}
 
 void ShaderBaseNodes::LoadUniforms()
 {
@@ -25,6 +33,8 @@ void ShaderBaseNodes::Render(GLuint fbo, GLuint texture)
 
 void ShaderBaseNodes::DrawImGuiProperties(const Image *diffuse, Image *specular)
 {
+    if (!nodeManager) return;
+
     ImGui::BeginChild(getLabel().c_str(), ImVec2(0, 350), true);
     nodeManager->Render();
     ImGui::EndChild();
@@ -32,18 +42,15 @@ void ShaderBaseNodes::DrawImGuiProperties(const Image *diffuse, Image *specular)
 
 void ShaderBaseNodes::SaveToFile() const
 {
-    cJSON *root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root, "typesFile", getTypesFile().c_str());
-    cJSON_AddStringToObject(root, "name", getLabel().c_str());
-    auto typeString = getShaderTypeString(type);
-    cJSON_AddStringToObject(root, "type", typeString.c_str());
+    if (!nodeManager) return;   // aún no se ha cargado el grafo
 
-    auto dataNodes = nodeManager->getJSONTypes();
-    cJSON_AddItemToObject(root, "types", dataNodes);
+    cJSON *root = getTypesJSON();
 
     char *content = cJSON_Print(root);
-
     Tools::WriteToFile(getTypesFile(), content);
+
+    free(content);
+    cJSON_Delete(root);
 }
 
 void ShaderBaseNodes::WriteEmptyCustomShaderToDisk(const std::string &name, const std::string &folder, ShaderCustomType type, NodeEditorManager *nodeManager)
@@ -63,6 +70,9 @@ void ShaderBaseNodes::WriteEmptyCustomShaderToDisk(const std::string &name, cons
 
     // json
     Tools::WriteToFile(typesFile, content);
+
+    free(content);
+    cJSON_Delete(root);
 }
 
 cJSON * ShaderBaseNodes::getTypesJSON() const
@@ -72,8 +82,10 @@ cJSON * ShaderBaseNodes::getTypesJSON() const
     cJSON_AddStringToObject(root, "name", label.c_str());
     cJSON_AddStringToObject(root, "type", getShaderTypeString(type).c_str());
 
-    auto dataNodes = nodeManager->getJSONTypes();
-    cJSON_AddItemToObject(root, "types", dataNodes);
+    // Si el grafo todavía no se ha cargado (carga en curso) no hay "types" que guardar
+    if (nodeManager) {
+        cJSON_AddItemToObject(root, "types", nodeManager->getJSONTypes());
+    }
 
     return root;
 }

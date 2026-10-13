@@ -28,8 +28,22 @@ public:
         editor->DeleteImageForNode(node->id);
     }
 
+    void SerializeParams(const std::shared_ptr<Node>& node, cJSON* out) const override {
+        const InternalTextureType* texType = (const InternalTextureType*)node->userData;
+        if (texType) cJSON_AddNumberToObject(out, "textureType", static_cast<int>(*texType));
+    }
+
+    void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) override {
+        InternalTextureType* texType = (InternalTextureType*)node->userData;
+        if (!texType) return;
+        const int value = NodeJson::Int(in, "textureType", static_cast<int>(*texType));
+        if (value >= 0 && value <= static_cast<int>(InternalTextureType::Depth)) {
+            *texType = static_cast<InternalTextureType>(value);
+        }
+    }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
-        editor->AddInputPin(node, "UV", PinType::Vector);
+        editor->AddInputPin(node, "UV", PinType::Vec2);
         editor->AddOutputPin(node, "Color", PinType::Vector);
         editor->AddOutputPin(node, "Alpha", PinType::Float);
 
@@ -60,8 +74,7 @@ public:
             }
 
             if (ImGui::Button(typeNames[i], ImVec2(95, 0))) {
-                *texType = (InternalTextureType)i;
-                editor->SetNeedsRecompile();
+                *texType = (InternalTextureType)i;   // solo cambia qué textura se enlaza cada frame
             }
 
             if (isActive) {
@@ -112,6 +125,8 @@ public:
         ShaderNodeEditorManager* editor) override
     {
         std::string varName = "var" + std::to_string(node->id);
+        // Color y Alpha son salidas distintas (vec3 / float): cada una con su propia variable
+        if (sourcePin->name == "Alpha") varName += "_a";
         auto& textures = editor->GetNodeTextures();
 
         if (textures.find(node->id) != textures.end() && textures[node->id].image) {

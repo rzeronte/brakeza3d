@@ -94,8 +94,9 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
 
                 nodeManager->Update();
 
+                // Grafo sin compilar: el error ya se muestra en el editor de nodos (y se registra en el log
+                // al compilar); aquí solo se omite el dibujado en vez de repetir el mensaje cada frame
                 if (nodeManager->GetShaderProgram() == 0) {
-                    std::cerr << "ERROR: Shader program is 0 after Update() in chain!" << std::endl;
                     continue;
                 }
 

@@ -1,0 +1,793 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/Checkerboard.json",
+	"name": "Checkerboard",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Vec2Decompose",
+				"type": "Vec2Decompose",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.4,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 4,
+						"name": "Vec2",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 5,
+						"name": "X",
+						"type": 1
+					},
+					{
+						"id": 6,
+						"name": "Y",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 8,
+				"name": "Time",
+				"type": "Time",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.5,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 9,
+						"name": "Time",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "Scroll speed",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 330,
+					"y": 250
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 11,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 12,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 13,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 15,
+				"name": "0.5",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 16,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.5
+				}
+			},
+			{
+				"id": 18,
+				"name": "X cells",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 19,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 20,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 21,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 23,
+				"name": "8",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 630
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 24,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 8.0
+				}
+			},
+			{
+				"id": 26,
+				"name": "X scrolling",
+				"type": "AddFloat",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 27,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 28,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 29,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 32,
+				"name": "Y cells",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 600,
+					"y": 250
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 33,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 34,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 35,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 37,
+				"name": "8",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 820
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 38,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 8.0
+				}
+			},
+			{
+				"id": 40,
+				"name": "Cell X",
+				"type": "Floor",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 41,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 42,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 44,
+				"name": "Cell Y",
+				"type": "Floor",
+				"position": {
+					"x": 870,
+					"y": 250
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 45,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 46,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 48,
+				"name": "Cell X + Y",
+				"type": "AddFloat",
+				"position": {
+					"x": 1410,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 49,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 50,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 51,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 54,
+				"name": "Half",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 1680,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 55,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 56,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 57,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 59,
+				"name": "0.5",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1010
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 60,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.5
+				}
+			},
+			{
+				"id": 62,
+				"name": "Parity",
+				"type": "Fract",
+				"position": {
+					"x": 1950,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 63,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 64,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 66,
+				"name": "Parity 0 or 1",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 2220,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 67,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 68,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 69,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 71,
+				"name": "2",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1200
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 72,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 2.0
+				}
+			},
+			{
+				"id": 74,
+				"name": "Light",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 1390
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 75,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.95,
+					"g": 0.95,
+					"b": 0.95
+				}
+			},
+			{
+				"id": 76,
+				"name": "Dark",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 1580
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 77,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.1,
+					"g": 0.1,
+					"b": 0.15
+				}
+			},
+			{
+				"id": 78,
+				"name": "Mix",
+				"type": "Mix",
+				"position": {
+					"x": 2490,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 79,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 80,
+						"name": "B",
+						"type": 5
+					},
+					{
+						"id": 81,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 82,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 86,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 2760,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 87,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 7,
+				"startPinId": 2,
+				"endPinId": 4
+			},
+			{
+				"id": 14,
+				"startPinId": 9,
+				"endPinId": 11
+			},
+			{
+				"id": 17,
+				"startPinId": 16,
+				"endPinId": 12
+			},
+			{
+				"id": 22,
+				"startPinId": 5,
+				"endPinId": 19
+			},
+			{
+				"id": 25,
+				"startPinId": 24,
+				"endPinId": 20
+			},
+			{
+				"id": 30,
+				"startPinId": 21,
+				"endPinId": 27
+			},
+			{
+				"id": 31,
+				"startPinId": 13,
+				"endPinId": 28
+			},
+			{
+				"id": 36,
+				"startPinId": 6,
+				"endPinId": 33
+			},
+			{
+				"id": 39,
+				"startPinId": 38,
+				"endPinId": 34
+			},
+			{
+				"id": 43,
+				"startPinId": 29,
+				"endPinId": 41
+			},
+			{
+				"id": 47,
+				"startPinId": 35,
+				"endPinId": 45
+			},
+			{
+				"id": 52,
+				"startPinId": 42,
+				"endPinId": 49
+			},
+			{
+				"id": 53,
+				"startPinId": 46,
+				"endPinId": 50
+			},
+			{
+				"id": 58,
+				"startPinId": 51,
+				"endPinId": 55
+			},
+			{
+				"id": 61,
+				"startPinId": 60,
+				"endPinId": 56
+			},
+			{
+				"id": 65,
+				"startPinId": 57,
+				"endPinId": 63
+			},
+			{
+				"id": 70,
+				"startPinId": 64,
+				"endPinId": 67
+			},
+			{
+				"id": 73,
+				"startPinId": 72,
+				"endPinId": 68
+			},
+			{
+				"id": 83,
+				"startPinId": 75,
+				"endPinId": 79
+			},
+			{
+				"id": 84,
+				"startPinId": 77,
+				"endPinId": 80
+			},
+			{
+				"id": 85,
+				"startPinId": 69,
+				"endPinId": 81
+			},
+			{
+				"id": 88,
+				"startPinId": 82,
+				"endPinId": 87
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

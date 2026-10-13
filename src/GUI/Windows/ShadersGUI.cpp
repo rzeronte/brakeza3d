@@ -478,6 +478,7 @@ ShaderBaseCustom* ShadersGUI::CreateShaderBaseCustom(ShaderCustomType type, std:
         case SHADER_NODE_OBJECT: {
             auto nm = new ShaderNodeEditorManager(SHADER_NODE_OBJECT);
             ShaderBaseNodes::WriteEmptyCustomShaderToDisk(name, folder, type, nm);
+            delete nm;   // solo servía para escribir el grafo por defecto
             auto metaInfo = ExtractShaderCustomCodeMetainfo(typesFile);
             auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
             return shader;
@@ -485,6 +486,7 @@ ShaderBaseCustom* ShadersGUI::CreateShaderBaseCustom(ShaderCustomType type, std:
         case SHADER_NODE_POSTPROCESSING: {
             auto nm = new ShaderNodeEditorManager(SHADER_NODE_POSTPROCESSING);
             ShaderBaseNodes::WriteEmptyCustomShaderToDisk(name, folder, type, nm);
+            delete nm;
             auto metaInfo = ExtractShaderCustomCodeMetainfo(typesFile);
             auto shader = ComponentRender::CreateCustomShaderFromDisk(metaInfo, nullptr);
             return shader;

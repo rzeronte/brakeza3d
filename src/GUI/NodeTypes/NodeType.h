@@ -5,6 +5,7 @@
 #include <memory>
 #include <sstream>
 #include "../imgui/imgui.h"
+#include "../../../include/Misc/cJSON.h"
 
 class ShaderNodeEditorManager;
 struct Node;
@@ -21,6 +22,11 @@ public:
     // Callbacks del ciclo de vida
     virtual void OnCreate(std::shared_ptr<Node>& node) {}
     virtual void OnDelete(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) {}
+
+    // Parámetros editables del nodo (lo que vive en node->userData). Se guardan dentro del "userData"
+    // del JSON del shader y se restauran al cargarlo. Los nodos sin parámetros no tienen que tocar nada.
+    virtual void SerializeParams(const std::shared_ptr<Node>& node, cJSON* out) const {}
+    virtual void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) {}
 
     // Configuración de pins
     virtual void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) = 0;

@@ -1,0 +1,817 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/NightVision.json",
+	"name": "NightVision",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 3,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 4,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Contrast",
+				"type": "Contrast",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.4,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 6,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 7,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"contrast": 1.4
+				}
+			},
+			{
+				"id": 8,
+				"name": "Grayscale",
+				"type": "Grayscale",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 9,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 10,
+						"name": "Gray",
+						"type": 1
+					},
+					{
+						"id": 11,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "Phosphor",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 13,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.25,
+					"g": 1.0,
+					"b": 0.35
+				}
+			},
+			{
+				"id": 14,
+				"name": "Tint green",
+				"type": "Multiply",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 15,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 16,
+						"name": "B",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 17,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 18,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 19,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 20,
+				"name": "Vignette",
+				"type": "Vignette",
+				"position": {
+					"x": 330,
+					"y": 250
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.3,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 21,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 22,
+						"name": "Mask",
+						"type": 1
+					}
+				],
+				"userData": {
+					"intensity": 0.45,
+					"smoothness": 0.5
+				}
+			},
+			{
+				"id": 23,
+				"name": "Time",
+				"type": "Time",
+				"position": {
+					"x": 60,
+					"y": 630
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.5,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 24,
+						"name": "Time",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 25,
+				"name": "Grain X",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 330,
+					"y": 440
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 26,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 27,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 28,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 30,
+				"name": "37",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 820
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 31,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 37.0
+				}
+			},
+			{
+				"id": 33,
+				"name": "Grain Y",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 330,
+					"y": 630
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 34,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 35,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 36,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 38,
+				"name": "17",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1010
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 39,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 17.0
+				}
+			},
+			{
+				"id": 41,
+				"name": "Grain offset",
+				"type": "Vec2Compose",
+				"position": {
+					"x": 600,
+					"y": 250
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 42,
+						"name": "X",
+						"type": 1
+					},
+					{
+						"id": 43,
+						"name": "Y",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 44,
+						"name": "Vec2",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 47,
+				"name": "UV Offset",
+				"type": "UV Offset",
+				"position": {
+					"x": 870,
+					"y": 250
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.7,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 48,
+						"name": "UV",
+						"type": 7
+					},
+					{
+						"id": 49,
+						"name": "Offset",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 50,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 53,
+				"name": "Noise",
+				"type": "Noise",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 54,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 55,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"scale": 300.0,
+					"fractal": 0
+				}
+			},
+			{
+				"id": 57,
+				"name": "Grain amount",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 1410,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 58,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 59,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 60,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 62,
+				"name": "0.3",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1200
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 63,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.3
+				}
+			},
+			{
+				"id": 65,
+				"name": "Base",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 1390
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 66,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 1.1
+				}
+			},
+			{
+				"id": 67,
+				"name": "Brightness",
+				"type": "AddFloat",
+				"position": {
+					"x": 1680,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 68,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 69,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 70,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 73,
+				"name": "Vignette x brightness",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 1950,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 74,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 75,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 76,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 79,
+				"name": "ScaleColor",
+				"type": "ScaleColor",
+				"position": {
+					"x": 2220,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 80,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 81,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 82,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 83,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 2490,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 84,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 29,
+				"startPinId": 24,
+				"endPinId": 26
+			},
+			{
+				"id": 32,
+				"startPinId": 31,
+				"endPinId": 27
+			},
+			{
+				"id": 37,
+				"startPinId": 24,
+				"endPinId": 34
+			},
+			{
+				"id": 40,
+				"startPinId": 39,
+				"endPinId": 35
+			},
+			{
+				"id": 45,
+				"startPinId": 28,
+				"endPinId": 42
+			},
+			{
+				"id": 46,
+				"startPinId": 36,
+				"endPinId": 43
+			},
+			{
+				"id": 51,
+				"startPinId": 19,
+				"endPinId": 48
+			},
+			{
+				"id": 52,
+				"startPinId": 44,
+				"endPinId": 49
+			},
+			{
+				"id": 56,
+				"startPinId": 50,
+				"endPinId": 54
+			},
+			{
+				"id": 61,
+				"startPinId": 55,
+				"endPinId": 58
+			},
+			{
+				"id": 64,
+				"startPinId": 63,
+				"endPinId": 59
+			},
+			{
+				"id": 71,
+				"startPinId": 60,
+				"endPinId": 68
+			},
+			{
+				"id": 72,
+				"startPinId": 66,
+				"endPinId": 69
+			},
+			{
+				"id": 77,
+				"startPinId": 22,
+				"endPinId": 74
+			},
+			{
+				"id": 78,
+				"startPinId": 70,
+				"endPinId": 75
+			},
+			{
+				"id": 85,
+				"startPinId": 19,
+				"endPinId": 21
+			},
+			{
+				"id": 86,
+				"startPinId": 3,
+				"endPinId": 6
+			},
+			{
+				"id": 87,
+				"startPinId": 7,
+				"endPinId": 9
+			},
+			{
+				"id": 88,
+				"startPinId": 11,
+				"endPinId": 15
+			},
+			{
+				"id": 89,
+				"startPinId": 13,
+				"endPinId": 16
+			},
+			{
+				"id": 90,
+				"startPinId": 17,
+				"endPinId": 80
+			},
+			{
+				"id": 91,
+				"startPinId": 76,
+				"endPinId": 81
+			},
+			{
+				"id": 92,
+				"startPinId": 82,
+				"endPinId": 84
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

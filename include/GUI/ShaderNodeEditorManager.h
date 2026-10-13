@@ -6,6 +6,8 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <set>
+#include <vector>
 #include <functional>
 #include <glm/fwd.hpp>
 
@@ -17,6 +19,15 @@ class NodeType;
 struct ImageTexture {
     Image* image = nullptr;
     std::string filepath;
+};
+
+// Parámetro de un nodo expuesto al shader como uniform: se lee del userData del nodo en cada dibujado,
+// así que editarlo no obliga a recompilar el programa.
+struct ShaderUniform {
+    std::string name;
+    int components = 1;
+    const float* data = nullptr;
+    GLint location = -1;
 };
 
 // Definición de un tipo de nodo (mantenida por compatibilidad)
@@ -54,9 +65,20 @@ private:
     GLuint m_VBO;
     bool m_NeedsRecompile;
     bool m_FirstFrame;
+    bool m_GLReady = false;         // el quad se crea en Update(), ya en el hilo principal
+    bool m_DefaultLayout = false;   // true solo para el grafo por defecto recién creado
     std::string m_LastShaderCode;
+    std::string m_LastCompileError;
 
-    std::map<int, std::string> m_NodeOutputs;
+    // Nombre de la "imagen" de los nodos Internal/Mesh Texture: la textura es del motor, no del nodo
+    static constexpr const char* kSystemTexture = "[System Texture]";
+
+    std::map<int, std::string> m_NodeOutputs;   // clave: id del pin de salida ya generado
+    std::set<int> m_Traversing;                 // nodos en curso durante el recorrido (anti-ciclos)
+    std::vector<ShaderUniform> m_Uniforms;
+    // Funciones GLSL que piden los nodos (clave, código), EN EL ORDEN EN QUE SE PIDEN: GLSL exige declarar
+    // antes de usar, y una función auxiliar puede depender de otra pedida antes (noiseFractal -> noiseValue)
+    std::vector<std::pair<std::string, std::string>> m_GlslHelpers;
     std::map<int, ImageTexture> m_NodeTextures;
 
     // Sistema de registro de nodos
@@ -69,6 +91,20 @@ private:
     void HandleDeletion() override;
 
     void CompileShader();
+
+    void ReleaseAllNodes();
+    void ReleaseNodeImage(ImageTexture& tex);
+    int BindNodeTextures();
+    void UnbindNodeTextures(int textureUnits);
+    void UploadUniforms();
+    void DuplicateNode(const std::shared_ptr<Node>& original);
+    void AddNodeAtMenuPos(const std::string& typeName);
+
+protected:
+    void OnNodeContextMenu(int nodeId) override;
+    void OnLinkContextMenu(int linkId) override;
+
+private:
 
     // Métodos para registrar nodos
     std::shared_ptr<Node> CreateNodeOfType(const std::string& typeName);
@@ -83,6 +119,16 @@ public:
     void RegisterNodeTypes();
     void RegisterNodeType(NodeType* nodeType);
     void Render() override;
+    void DeleteNode(int nodeId) override;
+
+    // Parámetro de nodo como uniform (devuelve el nombre GLSL a usar en el código generado).
+    // `data` debe seguir vivo mientras exista el nodo (normalmente su userData).
+    std::string AddUniform(const std::string& name, int components, const float* data);
+
+    // Función GLSL auxiliar (se declara una sola vez, antes de main(), aunque la pidan varios nodos)
+    void AddGlslHelper(const std::string& key, const std::string& glslCode);
+
+    [[nodiscard]] const std::string& GetLastCompileError() const { return m_LastCompileError; }
 
     void DrawNodeHeader(std::shared_ptr<Node> &node);
 

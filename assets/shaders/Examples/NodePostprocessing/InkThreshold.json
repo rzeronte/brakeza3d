@@ -1,0 +1,268 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/InkThreshold.json",
+	"name": "InkThreshold",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 3,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 4,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Grayscale",
+				"type": "Grayscale",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 6,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 7,
+						"name": "Gray",
+						"type": 1
+					},
+					{
+						"id": 8,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 10,
+				"name": "Threshold",
+				"type": "Smoothstep",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.7,
+					"b": 0.4,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 11,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 12,
+						"name": "Output",
+						"type": 1
+					}
+				],
+				"userData": {
+					"edge0": 0.4,
+					"edge1": 0.5
+				}
+			},
+			{
+				"id": 14,
+				"name": "Ink",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 15,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.03,
+					"g": 0.03,
+					"b": 0.05
+				}
+			},
+			{
+				"id": 16,
+				"name": "Paper",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 17,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.95,
+					"g": 0.94,
+					"b": 0.88
+				}
+			},
+			{
+				"id": 18,
+				"name": "Mix",
+				"type": "Mix",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 19,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 20,
+						"name": "B",
+						"type": 5
+					},
+					{
+						"id": 21,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 22,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 26,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 27,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 9,
+				"startPinId": 3,
+				"endPinId": 6
+			},
+			{
+				"id": 13,
+				"startPinId": 7,
+				"endPinId": 11
+			},
+			{
+				"id": 23,
+				"startPinId": 15,
+				"endPinId": 19
+			},
+			{
+				"id": 24,
+				"startPinId": 17,
+				"endPinId": 20
+			},
+			{
+				"id": 25,
+				"startPinId": 12,
+				"endPinId": 21
+			},
+			{
+				"id": 28,
+				"startPinId": 22,
+				"endPinId": 27
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

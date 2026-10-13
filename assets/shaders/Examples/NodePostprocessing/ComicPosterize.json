@@ -1,0 +1,190 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/ComicPosterize.json",
+	"name": "ComicPosterize",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 3,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 4,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Posterize",
+				"type": "Posterize",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.4,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 6,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 7,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"levels": 4.0
+				}
+			},
+			{
+				"id": 9,
+				"name": "Saturation",
+				"type": "Saturation",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.7,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 10,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 11,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"saturation": 1.5
+				}
+			},
+			{
+				"id": 13,
+				"name": "Contrast",
+				"type": "Contrast",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.4,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 14,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 15,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"contrast": 1.2
+				}
+			},
+			{
+				"id": 17,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 18,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 8,
+				"startPinId": 3,
+				"endPinId": 6
+			},
+			{
+				"id": 12,
+				"startPinId": 7,
+				"endPinId": 10
+			},
+			{
+				"id": 16,
+				"startPinId": 11,
+				"endPinId": 14
+			},
+			{
+				"id": 19,
+				"startPinId": 15,
+				"endPinId": 18
+			}
+		],
+		"lastShaderCode": ""
+	}
+}
