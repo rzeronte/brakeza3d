@@ -26,6 +26,22 @@ public:
         }
     }
 
+    void SerializeParams(const std::shared_ptr<Node>& node, cJSON* out) const override {
+        const ImVec4* color = (const ImVec4*)node->userData;
+        if (!color) return;
+        cJSON_AddNumberToObject(out, "r", color->x);
+        cJSON_AddNumberToObject(out, "g", color->y);
+        cJSON_AddNumberToObject(out, "b", color->z);
+    }
+
+    void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) override {
+        ImVec4* color = (ImVec4*)node->userData;
+        if (!color) return;
+        color->x = NodeJson::Float(in, "r", color->x);
+        color->y = NodeJson::Float(in, "g", color->y);
+        color->z = NodeJson::Float(in, "b", color->z);
+    }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddOutputPin(node, "RGB", PinType::Vector);
     }
@@ -35,9 +51,7 @@ public:
         if (node->userData) {
             ImVec4* color = (ImVec4*)node->userData;
             std::string colorId = "##color" + std::to_string(node->id);
-            if (ImGui::ColorEdit3(colorId.c_str(), (float*)color)) {
-                editor->SetNeedsRecompile();
-            }
+            ImGui::ColorEdit3(colorId.c_str(), (float*)color);   // uniform: no hace falta recompilar
         }
         ImGui::EndGroup();
         return MeasureUIWidth();
@@ -53,8 +67,8 @@ public:
         ImVec4* color = (ImVec4*)node->userData;
 
         if (color) {
-            code << "    vec3 " << varName << " = vec3("
-                 << color->x << ", " << color->y << ", " << color->z << ");\n";
+            const std::string uniform = editor->AddUniform("u_p" + std::to_string(node->id) + "_color", 3, (const float*)color);
+            code << "    vec3 " << varName << " = " << uniform << ";\n";
         } else {
             code << "    vec3 " << varName << " = vec3(1.0, 1.0, 1.0);\n";
         }

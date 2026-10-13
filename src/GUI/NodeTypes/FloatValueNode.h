@@ -26,6 +26,16 @@ public:
         }
     }
 
+    void SerializeParams(const std::shared_ptr<Node>& node, cJSON* out) const override {
+        const float* value = (const float*)node->userData;
+        if (value) cJSON_AddNumberToObject(out, "value", *value);
+    }
+
+    void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) override {
+        float* value = (float*)node->userData;
+        if (value) *value = NodeJson::Float(in, "value", *value);
+    }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddOutputPin(node, "Value", PinType::Float);
     }
@@ -36,9 +46,7 @@ public:
             float* value = (float*)node->userData;
             std::string valueId = "##float" + std::to_string(node->id);
             ImGui::SetNextItemWidth(80);
-            if (ImGui::DragFloat(valueId.c_str(), value, 0.01f, -100.0f, 100.0f, "%.3f")) {
-                editor->SetNeedsRecompile();
-            }
+            ImGui::DragFloat(valueId.c_str(), value, 0.01f, -100.0f, 100.0f, "%.3f");   // uniform: sin recompilar
         }
         ImGui::EndGroup();
         return MeasureUIWidth();
@@ -54,7 +62,8 @@ public:
         float* value = (float*)node->userData;
 
         if (value) {
-            code << "    float " << varName << " = " << *value << ";\n";
+            const std::string uniform = editor->AddUniform("u_p" + std::to_string(node->id) + "_value", 1, value);
+            code << "    float " << varName << " = " << uniform << ";\n";
         } else {
             code << "    float " << varName << " = 1.0;\n";
         }

@@ -46,7 +46,7 @@ void EditableOpenNode::DrawTabEdition(int tabIndex)
             DrawNodeEditorTab();
             // Botón para cerrar
             ImGui::Separator();
-            if (ImGui::Button("Cerrar", ImVec2(120, 0))) {
+            if (GUIHelpers::DialogButton("Close")) {
                 ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
@@ -65,6 +65,11 @@ void EditableOpenNode::DrawEditableOpenNodeConfig()
 
 void EditableOpenNode::DrawNodeEditorTab() const
 {
+    // El gestor de nodos se crea al terminar la carga del objeto: hasta entonces no hay grafo que dibujar
+    if (!shaderNodes || !shaderNodes->getNodeManager()) {
+        ImGui::TextDisabled("Loading shader...");
+        return;
+    }
     shaderNodes->getNodeManager()->Render();
 }
 void EditableOpenNode::DrawCodeEditActionButtons()
@@ -81,7 +86,7 @@ void EditableOpenNode::DrawCodeEditActionButtons()
             ImGui::SameLine();
         }
         GUI::DrawButton("Auto fit", IconGUI::NODE_EDITOR_AUTOFIT, GUIType::Sizes::ICONS_CODE_EDITOR, false, [&] {
-            shaderNodes->getNodeManager()->Autofit();
+            if (shaderNodes && shaderNodes->getNodeManager()) shaderNodes->getNodeManager()->Autofit();
         });
         ImGui::SameLine();
         DrawSwitchButton();

@@ -35,7 +35,7 @@
 				"color": { "r": 1.0, "g": 0.2, "b": 0.2, "a": 1.0 },
 				"inputs": [],
 				"outputs": [{ "id": 7, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"userData": {"r": 1.0, "g": 0.2, "b": 0.2}
 			},
 			{
 				"id": 8,
@@ -45,7 +45,7 @@
 				"color": { "r": 0.2, "g": 0.2, "b": 1.0, "a": 1.0 },
 				"inputs": [],
 				"outputs": [{ "id": 9, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"userData": {"r": 0.2, "g": 0.2, "b": 1.0}
 			},
 			{
 				"id": 10,

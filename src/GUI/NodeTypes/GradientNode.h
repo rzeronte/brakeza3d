@@ -16,7 +16,7 @@ public:
     }
 
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
-        editor->AddInputPin(node, "UV", PinType::Vector);
+        editor->AddInputPin(node, "UV", PinType::Vec2);
         editor->AddOutputPin(node, "Color", PinType::Vector);
     }
 

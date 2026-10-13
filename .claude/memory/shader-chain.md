@@ -58,3 +58,33 @@ ShaderBaseCustom (Render(fbo, texture) pure virtual)
 - Must use `GetNodeManager()->RenderMesh()` (ShaderNodeEditorManager version)
 - NOT `this->RenderMesh()` (ShaderNodesMesh3D version) which calls RenderEffect (fullscreen quad) → white screen
 - ShaderNodeEditorManager::RenderMesh enables depth test, proper vertex attribs (pos=vec4, normal=vec3, uv=vec2)
+
+## Node shaders (ShaderNodeEditorManager) — rules for editing/adding nodes
+- **Threading**: the manager's constructor touches no GL. The quad (VAO/VBO) and the first compile happen in `Update()`
+  (main thread). `ShaderNodesMesh3D` creates + loads its manager in `PrepareMainThread()` (mesh loading runs on a worker
+  thread: never create the manager there — OpenGL and ImGui-node-editor are main-thread only).
+- **Ownership**: `ShaderBaseNodes` owns and deletes its manager. `Image`s of Internal/Mesh Texture nodes wrap engine
+  textures (`filepath == "[System Texture]"`): always release them through `ReleaseNodeImage` (zeroes the GL id first,
+  otherwise `~Image` would `glDeleteTextures` the engine's texture). They are never serialized.
+- **Parameters**: each `NodeType` with editable data implements `SerializeParams/DeserializeParams` (stored in the node's
+  `userData` JSON: Color r/g/b, FloatValue value, Mix factor, Smoothstep edge0/edge1, Contrast contrast, Saturation
+  saturation, Vignette intensity/smoothness, textureType). Pass them to GLSL with `editor->AddUniform(name, n, floatPtr)`
+  (read from the node's userData each draw) — do NOT bake them as literals and do NOT call `SetNeedsRecompile()` from the
+  UI: recompile only when the graph changes (links, nodes, images).
+- **Multiple outputs**: `TraverseNode` caches per *output pin*. `GenerateCode(node, sourcePin, ...)` must emit only the
+  variable of `sourcePin` (own variable name per pin, e.g. `var5` / `var5_a`) — it is called once per used output.
+- **Unique GLSL names**: every temporary a node declares must be prefixed with `var<id>` (two nodes of the same type must
+  coexist in one graph).
+- **Pin types**: `Vector` = vec3 (colors), `Vec2` = UV, `Float`. `CanCreateLink` also rejects cycles; an input holds a
+  single link (a new one replaces the old); links are stored Output→Input. Ids from a loaded file are reserved first
+  (`LoadFromJSON` pre-scan) and pins keep the code's names/types, taking only the ids from the file.
+- A graph that fails to compile shows the error in the node editor/debug panel (`GetLastCompileError`); post-process
+  nodes then pass the input texture through instead of leaving the chain black.
+- **GLSL helper functions** (`AddGlslHelper`, e.g. Noise) are emitted in the order they were requested (a vector, not a
+  map): GLSL needs declare-before-use and a helper may depend on an earlier one (`noiseFractal` -> `noiseValue`).
+- **Check without launching the engine**: `python tools/check_node_shaders.py` compiles the REAL node headers and the real
+  `GenerateShaderCode/TraverseNode/AddUniform/AddGlslHelper` text from `ShaderNodeEditorManager.cpp` into a small harness,
+  generates the GLSL of every example in `assets/shaders/Examples/Node*`, checks the SerializeParams/DeserializeParams
+  round trip and pin counts, then compiles+links every shader on the real GL driver. Run it after touching any node or the
+  manager's generation code (needs a configured `cmake-build-*` dir for flags; it does not run cmake).
+

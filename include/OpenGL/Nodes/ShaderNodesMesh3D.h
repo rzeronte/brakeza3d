@@ -22,16 +22,10 @@ public:
     void Destroy() override;
     void Reload() override;
 
-    // Renderizar mesh específico con sus texturas
-    void RenderMesh(
-        Mesh3D* mesh,
-        int materialIndex,
-        GLuint vertexbuffer,
-        GLuint uvbuffer,
-        GLuint normalbuffer,
-        int vertexCount,
-        GLuint fbo
-    );
+    // El gestor de nodos usa OpenGL y el editor de nodos (globales de ImGui): se crea y carga aquí,
+    // en el hilo principal, nunca en el hilo de carga del mesh.
+    void PrepareMainThread() override;
+
     ShaderNodeEditorManager* GetNodeManager() const             { return dynamic_cast<ShaderNodeEditorManager*>(getNodeManager()); }
 
     void DrawImGuiProperties(const Image* diffuse, Image* specular) override;

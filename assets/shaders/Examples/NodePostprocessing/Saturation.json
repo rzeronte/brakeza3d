@@ -28,7 +28,7 @@
 				"color": { "r": 0.7, "g": 0.5, "b": 0.3, "a": 1.0 },
 				"inputs": [{ "id": 6, "name": "Color", "type": 5 }],
 				"outputs": [{ "id": 7, "name": "Result", "type": 5 }],
-				"userData": {}
+				"userData": {"saturation": 1.8}
 			},
 			{
 				"id": 8,

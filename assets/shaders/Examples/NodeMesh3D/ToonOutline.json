@@ -1,0 +1,299 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodeMesh3D/ToonOutline.json",
+	"name": "ToonOutline",
+	"type": "NodeMesh3D",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodeMesh3D",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "Object texture",
+				"type": "Mesh Texture",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.9,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 3,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 4,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 5,
+				"name": "Posterize",
+				"type": "Posterize",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.4,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 6,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 7,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"levels": 5.0
+				}
+			},
+			{
+				"id": 9,
+				"name": "Saturation",
+				"type": "Saturation",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.7,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 10,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 11,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"saturation": 1.4
+				}
+			},
+			{
+				"id": 13,
+				"name": "Fresnel",
+				"type": "Fresnel",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 14,
+						"name": "Fresnel",
+						"type": 1
+					}
+				],
+				"userData": {
+					"power": 1.5
+				}
+			},
+			{
+				"id": 15,
+				"name": "Silhouette",
+				"type": "Step",
+				"position": {
+					"x": 330,
+					"y": 250
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.6,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 16,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 17,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {
+					"edge": 0.6
+				}
+			},
+			{
+				"id": 19,
+				"name": "Outline",
+				"type": "Color",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.4,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 20,
+						"name": "RGB",
+						"type": 5
+					}
+				],
+				"userData": {
+					"r": 0.0,
+					"g": 0.0,
+					"b": 0.0
+				}
+			},
+			{
+				"id": 21,
+				"name": "Mix",
+				"type": "Mix",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.4,
+					"b": 0.7,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 22,
+						"name": "A",
+						"type": 5
+					},
+					{
+						"id": 23,
+						"name": "B",
+						"type": 5
+					},
+					{
+						"id": 24,
+						"name": "Factor",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 25,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 29,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 30,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 8,
+				"startPinId": 3,
+				"endPinId": 6
+			},
+			{
+				"id": 12,
+				"startPinId": 7,
+				"endPinId": 10
+			},
+			{
+				"id": 18,
+				"startPinId": 14,
+				"endPinId": 16
+			},
+			{
+				"id": 26,
+				"startPinId": 11,
+				"endPinId": 22
+			},
+			{
+				"id": 27,
+				"startPinId": 20,
+				"endPinId": 23
+			},
+			{
+				"id": 28,
+				"startPinId": 17,
+				"endPinId": 24
+			},
+			{
+				"id": 31,
+				"startPinId": 25,
+				"endPinId": 30
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

@@ -4,6 +4,8 @@
 
 #include "../../include/GUI/NodeEditorManager.h"
 #include <algorithm>
+#include <set>
+#include <cstring>
 #include <imgui_node_editor.h>
 #include <fstream>
 
@@ -92,6 +94,20 @@ std::shared_ptr<Link> NodeEditorManager::CreateLink(int startPinId, int endPinId
     if (!CanCreateLink(startPinId, endPinId))
         return nullptr;
 
+    // Guardar siempre Output -> Input, arrastres el enlace desde el lado que arrastres:
+    // el recorrido del grafo busca el enlace por su pin de entrada (endPinId)
+    auto startPin = FindPin(startPinId);
+    if (startPin && startPin->kind == ed::PinKind::Input) {
+        std::swap(startPinId, endPinId);
+    }
+
+    // Una entrada solo admite un enlace: el nuevo sustituye al anterior
+    m_Links.erase(
+        std::remove_if(m_Links.begin(), m_Links.end(),
+            [endPinId](const std::shared_ptr<Link>& link) { return link->endPinId == endPinId; }),
+        m_Links.end()
+    );
+
     auto link = std::make_shared<Link>(m_NextId++, startPinId, endPinId);
     m_Links.push_back(link);
     return link;
@@ -145,6 +161,10 @@ bool NodeEditorManager::CanCreateLink(int startPinId, int endPinId)
             return false;
     }
 
+    // Un ciclo (A -> B -> A) haria que el recorrido del grafo recursara sin fin
+    if (WouldCreateCycle(startPin->nodeId, endPin->nodeId))
+        return false;
+
     // No permitir enlaces duplicados
     for (auto& link : m_Links) {
         if ((link->startPinId == startPinId && link->endPinId == endPinId) ||
@@ -153,6 +173,35 @@ bool NodeEditorManager::CanCreateLink(int startPinId, int endPinId)
     }
 
     return true;
+}
+
+bool NodeEditorManager::WouldCreateCycle(int sourceNodeId, int targetNodeId) const
+{
+    auto nodeOfPin = [this](int pinId) {
+        for (const auto& pin : m_Pins) {
+            if (pin->id == pinId) return pin->nodeId;
+        }
+        return -1;
+    };
+
+    // ¿Se llega a sourceNode siguiendo los enlaces desde targetNode?
+    std::vector<int> pending{targetNodeId};
+    std::set<int> visited;
+    while (!pending.empty()) {
+        const int current = pending.back();
+        pending.pop_back();
+
+        if (current == sourceNodeId) return true;
+        if (!visited.insert(current).second) continue;
+
+        for (const auto& link : m_Links) {
+            if (nodeOfPin(link->startPinId) == current) {
+                const int next = nodeOfPin(link->endPinId);
+                if (next >= 0) pending.push_back(next);
+            }
+        }
+    }
+    return false;
 }
 
 // ==================== Búsqueda ====================
@@ -514,37 +563,59 @@ bool NodeEditorManager::LoadFromJSON(cJSON* json)
 
     if (!json) return false;
 
-    // Limpiar estado actual
-    Clear();
-
-    // Verificar versión
+    // Verificar versión ANTES de tocar el estado: un fichero inválido no debe vaciar el editor
     cJSON* version = cJSON_GetObjectItem(json, "version");
-    if (!version || strcmp(version->valuestring, "1.0") != 0) {
+    if (!version || !cJSON_IsString(version) || strcmp(version->valuestring, "1.0") != 0) {
+        LOG_ERROR("[NodeEditorManager] Unsupported or missing 'version'");
         return false;
     }
 
-    // ========== CARGAR NODOS ==========
+    // Limpiar estado actual
+    Clear();
+
     cJSON* nodesArray = cJSON_GetObjectItem(json, "nodes");
+    cJSON* linksArray = cJSON_GetObjectItem(json, "links");
+
+    // Reservar los ids por encima de TODOS los del fichero. Las clases hijas crean primero el nodo
+    // con ids provisionales y luego les ponen los del fichero: así un id provisional nunca coincide
+    // con el de un nodo, pin o enlace que todavía no se ha cargado.
+    int maxId = 0;
+    cJSON* it = nullptr;
+    cJSON_ArrayForEach(it, nodesArray) {
+        maxId = std::max(maxId, NodeJson::Int(it, "id"));
+        for (const char* key : {"inputs", "outputs"}) {
+            cJSON* pinJson = nullptr;
+            cJSON_ArrayForEach(pinJson, cJSON_GetObjectItem(it, key)) {
+                maxId = std::max(maxId, NodeJson::Int(pinJson, "id"));
+            }
+        }
+    }
+    cJSON_ArrayForEach(it, linksArray) {
+        maxId = std::max(maxId, NodeJson::Int(it, "id"));
+    }
+    m_NextId = maxId + 1;
+
+    // ========== CARGAR NODOS ==========
     if (nodesArray) {
         cJSON* nodeJson = nullptr;
         cJSON_ArrayForEach(nodeJson, nodesArray) {
             // Permitir que la clase hija cree el nodo (importante para ShaderNodeEditor)
             std::shared_ptr<Node> node = CreateNodeFromJSON(nodeJson);
-            LOG_MESSAGE("[NodeEditorManager] Creating NODE: %s - %s", node->name.c_str(), node->type.c_str());
-            if (node) {
-                // Establecer posición
-                cJSON* posObj = cJSON_GetObjectItem(nodeJson, "position");
-                if (posObj) {
-                    float x = cJSON_GetObjectItem(posObj, "x")->valuedouble;
-                    float y = cJSON_GetObjectItem(posObj, "y")->valuedouble;
-                    ed::SetNodePosition(node->id, ImVec2(x, y));
-                }
+            if (!node) {
+                LOG_ERROR("[NodeEditorManager] Node skipped (invalid or unknown type '%s')", NodeJson::String(nodeJson, "type").c_str());
+                continue;
+            }
 
-                // UserData (virtual)
-                cJSON* userData = cJSON_GetObjectItem(nodeJson, "userData");
-                if (userData) {
-                    DeserializeNodeUserData(node, userData);
-                }
+            LOG_MESSAGE("[NodeEditorManager] Creating NODE: %s - %s", node->name.c_str(), node->type.c_str());
+
+            cJSON* posObj = cJSON_GetObjectItem(nodeJson, "position");
+            if (posObj) {
+                ed::SetNodePosition(node->id, ImVec2(NodeJson::Float(posObj, "x"), NodeJson::Float(posObj, "y")));
+            }
+
+            cJSON* userData = cJSON_GetObjectItem(nodeJson, "userData");
+            if (userData) {
+                DeserializeNodeUserData(node, userData);
             }
         }
     } else {
@@ -552,23 +623,35 @@ bool NodeEditorManager::LoadFromJSON(cJSON* json)
     }
 
     // ========== CARGAR LINKS ==========
-    cJSON* linksArray = cJSON_GetObjectItem(json, "links");
-    if (linksArray) {
-        cJSON* linkJson = nullptr;
-        cJSON_ArrayForEach(linkJson, linksArray) {
-            int id = cJSON_GetObjectItem(linkJson, "id")->valueint;
-            int startPin = cJSON_GetObjectItem(linkJson, "startPinId")->valueint;
-            int endPin = cJSON_GetObjectItem(linkJson, "endPinId")->valueint;
+    cJSON* linkJson = nullptr;
+    cJSON_ArrayForEach(linkJson, linksArray) {
+        int startPinId = NodeJson::Int(linkJson, "startPinId", -1);
+        int endPinId = NodeJson::Int(linkJson, "endPinId", -1);
 
-            // Crear el link
-            auto link = std::make_shared<Link>(id, startPin, endPin);
-            m_Links.push_back(link);
-
-            // Actualizar m_NextId si es necesario
-            if (id >= m_NextId) {
-                m_NextId = id + 1;
-            }
+        auto startPin = FindPin(startPinId);
+        auto endPin = FindPin(endPinId);
+        if (!startPin || !endPin) {
+            LOG_ERROR("[NodeEditorManager] Link skipped: pin not found (%d -> %d)", startPinId, endPinId);
+            continue;
         }
+
+        // Ficheros guardados con la dirección invertida (Input -> Output): normalizar
+        if (startPin->kind == ed::PinKind::Input && endPin->kind == ed::PinKind::Output) {
+            std::swap(startPin, endPin);
+            std::swap(startPinId, endPinId);
+        }
+
+        // Validación mínima: sin tipos (los ficheros antiguos no distinguían vec2/vec3), pero sin
+        // ciclos ni dos enlaces en la misma entrada
+        if (startPin->kind != ed::PinKind::Output || endPin->kind != ed::PinKind::Input ||
+            startPin->nodeId == endPin->nodeId ||
+            WouldCreateCycle(startPin->nodeId, endPin->nodeId) ||
+            IsPinConnected(endPinId)) {
+            LOG_ERROR("[NodeEditorManager] Link skipped: invalid connection (%d -> %d)", startPinId, endPinId);
+            continue;
+        }
+
+        m_Links.push_back(std::make_shared<Link>(NodeJson::Int(linkJson, "id", m_NextId++), startPinId, endPinId));
     }
 
     // ========== DATOS CUSTOM ==========
@@ -579,17 +662,19 @@ bool NodeEditorManager::LoadFromJSON(cJSON* json)
 
 // Implementación por defecto (puede ser sobrescrita)
 std::shared_ptr<Node> NodeEditorManager::CreateNodeFromJSON(cJSON* nodeJson) {
-    int id = cJSON_GetObjectItem(nodeJson, "id")->valueint;
-    std::string name = cJSON_GetObjectItem(nodeJson, "name")->valuestring;
-    std::string type = cJSON_GetObjectItem(nodeJson, "type")->valuestring;
+    if (!nodeJson || !cJSON_GetObjectItem(nodeJson, "id")) return nullptr;
+
+    int id = NodeJson::Int(nodeJson, "id");
+    std::string name = NodeJson::String(nodeJson, "name");
+    std::string type = NodeJson::String(nodeJson, "type", "base");
 
     // Color
     cJSON* colorObj = cJSON_GetObjectItem(nodeJson, "color");
     ImVec4 color(
-        cJSON_GetObjectItem(colorObj, "r")->valuedouble,
-        cJSON_GetObjectItem(colorObj, "g")->valuedouble,
-        cJSON_GetObjectItem(colorObj, "b")->valuedouble,
-        cJSON_GetObjectItem(colorObj, "a")->valuedouble
+        NodeJson::Float(colorObj, "r", 0.2f),
+        NodeJson::Float(colorObj, "g", 0.2f),
+        NodeJson::Float(colorObj, "b", 0.2f),
+        NodeJson::Float(colorObj, "a", 1.0f)
     );
 
     // Crear nodo base
@@ -600,43 +685,23 @@ std::shared_ptr<Node> NodeEditorManager::CreateNodeFromJSON(cJSON* nodeJson) {
         m_NextId = id + 1;
     }
 
-    // Recrear inputs
-    cJSON* inputsArray = cJSON_GetObjectItem(nodeJson, "inputs");
-    if (inputsArray) {
+    auto loadPins = [&](const char* key, ed::PinKind kind, std::vector<std::shared_ptr<Pin>>& dest) {
         cJSON* pinJson = nullptr;
-        cJSON_ArrayForEach(pinJson, inputsArray) {
-            int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
-            std::string pinName = cJSON_GetObjectItem(pinJson, "name")->valuestring;
-            PinType pinType = static_cast<PinType>(cJSON_GetObjectItem(pinJson, "type")->valueint);
+        cJSON_ArrayForEach(pinJson, cJSON_GetObjectItem(nodeJson, key)) {
+            int pinId = NodeJson::Int(pinJson, "id");
+            PinType pinType = static_cast<PinType>(NodeJson::Int(pinJson, "type", static_cast<int>(PinType::Any)));
 
-            auto pin = std::make_shared<Pin>(pinId, node->id, ed::PinKind::Input, pinType, pinName);
-            node->inputs.push_back(pin);
+            auto pin = std::make_shared<Pin>(pinId, node->id, kind, pinType, NodeJson::String(pinJson, "name"));
+            dest.push_back(pin);
             m_Pins.push_back(pin);
 
             if (pinId >= m_NextId) {
                 m_NextId = pinId + 1;
             }
         }
-    }
-
-    // Recrear outputs
-    cJSON* outputsArray = cJSON_GetObjectItem(nodeJson, "outputs");
-    if (outputsArray) {
-        cJSON* pinJson = nullptr;
-        cJSON_ArrayForEach(pinJson, outputsArray) {
-            int pinId = cJSON_GetObjectItem(pinJson, "id")->valueint;
-            std::string pinName = cJSON_GetObjectItem(pinJson, "name")->valuestring;
-            PinType pinType = static_cast<PinType>(cJSON_GetObjectItem(pinJson, "type")->valueint);
-
-            auto pin = std::make_shared<Pin>(pinId, node->id, ed::PinKind::Output, pinType, pinName);
-            node->outputs.push_back(pin);
-            m_Pins.push_back(pin);
-
-            if (pinId >= m_NextId) {
-                m_NextId = pinId + 1;
-            }
-        }
-    }
+    };
+    loadPins("inputs", ed::PinKind::Input, node->inputs);
+    loadPins("outputs", ed::PinKind::Output, node->outputs);
 
     m_Nodes.push_back(node);
     return node;

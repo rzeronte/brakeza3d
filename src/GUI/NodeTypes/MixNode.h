@@ -26,6 +26,16 @@ public:
         }
     }
 
+    void SerializeParams(const std::shared_ptr<Node>& node, cJSON* out) const override {
+        const float* factor = (const float*)node->userData;
+        if (factor) cJSON_AddNumberToObject(out, "factor", *factor);
+    }
+
+    void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) override {
+        float* factor = (float*)node->userData;
+        if (factor) *factor = NodeJson::Float(in, "factor", *factor);
+    }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "A", PinType::Vector);
         editor->AddInputPin(node, "B", PinType::Vector);
@@ -39,9 +49,7 @@ public:
         ImGui::PushItemWidth(200);
         if (node->userData) {
             float* factor = (float*)node->userData;
-            if (ImGui::DragFloat("Factor", factor, 0.01f, 0.0f, 1.0f)) {
-                editor->SetNeedsRecompile();
-            }
+            ImGui::DragFloat("Factor", factor, 0.01f, 0.0f, 1.0f);   // uniform: sin recompilar
         }
         ImGui::PopItemWidth();
         ImGui::PopID();
@@ -69,7 +77,7 @@ public:
         if (b.empty()) b = "vec3(1.0)";
         if (factor.empty()) {
             float* f = (float*)node->userData;
-            factor = std::to_string(f ? *f : 0.5f);
+            factor = f ? editor->AddUniform("u_p" + std::to_string(node->id) + "_factor", 1, f) : "0.5";
         }
 
         code << "    vec3 " << varName << " = mix(" << a << ", " << b << ", " << factor << ");\n";

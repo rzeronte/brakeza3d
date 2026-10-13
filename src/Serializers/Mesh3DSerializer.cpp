@@ -167,9 +167,9 @@ void Mesh3DSerializer::ApplyShadersFileRead(Mesh3D *mesh, cJSON* json)
                 s->PrepareBackground();
                 shader = s;
             } else if (ShaderBaseCustom::getShaderTypeFromString(metaInfo.type) == SHADER_NODE_OBJECT) {
-                auto manager = new ShaderNodeEditorManager(SHADER_NODE_OBJECT);
-                manager->LoadFromFile(metaInfo.typesFile.c_str());
-                shader = new ShaderNodesMesh3D(metaInfo.name, metaInfo.typesFile, SHADER_NODE_OBJECT, manager, mesh);
+                // Este código corre en el hilo de carga: el gestor de nodos (OpenGL + editor de ImGui) lo
+                // crea y carga el propio shader en PrepareMainThread(), ya en el hilo principal
+                shader = new ShaderNodesMesh3D(metaInfo.name, metaInfo.typesFile, SHADER_NODE_OBJECT, nullptr, mesh);
             } else {
                 LOG_ERROR("[Mesh3D] Unsupported shader type for Mesh3D: %s", metaInfo.type.c_str());
                 continue;

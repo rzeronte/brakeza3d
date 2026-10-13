@@ -1,0 +1,550 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/Ripple.json",
+	"name": "Ripple",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "UVRadial",
+				"type": "UVRadial",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.7,
+					"b": 0.4,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 4,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 5,
+						"name": "Distance",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 7,
+				"name": "Wave frequency",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 8,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 9,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 10,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "40",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 250
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 13,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 40.0
+				}
+			},
+			{
+				"id": 15,
+				"name": "Time",
+				"type": "Time",
+				"position": {
+					"x": 60,
+					"y": 440
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.5,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 16,
+						"name": "Time",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 17,
+				"name": "Wave speed",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 330,
+					"y": 250
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 18,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 19,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 20,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 22,
+				"name": "6",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 630
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 23,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 6.0
+				}
+			},
+			{
+				"id": 25,
+				"name": "Distance - time",
+				"type": "SubtractFloat",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.4,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 26,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 27,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 28,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 31,
+				"name": "Sin",
+				"type": "Sin",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.8,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 32,
+						"name": "Input",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 33,
+						"name": "Output",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 35,
+				"name": "Amplitude",
+				"type": "MultiplyFloat",
+				"position": {
+					"x": 1410,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 36,
+						"name": "A",
+						"type": 1
+					},
+					{
+						"id": 37,
+						"name": "B",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 38,
+						"name": "Result",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 40,
+				"name": "0.008",
+				"type": "FloatValue",
+				"position": {
+					"x": 60,
+					"y": 820
+				},
+				"color": {
+					"r": 0.5,
+					"g": 0.5,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 41,
+						"name": "Value",
+						"type": 1
+					}
+				],
+				"userData": {
+					"value": 0.008
+				}
+			},
+			{
+				"id": 43,
+				"name": "Vec2Compose",
+				"type": "Vec2Compose",
+				"position": {
+					"x": 1680,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.6,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 44,
+						"name": "X",
+						"type": 1
+					},
+					{
+						"id": 45,
+						"name": "Y",
+						"type": 1
+					}
+				],
+				"outputs": [
+					{
+						"id": 46,
+						"name": "Vec2",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 49,
+				"name": "UV Offset",
+				"type": "UV Offset",
+				"position": {
+					"x": 1950,
+					"y": 60
+				},
+				"color": {
+					"r": 0.4,
+					"g": 0.7,
+					"b": 0.6,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 50,
+						"name": "UV",
+						"type": 7
+					},
+					{
+						"id": 51,
+						"name": "Offset",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 52,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 55,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 2220,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 56,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 57,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 58,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 60,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 2490,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 61,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 6,
+				"startPinId": 2,
+				"endPinId": 4
+			},
+			{
+				"id": 11,
+				"startPinId": 5,
+				"endPinId": 8
+			},
+			{
+				"id": 14,
+				"startPinId": 13,
+				"endPinId": 9
+			},
+			{
+				"id": 21,
+				"startPinId": 16,
+				"endPinId": 18
+			},
+			{
+				"id": 24,
+				"startPinId": 23,
+				"endPinId": 19
+			},
+			{
+				"id": 29,
+				"startPinId": 10,
+				"endPinId": 26
+			},
+			{
+				"id": 30,
+				"startPinId": 20,
+				"endPinId": 27
+			},
+			{
+				"id": 34,
+				"startPinId": 28,
+				"endPinId": 32
+			},
+			{
+				"id": 39,
+				"startPinId": 33,
+				"endPinId": 36
+			},
+			{
+				"id": 42,
+				"startPinId": 41,
+				"endPinId": 37
+			},
+			{
+				"id": 47,
+				"startPinId": 38,
+				"endPinId": 44
+			},
+			{
+				"id": 48,
+				"startPinId": 38,
+				"endPinId": 45
+			},
+			{
+				"id": 53,
+				"startPinId": 2,
+				"endPinId": 50
+			},
+			{
+				"id": 54,
+				"startPinId": 46,
+				"endPinId": 51
+			},
+			{
+				"id": 59,
+				"startPinId": 52,
+				"endPinId": 56
+			},
+			{
+				"id": 62,
+				"startPinId": 57,
+				"endPinId": 61
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

@@ -128,6 +128,10 @@ Operations on single float values.
 | **Sin** | Input (float) | float | sin(Input) |
 | **Cos** | Input (float) | float | cos(Input) |
 | **Smoothstep** | Value (float) | float | smoothstep(edge0, edge1, Value) |
+| **Step** | Value (float) | float | 0 if Value < edge, otherwise 1 (property: `edge`) |
+| **Floor** | Value (float) | float | Rounds down. Useful for cells, checkerboards and quantizing |
+| **Fract** | Value (float) | float | Fractional part (repeats 0..1) |
+| **Abs** | Value (float) | float | Absolute value. Mirrors a coordinate around a point |
 
 #### Sin / Cos Nodes
 Generate wave patterns. Perfect for pulsing effects.
@@ -170,6 +174,8 @@ Factor (float) ─→
 |------|--------|---------|-------------|
 | **Vec2Compose** | X, Y (float) | Vec2 | Combine two floats into vec2 |
 | **Vec2Decompose** | Vec2 | X, Y (float) | Split vec2 into two floats |
+| **Vec3Compose** | R, G, B (float) | vec3 | Build a color from three floats |
+| **Vec3Decompose** | RGB (vec3) | R, G, B (float) | Split a color into its channels (e.g. chromatic aberration) |
 
 ---
 
@@ -180,6 +186,8 @@ Factor (float) ─→
 | **UV Offset** | UV, Offset (vec2) | vec2 | Shifts UV coordinates |
 | **UV Scale** | UV, Scale (vec2) | vec2 | Scales UV coordinates |
 | **UV Rotate** | UV (vec2), Angle (float) | vec2 | Rotates UV around center |
+| **Pixelate** | UV (vec2) | vec2 | Snaps UV to a grid of `cells` per unit (pixel-art look) |
+| **UV Radial** | UV (vec2) | float | Distance to the center: 0 in the middle, 1 at the middle of each edge |
 
 #### UV Offset Example
 Create a scrolling texture effect:
@@ -201,6 +209,16 @@ Create a scrolling texture effect:
 | **Contrast** | Color (vec3) | vec3 | Adjusts color contrast |
 | **Saturation** | Color (vec3) | vec3 | Adjusts color saturation |
 | **Vignette** | UV (vec2) | float | Creates vignette mask (dark edges) |
+| **Posterize** | Color (vec3) | vec3 | Reduces each channel to `levels` steps |
+| **Scale Color** | Color (vec3), Factor (float) | vec3 | Color × Factor (the `factor` property is used while the input is unconnected) |
+| **Noise** | UV (vec2) | float | Value noise (0..1). `scale` sets the frequency; `Fractal` adds 4 octaves |
+| **Normal** | - | vec3 | Surface normal (object shaders only) |
+| **Fresnel** | - | float | 0 facing the camera, 1 at the silhouette; `power` sharpens it (object shaders only) |
+
+> Node parameters (colors, values, factors...) are sent to the shader as uniforms and saved in the shader file,
+> so dragging a slider does not recompile the shader. Pins are typed: `vec2` (UV), `vec3` (color) and `float`
+> only connect to their own type, an input accepts a single link (a new one replaces the old one) and cycles
+> are rejected. If a graph fails to compile the editor shows the error and post-processing passes the image through.
 
 ---
 
@@ -265,3 +283,18 @@ Every shader must have exactly one **Output** node.
 2. **Reuse calculations**: Connect one node's output to multiple inputs
 3. **Use simple math**: Sin/Cos are more expensive than Add/Multiply
 4. **Test on target hardware**: Complex shaders may affect performance on older GPUs
+
+---
+
+## Included examples
+
+Ready to load from `assets/shaders/Examples/`.
+
+**Post-processing** (`NodePostprocessing/`): Sepia, Duotone, NightVision, Thermal, ChromaticAberration, Underwater,
+RetroPixels, InkThreshold, DayNightCycle, DamageVignette, GhostEcho, FilmGrain, Ripple, ComicPosterize, MirrorScreen,
+plus ColorGrading, Contrast, Grayscale, Invert, Passthrough, PulsingTint, Saturation, Tint and Vignette.
+
+**Objects** (`NodeMesh3D/`): Hologram, NeonPulse, DiagonalStripes, HitFlash, WaterSurface, Lava, BurnDissolve, RimLight,
+PixelatedTexture, Checkerboard, NormalColors, ToonOutline, ScanLine, plus DualColorMorph, FireGlow, PulsingColor,
+PulsingGradient, RainbowCycle, RotatingTexture, ScrollingUV, SolidColor, TextureWithTint, UVGradient, WavyDistortion
+and ZoomPulse.

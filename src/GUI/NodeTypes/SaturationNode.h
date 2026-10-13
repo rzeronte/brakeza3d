@@ -26,6 +26,16 @@ public:
         }
     }
 
+    void SerializeParams(const std::shared_ptr<Node>& node, cJSON* out) const override {
+        const float* saturation = (const float*)node->userData;
+        if (saturation) cJSON_AddNumberToObject(out, "saturation", *saturation);
+    }
+
+    void DeserializeParams(const std::shared_ptr<Node>& node, const cJSON* in) override {
+        float* saturation = (float*)node->userData;
+        if (saturation) *saturation = NodeJson::Float(in, "saturation", *saturation);
+    }
+
     void SetupPins(std::shared_ptr<Node>& node, ShaderNodeEditorManager* editor) override {
         editor->AddInputPin(node, "Color", PinType::Vector);
         editor->AddOutputPin(node, "Result", PinType::Vector);
@@ -39,9 +49,7 @@ public:
         ImGui::PushID(node->id);
 
         ImGui::SetNextItemWidth(100);
-        if (ImGui::SliderFloat("Saturation", saturation, 0.0f, 3.0f)) {
-            editor->SetNeedsRecompile();
-        }
+        ImGui::SliderFloat("Saturation", saturation, 0.0f, 3.0f);   // uniform: sin recompilar
 
         ImGui::PopID();
         ImGui::EndGroup();
@@ -62,7 +70,7 @@ public:
         if (inputColor.empty()) inputColor = "vec3(0.5)";
 
         float* saturation = (float*)node->userData;
-        float s = saturation ? *saturation : 1.0f;
+        std::string s = saturation ? editor->AddUniform("u_p" + std::to_string(node->id) + "_saturation", 1, saturation) : "1.0";
 
         code << "    float " << varName << "_gray = dot(" << inputColor << ", vec3(0.2126, 0.7152, 0.0722));\n";
         code << "    vec3 " << varName << " = mix(vec3(" << varName << "_gray), " << inputColor << ", " << s << ");\n";

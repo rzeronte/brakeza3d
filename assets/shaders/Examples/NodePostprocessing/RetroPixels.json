@@ -1,0 +1,182 @@
+{
+	"typesFile": "../assets/shaders/Examples/NodePostprocessing/RetroPixels.json",
+	"name": "RetroPixels",
+	"type": "NodePostProcessing",
+	"types": {
+		"version": "1.0",
+		"editorType": "base",
+		"type": "NodePostProcessing",
+		"nodes": [
+			{
+				"id": 1,
+				"name": "UV Coords",
+				"type": "UV Coords",
+				"position": {
+					"x": 60,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.6,
+					"b": 0.3,
+					"a": 1.0
+				},
+				"inputs": [],
+				"outputs": [
+					{
+						"id": 2,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 3,
+				"name": "Pixelate",
+				"type": "Pixelate",
+				"position": {
+					"x": 330,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.7,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 4,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 5,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"userData": {
+					"cells": 160.0
+				}
+			},
+			{
+				"id": 7,
+				"name": "Scene Color",
+				"type": "Internal Texture",
+				"position": {
+					"x": 600,
+					"y": 60
+				},
+				"color": {
+					"r": 0.3,
+					"g": 0.7,
+					"b": 0.9,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 8,
+						"name": "UV",
+						"type": 7
+					}
+				],
+				"outputs": [
+					{
+						"id": 9,
+						"name": "Color",
+						"type": 5
+					},
+					{
+						"id": 10,
+						"name": "Alpha",
+						"type": 1
+					}
+				],
+				"userData": {}
+			},
+			{
+				"id": 12,
+				"name": "Posterize",
+				"type": "Posterize",
+				"position": {
+					"x": 870,
+					"y": 60
+				},
+				"color": {
+					"r": 0.6,
+					"g": 0.4,
+					"b": 0.5,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 13,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [
+					{
+						"id": 14,
+						"name": "Result",
+						"type": 5
+					}
+				],
+				"userData": {
+					"levels": 8.0
+				}
+			},
+			{
+				"id": 16,
+				"name": "Output",
+				"type": "Output",
+				"position": {
+					"x": 1140,
+					"y": 60
+				},
+				"color": {
+					"r": 0.8,
+					"g": 0.2,
+					"b": 0.2,
+					"a": 1.0
+				},
+				"inputs": [
+					{
+						"id": 17,
+						"name": "Color",
+						"type": 5
+					}
+				],
+				"outputs": [],
+				"userData": {}
+			}
+		],
+		"links": [
+			{
+				"id": 6,
+				"startPinId": 2,
+				"endPinId": 4
+			},
+			{
+				"id": 11,
+				"startPinId": 5,
+				"endPinId": 8
+			},
+			{
+				"id": 15,
+				"startPinId": 9,
+				"endPinId": 13
+			},
+			{
+				"id": 18,
+				"startPinId": 14,
+				"endPinId": 17
+			}
+		],
+		"lastShaderCode": ""
+	}
+}

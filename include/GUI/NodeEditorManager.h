@@ -24,9 +24,26 @@ enum class PinType {
     Int,
     Bool,
     String,
-    Vector,
-    Any
+    Vector,     // vec3 (colores)
+    Any,
+    Vec2        // vec2 (coordenadas UV). Va al final: los ficheros guardados serializan el entero del enum
 };
+
+// Lectura tolerante de JSON: un fichero incompleto o antiguo no debe tumbar el editor
+namespace NodeJson {
+    inline int Int(const cJSON* obj, const char* key, int def = 0) {
+        const cJSON* item = obj ? cJSON_GetObjectItem(obj, key) : nullptr;
+        return (item && cJSON_IsNumber(item)) ? item->valueint : def;
+    }
+    inline float Float(const cJSON* obj, const char* key, float def = 0.0f) {
+        const cJSON* item = obj ? cJSON_GetObjectItem(obj, key) : nullptr;
+        return (item && cJSON_IsNumber(item)) ? static_cast<float>(item->valuedouble) : def;
+    }
+    inline std::string String(const cJSON* obj, const char* key, const std::string& def = "") {
+        const cJSON* item = obj ? cJSON_GetObjectItem(obj, key) : nullptr;
+        return (item && cJSON_IsString(item) && item->valuestring) ? std::string(item->valuestring) : def;
+    }
+}
 
 struct Pin {
     int id;
@@ -106,6 +123,8 @@ public:
     std::shared_ptr<Link> CreateLink(int startPinId, int endPinId);
     void DeleteLink(int linkId);
     bool CanCreateLink(int startPinId, int endPinId);
+    // true si añadir un enlace "sourceNode -> targetNode" cerraría un ciclo (targetNode ya llega hasta sourceNode)
+    bool WouldCreateCycle(int sourceNodeId, int targetNodeId) const;
     // ==================== Búsqueda ====================
     std::shared_ptr<Node> FindNode(int nodeId);
     std::shared_ptr<Pin> FindPin(int pinId);

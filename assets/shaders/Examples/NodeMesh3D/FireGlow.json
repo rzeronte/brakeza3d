@@ -219,7 +219,7 @@
 				"color": { "r": 1.0, "g": 0.9, "b": 0.3, "a": 1.0 },
 				"inputs": [],
 				"outputs": [{ "id": 58, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"userData": {"r": 1.0, "g": 0.9, "b": 0.3}
 			},
 			{
 				"id": 59,
@@ -229,7 +229,7 @@
 				"color": { "r": 1.0, "g": 0.4, "b": 0.0, "a": 1.0 },
 				"inputs": [],
 				"outputs": [{ "id": 60, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"userData": {"r": 1.0, "g": 0.4, "b": 0.0}
 			},
 			{
 				"id": 61,
@@ -239,7 +239,7 @@
 				"color": { "r": 0.6, "g": 0.1, "b": 0.0, "a": 1.0 },
 				"inputs": [],
 				"outputs": [{ "id": 62, "name": "RGB", "type": 5 }],
-				"userData": {}
+				"userData": {"r": 0.6, "g": 0.1, "b": 0.0}
 			},
 			{
 				"id": 63,
