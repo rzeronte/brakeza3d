@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Graphics/ShaderShowcase.lua",
+	"typesFile":	"../assets/scripts/Examples/Graphics/ShaderShowcase.json",
+	"name":	"ShaderShowcase",
+	"type":	"Global",
+	"types":	[]
+}

@@ -5,6 +5,7 @@
     "ParticleTest",
     "LightsTest",
     "PostProcessingTest",
+    "ShaderShowcase",
     "SwarmBoidsTest",
     "RainCubesTest",
     "ProjectileTest",
@@ -14,7 +15,7 @@
   "demos": [
     {
       "scene": "../assets/scenes/Examples/Basics/01_HelloWorld.json",
-      "title": "01 Hello world",
+      "title": "Hello world",
       "category": "Basics",
       "summary": "The smallest script: it writes a message, the run time and the FPS on the screen every frame. Start here.",
       "controls": [],
@@ -27,7 +28,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/02_Input.json",
-      "title": "02 Keyboard and mouse",
+      "title": "Keyboard and mouse",
       "category": "Basics",
       "summary": "Reads the keyboard and the mouse and shows on screen what the engine sees: keys held, keys just pressed and the mouse position and buttons.",
       "controls": [
@@ -42,7 +43,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/03_Movement.json",
-      "title": "03 Moving an object",
+      "title": "Moving an object",
       "category": "Basics",
       "summary": "Moves the cube in different ways: along the world axes, up and down, along its own forward direction and rotating on the spot. It is an object script: the same script can be attached to any object.",
       "controls": [
@@ -60,7 +61,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/04_Rotation.json",
-      "title": "04 Rotating an object",
+      "title": "Rotating an object",
       "category": "Basics",
       "summary": "Three ways of rotating: around each axis with the keys, automatically every frame, and resetting to the starting rotation.",
       "controls": [
@@ -79,7 +80,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/05_ObjectManagement.json",
-      "title": "05 Creating and removing objects",
+      "title": "Creating and removing objects",
       "category": "Basics",
       "summary": "Creates coloured point lights at random places from a script, hides them and removes them again. The lights are invisible objects: you see them as pools of colour on the floor and the cubes. The panel counts them (the script stops at 32; the engine supports 64 point lights in total).",
       "controls": [
@@ -95,7 +96,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/06_Parenting.json",
-      "title": "06 Parenting (hierarchies)",
+      "title": "Parenting (hierarchies)",
       "category": "Basics",
       "summary": "Parent and children: four coloured point lights are attached to the cube. When the cube moves or turns they go with it, and their offsets can be animated or detached. The children are lights, so you see them as coloured light on the floor.",
       "controls": [
@@ -113,7 +114,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/07_LookAt.json",
-      "title": "07 Look at a target",
+      "title": "Look at a target",
       "category": "Basics",
       "summary": "The cone turns to face a sphere that circles around it. Instantly or smoothly, and you can switch the following off and turn it by hand.",
       "controls": [
@@ -132,7 +133,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/08_CameraFollow.json",
-      "title": "08 A camera that follows",
+      "title": "A camera that follows",
       "category": "Basics",
       "summary": "The camera follows the cube smoothly from behind. The cube is moved with the Movement lesson's keys. Shows how to take the camera away from the keyboard.",
       "controls": [
@@ -149,7 +150,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/09_ObjectVariables.json",
-      "title": "09 Variables of another object",
+      "title": "Variables of another object",
       "category": "Basics",
       "summary": "One cube holds two script variables (offset and count, which grows every second). The sphere reads them every second and prints them to the Logs / Console window.",
       "controls": [
@@ -163,7 +164,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/10_Lighting.json",
-      "title": "10 Lights",
+      "title": "Lights",
       "category": "Basics",
       "summary": "Creates a point light from a script and lets you move it, rotate the sun and change the ambient light while it runs.",
       "controls": [
@@ -179,7 +180,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/11_Physics.json",
-      "title": "11 Physics (rigid bodies)",
+      "title": "Physics (rigid bodies)",
       "category": "Basics",
       "summary": "A box with a Bullet rigid body falls and lands on the floor. Apply forces, impulses and velocities to it, stop it or turn its physics off.",
       "controls": [
@@ -198,7 +199,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/12_Collisions.json",
-      "title": "12 Collisions and rays",
+      "title": "Collisions and rays",
       "category": "Basics",
       "summary": "The player box falls onto an enemy and is knocked back; touching a pickup removes it. R shoots a visible ray at the target and G checks the ground below.",
       "controls": [
@@ -215,7 +216,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/13_Animation.json",
-      "title": "13 Skeletal animation",
+      "title": "Skeletal animation",
       "category": "Basics",
       "summary": "A character with several skeletal animations. Switch between them, change their speed, turn looping on and off, and see them chosen automatically when you walk.",
       "controls": [
@@ -232,7 +233,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/14_Particles.json",
-      "title": "14 Particles from a script",
+      "title": "Particles from a script",
       "category": "Basics",
       "summary": "Creates a particle emitter above the torch from code and configures it: emission rate, lifespan, gravity, speed and colours.",
       "controls": [
@@ -247,7 +248,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/15_Audio.json",
-      "title": "15 Audio",
+      "title": "Audio",
       "category": "Basics",
       "summary": "Registers sounds and a music loop, plays them and controls their volume. Make sure your speakers are on.",
       "controls": [
@@ -264,7 +265,7 @@
     },
     {
       "scene": "../assets/scenes/Examples/Basics/16_CustomShaderUpdate.json",
-      "title": "16 Updating a shader from a script",
+      "title": "Updating a shader from a script",
       "category": "Basics",
       "summary": "A post-processing shader called Custom tints the whole screen. The script writes new values into its variables every frame.",
       "controls": [],
@@ -315,6 +316,28 @@
         "UVs are screen space: gl_FragCoord.xy / textureSize",
         "Shader node editor and code editor in the editor GUI",
         "Components:Render():getSceneShaderByLabel(name) and shader:setEnabled / isEnabled (PostProcessingDemo.lua)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Graphics/ShaderShowcase.json",
+      "title": "Node shaders showcase",
+      "category": "Graphics",
+      "summary": "Fourteen objects, each wearing a different node shader (hologram, lava, burning dissolve, toon outline, rim light, scanner...) and twelve full-screen node effects (sepia, night vision, thermal, chromatic aberration, underwater, ripple...) that the script switches on one at a time. All of them are node graphs you can open and edit in the shader node editor.",
+      "controls": [
+        "Left / Right  previous / next screen effect",
+        "0             no screen effect",
+        "Space         automatic effect change on / off",
+        "R             spin the objects / keep them still",
+        "H             show / hide the panel and the labels",
+        "Mouse wheel   zoom in / out (Shift = faster)",
+        "Right button + mouse   look around",
+        "W A S D / Q E   move / go down or up"
+      ],
+      "learn": [
+        "Script: ShaderShowcase.lua (assets/scripts/Examples/Graphics)",
+        "Object shaders (NodeMesh3D) are listed in each mesh; screen shaders (NodePostprocessing) in the scene shaders list",
+        "Components:Render():getSceneShaderByLabel(name) also returns node shaders: shader:setEnabled / isEnabled",
+        "Examples in assets/shaders/Examples/NodeMesh3D and NodePostprocessing: open them with the shaders window"
       ]
     },
     {
@@ -379,9 +402,10 @@
       "controls": [
         "A / D   aim left / right",
         "W / S   aim up / down",
-        "Q / E   less / more power",
+        "Mouse   hold the right button and move to aim",
+        "Q / E   less / more power (or the mouse wheel)",
         "Z / X   smaller / bigger projectile",
-        "F       fire"
+        "F or left click   fire"
       ],
       "learn": [
         "Scene script: ProjectileLauncher.lua",

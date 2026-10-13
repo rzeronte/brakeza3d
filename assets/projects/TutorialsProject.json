@@ -78,6 +78,9 @@
 			"path":	"../assets/scenes/Examples/Graphics/PostProcessingTest.json"
 		},
 		{
+			"path":	"../assets/scenes/Examples/Graphics/ShaderShowcase.json"
+		},
+		{
 			"path":	"../assets/scenes/Examples/ParticlesAndCrowds/ParticleTest.json"
 		},
 		{
