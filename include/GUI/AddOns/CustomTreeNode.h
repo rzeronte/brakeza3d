@@ -218,7 +218,7 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
                 GUIHelpers::CenterNextWindow();
                 if (ImGui::BeginPopupModal(item.confirmTitle.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
                     ImGui::Text("%s", item.confirmQuestion.c_str());
-                    ImGui::Separator();
+                    GUIHelpers::PopupSeparator();
                     if (ImGui::Button("OK", ImVec2(120, 0))) {
                         if (item.onClick) item.onClick();
                         ImGui::CloseCurrentPopup();

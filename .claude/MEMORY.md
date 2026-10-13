@@ -53,7 +53,7 @@
 
 ## GUI / Editor
 - ImGui + SDL2 backend. 20+ dockable windows. Manager: `src/GUI/GUIManager.cpp`
-- Shortcuts: F9 Scene Objects, F10 Object Properties, F11 Project Settings, F12 File Browser
+- Shortcuts: F1 play/stop scripts, F2 Logs/Console, F5 toggle ImGui, F6-F8 layouts, F9 Scene Objects, F10 Object Properties, F11 Project Settings, F12 File Browser (reload/clear/clean scripts: menu only). All F1-F12 are taken (`ComponentInput::HandleGUIShortCuts`); they only act when scripts are stopped or Right Ctrl is held
 - Shader node editor: `src/GUI/ShaderNodeEditorManager.cpp`. 30+ node types. Generates GLSL, real-time compile.
 - Addons: `src/GUI/AddOns/GUIAddon*.cpp`. Object inspectors: `src/GUI/Inspectors/`, windows: `src/GUI/Windows/`, shared field/helper widgets: `include/GUI/Widgets/` (`GUIFields.h`, `GUIHelpers.h` — use them in new inspectors)
 

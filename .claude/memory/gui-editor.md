@@ -26,7 +26,7 @@ originSessionId: dc70ba7c-6393-464f-b834-22487807b205
 | Project Settings | F11 | Project config, scene list, global scripts |
 | File Browser | F12 | Asset navigator, image/model preview |
 | Code Editor | Menu | Multi-tab, Lua/GLSL syntax highlighting |
-| Console | Menu | Lua REPL + colored logs |
+| Logs/Console | F2 | Lua REPL + colored logs (title shows the shortcut) |
 | Resource Hub | Menu | Online marketplace (login, search, download) |
 | Documentation | Menu | Searchable inline help |
 | Profiler | Menu | Frame time, GPU/CPU stats, draw call count |

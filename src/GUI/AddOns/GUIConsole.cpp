@@ -68,7 +68,12 @@ void GuiAddonConsole::DrawWinLogging()
 
     auto windowStatus = Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::LOGGING);
     if (!windowStatus->isOpen) return;
-    const char* title = windowStatus->label.c_str();
+    // Mismo título que usa GUIManager::DrawWindows (con el atajo y el "###" del id): este Begin debe abrir LA MISMA
+    // ventana de ImGui que el envoltorio del gestor, no crear una segunda
+    const std::string titleText = windowStatus->shortCut.empty()
+        ? windowStatus->label
+        : windowStatus->label + " (" + windowStatus->shortCut + ")###" + windowStatus->label;
+    const char* title = titleText.c_str();
     bool* p_open = &windowStatus->isOpen;
 
     if (!ImGui::Begin(title, p_open))

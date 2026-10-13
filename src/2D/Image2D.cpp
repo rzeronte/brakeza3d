@@ -85,6 +85,15 @@ void Image2D::setScreenPosition(int x, int y)
     this->y = y;
 }
 
+void Image2D::setWindowPosition(int px, int py)
+{
+    auto *win = Components::get()->Window();
+    const int ww = std::max(1, win->getWidth());
+    const int wh = std::max(1, win->getHeight());
+    this->x = (int)std::lround((double)px * Config::get()->screenWidth  / ww);
+    this->y = (int)std::lround((double)py * Config::get()->screenHeight / wh);
+}
+
 void Image2D::stopVideo()
 {
     setVideoPlayer(nullptr);

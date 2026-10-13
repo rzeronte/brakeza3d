@@ -467,6 +467,7 @@ void GUIAddonObjects3D::DrawFolderModal()
         if (ImGui::IsWindowAppearing()) ImGui::SetKeyboardFocusHere();
         const bool enter = ImGui::InputText("##foldername", folderModal.name, sizeof(folderModal.name),
                                             ImGuiInputTextFlags_EnterReturnsTrue);
+        ImGui::Spacing();
         const bool ok = ImGui::Button(folderModal.folderId > 0 ? "Rename" : "Create") || enter;
         ImGui::SameLine();
         const bool cancel = GUIHelpers::CancelButton() || ImGui::IsKeyPressed(ImGuiKey_Escape);
@@ -482,6 +483,7 @@ void GUIAddonObjects3D::DrawFolderModal()
             close = true;   // nombre vacío: se cierra sin hacer nada, como antes
         }
         if (folderModal.duplicate) {
+            ImGui::Spacing();
             ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.3f, 1.0f), "A folder with that name already exists here");
         }
         if (close) {
@@ -511,6 +513,16 @@ void GUIAddonObjects3D::DrawObjectsTree(GUIManager *gui, const std::vector<Objec
             Drawable::WarningMessage("No objects match this search");
             return;
         }
+    }
+
+    // Sin objetos (o todos ocultos por el filtro de tipos): mismo aviso que el listado
+    bool anyObject = false;
+    for (const auto &o : objects) {
+        if (!o->isRemoved() && isObjectTypeVisible(gui, o->getTypeObject())) { anyObject = true; break; }
+    }
+    if (!anyObject) {
+        Drawable::WarningMessage("Empty list");
+        return;
     }
 
     for (auto& type : gui->visibleTypeObjects) {
@@ -676,10 +688,9 @@ void GUIAddonObjects3D::DrawWinSceneObjects(GUIManager *gui)
         ImGui::SameLine();
         ImGui::TextDisabled("|");
         ImGui::SameLine();
-        if (ImGui::Button("+ New folder")) {
+        GUI::DrawButton("New folder at the root of the scene", IconGUI::FOLDER_ADD, GUIType::Sizes::ICON_SIZE_MENUS, false, [&] {
             if (auto *s = FolderTargetScene()) requestFolderModal(s, 0, 0, "New folder");
-        }
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("New folder at the root of the scene");
+        });
     }
 
     // Línea 2: límite de la lista a la izquierda, filtro a la derecha

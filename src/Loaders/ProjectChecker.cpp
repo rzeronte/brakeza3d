@@ -236,8 +236,10 @@ void ProjectChecker::DrawInformationTable() const
 
 void ProjectChecker::DrawScriptsTable() const
 {
-    std::string labelScripts = "Project Scripts (" + std::to_string(status.scripts.size()) + ")";
-    ImGui::SeparatorText(labelScripts.c_str());
+    // Cabecera desplegable (abierta por defecto): con muchos scripts la ventana se hace muy larga.
+    // Lo que va tras "###" es el id estable: el recuento del texto puede cambiar sin perder el estado.
+    std::string labelScripts = "Project Scripts (" + std::to_string(status.scripts.size()) + ")###proj_scripts";
+    if (!ImGui::CollapsingHeader(labelScripts.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) return;
 
     if (status.scripts.empty()) {
         Drawable::WarningMessage("No scripts in project");
@@ -266,8 +268,15 @@ void ProjectChecker::DrawScriptsTable() const
 
 void ProjectChecker::DrawScenesTable() const
 {
+    int missingScenes = 0;
+    for (const auto &scene : status.scenes) {
+        if (!scene.exists) missingScenes++;
+    }
+
     std::string labelScenes = "Project Scenes (" + std::to_string(status.scenes.size()) + ")";
-    ImGui::SeparatorText(labelScenes.c_str());
+    if (missingScenes > 0) labelScenes += "  -  " + std::to_string(missingScenes) + " missing";   // visible aunque esté plegada
+    labelScenes += "###proj_scenes";
+    if (!ImGui::CollapsingHeader(labelScenes.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) return;
 
     if (status.scenes.empty()) {
         Drawable::WarningMessage("No scenes in project");

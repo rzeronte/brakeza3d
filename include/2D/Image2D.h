@@ -35,7 +35,11 @@ public:
     void drawBackground();
     void onUpdate() override;
     void setSize(float w, float h);
+    // x/y en el espacio de referencia de la UI (Config screenWidth x screenHeight = 1280x720), como se guarda en la escena
     void setScreenPosition(int x, int y);
+    // x/y en PIXELES REALES de la ventana (los mismos que win:getWidth()/getHeight() y render:DrawFilledRect): se convierten
+    // al espacio de referencia. Es lo que hay que usar desde Lua para alinear el vídeo con otros dibujos 2D.
+    void setWindowPosition(int px, int py);
     void setFilePath(const std::string &filepath);
     void setImage(Image *value);
     void setVideoPlayer(VideoPlayer *vp);

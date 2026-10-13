@@ -7,6 +7,7 @@
 #include <filesystem>
 #include "../../../include/Brakeza.h"
 #include "../../../include/GUI/Windows/FileSystemGUI.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 #include "../../../include/GUI/GUIManager.h"
 #include "../../../include/GUI/Windows/ShadersGUI.h"
 #include "../../../include/GUI/Windows/ScriptLuaGUI.h"
@@ -236,11 +237,11 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std
 {
     if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("Create a new project");
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
         static char localVarName[256] = "";
         ImGui::SetNextItemWidth(150);
         ImGui::InputText("Project name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
@@ -382,7 +383,7 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
 
         ImGui::SetNextItemWidth(150);
         ImGui::InputText("Scene name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
@@ -830,7 +831,7 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
         ImGui::InputText("Shader name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
         DrawShaderTypeCombo(item_current_idx, items);
 
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
@@ -945,7 +946,7 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
         ImGui::SetNextItemWidth(150);
         ImGui::Combo("Type##script_type", &scriptTypeIndex, scriptTypeItems, IM_ARRAYSIZE(scriptTypeItems));
 
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';
@@ -1055,7 +1056,7 @@ void FileSystemGUI::DrawWidgetCreatorDialog(GUIType::BrowserCache &browser, std:
         static char localVarName[256] = "";
         ImGui::SetNextItemWidth(150);
         ImGui::InputText("Widget name##wname", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
             localVarName[0] = '\0';

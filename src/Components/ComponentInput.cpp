@@ -444,14 +444,10 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
                 scripting->PlayLUAScripts();
             }
         }
+        // F2: ventana de Logs/Console. Recargar scripts y limpiar la escena (Clear / Clean) ya no tienen tecla:
+        // están en el menú de scripts
         if (keyboard[SDL_SCANCODE_F2]) {
-            scripting->ReloadLUAScripts();
-        }
-        if (keyboard[SDL_SCANCODE_F3]) {
-            SceneLoader::ClearWorld();
-        }
-        if (keyboard[SDL_SCANCODE_F4]) {
-            SceneLoader::CleanWorld();
+            Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::LOGGING)->isOpen = !Brakeza::get()->GUI()->getWindowStatus(GUIType::Window::LOGGING)->isOpen;
         }
 
         if (keyboard[SDL_SCANCODE_F5]) {

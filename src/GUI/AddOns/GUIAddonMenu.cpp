@@ -12,6 +12,7 @@
 #include "../../../include/Components/Components.h"
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 #include "../../../include/Misc/ToolsMaths.h"
 #include "../../../include/Serializers/Object3DSerializer.h"
 #include "../../../include/Serializers/LightPointSerializer.h"
@@ -84,19 +85,19 @@ void GUIAddonMenu::MenuScriptControls()
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LUA_RELOAD), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
-    if (ImGui::MenuItem("Reload scripts", "F2")) {
+    if (ImGui::MenuItem("Reload scripts")) {
         scripting->ReloadLUAScripts();
     }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAR_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
-    if (ImGui::MenuItem("Clear (all objects)", "F3")) {
+    if (ImGui::MenuItem("Clear (all objects)")) {
         SceneLoader::ClearWorld();
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CLEAN_SCENE), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
-    if (ImGui::MenuItem("Clean (not scene objects)", "F4")) {
-        SceneLoader::ClearWorld();
+    if (ImGui::MenuItem("Clean (not scene objects)")) {
+        SceneLoader::CleanWorld();
     }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::TOOLBAR_CLEAR_CACHE), GUIType::Sizes::ICON_SIZE_MENUS);
@@ -251,8 +252,6 @@ void GUIAddonMenu::MenuVideo()
     ImGui::MenuItem("Vertex", nullptr, &setup->TRIANGLE_MODE_PIXELS);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_WIRE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("WireFrame",nullptr,  &setup->TRIANGLE_MODE_WIREFRAME);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_SHADING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Solid", nullptr,  &setup->TRIANGLE_MODE_SHADING);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_TEXTURE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Textures",nullptr, &setup->TRIANGLE_MODE_TEXTURIZED);
 
@@ -689,7 +688,7 @@ void GUIAddonMenu::AboutMeModal()
         Drawable::ImGuiLink(setup->ENGINE_WEBSITE.c_str(), setup->ENGINE_WEBSITE.c_str());
         Drawable::ImGuiLink(setup->URL_ASSETS_HUB_URL.c_str(), setup->URL_ASSETS_HUB_URL.c_str());
         Drawable::ImGuiLink("GitHub", setup->ENGINE_SOURCE_WEBSITE.c_str());
-        ImGui::Separator();
+        GUIHelpers::PopupSeparator();
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Close", [&] {
             ImGui::CloseCurrentPopup();
             Config::get()->SHOW_ABOUT_ME_MODAL = false;

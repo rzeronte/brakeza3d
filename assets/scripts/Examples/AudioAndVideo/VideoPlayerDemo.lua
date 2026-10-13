@@ -14,7 +14,8 @@
 --   local video = ObjectFactory.Image2D("", 0, 0, 1.0, 1.0)   -- Image2D vacío
 --   video:loadVideo("../assets/videos/video.mp4")             -- empieza a reproducir
 --   video:setSize(w, h)                                       -- tamaño como FRACCIÓN de la pantalla (1.0 = pantalla completa)
---   video:setScreenPosition(x, y)                             -- esquina superior izquierda, en píxeles
+--   video:setWindowPosition(x, y)                             -- esquina superior izquierda, en píxeles REALES de la ventana
+--                                                             -- (setScreenPosition usa el espacio fijo 1280x720 de la escena)
 --   video:isVideoFinished()                                   -- true cuando ha llegado al final
 --   video:stopVideo(); video:setRemoved(true)                 -- parar y quitar
 -- (ObjectFactory.PlayVideoCutscene(ruta, fundido) reproduce un vídeo de forma bloqueante, sin script.)
@@ -68,7 +69,7 @@ local function applyLayout()
 
     if S.fullscreen then
         S.video:setSize(1.0, 1.0)
-        S.video:setScreenPosition(0, 0)
+        S.video:setWindowPosition(0, 0)
         S.rect.x, S.rect.y, S.rect.w, S.rect.h = 0, 0, sw, sh
     else
         local fw = WINDOW_WIDTH
@@ -77,7 +78,7 @@ local function applyLayout()
         local px = math.floor((sw - pw) * 0.5)
         local py = math.floor((sh - ph) * 0.5) + math.floor(sh * 0.06)     -- un poco abajo: deja sitio al panel
         S.video:setSize(fw, fh)
-        S.video:setScreenPosition(px, py)
+        S.video:setWindowPosition(px, py)
         S.rect.x, S.rect.y, S.rect.w, S.rect.h = px, py, pw, ph
     end
 end

@@ -223,6 +223,19 @@ void Mesh3DAnimation::CheckIfEndAnimation()
     runningTime += timeIncrement;
 }
 
+void Mesh3DAnimation::restartAnimation()
+{
+    nodeAnimCache.clear();
+    runningTime = 0;
+    finished = false;
+}
+
+float Mesh3DAnimation::getAnimationDuration() const
+{
+    const float speed = animation_speed > 0.0001f ? animation_speed : 1.0f;
+    return getCurrentAnimationMaxTime() / speed;
+}
+
 float Mesh3DAnimation::getCurrentAnimationMaxTime() const
 {
     if (!scene || scene->mNumAnimations == 0) return 1.0f;

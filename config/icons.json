@@ -915,6 +915,10 @@
 			"name":	"DRAGGABLE_UI_ITEM",
 			"x":	14,
 			"y":	2
+		}, {
+			"name":	"FOLDER_ADD",
+			"x":	6,
+			"y":	17
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

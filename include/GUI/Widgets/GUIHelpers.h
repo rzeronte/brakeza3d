@@ -18,6 +18,14 @@ namespace GUIHelpers
         ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), cond, ImVec2(0.5f, 0.5f));
     }
 
+    // Separador de un diálogo: aire por encima y por debajo, para que el texto y los botones no queden pegados
+    inline void PopupSeparator()
+    {
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+    }
+
     // Botón de diálogo con el ancho estándar (120 px)
     inline bool DialogButton(const char* label, float width = kDialogButtonWidth)
     {
