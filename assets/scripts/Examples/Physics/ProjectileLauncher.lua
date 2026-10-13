@@ -4,6 +4,8 @@
 --   W / S  — pitch (vertical)
 --   Q / E  — decrease / increase power
 --   F      — fire
+--   Mouse: hold the right button and move to aim (the cursor is captured while you do),
+--          wheel = power, left click = fire
 
 local PROJECTILE_MESH = "../assets/models/basic/icosphere.fbx"
 local PROJ_SCALE      = 0.15
@@ -11,6 +13,10 @@ local SCALE_STEP      = 1.0
 local PROJ_LIFETIME   = 6.0
 local ROT_SPEED       = 70.0
 local PWR_STEP        = 8.0
+local MOUSE_SENS      = 0.12    -- grados por pixel al apuntar con el ratón
+local MOUSE_MAX_STEP  = 80      -- tope de movimiento por frame (evita saltos al capturar el ratón)
+local WHEEL_POWER     = 3.0     -- potencia por cada muesca de la rueda
+local BROWSER_BAR_PX  = 70      -- franja inferior del DemoBrowser: un clic ahí no dispara
 
 -- La cámara empieza mirando al frente (0,0)
 -- pitch + = mira arriba / dispara hacia arriba
@@ -20,6 +26,8 @@ local pitch   = 0.0
 local power   = 18.0
 local projSize = 1.0
 local counter = 0
+local looking  = false      -- botón derecho pulsado: el ratón apunta
+local prevLeft = false      -- para detectar el flanco del clic izquierdo
 
 local pending      = {}
 local active       = {}
@@ -44,8 +52,19 @@ function onStart()
     render = Components:Render()
     tw     = render:getTextWriter()
     camera = Components:Camera():getCamera()
+    -- Arrastrar con el botón izquierdo mira/apunta: el recuadro de selección del editor sobraría
+    pcall(function() Components:Render():setDragSelectEnabled(false) end)
     -- Aplicar orientación inicial a la cámara
     camera:setRotationFromEulerAngles(-pitch, yaw, 0)
+end
+
+function onEnd()
+    pcall(function() Components:Render():setDragSelectEnabled(true) end)   -- devolver la selección con recuadro
+    -- no dejar el ratón capturado al salir de la demo
+    if looking then
+        pcall(function() input:setRelativeMouseMode(false) end)
+        looking = false
+    end
 end
 
 function onUpdate()
@@ -63,6 +82,7 @@ function handleInput(dt)
     if input:isCharPressed("D") then yaw   = yaw   + ROT_SPEED * dt end
     if input:isCharPressed("W") then pitch = pitch + ROT_SPEED * dt end
     if input:isCharPressed("S") then pitch = pitch - ROT_SPEED * dt end
+    handleMouse()
     pitch = math.max(-75, math.min(75, pitch))
 
     if input:isCharPressed("Q") then power = math.max(2.0,   power - PWR_STEP * dt) end
@@ -76,6 +96,37 @@ function handleInput(dt)
     camera:setRotationFromEulerAngles(-pitch, yaw, 0)
 
     if input:isCharFirstEventDown("F") then spawnProjectile() end
+end
+
+-- Ratón: botón derecho mantenido = apuntar (captura el cursor), rueda = potencia, clic izquierdo = disparar
+function handleMouse()
+    local right = input:isRightMouseButtonPressed()
+    if right ~= looking then
+        looking = right
+        pcall(function() input:setRelativeMouseMode(looking) end)
+    end
+
+    if looking and input:isMouseMotion() then
+        local dx = math.max(-MOUSE_MAX_STEP, math.min(MOUSE_MAX_STEP, input:getMouseMotionXRel()))
+        local dy = math.max(-MOUSE_MAX_STEP, math.min(MOUSE_MAX_STEP, input:getMouseMotionYRel()))
+        yaw   = yaw   + dx * MOUSE_SENS
+        pitch = pitch - dy * MOUSE_SENS          -- ratón arriba = mirar arriba
+    end
+
+    local wheel = input:getMouseWheelY()
+    if wheel ~= 0 then
+        power = math.max(2.0, math.min(120.0, power + wheel * WHEEL_POWER))
+    end
+
+    -- Disparo con el clic izquierdo (solo en el flanco de bajada). No dispara si el clic fue para la interfaz
+    -- del DemoBrowser (la barra inferior y sus paneles) ni mientras se apunta con el botón derecho.
+    local left = input:isLeftMouseButtonPressed()
+    if left and not prevLeft and not looking and not input:isLeftClickConsumed() then
+        local wh = Components:Window():getHeightRender()
+        local overBrowserBar = input:getRelativeRendererMouseY() > wh - BROWSER_BAR_PX
+        if not overBrowserBar then spawnProjectile() end
+    end
+    prevLeft = left
 end
 
 -- ── spawn ────────────────────────────────────────────────────────────────────
@@ -211,5 +262,5 @@ function drawHUD()
     tw:writeTextTTFAutoSize(20, 106, string.format("Size:  %6.1f",     projSize),                 C_VALUE, 0.55)
     tw:writeTextTTFAutoSize(20, 130, string.format("Active: %d  Pending: %d", #active, #pending), C_COUNT, 0.50)
     -- 90 px desde abajo: por encima de la barra del DemoBrowser (56 px) del proyecto de tutoriales
-    tw:writeTextTTFAutoSize(20, wh - 90, "A/D: yaw   W/S: pitch   Q/E: power   Z/X: size   F: fire", C_HINT, 0.45)
+    tw:writeTextTTFAutoSize(20, wh - 90, "A/D W/S or mouse (hold right button): aim   Q/E or wheel: power   Z/X: size   F or left click: fire", C_HINT, 0.45)
 end
