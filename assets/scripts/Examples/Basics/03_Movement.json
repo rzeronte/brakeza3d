@@ -1,0 +1,17 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/03_Movement.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/03_Movement.json",
+	"name":	"03_Movement",
+	"types":	[
+		{
+			"name":	"speed",
+			"type":	"float",
+			"value":	5.0
+		},
+		{
+			"name":	"rotationSpeed",
+			"type":	"float",
+			"value":	90.0
+		}
+	]
+}

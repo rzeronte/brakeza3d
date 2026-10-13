@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Examples/InputAndUI/MultiSelectionDemo.lua",
+	"typesFile":	"../assets/scripts/Examples/InputAndUI/MultiSelectionDemo.json",
+	"name":	"MultiSelectionDemo",
+	"type":	"Global",
+	"types":	[]
+}

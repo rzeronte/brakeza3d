@@ -4,7 +4,8 @@
 
 #include "../../../include/GUI/Editable/EditableOpenShaderFile.h"
 #include "../../../include/Brakeza.h"
-#include "../../../include/GUI/Objects/ShadersGUI.h"
+#include "../../../include/GUI/Windows/ShadersGUI.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 
 EditableOpenShaderFile::EditableOpenShaderFile(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ShaderBaseCustomOGLCode *shader)
 :
@@ -31,8 +32,7 @@ void EditableOpenShaderFile::DrawEditableOpenFileConfig()
 void EditableOpenShaderFile::DrawCodeEditActionButtons()
 {
     if (ImGui::BeginTable("ScriptFileButtons", 2, ImGuiTableFlags_None)) {
-        ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+        GUIHelpers::SetupLeftRightColumns();
 
         ImGui::TableNextRow();
 

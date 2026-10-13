@@ -1,0 +1,13 @@
+{
+    "codeFile":  "../assets/scripts/Examples/InputAndUI/TextRenderingTest.lua",
+    "typesFile": "../assets/scripts/Examples/InputAndUI/TextRenderingTest.json",
+    "name": "TextRenderingTest",
+    "type": "Global",
+    "types": [
+        {
+            "name":  "toggleAll",
+            "type":  "int",
+            "value": 1
+        }
+    ]
+}

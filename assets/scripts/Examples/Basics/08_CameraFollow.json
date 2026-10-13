@@ -1,0 +1,28 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/08_CameraFollow.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/08_CameraFollow.json",
+	"name":	"08_CameraFollow",
+	"type":	"Global",
+	"types":	[
+		{
+			"name":	"nameObjectToFollow",
+			"type":	"string",
+			"value":	"Player"
+		},
+		{
+			"name":	"cameraSpeed",
+			"type":	"float",
+			"value":	0.05
+		},
+		{
+			"name":	"cameraOffsetZ",
+			"type":	"float",
+			"value":	12.0
+		},
+		{
+			"name":	"cameraOffsetY",
+			"type":	"float",
+			"value":	5.0
+		}
+	]
+}

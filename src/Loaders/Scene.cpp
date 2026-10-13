@@ -7,6 +7,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/OpenGL/Base/ShaderBaseCustom.h"
 #include <algorithm>
+#include <cctype>
 
 void Scene::setActive(bool value)
 {
@@ -75,21 +76,43 @@ const SceneFolder* Scene::getFolder(int id) const
     return nullptr;
 }
 
+static bool sameFolderName(const std::string &a, const std::string &b)
+{
+    if (a.size() != b.size()) return false;
+    for (size_t i = 0; i < a.size(); i++) {
+        if (std::tolower((unsigned char) a[i]) != std::tolower((unsigned char) b[i])) return false;
+    }
+    return true;
+}
+
+bool Scene::folderNameExists(const std::string &folderName, int parent, int exceptId) const
+{
+    for (const auto &f : folders) {
+        if (f.id != exceptId && f.parent == parent && sameFolderName(f.name, folderName)) return true;
+    }
+    return false;
+}
+
 int Scene::createFolder(const std::string &folderName, int parent)
 {
     if (parent != 0 && getFolder(parent) == nullptr) parent = 0;
+    const std::string finalName = folderName.empty() ? "New folder" : folderName;
+    if (folderNameExists(finalName, parent)) return 0;
     SceneFolder f;
     f.id = nextFolderId++;
-    f.name = folderName.empty() ? "New folder" : folderName;
+    f.name = finalName;
     f.parent = parent;
     folders.push_back(f);
     return f.id;
 }
 
-void Scene::renameFolder(int id, const std::string &folderName)
+bool Scene::renameFolder(int id, const std::string &folderName)
 {
-    if (folderName.empty()) return;
+    if (folderName.empty()) return false;
+    const SceneFolder *cur = getFolder(id);
+    if (cur == nullptr || folderNameExists(folderName, cur->parent, id)) return false;
     for (auto &f : folders) if (f.id == id) f.name = folderName;
+    return true;
 }
 
 bool Scene::isFolderInside(int id, int ancestor) const
@@ -106,8 +129,10 @@ bool Scene::isFolderInside(int id, int ancestor) const
 
 bool Scene::moveFolder(int id, int newParent)
 {
-    if (getFolder(id) == nullptr) return false;
+    const SceneFolder *cur = getFolder(id);
+    if (cur == nullptr) return false;
     if (newParent != 0 && (getFolder(newParent) == nullptr || isFolderInside(newParent, id))) return false;
+    if (folderNameExists(cur->name, newParent, id)) return false;
     for (auto &f : folders) if (f.id == id) f.parent = newParent;
     return true;
 }

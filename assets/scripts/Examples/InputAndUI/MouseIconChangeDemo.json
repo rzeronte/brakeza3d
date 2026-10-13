@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Examples/InputAndUI/MouseIconChangeDemo.lua",
+	"typesFile": "../assets/scripts/Examples/InputAndUI/MouseIconChangeDemo.json",
+	"name":	"MouseIconChangeDemo",
+	"type":	"Global",
+	"types":	[]
+}

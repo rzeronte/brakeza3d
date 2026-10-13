@@ -1,0 +1,3420 @@
+{
+	"screenshot":	"../assets/screenshots/ParticleTest.png",
+	"ads":	{
+		"direction":	{
+			"x":	-0.17000000178813934,
+			"y":	-0.0599999986588955,
+			"z":	-1
+		},
+		"diffuse":	{
+			"x":	0.55,
+			"y":	0.55,
+			"z":	0.55
+		},
+		"specular":	{
+			"x":	0,
+			"y":	0,
+			"z":	0
+		},
+		"ambient":	{
+			"x":	0.28,
+			"y":	0.28,
+			"z":	0.3
+		}
+	},
+	"objects":	[
+		{
+			"name":	"01_Campfire",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-62,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	6,
+				"PARTICLES_BY_SECOND":	200,
+				"PARTICLE_LIFESPAN":	0.9,
+				"SMOKE_ANGLE_RANGE":	30,
+				"MIN_VELOCITY":	1,
+				"MAX_VELOCITY":	3,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	6,
+				"DECELERATION_FACTOR":	0.96,
+				"PARTICLE_SIZE_SCALE":	2.5,
+				"SIZE_START":	1.2,
+				"SIZE_END":	0.3
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.85,
+				"b":	0.35,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.85,
+				"g":	0.12,
+				"b":	0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/flame_05.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15,
+					"y":	0.0825,
+					"z":	0.0225
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.55,
+					"z":	0.15
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.55,
+					"z":	0.15
+				},
+				"constant":	1,
+				"linear":	0.375,
+				"quadratic":	0.5208333333333334
+			}
+		},
+		{
+			"name":	"02_SmokeColumn",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-55.5,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	1.5,
+				"PARTICLES_BY_SECOND":	100,
+				"PARTICLE_LIFESPAN":	5,
+				"SMOKE_ANGLE_RANGE":	20,
+				"MIN_VELOCITY":	1,
+				"MAX_VELOCITY":	2,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	220,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	4,
+				"DECELERATION_FACTOR":	0.98,
+				"PARTICLE_SIZE_SCALE":	4,
+				"SIZE_START":	0.4,
+				"SIZE_END":	2.5
+			},
+			"colorFrom":	{
+				"r":	0.78,
+				"g":	0.78,
+				"b":	0.8,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.45,
+				"g":	0.46,
+				"b":	0.5,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/smoke_04.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.135,
+					"y":	0.1275,
+					"z":	0.11249999999999999
+				},
+				"diffuse":	{
+					"x":	0.9,
+					"y":	0.85,
+					"z":	0.75
+				},
+				"specular":	{
+					"x":	0.9,
+					"y":	0.85,
+					"z":	0.75
+				},
+				"constant":	1,
+				"linear":	0.45,
+				"quadratic":	0.75
+			}
+		},
+		{
+			"name":	"03_Embers",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-49,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	1,
+				"PARTICLES_BY_SECOND":	100,
+				"PARTICLE_LIFESPAN":	3,
+				"SMOKE_ANGLE_RANGE":	60,
+				"MIN_VELOCITY":	1,
+				"MAX_VELOCITY":	3,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	15,
+				"DECELERATION_FACTOR":	0.985,
+				"PARTICLE_SIZE_SCALE":	0.96,
+				"SIZE_START":	1,
+				"SIZE_END":	0.2
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.75,
+				"b":	0.15,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.8,
+				"g":	0.1,
+				"b":	0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_spark.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15,
+					"y":	0.0675,
+					"z":	0.015
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.45,
+					"z":	0.1
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.45,
+					"z":	0.1
+				},
+				"constant":	1,
+				"linear":	0.75,
+				"quadratic":	2.0833333333333335
+			}
+		},
+		{
+			"name":	"04_WeldingSparks",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-43,
+				"y":	1.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-12,
+				"PARTICLES_BY_SECOND":	200,
+				"PARTICLE_LIFESPAN":	0.8,
+				"SMOKE_ANGLE_RANGE":	70,
+				"MIN_VELOCITY":	6,
+				"MAX_VELOCITY":	12,
+				"MIN_ALPHA":	220,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	2,
+				"DECELERATION_FACTOR":	0.985,
+				"PARTICLE_SIZE_SCALE":	0.8,
+				"SIZE_START":	1,
+				"SIZE_END":	0.1
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	1,
+				"b":	0.75,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1,
+				"g":	0.4,
+				"b":	0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/spark_05.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15,
+					"y":	0.1275,
+					"z":	0.075
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.85,
+					"z":	0.5
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.85,
+					"z":	0.5
+				},
+				"constant":	1,
+				"linear":	0.5625,
+				"quadratic":	1.171875
+			}
+		},
+		{
+			"name":	"05_Fountain",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-37,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-12,
+				"PARTICLES_BY_SECOND":	200,
+				"PARTICLE_LIFESPAN":	1.8,
+				"SMOKE_ANGLE_RANGE":	12,
+				"MIN_VELOCITY":	9,
+				"MAX_VELOCITY":	12,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	230,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	1,
+				"DECELERATION_FACTOR":	0.998,
+				"PARTICLE_SIZE_SCALE":	1.44,
+				"SIZE_START":	1,
+				"SIZE_END":	0.6
+			},
+			"colorFrom":	{
+				"r":	0.65,
+				"g":	0.9,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.1,
+				"g":	0.4,
+				"b":	0.9,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/circle_05.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.045,
+					"y":	0.105,
+					"z":	0.15
+				},
+				"diffuse":	{
+					"x":	0.3,
+					"y":	0.7,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.3,
+					"y":	0.7,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.45,
+				"quadratic":	0.75
+			}
+		},
+		{
+			"name":	"06_SteamVent",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-31,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0.5,
+				"PARTICLES_BY_SECOND":	200,
+				"PARTICLE_LIFESPAN":	2,
+				"SMOKE_ANGLE_RANGE":	15,
+				"MIN_VELOCITY":	8,
+				"MAX_VELOCITY":	12,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	220,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	6,
+				"DECELERATION_FACTOR":	0.93,
+				"PARTICLE_SIZE_SCALE":	3,
+				"SIZE_START":	0.3,
+				"SIZE_END":	2.2
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	1,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.8,
+				"g":	0.85,
+				"b":	0.9,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/smoke_02.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.1275,
+					"y":	0.135,
+					"z":	0.15
+				},
+				"diffuse":	{
+					"x":	0.85,
+					"y":	0.9,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.85,
+					"y":	0.9,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.45,
+				"quadratic":	0.75
+			}
+		},
+		{
+			"name":	"07_Snow",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-22,
+				"y":	9,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-0.3,
+				"PARTICLES_BY_SECOND":	73,
+				"PARTICLE_LIFESPAN":	7,
+				"SMOKE_ANGLE_RANGE":	360,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	1,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	10,
+				"VELOCITY_NOISE":	8,
+				"DECELERATION_FACTOR":	0.995,
+				"PARTICLE_SIZE_SCALE":	0.8,
+				"SIZE_START":	1,
+				"SIZE_END":	1
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	1,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.85,
+				"g":	0.9,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.11249999999999999,
+					"y":	0.1275,
+					"z":	0.15
+				},
+				"diffuse":	{
+					"x":	0.75,
+					"y":	0.85,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.75,
+					"y":	0.85,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.25,
+				"quadratic":	0.23148148148148148
+			}
+		},
+		{
+			"name":	"08_Rain",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-10,
+				"y":	10,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-10,
+				"PARTICLES_BY_SECOND":	450,
+				"PARTICLE_LIFESPAN":	0.8,
+				"SMOKE_ANGLE_RANGE":	4,
+				"MIN_VELOCITY":	14,
+				"MAX_VELOCITY":	18,
+				"MIN_ALPHA":	170,
+				"MAX_ALPHA":	235,
+				"POSITION_NOISE":	10,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	1,
+				"PARTICLE_SIZE_SCALE":	2.4,
+				"SIZE_START":	1,
+				"SIZE_END":	1
+			},
+			"colorFrom":	{
+				"r":	0.75,
+				"g":	0.85,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.55,
+				"g":	0.7,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/trace_01.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.075,
+					"y":	0.0975,
+					"z":	0.15
+				},
+				"diffuse":	{
+					"x":	0.5,
+					"y":	0.65,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.5,
+					"y":	0.65,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.25,
+				"quadratic":	0.23148148148148148
+			}
+		},
+		{
+			"name":	"09_MagicSwirl",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-1,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0.8,
+				"PARTICLES_BY_SECOND":	100,
+				"PARTICLE_LIFESPAN":	2,
+				"SMOKE_ANGLE_RANGE":	180,
+				"MIN_VELOCITY":	1,
+				"MAX_VELOCITY":	2,
+				"MIN_ALPHA":	180,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	25,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	1.2,
+				"SIZE_START":	0.4,
+				"SIZE_END":	1.6
+			},
+			"colorFrom":	{
+				"r":	0.8,
+				"g":	0.3,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.2,
+				"g":	0.6,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/twirl_02.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.105,
+					"y":	0.045,
+					"z":	0.15
+				},
+				"diffuse":	{
+					"x":	0.7,
+					"y":	0.3,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.7,
+					"y":	0.3,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.45,
+				"quadratic":	0.75
+			}
+		},
+		{
+			"name":	"10_Fireflies",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	6,
+				"y":	1.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	85,
+				"PARTICLE_LIFESPAN":	6,
+				"SMOKE_ANGLE_RANGE":	360,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	1,
+				"MIN_ALPHA":	235,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	6,
+				"VELOCITY_NOISE":	20,
+				"DECELERATION_FACTOR":	0.995,
+				"PARTICLE_SIZE_SCALE":	0.75,
+				"SIZE_START":	1,
+				"SIZE_END":	1
+			},
+			"colorFrom":	{
+				"r":	0.85,
+				"g":	1,
+				"b":	0.35,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.4,
+				"g":	0.8,
+				"b":	0.1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/light_01.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.09,
+					"y":	0.15,
+					"z":	0.045
+				},
+				"diffuse":	{
+					"x":	0.6,
+					"y":	1,
+					"z":	0.3
+				},
+				"specular":	{
+					"x":	0.6,
+					"y":	1,
+					"z":	0.3
+				},
+				"constant":	1,
+				"linear":	0.5625,
+				"quadratic":	1.171875
+			}
+		},
+		{
+			"name":	"11_ToxicGas",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	16,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0.05,
+				"PARTICLES_BY_SECOND":	85,
+				"PARTICLE_LIFESPAN":	6,
+				"SMOKE_ANGLE_RANGE":	220,
+				"MIN_VELOCITY":	2,
+				"MAX_VELOCITY":	4,
+				"MIN_ALPHA":	140,
+				"MAX_ALPHA":	210,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	4,
+				"DECELERATION_FACTOR":	0.97,
+				"PARTICLE_SIZE_SCALE":	5,
+				"SIZE_START":	0.5,
+				"SIZE_END":	2
+			},
+			"colorFrom":	{
+				"r":	0.5,
+				"g":	0.9,
+				"b":	0.2,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.2,
+				"g":	0.4,
+				"b":	0.1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/smoke_07.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.0675,
+					"y":	0.15,
+					"z":	0.03
+				},
+				"diffuse":	{
+					"x":	0.45,
+					"y":	1,
+					"z":	0.2
+				},
+				"specular":	{
+					"x":	0.45,
+					"y":	1,
+					"z":	0.2
+				},
+				"constant":	1,
+				"linear":	0.375,
+				"quadratic":	0.5208333333333334
+			}
+		},
+		{
+			"name":	"12_JetThruster",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	25,
+				"y":	4,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	180,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	300,
+				"PARTICLE_LIFESPAN":	0.35,
+				"SMOKE_ANGLE_RANGE":	8,
+				"MIN_VELOCITY":	14,
+				"MAX_VELOCITY":	18,
+				"MIN_ALPHA":	220,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	3,
+				"DECELERATION_FACTOR":	0.9,
+				"PARTICLE_SIZE_SCALE":	1,
+				"SIZE_START":	1.4,
+				"SIZE_END":	0.2
+			},
+			"colorFrom":	{
+				"r":	0.75,
+				"g":	0.9,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.1,
+				"g":	0.2,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.06,
+					"y":	0.09,
+					"z":	0.15
+				},
+				"diffuse":	{
+					"x":	0.4,
+					"y":	0.6,
+					"z":	1
+				},
+				"specular":	{
+					"x":	0.4,
+					"y":	0.6,
+					"z":	1
+				},
+				"constant":	1,
+				"linear":	0.45,
+				"quadratic":	0.75
+			}
+		},
+		{
+			"name":	"13_LavaGeyser_GPU",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	31.5,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-9,
+				"PARTICLES_BY_SECOND":	200,
+				"PARTICLE_LIFESPAN":	2.5,
+				"SMOKE_ANGLE_RANGE":	20,
+				"MIN_VELOCITY":	9,
+				"MAX_VELOCITY":	13,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	3,
+				"DECELERATION_FACTOR":	0.995,
+				"PARTICLE_SIZE_SCALE":	1.5,
+				"SIZE_START":	1,
+				"SIZE_END":	0.4
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.65,
+				"b":	0.1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.6,
+				"g":	0.05,
+				"b":	0,
+				"a":	1
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/fire_02.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15,
+					"y":	0.06,
+					"z":	0.0075
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.4,
+					"z":	0.05
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.4,
+					"z":	0.05
+				},
+				"constant":	1,
+				"linear":	0.32142857142857145,
+				"quadratic":	0.3826530612244898
+			}
+		},
+		{
+			"name":	"14_DustKickup",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	39,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-0.4,
+				"PARTICLES_BY_SECOND":	100,
+				"PARTICLE_LIFESPAN":	3,
+				"SMOKE_ANGLE_RANGE":	160,
+				"MIN_VELOCITY":	2,
+				"MAX_VELOCITY":	4,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	210,
+				"POSITION_NOISE":	2,
+				"VELOCITY_NOISE":	5,
+				"DECELERATION_FACTOR":	0.95,
+				"PARTICLE_SIZE_SCALE":	2.5,
+				"SIZE_START":	0.5,
+				"SIZE_END":	2.2
+			},
+			"colorFrom":	{
+				"r":	0.62,
+				"g":	0.52,
+				"b":	0.36,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.4,
+				"g":	0.35,
+				"b":	0.25,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/dirt_02.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.15,
+					"y":	0.11249999999999999,
+					"z":	0.0675
+				},
+				"diffuse":	{
+					"x":	1,
+					"y":	0.75,
+					"z":	0.45
+				},
+				"specular":	{
+					"x":	1,
+					"y":	0.75,
+					"z":	0.45
+				},
+				"constant":	1,
+				"linear":	0.45,
+				"quadratic":	0.75
+			}
+		},
+		{
+			"name":	"15_HealingAura",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	46,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	1.5,
+				"PARTICLES_BY_SECOND":	100,
+				"PARTICLE_LIFESPAN":	1.6,
+				"SMOKE_ANGLE_RANGE":	10,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	1,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	3,
+				"VELOCITY_NOISE":	2,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	1.12,
+				"SIZE_START":	0.3,
+				"SIZE_END":	1.4
+			},
+			"colorFrom":	{
+				"r":	0.4,
+				"g":	1,
+				"b":	0.5,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.9,
+				"g":	1,
+				"b":	0.6,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/star_06.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.06,
+					"y":	0.15,
+					"z":	0.075
+				},
+				"diffuse":	{
+					"x":	0.4,
+					"y":	1,
+					"z":	0.5
+				},
+				"specular":	{
+					"x":	0.4,
+					"y":	1,
+					"z":	0.5
+				},
+				"constant":	1,
+				"linear":	0.5625,
+				"quadratic":	1.171875
+			}
+		},
+		{
+			"name":	"16_RTS_SmokeBomb",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	57,
+				"y":	1.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0.15,
+				"PARTICLES_BY_SECOND":	73,
+				"PARTICLE_LIFESPAN":	7,
+				"SMOKE_ANGLE_RANGE":	220,
+				"MIN_VELOCITY":	6,
+				"MAX_VELOCITY":	14,
+				"MIN_ALPHA":	180,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	1,
+				"VELOCITY_NOISE":	3,
+				"DECELERATION_FACTOR":	0.96,
+				"PARTICLE_SIZE_SCALE":	7,
+				"SIZE_START":	0.4,
+				"SIZE_END":	1.8
+			},
+			"colorFrom":	{
+				"r":	0.85,
+				"g":	0.86,
+				"b":	0.88,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.62,
+				"g":	0.64,
+				"b":	0.67,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"type":	6,
+			"attachedLight":	{
+				"ambient":	{
+					"x":	0.135,
+					"y":	0.135,
+					"z":	0.1425
+				},
+				"diffuse":	{
+					"x":	0.9,
+					"y":	0.9,
+					"z":	0.95
+				},
+				"specular":	{
+					"x":	0.9,
+					"y":	0.9,
+					"z":	0.95
+				},
+				"constant":	1,
+				"linear":	0.32142857142857145,
+				"quadratic":	0.3826530612244898
+			}
+		},
+		{
+			"name":	"Backdrop_01_Campfire",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-62,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_02_SmokeColumn",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-55.5,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_03_Embers",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-49,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_04_WeldingSparks",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-43,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_05_Fountain",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-37,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_06_SteamVent",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-31,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_07_Snow",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-22,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_08_Rain",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-10,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_09_MagicSwirl",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	-1,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_10_Fireflies",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	6,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_11_ToxicGas",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	16,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_12_JetThruster",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	25,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_13_LavaGeyser_GPU",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	31.5,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_14_DustKickup",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	39,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_15_HealingAura",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	46,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"Backdrop_16_RTS_SmokeBomb",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	57,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"17_Helix",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	64,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	160,
+				"PARTICLE_LIFESPAN":	3.0,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	3,
+				"MAX_VELOCITY":	3,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	1.0,
+				"PARTICLE_SIZE_SCALE":	0.96,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.3,
+				"SWIRL_SPEED":	220,
+				"SWIRL_PULL":	6,
+				"SPIRAL_RADIAL_SPEED":	2.5,
+				"SPIRAL_ARMS":	2,
+				"SPIRAL_SPIN":	0
+			},
+			"colorFrom":	{
+				"r":	0.4,
+				"g":	0.9,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.6,
+				"g":	0.2,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/twirl_02.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_17_Helix",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	64,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"18_Tornado",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	71,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	180,
+				"PARTICLE_LIFESPAN":	3.5,
+				"SMOKE_ANGLE_RANGE":	10,
+				"MIN_VELOCITY":	3,
+				"MAX_VELOCITY":	5,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	220,
+				"POSITION_NOISE":	0.4,
+				"VELOCITY_NOISE":	2,
+				"DECELERATION_FACTOR":	0.995,
+				"PARTICLE_SIZE_SCALE":	2.2,
+				"SIZE_START":	0.5,
+				"SIZE_END":	1.8,
+				"SWIRL_SPEED":	300,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	1.6,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"ROTATION_RANDOM_START":	true,
+				"ROTATION_SPEED_MIN":	-40,
+				"ROTATION_SPEED_MAX":	40,
+				"ROTATION_RANDOM_DIR":	true
+			},
+			"colorFrom":	{
+				"r":	0.75,
+				"g":	0.7,
+				"b":	0.6,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.35,
+				"g":	0.32,
+				"b":	0.3,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/smoke_04.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_18_Tornado",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	71,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"19_SpiralGalaxy",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	78,
+				"y":	2,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	240,
+				"PARTICLE_LIFESPAN":	4.0,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	0,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0.3,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	1.0,
+				"PARTICLE_SIZE_SCALE":	0.8,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.2,
+				"SWIRL_SPEED":	35,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	2.5,
+				"SPIRAL_ARMS":	3,
+				"SPIRAL_SPIN":	120
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.95,
+				"b":	0.7,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.5,
+				"g":	0.3,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/star_06.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_19_SpiralGalaxy",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	78,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"20_Sprinkler_GPU",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	85,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-9,
+				"PARTICLES_BY_SECOND":	220,
+				"PARTICLE_LIFESPAN":	1.6,
+				"SMOKE_ANGLE_RANGE":	4,
+				"MIN_VELOCITY":	5,
+				"MAX_VELOCITY":	6,
+				"MIN_ALPHA":	170,
+				"MAX_ALPHA":	240,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	1.0,
+				"PARTICLE_SIZE_SCALE":	1.12,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.6,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	4.5,
+				"SPIRAL_ARMS":	1,
+				"SPIRAL_SPIN":	240
+			},
+			"colorFrom":	{
+				"r":	0.5,
+				"g":	0.8,
+				"b":	1,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.2,
+				"g":	0.4,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	true,
+			"texture":	"../assets/images/Particles/circle_05.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_20_Sprinkler_GPU",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	85,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"21_SphereBurst",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	92,
+				"y":	2.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	160,
+				"PARTICLE_LIFESPAN":	2.0,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	1.5,
+				"MAX_VELOCITY":	2.5,
+				"MIN_ALPHA":	190,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	0.8,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.2,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	2,
+				"SHAPE_RADIUS":	1.4,
+				"SHAPE_SURFACE_ONLY":	true,
+				"SHAPE_DIRECTION":	1
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.9,
+				"b":	0.4,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1,
+				"g":	0.2,
+				"b":	0.1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/star_06.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_21_SphereBurst",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	92,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"22_TorusRing",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	99,
+				"y":	1.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	220,
+				"PARTICLE_LIFESPAN":	2.5,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	0.8,
+				"MAX_VELOCITY":	1.4,
+				"MIN_ALPHA":	190,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	0.72,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.1,
+				"SWIRL_SPEED":	90,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	5,
+				"SHAPE_RADIUS":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.35,
+				"SHAPE_SURFACE_ONLY":	false,
+				"SHAPE_DIRECTION":	0
+			},
+			"colorFrom":	{
+				"r":	0.3,
+				"g":	1,
+				"b":	0.8,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.1,
+				"g":	0.3,
+				"b":	1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/circle_05.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_22_TorusRing",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	99,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"23_ConeSpray",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	106,
+				"y":	0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-6,
+				"PARTICLES_BY_SECOND":	220,
+				"PARTICLE_LIFESPAN":	2.0,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	2.5,
+				"MAX_VELOCITY":	4.0,
+				"MIN_ALPHA":	190,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	0.8,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.2,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	3,
+				"SHAPE_RADIUS":	1.5,
+				"SHAPE_HEIGHT":	2.5,
+				"SHAPE_SURFACE_ONLY":	true,
+				"SHAPE_DIRECTION":	1
+			},
+			"colorFrom":	{
+				"r":	1,
+				"g":	0.7,
+				"b":	0.2,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.9,
+				"g":	0.1,
+				"b":	0.1,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/spark_05.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_23_ConeSpray",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	106,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"24_MeshAura",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	113,
+				"y":	1.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	260,
+				"PARTICLE_LIFESPAN":	1.6,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	0.6,
+				"MAX_VELOCITY":	1.2,
+				"MIN_ALPHA":	190,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	0.56,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.05,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	6,
+				"SHAPE_MESH":	"Backdrop_24_MeshAura",
+				"SHAPE_DIRECTION":	1
+			},
+			"colorFrom":	{
+				"r":	0.5,
+				"g":	1,
+				"b":	0.6,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.1,
+				"g":	0.5,
+				"b":	0.2,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/light_01.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_24_MeshAura",
+			"scale":	0.6,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	113,
+				"y":	1.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/ChessPawn.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"25_Portal",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	120,
+				"y":	3.2,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	90,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	320,
+				"PARTICLE_LIFESPAN":	1.6,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	0.3,
+				"MAX_VELOCITY":	0.7,
+				"MIN_ALPHA":	200,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	1.0,
+				"PARTICLE_SIZE_SCALE":	1.1,
+				"SIZE_START":	0.6,
+				"SIZE_END":	1.1,
+				"SWIRL_SPEED":	70,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	5,
+				"SHAPE_RADIUS":	2.3,
+				"SHAPE_SURFACE_ONLY":	false,
+				"SHAPE_DIRECTION":	0,
+				"SHAPE_HEIGHT":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.25,
+				"SHAPE_SIZE_X":	2.0,
+				"SHAPE_SIZE_Y":	2.0,
+				"SHAPE_SIZE_Z":	2.0,
+				"SHAPE_MESH":	"",
+				"ROTATION_RANDOM_START":	false,
+				"ROTATION_SPEED_MIN":	0,
+				"ROTATION_SPEED_MAX":	0,
+				"ROTATION_RANDOM_DIR":	false
+			},
+			"colorFrom":	{
+				"r":	0.65,
+				"g":	0.35,
+				"b":	1.0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.15,
+				"g":	0.75,
+				"b":	1.0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/light_01.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_25_Portal",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	120,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"26_Lightning",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	127,
+				"y":	2.2,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	500,
+				"PARTICLE_LIFESPAN":	0.28,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	5,
+				"MAX_VELOCITY":	10,
+				"MIN_ALPHA":	230,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	45,
+				"DECELERATION_FACTOR":	0.93,
+				"PARTICLE_SIZE_SCALE":	1.3,
+				"SIZE_START":	1.3,
+				"SIZE_END":	0.2,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	1,
+				"SHAPE_RADIUS":	1.0,
+				"SHAPE_SURFACE_ONLY":	true,
+				"SHAPE_DIRECTION":	1,
+				"SHAPE_HEIGHT":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.3,
+				"SHAPE_SIZE_X":	0.8,
+				"SHAPE_SIZE_Y":	0.8,
+				"SHAPE_SIZE_Z":	0.8,
+				"SHAPE_MESH":	"",
+				"ROTATION_RANDOM_START":	false,
+				"ROTATION_SPEED_MIN":	0,
+				"ROTATION_SPEED_MAX":	0,
+				"ROTATION_RANDOM_DIR":	false
+			},
+			"colorFrom":	{
+				"r":	0.85,
+				"g":	0.92,
+				"b":	1.0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.25,
+				"g":	0.4,
+				"b":	1.0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/spark_05.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_26_Lightning",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	127,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"27_Bubbles",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	134,
+				"y":	0.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	1.3,
+				"PARTICLES_BY_SECOND":	70,
+				"PARTICLE_LIFESPAN":	3.6,
+				"SMOKE_ANGLE_RANGE":	20,
+				"MIN_VELOCITY":	0.6,
+				"MAX_VELOCITY":	1.2,
+				"MIN_ALPHA":	150,
+				"MAX_ALPHA":	225,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	7,
+				"DECELERATION_FACTOR":	1.0,
+				"PARTICLE_SIZE_SCALE":	1.0,
+				"SIZE_START":	0.6,
+				"SIZE_END":	1.3,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	2,
+				"SHAPE_RADIUS":	1.3,
+				"SHAPE_SURFACE_ONLY":	false,
+				"SHAPE_DIRECTION":	0,
+				"SHAPE_HEIGHT":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.3,
+				"SHAPE_SIZE_X":	2.0,
+				"SHAPE_SIZE_Y":	2.0,
+				"SHAPE_SIZE_Z":	2.0,
+				"SHAPE_MESH":	"",
+				"ROTATION_RANDOM_START":	false,
+				"ROTATION_SPEED_MIN":	0,
+				"ROTATION_SPEED_MAX":	0,
+				"ROTATION_RANDOM_DIR":	false
+			},
+			"colorFrom":	{
+				"r":	0.65,
+				"g":	0.92,
+				"b":	1.0,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.85,
+				"g":	1.0,
+				"b":	1.0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/circle_05.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_27_Bubbles",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	134,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"28_Fireworks",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	141,
+				"y":	4.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-5,
+				"PARTICLES_BY_SECOND":	1000,
+				"PARTICLE_LIFESPAN":	1.9,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	6,
+				"MAX_VELOCITY":	9,
+				"MIN_ALPHA":	220,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	0.985,
+				"PARTICLE_SIZE_SCALE":	0.9,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.15,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	2,
+				"SHAPE_RADIUS":	0.15,
+				"SHAPE_SURFACE_ONLY":	true,
+				"SHAPE_DIRECTION":	1,
+				"SHAPE_HEIGHT":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.3,
+				"SHAPE_SIZE_X":	2.0,
+				"SHAPE_SIZE_Y":	2.0,
+				"SHAPE_SIZE_Z":	2.0,
+				"SHAPE_MESH":	"",
+				"ROTATION_RANDOM_START":	false,
+				"ROTATION_SPEED_MIN":	0,
+				"ROTATION_SPEED_MAX":	0,
+				"ROTATION_RANDOM_DIR":	false
+			},
+			"colorFrom":	{
+				"r":	1.0,
+				"g":	0.85,
+				"b":	0.25,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1.0,
+				"g":	0.1,
+				"b":	0.5,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/star_06.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_28_Fireworks",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	141,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"29_BlackHole",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	148,
+				"y":	2.8,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	58,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	0,
+				"PARTICLES_BY_SECOND":	320,
+				"PARTICLE_LIFESPAN":	2.4,
+				"SMOKE_ANGLE_RANGE":	0,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	0,
+				"MIN_ALPHA":	190,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	0,
+				"DECELERATION_FACTOR":	1.0,
+				"PARTICLE_SIZE_SCALE":	0.9,
+				"SIZE_START":	1.0,
+				"SIZE_END":	0.15,
+				"SWIRL_SPEED":	-150,
+				"SWIRL_PULL":	2.6,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	5,
+				"SHAPE_RADIUS":	3.6,
+				"SHAPE_SURFACE_ONLY":	false,
+				"SHAPE_DIRECTION":	0,
+				"SHAPE_HEIGHT":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.15,
+				"SHAPE_SIZE_X":	2.0,
+				"SHAPE_SIZE_Y":	2.0,
+				"SHAPE_SIZE_Z":	2.0,
+				"SHAPE_MESH":	"",
+				"ROTATION_RANDOM_START":	false,
+				"ROTATION_SPEED_MIN":	0,
+				"ROTATION_SPEED_MAX":	0,
+				"ROTATION_RANDOM_DIR":	false
+			},
+			"colorFrom":	{
+				"r":	1.0,
+				"g":	0.7,
+				"b":	0.2,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	0.45,
+				"g":	0.2,
+				"b":	1.0,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/particle_soft.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_29_BlackHole",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	148,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		},
+		{
+			"name":	"30_Confetti",
+			"scale":	1,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	155,
+				"y":	7.0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	false,
+				"depthTest":	true,
+				"writeDepth":	false,
+				"shadowMap":	false,
+				"frustumCulling":	false,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"context":	{
+				"GRAVITY":	-2.6,
+				"PARTICLES_BY_SECOND":	140,
+				"PARTICLE_LIFESPAN":	4.2,
+				"SMOKE_ANGLE_RANGE":	180,
+				"MIN_VELOCITY":	0,
+				"MAX_VELOCITY":	1.0,
+				"MIN_ALPHA":	220,
+				"MAX_ALPHA":	255,
+				"POSITION_NOISE":	0,
+				"VELOCITY_NOISE":	5,
+				"DECELERATION_FACTOR":	0.99,
+				"PARTICLE_SIZE_SCALE":	0.9,
+				"SIZE_START":	1.0,
+				"SIZE_END":	1.0,
+				"SWIRL_SPEED":	0,
+				"SWIRL_PULL":	0,
+				"SPIRAL_RADIAL_SPEED":	0,
+				"SPIRAL_ARMS":	0,
+				"SPIRAL_SPIN":	0,
+				"SHAPE":	1,
+				"SHAPE_RADIUS":	1.0,
+				"SHAPE_SURFACE_ONLY":	false,
+				"SHAPE_DIRECTION":	0,
+				"SHAPE_HEIGHT":	2.0,
+				"SHAPE_TUBE_RADIUS":	0.3,
+				"SHAPE_SIZE_X":	5.0,
+				"SHAPE_SIZE_Y":	0.3,
+				"SHAPE_SIZE_Z":	3.0,
+				"SHAPE_MESH":	"",
+				"ROTATION_RANDOM_START":	true,
+				"ROTATION_SPEED_MIN":	-360,
+				"ROTATION_SPEED_MAX":	360,
+				"ROTATION_RANDOM_DIR":	true
+			},
+			"colorFrom":	{
+				"r":	1.0,
+				"g":	0.4,
+				"b":	0.7,
+				"a":	1
+			},
+			"colorTo":	{
+				"r":	1.0,
+				"g":	0.9,
+				"b":	0.2,
+				"a":	1
+			},
+			"gpuMode":	false,
+			"texture":	"../assets/images/Particles/star_06.png",
+			"type":	6
+		},
+		{
+			"name":	"Backdrop_30_Confetti",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	155,
+				"y":	-0.68,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	1
+			},
+			"isCollisionsEnabled":	false,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2
+		}
+	],
+	"shaders":	[],
+	"scripts":	[
+		{
+			"codeFile":	"../assets/scripts/Examples/ParticlesAndCrowds/ParticleCarousel.lua",
+			"typesFile":	"../assets/scripts/Examples/ParticlesAndCrowds/ParticleCarousel.json",
+			"name":	"ParticleCarousel",
+			"type":	"Global",
+			"types":	[
+				{
+					"name":	"radius",
+					"type":	"float",
+					"value":	33
+				},
+				{
+					"name":	"centerX",
+					"type":	"float",
+					"value":	0
+				},
+				{
+					"name":	"centerZ",
+					"type":	"float",
+					"value":	9
+				},
+				{
+					"name":	"dwellTime",
+					"type":	"float",
+					"value":	6
+				},
+				{
+					"name":	"glideTime",
+					"type":	"float",
+					"value":	1.2
+				}
+			]
+		}
+	],
+	"camera":	{
+		"position":	{
+			"x":	0,
+			"y":	9,
+			"z":	52
+		},
+		"rotation":	{
+			"x":	7,
+			"y":	0,
+			"z":	0
+		}
+	}
+}

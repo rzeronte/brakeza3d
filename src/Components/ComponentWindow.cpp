@@ -17,7 +17,7 @@
 #include "../../include/Brakeza.h"
 #include "../../include/2D/Image2D.h"
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/IconsGUI.h"
+#include "../../include/GUI/Widgets/IconsGUI.h"
 #include "../../include/GUI/GUI.h"
 #include "../../include/Render/Profiler.h"
 

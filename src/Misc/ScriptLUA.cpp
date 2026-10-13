@@ -8,7 +8,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../include/GUI/Windows/ScriptLuaGUI.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Cache/ScriptDataCache.h"

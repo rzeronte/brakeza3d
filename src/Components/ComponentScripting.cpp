@@ -6,7 +6,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Profiler.h"
-#include "../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../include/GUI/Windows/ScriptLuaGUI.h"
 #include "../../include/LUA/BrakezaLuaBridge.h"
 #include "../../include/LUA/ObjectFactory.h"
 #include "../../include/Loaders/SceneLoader.h"

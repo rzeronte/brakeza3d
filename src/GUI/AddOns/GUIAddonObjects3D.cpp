@@ -5,9 +5,10 @@
 #include "../../../include/GUI/AddOns/GUIAddonObjects3D.h"
 #include <algorithm>
 #include "../../../include/Brakeza.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
-#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../../../include/GUI/Windows/ScriptLuaGUI.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/Components/Components.h"
 
@@ -25,6 +26,7 @@ namespace {
         int folderId = 0;       // > 0 = renombrar esa; 0 = crear
         int parent = 0;         // al crear
         char name[128] = "";
+        bool duplicate = false; // el último intento chocó con otra carpeta del mismo nivel
     } folderModal;
 
     // Datos del frame del modo carpetas (los rellena DrawObjectsFolders)
@@ -32,9 +34,25 @@ namespace {
     std::unordered_map<int, int> folderMatchCount;                     // carpeta -> nº en ella + subcarpetas
     int folderRowIndex = 0;
 
+    // Los menús contextuales se abren dentro del estilo compacto de la lista (FramePadding/ItemSpacing
+    // mínimos), así que salían apretados: se sobrescribe solo mientras el popup (y sus submenús) se dibuja.
+    // Debe construirse ANTES de BeginPopup* (WindowPadding se lee al abrir la ventana).
+    struct ContextMenuStyle {
+        ContextMenuStyle()
+        {
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(10.0f, 8.0f));
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,  ImVec2(8.0f, 5.0f));
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,   ImVec2(8.0f, 6.0f));
+        }
+        ~ContextMenuStyle() { ImGui::PopStyleVar(3); }
+        ContextMenuStyle(const ContextMenuStyle &) = delete;
+        ContextMenuStyle &operator=(const ContextMenuStyle &) = delete;
+    };
+
     void requestFolderModal(Scene *scene, int folderId, int parent, const std::string &current)
     {
         folderModal.request  = true;
+        folderModal.duplicate = false;
         folderModal.scene    = scene;
         folderModal.folderId = folderId;
         folderModal.parent   = parent;
@@ -238,6 +256,7 @@ void GUIAddonObjects3D::DrawMoveToFolderMenu(Scene *scene, int parent, const std
 
 void GUIAddonObjects3D::DrawObjectContextMenu(Object3D *o)
 {
+    ContextMenuStyle menuStyle;
     if (!ImGui::BeginPopupContextItem("##objctx")) return;
     auto targets = dragTargets(o);
     ImGui::TextDisabled("%s%s", o->getName().c_str(), targets.size() > 1 ? " (+ selection)" : "");
@@ -313,6 +332,7 @@ void GUIAddonObjects3D::DrawFolderNode(Scene *scene, const SceneFolder &folder, 
             ImGui::Text("Folder: %s", folderName.c_str());
             ImGui::EndDragDropSource();
         }
+        ContextMenuStyle menuStyle;
         if (ImGui::BeginPopupContextItem("##folderctx")) {
             ImGui::TextDisabled("%s", folderName.c_str());
             ImGui::Separator();
@@ -449,12 +469,25 @@ void GUIAddonObjects3D::DrawFolderModal()
                                             ImGuiInputTextFlags_EnterReturnsTrue);
         const bool ok = ImGui::Button(folderModal.folderId > 0 ? "Rename" : "Create") || enter;
         ImGui::SameLine();
-        const bool cancel = ImGui::Button("Cancel") || ImGui::IsKeyPressed(ImGuiKey_Escape);
+        const bool cancel = GUIHelpers::CancelButton() || ImGui::IsKeyPressed(ImGuiKey_Escape);
+        bool close = cancel;
         if (ok && folderModal.scene != nullptr && folderModal.name[0] != '\0') {
-            if (folderModal.folderId > 0) folderModal.scene->renameFolder(folderModal.folderId, folderModal.name);
-            else folderModal.scene->createFolder(folderModal.name, folderModal.parent);
+            // No se permiten dos carpetas con el mismo nombre en el mismo nivel: se avisa y la ventana sigue abierta
+            const bool done = folderModal.folderId > 0
+                ? folderModal.scene->renameFolder(folderModal.folderId, folderModal.name)
+                : folderModal.scene->createFolder(folderModal.name, folderModal.parent) != 0;
+            folderModal.duplicate = !done;
+            close = close || done;
+        } else if (ok) {
+            close = true;   // nombre vacío: se cierra sin hacer nada, como antes
         }
-        if (ok || cancel) ImGui::CloseCurrentPopup();
+        if (folderModal.duplicate) {
+            ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.3f, 1.0f), "A folder with that name already exists here");
+        }
+        if (close) {
+            folderModal.duplicate = false;
+            ImGui::CloseCurrentPopup();
+        }
         ImGui::EndPopup();
     }
 }

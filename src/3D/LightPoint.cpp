@@ -6,7 +6,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/LightPointGUI.h"
+#include "../../include/GUI/Inspectors/LightPointGUI.h"
 
 LightPoint::LightPoint(
     glm::vec4 ambient,

@@ -5,7 +5,7 @@
 #include "../../include/Misc/ToolsMaths.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/Image3DAnimation360GUI.h"
+#include "../../include/GUI/Inspectors/Image3DAnimation360GUI.h"
 
 Image3DAnimation360::Image3DAnimation360(const Vertex3D &position, float width, float height)
 :

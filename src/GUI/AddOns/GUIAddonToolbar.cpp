@@ -125,8 +125,9 @@ void GUIAddonToolbar::MouseOptionsIcons()
         GUI::Toggle(Config::get()->MOUSE_CLICK_SELECT_OBJECT3D);
     });
     ImGui::SameLine();
-    GUI::DrawButton("Enable/Disable mouse look", IconGUI::TOOLBAR_MOUSE_LOOK, GUIType::Sizes::ICONS_TOOLBAR, Config::get()->MOUSE_LOOK,[&]() {
-        GUI::Toggle(Config::get()->MOUSE_LOOK);
+    auto &selection = Components::get()->Render()->getSelectionManager();
+    GUI::DrawButton("Enable/Disable drag selection (box)", IconGUI::TOOLBAR_DRAG_SELECT, GUIType::Sizes::ICONS_TOOLBAR, selection.isRectSelectEnabled(), [&]() {
+        selection.setRectSelectEnabled(!selection.isRectSelectEnabled());
     });
 }
 

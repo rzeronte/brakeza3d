@@ -1,0 +1,82 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Characters/KinematicFPSController.lua",
+	"typesFile":	"../assets/scripts/Examples/Characters/KinematicFPSController.json",
+	"name":	"KinematicFPSController",
+	"type":	"Object",
+	"types":	[
+		{
+			"name":	"force",
+			"type":	"float",
+			"value":	0.15000000596046448
+		},
+		{
+			"name":	"deceleration",
+			"type":	"float",
+			"value":	0.10000000149011612
+		},
+		{
+			"name":	"jumpForce",
+			"type":	"float",
+			"value":	10
+		},
+		{
+			"name":	"speed",
+			"type":	"float",
+			"value":	0
+		},
+		{
+			"name":	"strafe",
+			"type":	"float",
+			"value":	0
+		},
+		{
+			"name":	"velocity",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			}
+		},
+		{
+			"name":	"yaw",
+			"type":	"float",
+			"value":	0
+		},
+		{
+			"name":	"pitch",
+			"type":	"float",
+			"value":	0
+		},
+		{
+			"name":	"mouseSensibility",
+			"type":	"float",
+			"value":	0.1
+		},
+		{
+			"name":	"eyeHeight",
+			"type":	"float",
+			"value":	0.7
+		},
+		{
+			"name":	"airControl",
+			"type":	"float",
+			"value":	0.25
+		},
+		{
+			"name":	"bobAmount",
+			"type":	"float",
+			"value":	0.05
+		},
+		{
+			"name":	"bobFrequency",
+			"type":	"float",
+			"value":	2.0
+		},
+		{
+			"name":	"hideBody",
+			"type":	"bool",
+			"value":	true
+		}
+	]
+}

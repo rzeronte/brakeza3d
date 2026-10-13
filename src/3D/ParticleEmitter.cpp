@@ -3,11 +3,13 @@
 #include <algorithm>
 #include <cmath>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/geometric.hpp>
 #include "../../include/3D/ParticleEmitter.h"
+#include "../../include/3D/Mesh3D.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/ParticleEmitterGUI.h"
+#include "../../include/GUI/Inspectors/ParticleEmitterGUI.h"
 #include "../../include/Misc/Tools.h"
 
 ParticleEmitter::ParticleEmitter(
@@ -142,6 +144,247 @@ static void RandomParticleRotation(const ParticlesContext& c, float& angle, floa
     if (c.ROTATION_RANDOM_DIR && (rand() & 1)) spin = -spin;
 }
 
+// ── Espirales / vórtice (ParticlesContext::SWIRL_* / SPIRAL_*) ────────────────────────────────
+// Rodrigues: rota v alrededor de `axis` (unitario) `angle` radianes
+static glm::vec3 RotateAroundAxis(const glm::vec3 &v, const glm::vec3 &axis, float angle)
+{
+    const float c = std::cos(angle), s = std::sin(angle);
+    return v * c + glm::cross(axis, v) * s + axis * glm::dot(axis, v) * (1.0f - c);
+}
+
+static bool HasVortex(const ParticlesContext &c)
+{
+    return c.SWIRL_SPEED != 0.0f || c.SWIRL_PULL != 0.0f;
+}
+
+// Un paso del vórtice: gira posición y velocidad alrededor del eje que pasa por `origin` y atrae hacia él
+static void ApplyVortex(glm::vec3 &pos, glm::vec3 &vel, const glm::vec3 &origin, const glm::vec3 &axis,
+                        const ParticlesContext &c, float delta)
+{
+    if (c.SWIRL_SPEED != 0.0f) {
+        const float angle = glm::radians(c.SWIRL_SPEED) * delta;
+        pos = origin + RotateAroundAxis(pos - origin, axis, angle);
+        vel = RotateAroundAxis(vel, axis, angle);
+    }
+    if (c.SWIRL_PULL != 0.0f) {
+        const glm::vec3 rel = pos - origin;
+        const glm::vec3 radial = rel - axis * glm::dot(rel, axis);
+        vel -= radial * (c.SWIRL_PULL * delta);
+    }
+}
+
+// Velocidad extra de salida hacia fuera del eje (SPIRAL_RADIAL_SPEED) en el acimut de este nacimiento.
+// `phase` avanza SPIRAL_SPIN por partícula; con SPIRAL_ARMS brazos se reparten por igual, sin ellos es aleatorio.
+glm::vec3 ParticleEmitter::SpiralLaunchVelocity(const glm::vec3 &axis)
+{
+    if (context.SPIRAL_RADIAL_SPEED == 0.0f) return glm::vec3(0.0f);
+
+    // Base ortonormal del plano perpendicular al eje
+    const glm::vec3 helper = std::fabs(axis.y) < 0.99f ? glm::vec3(0, 1, 0) : glm::vec3(1, 0, 0);
+    const glm::vec3 u = glm::normalize(glm::cross(helper, axis));
+    const glm::vec3 v = glm::cross(axis, u);
+
+    float azimuth = spiralPhase;
+    if (context.SPIRAL_ARMS > 0) {
+        azimuth += 6.2831853f * static_cast<float>(spiralArmCounter % context.SPIRAL_ARMS) / static_cast<float>(context.SPIRAL_ARMS);
+        spiralArmCounter++;
+    } else {
+        azimuth += RandomRange(0.0f, 6.2831853f);
+    }
+    return (u * std::cos(azimuth) + v * std::sin(azimuth)) * context.SPIRAL_RADIAL_SPEED;
+}
+
+// ── Formas de emisión (ParticlesContext::SHAPE) ───────────────────────────────────────────────
+static glm::vec3 RandomUnitVector()
+{
+    const float z = RandomRange(-1.0f, 1.0f);
+    const float a = RandomRange(0.0f, 6.2831853f);
+    const float r = std::sqrt(std::max(0.0f, 1.0f - z * z));
+    return glm::vec3(r * std::cos(a), z, r * std::sin(a));
+}
+
+static glm::vec3 SafeNormalize(const glm::vec3 &v, const glm::vec3 &fallback)
+{
+    const float l = glm::length(v);
+    return l > 1e-6f ? v / l : fallback;
+}
+
+// Punto de la forma en el espacio LOCAL del emisor (eje Y = su "arriba") y normal hacia fuera en ese punto
+static void SampleLocalShape(const ParticlesContext &c, glm::vec3 &p, glm::vec3 &n)
+{
+    const float TWO_PI = 6.2831853f;
+    const bool surface = c.SHAPE_SURFACE_ONLY;
+    const glm::vec3 up(0.0f, 1.0f, 0.0f);
+    p = glm::vec3(0.0f);
+    n = up;
+
+    switch (c.SHAPE) {
+        case EmitterShape::BOX: {
+            const glm::vec3 h(std::max(0.0f, c.SHAPE_SIZE_X) * 0.5f,
+                              std::max(0.0f, c.SHAPE_SIZE_Y) * 0.5f,
+                              std::max(0.0f, c.SHAPE_SIZE_Z) * 0.5f);
+            if (surface) {
+                // Cara elegida en proporción a su área; punto uniforme dentro de la cara
+                const float ax = h.y * h.z, ay = h.x * h.z, az = h.x * h.y;
+                const float pick = RandomRange(0.0f, std::max(1e-9f, ax + ay + az));
+                const float s = RandomRange(-1.0f, 1.0f), t = RandomRange(-1.0f, 1.0f);
+                const float sign = (rand() & 1) ? 1.0f : -1.0f;
+                if (pick < ax)            { p = glm::vec3(sign * h.x, s * h.y, t * h.z); n = glm::vec3(sign, 0, 0); }
+                else if (pick < ax + ay)  { p = glm::vec3(s * h.x, sign * h.y, t * h.z); n = glm::vec3(0, sign, 0); }
+                else                      { p = glm::vec3(s * h.x, t * h.y, sign * h.z); n = glm::vec3(0, 0, sign); }
+            } else {
+                p = glm::vec3(RandomRange(-h.x, h.x), RandomRange(-h.y, h.y), RandomRange(-h.z, h.z));
+                n = SafeNormalize(p, RandomUnitVector());
+            }
+            break;
+        }
+        case EmitterShape::SPHERE: {
+            const float r = std::max(0.0f, c.SHAPE_RADIUS);
+            const glm::vec3 u = RandomUnitVector();
+            const float d = surface ? r : r * std::cbrt(RandomRange(0.0f, 1.0f));
+            p = u * d;
+            n = u;
+            break;
+        }
+        case EmitterShape::CONE: {
+            // Vértice en el emisor; se abre hacia +Y hasta SHAPE_RADIUS a SHAPE_HEIGHT de altura
+            const float r = std::max(0.0f, c.SHAPE_RADIUS), h = std::max(0.0001f, c.SHAPE_HEIGHT);
+            const float phi = RandomRange(0.0f, TWO_PI);
+            const glm::vec3 radial(std::cos(phi), 0.0f, std::sin(phi));
+            float t, rho;
+            if (surface) { t = std::sqrt(RandomRange(0.0f, 1.0f)); rho = r * t; }              // área lateral ∝ t
+            else         { t = std::cbrt(RandomRange(0.0f, 1.0f)); rho = r * t * std::sqrt(RandomRange(0.0f, 1.0f)); }
+            p = radial * rho + up * (h * t);
+            n = SafeNormalize(radial * h - up * r, up);
+            break;
+        }
+        case EmitterShape::CYLINDER: {
+            const float r = std::max(0.0f, c.SHAPE_RADIUS), h = std::max(0.0f, c.SHAPE_HEIGHT);
+            const float phi = RandomRange(0.0f, TWO_PI);
+            const glm::vec3 radial(std::cos(phi), 0.0f, std::sin(phi));
+            if (surface) {
+                const float side = TWO_PI * r * h, cap = 3.14159265f * r * r;
+                const float pick = RandomRange(0.0f, std::max(1e-9f, side + 2.0f * cap));
+                if (pick < side) {
+                    p = radial * r + up * RandomRange(-h * 0.5f, h * 0.5f);
+                    n = radial;
+                } else {
+                    const float sign = (pick < side + cap) ? 1.0f : -1.0f;
+                    p = radial * (r * std::sqrt(RandomRange(0.0f, 1.0f))) + up * (sign * h * 0.5f);
+                    n = up * sign;
+                }
+            } else {
+                p = radial * (r * std::sqrt(RandomRange(0.0f, 1.0f))) + up * RandomRange(-h * 0.5f, h * 0.5f);
+                n = radial;
+            }
+            break;
+        }
+        case EmitterShape::TORUS: {
+            const float R = std::max(0.0f, c.SHAPE_RADIUS), r = std::max(0.0f, c.SHAPE_TUBE_RADIUS);
+            const float theta = RandomRange(0.0f, TWO_PI);
+            const glm::vec3 ring(std::cos(theta), 0.0f, std::sin(theta));
+            float psi = 0.0f, rho = r;
+            // Rechazo: el anillo es más largo por fuera que por dentro; sin él, la densidad sería mayor en el interior
+            for (int attempt = 0; attempt < 8; attempt++) {
+                psi = RandomRange(0.0f, TWO_PI);
+                rho = surface ? r : r * std::sqrt(RandomRange(0.0f, 1.0f));
+                if (RandomRange(0.0f, 1.0f) <= (R + rho * std::cos(psi)) / std::max(1e-6f, R + r)) break;
+            }
+            p = ring * (R + rho * std::cos(psi)) + up * (rho * std::sin(psi));
+            n = ring * std::cos(psi) + up * std::sin(psi);
+            break;
+        }
+        default:   // POINT (y MESH, que se muestrea aparte): sin volumen
+            n = RandomUnitVector();
+            break;
+    }
+}
+
+// Malla de la escena de la que nacen las partículas: se resuelve por nombre cada frame (si se borra o se
+// mueve, el emisor lo nota). La tabla de áreas por triángulo se rehace solo al cambiar de malla.
+void ParticleEmitter::PrepareShapeMesh()
+{
+    Mesh3D *mesh = nullptr;
+    if (!context.SHAPE_MESH.empty()) {
+        Object3D *o = Brakeza::get()->getObjectByName(context.SHAPE_MESH);
+        if (o != nullptr && o != this && !o->isRemoved()) mesh = dynamic_cast<Mesh3D *>(o);
+    }
+
+    if (mesh == nullptr) {
+        shapeMesh = nullptr;
+        shapeTriCumArea.clear();
+        shapeTris.clear();
+        return;
+    }
+
+    shapeMeshModel = mesh->getModelMatrix();
+    if (mesh == shapeMesh && !shapeTriCumArea.empty()) return;
+
+    shapeMesh = mesh;
+    shapeTriCumArea.clear();
+    shapeTris.clear();
+
+    float total = 0.0f;
+    const auto &data = mesh->getMeshData();
+    for (size_t mi = 0; mi < data.size(); mi++) {
+        const auto &v = data[mi].vertices;   // triángulos expandidos: 3 vértices consecutivos por triángulo
+        for (size_t i = 0; i + 2 < v.size(); i += 3) {
+            const glm::vec3 a(shapeMeshModel * v[i]), b(shapeMeshModel * v[i + 1]), c(shapeMeshModel * v[i + 2]);
+            const float area = 0.5f * glm::length(glm::cross(b - a, c - a));
+            if (area <= 1e-9f) continue;
+            total += area;
+            shapeTriCumArea.push_back(total);
+            shapeTris.emplace_back(static_cast<int>(mi), static_cast<int>(i));
+        }
+    }
+}
+
+bool ParticleEmitter::SampleMeshSurface(glm::vec3 &offset, glm::vec3 &outward)
+{
+    if (shapeMesh == nullptr || shapeTriCumArea.empty()) return false;
+
+    const float pick = RandomRange(0.0f, shapeTriCumArea.back());
+    size_t idx = static_cast<size_t>(std::lower_bound(shapeTriCumArea.begin(), shapeTriCumArea.end(), pick) - shapeTriCumArea.begin());
+    if (idx >= shapeTris.size()) idx = shapeTris.size() - 1;
+
+    const auto &data = shapeMesh->getMeshData();
+    const int mi = shapeTris[idx].first;
+    const size_t vi = static_cast<size_t>(shapeTris[idx].second);
+    if (mi < 0 || static_cast<size_t>(mi) >= data.size() || vi + 2 >= data[mi].vertices.size()) return false;   // malla recargada
+    const auto &md = data[mi];
+
+    // Punto uniforme dentro del triángulo (coordenadas baricéntricas)
+    const float r1 = std::sqrt(RandomRange(0.0f, 1.0f)), r2 = RandomRange(0.0f, 1.0f);
+    const float wa = 1.0f - r1, wb = r1 * (1.0f - r2), wc = r1 * r2;
+
+    const glm::vec3 a(shapeMeshModel * md.vertices[vi]), b(shapeMeshModel * md.vertices[vi + 1]), c(shapeMeshModel * md.vertices[vi + 2]);
+    const glm::vec3 world = a * wa + b * wb + c * wc;
+
+    glm::vec3 n;
+    if (md.normals.size() == md.vertices.size()) {
+        n = md.normals[vi] * wa + md.normals[vi + 1] * wb + md.normals[vi + 2] * wc;
+        n = glm::mat3(shapeMeshModel) * n;
+    } else {
+        n = glm::cross(b - a, c - a);
+    }
+
+    offset = world - getPosition().toGLM();
+    outward = SafeNormalize(n, glm::vec3(0.0f, 1.0f, 0.0f));
+    return true;
+}
+
+bool ParticleEmitter::SampleShape(glm::vec3 &offset, glm::vec3 &outward)
+{
+    if (context.SHAPE == EmitterShape::MESH) return SampleMeshSurface(offset, outward);
+
+    glm::vec3 p, n;
+    SampleLocalShape(context, p, n);
+    // De local a mundo: la forma gira con el emisor
+    offset = (getRotation() * Vertex3D(p.x, p.y, p.z)).toGLM();
+    outward = SafeNormalize((getRotation() * Vertex3D(n.x, n.y, n.z)).toGLM(), glm::vec3(0.0f, 1.0f, 0.0f));
+    return true;
+}
+
 void ParticleEmitter::Draw()
 {
     if (isRemoved() || !isActive() || !isEnabled() || texture == nullptr) return;
@@ -158,6 +401,8 @@ void ParticleEmitter::Draw()
     }
 
     Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
+    const glm::vec3 axis = glm::normalize(direction.toGLM());       // eje del vórtice / espiral
+    const glm::vec3 emitterOrigin = getPosition().toGLM();
 
     float delta = Brakeza::get()->getDeltaTime();
     glm::vec3 CameraPosition(Components::get()->Camera()->getCamera()->getPosition().toGLM());
@@ -170,6 +415,10 @@ void ParticleEmitter::Draw()
     const float deceleration = std::pow(std::max(0.0f, context.DECELERATION_FACTOR), delta * 60.0f);
 
     int ParticlesCount = 0;
+
+    // Forma de emisión: con POINT + eje no hay nada que muestrear (comportamiento original)
+    const bool useShape = context.SHAPE != EmitterShape::POINT || context.SHAPE_DIRECTION == EmitterShapeDirection::OUTWARD;
+    if (useShape && context.SHAPE == EmitterShape::MESH) PrepareShapeMesh();
 
     if (!stopAdd) {
         for (int i = 0; i < newparticles; i++){
@@ -186,11 +435,20 @@ void ParticleEmitter::Draw()
             );
 
             glm::vec3 maindir = direction.toGLM();
+            if (useShape) {
+                glm::vec3 shapeOffset, shapeOutward;
+                if (SampleShape(shapeOffset, shapeOutward)) {
+                    ParticlesContainer[particleIndex].pos += shapeOffset;
+                    if (context.SHAPE_DIRECTION == EmitterShapeDirection::OUTWARD) maindir = shapeOutward;
+                }
+            }
             maindir = AddNoiseToDirection(maindir, context.SMOKE_ANGLE_RANGE/2);
 
             // Velocidad de salida en u/s
             ParticlesContainer[particleIndex].speed = maindir * RandomRange(
-                    static_cast<float>(context.MIN_VELOCITY), static_cast<float>(context.MAX_VELOCITY));
+                    static_cast<float>(context.MIN_VELOCITY), static_cast<float>(context.MAX_VELOCITY))
+                    + SpiralLaunchVelocity(axis);
+            spiralPhase += glm::radians(context.SPIRAL_SPIN) * delta / static_cast<float>(newparticles);
 
             // Very bad way to generate a random color
             ParticlesContainer[particleIndex].r = rand() % 256;
@@ -225,6 +483,7 @@ void ParticleEmitter::Draw()
 
                 // Gravedad (aceleración, u/s²), ruido de dirección que conserva el módulo y frenado
                 p.speed += glm::vec3(0.0f,context.GRAVITY, 0.0f) * delta;
+                if (HasVortex(context)) ApplyVortex(p.pos, p.speed, emitterOrigin, axis, context, delta);
                 p.speed = AddNoiseKeepingSpeed(p.speed, velocityNoise);
                 p.speed *= deceleration;
 
@@ -431,10 +690,15 @@ void ParticleEmitter::DrawGPU()
 
     Vertex3D direction = getRotation() * Vertex3D(0, 1, 0);
     glm::vec3 dir = direction.toGLM();
+    const glm::vec3 axis = glm::normalize(dir);
+    const glm::vec3 emitterOrigin = getPosition().toGLM();
 
     int newParticles = ParticlesToSpawn(delta);
     const float velocityNoise = context.VELOCITY_NOISE * 0.5f * delta * 60.0f;
     const float deceleration = std::pow(std::max(0.0f, context.DECELERATION_FACTOR), delta * 60.0f);
+
+    const bool useShape = context.SHAPE != EmitterShape::POINT || context.SHAPE_DIRECTION == EmitterShapeDirection::OUTWARD;
+    if (useShape && context.SHAPE == EmitterShape::MESH) PrepareShapeMesh();
 
     if (!stopAdd) {
         for (int i = 0; i < newParticles; i++) {
@@ -446,18 +710,28 @@ void ParticleEmitter::DrawGPU()
             p.timeLiving = 0.0f;
 
             const float halfNoise = static_cast<float>(context.POSITION_NOISE) * 0.5f;
+            glm::vec3 spawnPos = getPosition().toGLM() + glm::vec3(
+                RandomRange(-halfNoise, halfNoise),
+                RandomRange(-halfNoise, halfNoise),
+                RandomRange(-halfNoise, halfNoise)
+            );
+            glm::vec3 emitDir = dir;
+            if (useShape) {
+                glm::vec3 shapeOffset, shapeOutward;
+                if (SampleShape(shapeOffset, shapeOutward)) {
+                    spawnPos += shapeOffset;
+                    if (context.SHAPE_DIRECTION == EmitterShapeDirection::OUTWARD) emitDir = shapeOutward;
+                }
+            }
             p.position = glm::vec4(
-                getPosition().toGLM() + glm::vec3(
-                    RandomRange(-halfNoise, halfNoise),
-                    RandomRange(-halfNoise, halfNoise),
-                    RandomRange(-halfNoise, halfNoise)
-                ),
+                spawnPos,
                 ((rand() % 1000) / 2000.0f + 0.1f) * context.PARTICLE_SIZE_SCALE   // mismo tamaño que en CPU
             );
 
-            glm::vec3 maindir = AddNoiseToDirection(dir, context.SMOKE_ANGLE_RANGE / 2);
+            glm::vec3 maindir = AddNoiseToDirection(emitDir, context.SMOKE_ANGLE_RANGE / 2);
             float speed = RandomRange(static_cast<float>(context.MIN_VELOCITY), static_cast<float>(context.MAX_VELOCITY));
-            p.velocity = glm::vec4(maindir * speed, 0.0f);
+            p.velocity = glm::vec4(maindir * speed + SpiralLaunchVelocity(axis), 0.0f);
+            spiralPhase += glm::radians(context.SPIRAL_SPIN) * delta / static_cast<float>(newParticles);
             float angle, spin;
             RandomParticleRotation(context, angle, spin);
             p.rotation = glm::vec4(angle, spin, 0.0f, 0.0f);   // .x ángulo, .y giro (rad, rad/s)
@@ -478,6 +752,11 @@ void ParticleEmitter::DrawGPU()
 
         p.velocity.y += context.GRAVITY * delta;
         glm::vec3 vel = glm::vec3(p.velocity);
+        if (HasVortex(context)) {
+            glm::vec3 pos3 = glm::vec3(p.position);
+            ApplyVortex(pos3, vel, emitterOrigin, axis, context, delta);
+            p.position = glm::vec4(pos3, p.position.w);
+        }
         vel = AddNoiseKeepingSpeed(vel, velocityNoise);
         p.velocity = glm::vec4(vel * deceleration, 0.0f);
         p.position = glm::vec4(glm::vec3(p.position) + glm::vec3(p.velocity) * delta, p.position.w);

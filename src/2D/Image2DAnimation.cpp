@@ -5,7 +5,7 @@
 #include "../../include/2D/Image2DAnimation.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/Image2DAnimationGUI.h"
+#include "../../include/GUI/Inspectors/Image2DAnimationGUI.h"
 
 Image2DAnimation::Image2DAnimation(int x, int y, bool removeWhenEnds, TextureAnimated *animation)
 :

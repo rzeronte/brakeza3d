@@ -5,7 +5,7 @@
 #include "../../include/Loaders/ProjectChecker.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/ToolsJSON.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Render/Drawable.h"
 

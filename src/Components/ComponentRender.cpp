@@ -6,7 +6,7 @@
 #include "../../include/Components/ComponentRender.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/ShadersGUI.h"
+#include "../../include/GUI/Windows/ShadersGUI.h"
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 #include "../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
 #include "../../include/OpenGL/ShaderOGLShadowPass.h"
@@ -533,6 +533,9 @@ void ComponentRender::DeleteRemovedObjects()
     if (!pendingDeleteObjects.empty()) {
         // Una sola línea de resumen en vez de 2-3 por objeto (esas van ahora a LOG_VERBOSE).
         const auto t0 = std::chrono::steady_clock::now();
+        // Un mismo puntero repetido (alta duplicada en la escena) se liberaría dos veces
+        std::sort(pendingDeleteObjects.begin(), pendingDeleteObjects.end());
+        pendingDeleteObjects.erase(std::unique(pendingDeleteObjects.begin(), pendingDeleteObjects.end()), pendingDeleteObjects.end());
         const size_t count = pendingDeleteObjects.size();
         for (Object3D *object : pendingDeleteObjects) {
             delete object;
@@ -1589,6 +1592,7 @@ void ComponentRender::FlushObjectShaderQueue()
 // resto en FlushPickingQueue().
 void ComponentRender::EnqueuePicking(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
 {
+    const double enqueueStart = Profiler::Ticks();
     // Mismo mecanismo que EnqueueOpaque (Fase 1): useFeedbackBuffer==true solo lo pasa
     // Mesh3DAnimation::onUpdate(), señal de "unidad animada" para el picking instanciado con
     // skinning vía TBO (Fase 2) en vez de un feedbackBuffer por-instancia.
@@ -1626,6 +1630,7 @@ void ComponentRender::EnqueuePicking(Mesh3D *o, bool useFeedbackBuffer, GLuint f
         }
         pickingQueue.push_back(entry);
     }
+    pickingEnqueueSeconds += Profiler::Ticks() - enqueueStart;
 }
 
 // Ordena por vertexBuffer -- mismo motivo que en el opaco: misma malla compartida (Fase 2.1) =
@@ -1635,6 +1640,13 @@ void ComponentRender::EnqueuePicking(Mesh3D *o, bool useFeedbackBuffer, GLuint f
 // suyo aunque se dibuje en el mismo draw instanciado que otras.
 void ComponentRender::FlushPickingQueue()
 {
+    // CPU del picking: construir la cola (acumulado de todos los EnqueuePicking del frame) y vaciarla.
+    // Medidas "PickingEnqueue" / "PickingFlush" en ProfilerLua.snapshot().cpu
+    auto &measures = Profiler::get()->getComponentMeasures();
+    measures["PickingEnqueue"].diffTime = pickingEnqueueSeconds;
+    pickingEnqueueSeconds = 0.0;
+    Profiler::StartMeasure(measures, "PickingFlush");
+    struct EndFlushMeasure { MeasuresMap &m; ~EndFlushMeasure() { Profiler::EndMeasure(m, "PickingFlush"); } } endFlushMeasure{measures};
     std::sort(pickingQueue.begin(), pickingQueue.end(), [](const PickingQueueEntry &a, const PickingQueueEntry &b) {
         return a.vertexBuffer < b.vertexBuffer;
     });

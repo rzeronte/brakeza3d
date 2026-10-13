@@ -1,0 +1,592 @@
+{
+  "_comment": "Demo catalog for DemoBrowser.lua. Order = browsing order (PgDn/PgUp). 'category' groups the demos in the list; demos with the same category must be together. The files, scripts and shaders shown in the info panel are read from each scene JSON, not from here. \"tour\" = scene names of the showcase playlist the browser starts with (Prev/Next walk it in this order; the Tour/All button or F3 switches to the full list).",
+  "tour": [
+    "ShowRoomTest",
+    "ParticleTest",
+    "LightsTest",
+    "PostProcessingTest",
+    "SwarmBoidsTest",
+    "RainCubesTest",
+    "ProjectileTest",
+    "DemoThirdPerson",
+    "TwinStickShooter"
+  ],
+  "demos": [
+    {
+      "scene": "../assets/scenes/Examples/Basics/01_HelloWorld.json",
+      "title": "01 Hello world",
+      "category": "Basics",
+      "summary": "The smallest script: it writes a message, the run time and the FPS on the screen every frame. Start here.",
+      "controls": [],
+      "learn": [
+        "Script: 01_HelloWorld.lua (assets/scripts/Examples/Basics)",
+        "Global script: onStart() once, onUpdate() every frame, onEnd() when it stops",
+        "ObjectFactory.TextWriter and writeTextTTFAutoSize",
+        "Brakeza:getExecutionTime() and Components:Render():getFps()"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/02_Input.json",
+      "title": "02 Keyboard and mouse",
+      "category": "Basics",
+      "summary": "Reads the keyboard and the mouse and shows on screen what the engine sees: keys held, keys just pressed and the mouse position and buttons.",
+      "controls": [
+        "W A S D, Space, E   hold them and watch the panel",
+        "Mouse   move it and click"
+      ],
+      "learn": [
+        "Script: 02_Input.lua (assets/scripts/Examples/Basics)",
+        "Components:Input(): isCharPressed (held) and isCharFirstEventDown (only the first frame)",
+        "Mouse position and buttons"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/03_Movement.json",
+      "title": "03 Moving an object",
+      "category": "Basics",
+      "summary": "Moves the cube in different ways: along the world axes, up and down, along its own forward direction and rotating on the spot. It is an object script: the same script can be attached to any object.",
+      "controls": [
+        "W A S D   move on the floor",
+        "Space / C   up / down",
+        "I / K   forward / back along the object's own axis",
+        "Q / E   rotate"
+      ],
+      "learn": [
+        "Script: 03_Movement.lua (assets/scripts/Examples/Basics)",
+        "Object script: 'this' is the object the script is attached to",
+        "this:getPosition() / setPosition()",
+        "Speeds: speed in units/s, rotationSpeed in degrees/s (rotation matrices take degrees, not radians)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/04_Rotation.json",
+      "title": "04 Rotating an object",
+      "category": "Basics",
+      "summary": "Three ways of rotating: around each axis with the keys, automatically every frame, and resetting to the starting rotation.",
+      "controls": [
+        "W / S   pitch (X axis)",
+        "A / D   yaw (Y axis)",
+        "Q / E   roll (Z axis)",
+        "Space   auto-rotation on / off",
+        "R   reset"
+      ],
+      "learn": [
+        "Script: 04_Rotation.lua (assets/scripts/Examples/Basics)",
+        "M3 rotation matrices: setMatrixRotationForEulerAngles and multiplying matrices",
+        "this:getRotation() / setRotation()",
+        "Angles are in degrees: rotationSpeed is degrees/s (90 = a quarter turn per second); auto-rotation turns 45 degrees/s"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/05_ObjectManagement.json",
+      "title": "05 Creating and removing objects",
+      "category": "Basics",
+      "summary": "Creates coloured point lights at random places from a script, hides them and removes them again. The lights are invisible objects: you see them as pools of colour on the floor and the cubes. The panel counts them (the script stops at 32; the engine supports 64 point lights in total).",
+      "controls": [
+        "C   create a random coloured light",
+        "V   show / hide the last one",
+        "X   remove the last one"
+      ],
+      "learn": [
+        "Script: 05_ObjectManagement.lua (assets/scripts/Examples/Basics)",
+        "ObjectFactory.LightPoint creates the object and adds it to the scene by itself (do not call AddObject3D again)",
+        "object:setEnabled(false) hides it, object:setRemoved(true) removes it"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/06_Parenting.json",
+      "title": "06 Parenting (hierarchies)",
+      "category": "Basics",
+      "summary": "Parent and children: four coloured point lights are attached to the cube. When the cube moves or turns they go with it, and their offsets can be animated or detached. The children are lights, so you see them as coloured light on the floor.",
+      "controls": [
+        "W A S D   move the parent",
+        "Q / E   rotate the parent",
+        "O   animate the children's orbits",
+        "Space   detach / attach the children",
+        "I   print info to the console"
+      ],
+      "learn": [
+        "Script: 06_Parenting.lua (assets/scripts/Examples/Basics)",
+        "Parent / child relationships between objects",
+        "Children keep their position relative to the parent"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/07_LookAt.json",
+      "title": "07 Look at a target",
+      "category": "Basics",
+      "summary": "The cone turns to face a sphere that circles around it. Instantly or smoothly, and you can switch the following off and turn it by hand.",
+      "controls": [
+        "Space   follow on / off",
+        "S   smooth / instant",
+        "P / O   turning speed",
+        "A / D   turn by hand (follow off)",
+        "Tab   change target"
+      ],
+      "learn": [
+        "Script: 07_LookAt.lua (assets/scripts/Examples/Basics)",
+        "this:LookAt(otherObject)",
+        "Finding the target by name with Brakeza:getObjectByName",
+        "Dot product to know whether the object already faces the target"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/08_CameraFollow.json",
+      "title": "08 A camera that follows",
+      "category": "Basics",
+      "summary": "The camera follows the cube smoothly from behind. The cube is moved with the Movement lesson's keys. Shows how to take the camera away from the keyboard.",
+      "controls": [
+        "W A S D   move the cube",
+        "Space / C   up / down",
+        "I / K   forward / back",
+        "Q / E   rotate"
+      ],
+      "learn": [
+        "Script: 08_CameraFollow.lua (assets/scripts/Examples/Basics)",
+        "Components:Input():setKeyboardEnabled(false) so the keys do not also move the camera",
+        "camera:setPosition with a lerp towards a point behind the object, and camera:LookAt(object)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/09_ObjectVariables.json",
+      "title": "09 Variables of another object",
+      "category": "Basics",
+      "summary": "One cube holds two script variables (offset and count, which grows every second). The sphere reads them every second and prints them to the Logs / Console window.",
+      "controls": [
+        "Open the Logs / Console window to see the values"
+      ],
+      "learn": [
+        "Script: 09_ObjectVariables.lua (assets/scripts/Examples/Basics)",
+        "object:getLocalScriptVar(name) reads a variable of another object's script",
+        "Variables are declared in the script's .json file"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/10_Lighting.json",
+      "title": "10 Lights",
+      "category": "Basics",
+      "summary": "Creates a point light from a script and lets you move it, rotate the sun and change the ambient light while it runs.",
+      "controls": [
+        "Q / E   rotate the sun",
+        "Z / X   less / more ambient light",
+        "I K J L   move the point light"
+      ],
+      "learn": [
+        "Script: 10_Lighting.lua (assets/scripts/Examples/Basics)",
+        "ObjectFactory.LightPoint and its attenuation (setConstant / setLinear / setCuadratic)",
+        "Global illumination from Lua through Components:Render()"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/11_Physics.json",
+      "title": "11 Physics (rigid bodies)",
+      "category": "Basics",
+      "summary": "A box with a Bullet rigid body falls and lands on the floor. Apply forces, impulses and velocities to it, stop it or turn its physics off.",
+      "controls": [
+        "W A S D   apply a force",
+        "Space   jump (impulse)",
+        "I / K   set the velocity directly",
+        "X   stop all motion",
+        "P   physics on / off"
+      ],
+      "learn": [
+        "Script: 11_Physics.lua (assets/scripts/Examples/Basics)",
+        "Rigid bodies: mass, friction, restitution and damping",
+        "ApplyCentralForce / ApplyCentralImpulse / setLinearVelocity",
+        "this:onGround() only works for KINEMATIC characters: a rigid body checks the ground with a ray (isRayCollisionWith)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/12_Collisions.json",
+      "title": "12 Collisions and rays",
+      "category": "Basics",
+      "summary": "The player box falls onto an enemy and is knocked back; touching a pickup removes it. R shoots a visible ray at the target and G checks the ground below.",
+      "controls": [
+        "R   cast a ray at 'Target' (drawn 3 s: green = hit, red = miss)",
+        "G   check the ground (ray drawn downwards)",
+        "Watch the Logs / Console window"
+      ],
+      "learn": [
+        "Script: 12_Collisions.lua (assets/scripts/Examples/Basics)",
+        "onCollision(info) and info:getObject()",
+        "Reacting by object name",
+        "Components:Collisions():isRayCollisionWith for raycasts"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/13_Animation.json",
+      "title": "13 Skeletal animation",
+      "category": "Basics",
+      "summary": "A character with several skeletal animations. Switch between them, change their speed, turn looping on and off, and see them chosen automatically when you walk.",
+      "controls": [
+        "1 idle   2 walk   3 run   4 jump   5 crouch walk",
+        "P / O   animation speed",
+        "L   loop on / off",
+        "W A S D   walk / idle"
+      ],
+      "learn": [
+        "Script: 13_Animation.lua (assets/scripts/Examples/Basics)",
+        "Mesh3DAnimation: setAnimationByName needs the exact animation name stored in the FBX",
+        "setAnimationSpeed, setLoop, isAnimationEnds"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/14_Particles.json",
+      "title": "14 Particles from a script",
+      "category": "Basics",
+      "summary": "Creates a particle emitter above the torch from code and configures it: emission rate, lifespan, gravity, speed and colours.",
+      "controls": [
+        "Space   emission on / off",
+        "1 fire   2 smoke   3 magic   4 snow"
+      ],
+      "learn": [
+        "Script: 14_Particles.lua (assets/scripts/Examples/Basics)",
+        "ObjectFactory.ParticleEmitter and ParticlesContext",
+        "emitter:setColorFrom / setColorTo and setStopAdd"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/15_Audio.json",
+      "title": "15 Audio",
+      "category": "Basics",
+      "summary": "Registers sounds and a music loop, plays them and controls their volume. Make sure your speakers are on.",
+      "controls": [
+        "Q W E R T   beep, click, coin, hit, success",
+        "M   music on / off",
+        "I / K   music volume",
+        "U / J   sounds volume"
+      ],
+      "learn": [
+        "Script: 15_Audio.lua (assets/scripts/Examples/Basics)",
+        "Components:Sound(): AddSound / AddMusic register, PlaySound / PlayMusic play by label",
+        "setMusicVolume / setSoundsVolume"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Basics/16_CustomShaderUpdate.json",
+      "title": "16 Updating a shader from a script",
+      "category": "Basics",
+      "summary": "A post-processing shader called Custom tints the whole screen. The script writes new values into its variables every frame.",
+      "controls": [],
+      "learn": [
+        "Script: 16_CustomShaderUpdate.lua (assets/scripts/Examples/Basics)",
+        "Components:Render():getSceneShaderByLabel(name)",
+        "shader:setDataTypeValue(variable, value)",
+        "The shader: assets/shaders/Examples/CodePostprocessing/CustomTint.fs"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Graphics/ShowRoomTest.json",
+      "title": "Show room",
+      "category": "Graphics",
+      "summary": "A small set of meshes and lights to look at the deferred renderer: G-Buffer, ADS lighting, shadows and a chromatic aberration post-processing shader on top.",
+      "controls": [],
+      "learn": [
+        "Deferred pipeline: src/Components/ComponentRender.cpp",
+        "Scene shader chain: include/Render/PostProcessingManager.h",
+        "Post-processing shader stored in the scene shaders list"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Graphics/LightsTest.json",
+      "title": "Lights and day/night cycle",
+      "category": "Graphics",
+      "summary": "Point and spot lights plus a global (directional) light that a scene script rotates to simulate a 30 s day/night cycle, changing ambient and diffuse colours over time.",
+      "controls": [],
+      "learn": [
+        "Scene script: CycleDayNightDemo.lua (onStart/onUpdate)",
+        "render:getGlobalIlluminationDirection / setGlobalIllumination*",
+        "Limits: 64 point lights + 64 spot lights"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Graphics/PostProcessingTest.json",
+      "title": "Post-processing chain",
+      "category": "Graphics",
+      "summary": "Eight full-screen shaders chained one after another, each changing a different cell of a 4x2 grid on the screen. Switch each one on and off with the number keys and watch how the ping-pong buffers pass the image from one shader to the next.",
+      "controls": [
+        "1 - 8      toggle that shader (the key follows the grid: 1 2 3 4 on the top row, 5 6 7 8 on the bottom)",
+        "0          all shaders off",
+        "9          all shaders on",
+        "H          show / hide the panel"
+      ],
+      "learn": [
+        "Scene shaders run after the light pass (frame step 6)",
+        "UVs are screen space: gl_FragCoord.xy / textureSize",
+        "Shader node editor and code editor in the editor GUI",
+        "Components:Render():getSceneShaderByLabel(name) and shader:setEnabled / isEnabled (PostProcessingDemo.lua)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/ParticlesAndCrowds/ParticleTest.json",
+      "title": "Particle emitters",
+      "category": "Particles and crowds",
+      "summary": "Thirty particle emitters on a carousel that rotates in front of the camera, one effect at a time. Fire, smoke, sparks, water and weather, plus the newer controls: spiral and vortex motion (helix, tornado, galaxy, sprinkler, black hole), emission shapes (sphere, torus, cone, the surface of a chess pawn) and effects such as a portal, lightning, bubbles, fireworks and confetti. Each effect gets its own background colour and zoom so it can be seen well; lightning and fireworks fire in bursts. Every emitter is configured from the editor and saved in the scene.",
+      "controls": [
+        "Space       play / pause the carousel",
+        "Left/Right  previous / next effect",
+        "Up/Down     time per effect",
+        "E           emission on/off",
+        "Mouse wheel  zoom",
+        "H           show/hide the panel",
+        "M           automatic view (background colour and zoom per effect) on / off"
+      ],
+      "learn": [
+        "Scene script: ParticleCarousel.lua (moves the emitters in a circle)",
+        "Brakeza:getParticleEmitterByName + emitter:setStopAdd",
+        "include/3D/ParticleEmitter.h (max 512 particles per emitter)",
+        "Emitter settings are part of the object JSON",
+        "ParticlesContext SWIRL_* / SPIRAL_*: curved paths around the emitter axis (examples 17-20)",
+        "Object Properties window (F10 in the editor) to tweak them live",
+        "ParticleCarousel.lua: window:setClearColor for the background, emitter:setStopAdd for bursts, camera dolly for the zoom",
+        "ParticlesContext: SHAPE_*, SWIRL_* and SPIRAL_* (see the inspector section of each emitter)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/ParticlesAndCrowds/SwarmBoidsTest.json",
+      "title": "Swarm (boids)",
+      "category": "Particles and crowds",
+      "summary": "A Swarm object steering thirty meshes with the classic boids rules: separation, alignment and cohesion. The members are ordinary meshes referenced by the swarm. The red cube is the swarm's predator: the boids steer away from it, and panic (run faster than normal) when it gets close. You choose how the predator moves.",
+      "controls": [
+        "1 / 2 / 3  figure-eight / hunt nearest boid / parked in the centre",
+        "Space      pause the predator",
+        "Up/Down    predator speed",
+        "H          show/hide the panel"
+      ],
+      "learn": [
+        "include/3D/Swarm.h (predatorThreshold, predatorPanicSpeedFactor)",
+        "Swarm members are resolved after loading and retried every 0.25 s until all exist",
+        "Predator motion: assets/scripts/Demos/GlobalScripts/SwarmDemo.lua"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Physics/RainCubesTest.json",
+      "title": "Rain of physics cubes",
+      "category": "Physics",
+      "summary": "Three emitter objects run an object script that spawns a physics cube every half second. The cubes are Bullet rigid bodies that fall and pile up on the floor. Only the newest 30 cubes of each emitter are kept so the physics world does not grow forever.",
+      "controls": [],
+      "learn": [
+        "Object script: RainCubesDemo.lua (this is the owner object)",
+        "mesh:setMass / SetupRigidBodyCollider (Dynamic body mode)",
+        "Script variables (frequency) come from the JSON types file of the script"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Physics/ProjectileTest.json",
+      "title": "Projectiles and collisions",
+      "category": "Physics",
+      "summary": "A launcher fires physics projectiles; an object script logs on screen every collision it receives.",
+      "controls": [
+        "A / D   aim left / right",
+        "W / S   aim up / down",
+        "Q / E   less / more power",
+        "Z / X   smaller / bigger projectile",
+        "F       fire"
+      ],
+      "learn": [
+        "Scene script: ProjectileLauncher.lua",
+        "Object script: ProjectileLauncherCaptureCollision.lua",
+        "onCollisionEnter/Stay/Exit(info) callbacks"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Characters/DemoFirstPerson.json",
+      "title": "First person (starter kit)",
+      "category": "Characters",
+      "summary": "A kinematic capsule with a first-person camera: walk, jump and look around a small test level. The controller is an ordinary object script attached to the capsule, so it can be copied to your own character.",
+      "controls": [
+        "W A S D     move",
+        "Space       jump",
+        "Hold the left mouse button and drag to look around",
+        "Tab        free look: the mouse is captured and you look around without pressing anything (Tab or Esc release it)"
+      ],
+      "learn": [
+        "Object script: Controllers/KinematicFPSController.lua",
+        "Kinematic body mode (character): gravity, onGround(), no rigid-body push-back",
+        "The script drives the camera from the capsule position every frame"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Characters/DemoThirdPerson.json",
+      "title": "Third person (starter kit)",
+      "category": "Characters",
+      "summary": "A kinematic capsule with a camera that follows it from behind and always looks at it. Dragging the mouse turns the character and the camera around it. The controller is an ordinary object script attached to the capsule, so it can be copied to your own character.",
+      "controls": [
+        "W A S D     move (relative to where the character faces)",
+        "Space       jump",
+        "Hold the left mouse button and drag sideways to turn"
+      ],
+      "learn": [
+        "Object script: Controllers/KinematicThirdPersonController.lua",
+        "Kinematic body mode (character): setWalkingDirection, jump, onGround",
+        "Follow camera: position from the character's rotation, camera:LookAt(point), smoothed with an exponential factor"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Characters/DemoPlatformsScene.json",
+      "title": "2D platformer (starter kit)",
+      "category": "Characters",
+      "summary": "Side-scrolling platformer in a 3D level. The player is a ghost collider moved by script, without Bullet rigid bodies: raycasts for the floor and walls give coyote time, jump buffering, variable jump height and wall sliding.",
+      "controls": [
+        "A / D       run left / right",
+        "Space       jump (hold for a higher jump)",
+        "W / S       up / down (S while falling drops faster)",
+        "J           attack"
+      ],
+      "learn": [
+        "Object script: Controllers/PlatformsGhostController.lua",
+        "Ghost body mode (trigger) used as a character controller",
+        "Floor and wall detection with raycasts instead of physics contacts"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Characters/TwinStickShooter.json",
+      "title": "Twin-stick shooter (starter kit)",
+      "category": "Characters",
+      "summary": "Top-down shooter with twin-stick controls: one stick moves, the other one aims. It also plays with keyboard and mouse. Shoot the eight targets, dash, reload; they come back after a few seconds. The script converts screen directions to the world with the camera, so any fixed top-down camera works.",
+      "controls": [
+        "GAMEPAD   left stick move, right stick aim, RT or RB shoot, LT or A dash, X reload",
+        "KEYBOARD  W A S D move, mouse aim, left button shoot, right button dash, R reload",
+        "The HUD shows the scheme you used last"
+      ],
+      "learn": [
+        "Object script: Characters/TwinStickShooterController.lua",
+        "Gamepad: input:getControllerAxisLeftX/Y, getControllerAxisRightX/Y, getControllerAxisTriggerRight, getControllerButtonA/X",
+        "Camera:worldToScreenXYZ to turn a screen direction into a world direction (works for any fixed camera)",
+        "Rigid body moved with setLinearVelocity; bullets are plain meshes moved by the script and checked by distance"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/InputAndUI/UITest.json",
+      "title": "UI widgets",
+      "category": "Input and UI",
+      "summary": "The JSON widget system: a nested widget, a list widget and single cards drawn at a position, all fed with data from Lua every frame.",
+      "controls": [],
+      "learn": [
+        "Scene script: UIWidgetsDemo.lua",
+        "Widget JSON files in assets/ui/",
+        "render:drawWidget / drawWidgetAtPos / drawWidgetInstances"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/InputAndUI/TextRenderingTest.json",
+      "title": "Text rendering",
+      "category": "Input and UI",
+      "summary": "Every way of drawing text: TTF auto-size, TTF with explicit size, batched glyph atlas, centred and aligned text, and cached text.",
+      "controls": [
+        "0      toggle everything",
+        "1-6    toggle each method",
+        "R      rebuild the glyph atlas"
+      ],
+      "learn": [
+        "Scene script: TextRenderingTest.lua",
+        "render:getTextWriter() -> writeTextAtlas / writeTextTTF*",
+        "Atlas text is the cheapest for HUDs that change every frame"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/InputAndUI/MouseCursorTest.json",
+      "title": "Mouse cursor",
+      "category": "Input and UI",
+      "summary": "The mouse cursor changes with the object under it: select, attack, acquire and move cursors over four different targets and the floor. The same pattern drives the cursor in the RTS: ask the engine what is under the mouse (asynchronous picking) and swap the cursor image only when the state changes.",
+      "controls": [
+        "Mouse      hover the objects and the floor",
+        "1 - 4      force one cursor",
+        "0          automatic again",
+        "H          show / hide the panel"
+      ],
+      "learn": [
+        "Components:Window():scheduleHoverPick / getHoverPickID",
+        "Components:Render():getObjectByPickingID",
+        "Components:Window():LoadCursorImage (24x24 PNG)",
+        "The same pattern in the RTS: assets/scripts/RTS/Systems/CursorManager.lua"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/InputAndUI/MultiSelectionTest.json",
+      "title": "Multi-selection",
+      "category": "Input and UI",
+      "summary": "Twelve selectable objects on a floor. Selected objects get an orange outline, a pulsing ring on the floor and an order number; a group also shows its centre, lines to every member and a ring around them all. Click one to select it, Ctrl+click to add or remove objects from the group, or Ctrl+drag a rectangle to select several at once. The panel lists the group and its positions, and the keyboard moves the whole group together.",
+      "controls": [
+        "Click           select one object",
+        "Ctrl + click    add / remove an object from the group",
+        "Ctrl + drag     rectangle selection",
+        "W A S D Q Z     move the whole group (Q up, Z down)",
+        "X               remove the last object from the group",
+        "R               clear the selection",
+        "P               print a report of the group to the console"
+      ],
+      "learn": [
+        "Components:Render():getSelectedObjects / hasMultipleSelected",
+        "How selected objects are drawn: object:setHighlight (engine outline), drawGroundCircle rings, camera:worldToScreenXYZ labels, DrawLine to the group centre",
+        "addToSelection / removeFromSelection / clearSelection / setSelectedObject",
+        "object:addToPosition to move every object in the group"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/AudioAndVideo/Sound3DTest.json",
+      "title": "Positional sound (Sound3D)",
+      "category": "Audio and video",
+      "summary": "Four looping sound sources placed in the scene, three fixed and one orbiting the centre. The camera is the listener: volume falls off in a straight line between each source's inner radius (full volume) and outer radius (silence), and with panning on the sound moves to the left or right speaker depending on where the source is. The panel shows distance, volume and pan of every source; the rings on the floor show the two radii.",
+      "controls": [
+        "Arrows      move the camera (the listener)",
+        "Shift + Up/Down   go up / down",
+        "Mouse wheel   move forward / back",
+        "Middle button + drag   look around",
+        "1 - 4       mute / unmute each source",
+        "M           mute everything",
+        "P           panning left/right on / off",
+        "R           show / hide the radius rings",
+        "H           show / hide the panel"
+      ],
+      "learn": [
+        "ObjectFactory.Sound3D(file, position, innerRadius, outerRadius, volume)",
+        "src/3D/Sound3D.cpp: linear distance volume and left/right panning",
+        "Components:Sound():setAmbienceVolume / setAmbiencePanning",
+        "Sound3D objects can also be saved in a scene and edited in the inspector (debugDraw shows the rings)"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/AudioAndVideo/VideoPlayerTest.json",
+      "title": "Video player",
+      "category": "Audio and video",
+      "summary": "Plays an MP4 from a script in two formats: full screen, or in a plane (a framed window that covers only part of the screen, with the scene visible around it and a progress bar). You can switch between them while it plays. When the video ends the torus jumps to one side (and back on the next play); skipping it does not count as finishing it. This is the pattern the RTS uses for its intro video.",
+      "controls": [
+        "V          play full screen (restarts it if it is playing)",
+        "B          play in the plane / window (restarts it if it is playing)",
+        "F          switch between full screen and plane while it plays",
+        "Any other key or click   skip the video",
+        "H          show / hide the panel"
+      ],
+      "learn": [
+        "ObjectFactory.Image2D + image:loadVideo(path)",
+        "image:setSize(w, h): size as a fraction of the screen (1.0 = full screen); image:setScreenPosition(x, y) in pixels",
+        "The plane keeps the 16:9 shape of the video by using the real window aspect ratio",
+        "image:isVideoFinished / stopVideo / setRemoved",
+        "ObjectFactory.PlayVideoCutscene(path, fadeOut) for a blocking cutscene",
+        "The same pattern in the RTS intro: assets/scripts/RTS/Systems/MenuManager.lua"
+      ]
+    },
+    {
+      "scene": "../assets/scenes/Examples/Performance/PerformanceTest.json",
+      "title": "Performance test",
+      "category": "Performance",
+      "summary": "Spawns objects in batches to stress the engine: static meshes, physics bodies, particle emitters, point lights or animated meshes, with an FPS readout.",
+      "controls": [
+        "1-5      choose what to spawn",
+        "Space    toggle continuous spawning",
+        "Delete   spawn one batch now",
+        "R        remove spawned objects",
+        "S        shadows on new objects",
+        "H        show/hide its HUD",
+        "Up/Down  batch size +-5     [ / ]  +-10",
+        "Left/Right  spawn rate      M / N  object cap"
+      ],
+      "learn": [
+        "Scene script: PerformanceTest.lua",
+        "ObjectFactory.* to create objects from Lua",
+        "Profiler window in the editor to see where the frame goes"
+      ]
+    }
+  ]
+}

@@ -12,7 +12,7 @@
 #include "../../../include/Components/Components.h"
 #include "../../../include/Render/Profiler.h"
 #include "../../../include/Brakeza.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
 #include "../../../include/Render/Drawable.h"
 

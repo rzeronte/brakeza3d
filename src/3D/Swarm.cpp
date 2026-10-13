@@ -1,8 +1,9 @@
 
+#include <algorithm>
 #include "../../include/3D/Swarm.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/SwarmGUI.h"
+#include "../../include/GUI/Inspectors/SwarmGUI.h"
 #include "../../include/Misc/Logging.h"
 
 SwarmObject::SwarmObject()
@@ -40,34 +41,49 @@ void Swarm::onUpdate()
     }
 
     updateBounds();
+
+    // Las mallas de la escena cargan de forma asíncrona y ThreadJobResolveSwarms solo corre una vez:
+    // si algún boid o depredador terminaba de cargar después, se quedaba fuera para siempre (y sin
+    // depredador los boids no huyen). Se reintenta hasta tenerlos todos.
+    if (hasPendingMembers()) {
+        resolveRetryTimer += Brakeza::get()->getDeltaTime();
+        if (resolveRetryTimer >= 0.25f) {
+            resolveRetryTimer = 0.0f;
+            const size_t before = pendingBoidNames.size() + pendingPredatorNames.size();
+            resolvePendingMembers(true);
+            const size_t after = pendingBoidNames.size() + pendingPredatorNames.size();
+            if (after == 0) {
+                LOG_MESSAGE("[Swarm] '%s': all members resolved (%d boids, %d predators)",
+                    getName().c_str(), (int) objects.size(), (int) predators.size());
+            } else if (after != before) {
+                LOG_MESSAGE("[Swarm] '%s': %d member(s) still pending", getName().c_str(), (int) after);
+            }
+        }
+    }
+
     updateBoids();
 }
 
-void Swarm::resolvePendingMembers()
+void Swarm::resolvePendingMembers(bool quiet)
 {
-    auto sceneObjects = Brakeza::get()->copySceneObjects();
-
     auto resolve = [&](std::vector<std::string>& pending, bool isPredator) {
         std::vector<std::string> unresolved;
         for (const auto& name : pending) {
-            bool found = false;
-            for (auto* obj : sceneObjects) {
-                if (obj->getName() == name) {
-                    if (isPredator) {
-                        auto* sw = new SwarmObject(obj);
-                        sw->velocity = Vertex3D::randomVertex().getNormalize();
-                        addPredator(sw);
-                    } else {
-                        createBoid(obj);
-                    }
-                    found = true;
-                    break;
+            Object3D *obj = Brakeza::get()->getObjectByName(name);
+            if (obj != nullptr && obj != this && !obj->isRemoved()) {
+                if (isPredator) {
+                    auto* sw = new SwarmObject(obj);
+                    sw->velocity = Vertex3D::randomVertex().getNormalize();
+                    addPredator(sw);
+                } else {
+                    createBoid(obj);
                 }
+            } else {
+                unresolved.push_back(name);
             }
-            if (!found) unresolved.push_back(name);
         }
         pending = unresolved;
-        if (!unresolved.empty()) {
+        if (!quiet && !unresolved.empty()) {
             LOG_MESSAGE("[Swarm] resolvePendingMembers: %d %s not found yet",
                 (int)unresolved.size(), isPredator ? "predators" : "boids");
         }
@@ -131,6 +147,21 @@ void Swarm::cohesion(SwarmObject* swarmObject, std::vector<SwarmObject*> &object
 
 void Swarm::updateBoids()
 {
+    // Miembros cuyo objeto se ha eliminado (borrado desde el editor o un script): fuera de la lista
+    // antes de tocarlos, o se desreferencia un objeto muerto
+    auto dropRemoved = [](std::vector<SwarmObject*> &list) {
+        for (auto it = list.begin(); it != list.end();) {
+            if ((*it)->object == nullptr || (*it)->object->isRemoved()) {
+                delete *it;
+                it = list.erase(it);
+            } else {
+                ++it;
+            }
+        }
+    };
+    dropRemoved(objects);
+    dropRemoved(predators);
+
     for (auto o: objects) {
         separation(o, objects, separationWeight * globalBiasSeparation);
         alignment(o, objects, alignmentWeight * globalBiasAlignment);
@@ -139,12 +170,18 @@ void Swarm::updateBoids()
         attractTo(o, getPosition(), true, centerAttractionWeight * globalBiasSeparation);
 
         checkBoundsAndAdjustVelocity(o);
-        avoidPredators(o);
+        const bool fleeing = avoidPredators(o);
 
-        limitVelocity(o);
+        // Huyendo, el boid puede ir más rápido que su paso normal (pánico); si no, la huida
+        // quedaba recortada al mismo tope que el paseo y el depredador alcanzaba a la bandada
+        limitVelocity(o, fleeing ? std::max(1.0f, predatorPanicSpeedFactor) : 1.0f);
 
         updatePosition(o, velocityBoidsFactor);
-        o->object->LookAt(this);
+
+        // Mirar hacia donde se mueve (antes miraba al centro del enjambre)
+        if (o->velocity.getModule() > 0.0001f) {
+            o->object->LookAt(o->object->getPosition() + o->velocity);
+        }
     }
 }
 
@@ -168,12 +205,13 @@ SwarmObject* Swarm::createBoid(Object3D *mesh)
     return o;
 }
 
-void Swarm::limitVelocity(SwarmObject* object) const
+void Swarm::limitVelocity(SwarmObject* object, float speedFactor) const
 {
     float currentSpeed = object->velocity.getModule();
+    const float limit = maxSpeed * speedFactor;
 
-    if (currentSpeed > maxSpeed) {
-        object->velocity = object->velocity.getNormalize().getScaled(maxSpeed);
+    if (currentSpeed > limit) {
+        object->velocity = object->velocity.getNormalize().getScaled(limit);
     }
 
     //object->velocity.z = 0;
@@ -201,7 +239,8 @@ void Swarm::attractTo(SwarmObject* swarmObject, Vertex3D center, bool ignoreThre
     }
 }
 
-void Swarm::avoidPredators(SwarmObject* swarmObject) {
+bool Swarm::avoidPredators(SwarmObject* swarmObject) {
+    bool fleeing = false;
     for(auto& predator : predators) {
         Vertex3D directionFromPredator = swarmObject->object->getPosition() -  predator->object->getPosition();
 
@@ -212,8 +251,10 @@ void Swarm::avoidPredators(SwarmObject* swarmObject) {
             Vertex3D predatorForce = directionFromPredator.getNormalize().getScaled(forceMagnitude);
 
             swarmObject->velocity = swarmObject->velocity + predatorForce;
+            fleeing = true;
         }
     }
+    return fleeing;
 }
 
 void Swarm::updatePosition(SwarmObject *o, float weight)

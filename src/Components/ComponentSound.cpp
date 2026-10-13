@@ -341,7 +341,7 @@ void ComponentSound::setChannelPosition(int channel, int angle, int distance)
     Voice &v = voices[channel];
     if (!v.soundInitialized) return;
 
-    // El volumen por distancia ya lo reduce Lua via setChannelVolume (ver miniaudio-migration.md)
+    // El volumen por distancia ya lo reduce Lua via setChannelVolume (miniaudio ya integrado)
     // -- aqui solo se traduce el angulo (convencion SDL_mixer: 0=frente, 90=derecha,
     // 180=detras, 270=izquierda) a pan estereo -1..1.
     (void)distance;

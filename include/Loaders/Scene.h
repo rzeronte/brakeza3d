@@ -48,9 +48,14 @@ public:
     // ── Carpetas ──
     [[nodiscard]] const std::vector<SceneFolder>& getFolders() const { return folders; }
     [[nodiscard]] const SceneFolder* getFolder(int id) const;
+    // ¿Ya hay en `parent` una carpeta con ese nombre (sin distinguir mayúsculas)? `exceptId` = ignorar esa (renombrar/mover)
+    [[nodiscard]] bool folderNameExists(const std::string &folderName, int parent, int exceptId = 0) const;
+    // Devuelve el id nuevo, o 0 si ya existe una carpeta con ese nombre en el mismo nivel
     int  createFolder(const std::string &folderName, int parent = 0);
-    void renameFolder(int id, const std::string &folderName);
-    // false si el destino es ella misma o una de sus subcarpetas (no se permiten ciclos)
+    // false si el nombre está vacío, no existe la carpeta o el nombre ya está en uso en su nivel
+    bool renameFolder(int id, const std::string &folderName);
+    // false si el destino es ella misma o una de sus subcarpetas (no se permiten ciclos) o si
+    // en el destino ya hay una carpeta con su mismo nombre
     bool moveFolder(int id, int newParent);
     // Sus subcarpetas y objetos pasan a la carpeta padre: borrar una carpeta nunca borra objetos
     void deleteFolder(int id);

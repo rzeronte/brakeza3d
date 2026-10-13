@@ -339,6 +339,8 @@ inline void LUAIntegration(sol::state &lua)
         "setMusicVolume", &ComponentSound::setMusicVolume,
         "setSoundsVolume", &ComponentSound::setSoundsVolume,
         "setAmbienceVolume", [](ComponentSound*, int percent) { Sound3D::ambienceVolumeScale = percent / 100.0f; },
+        "setAmbiencePanning", [](ComponentSound*, bool enabled) { Sound3D::panningEnabled = enabled; },
+        "isAmbiencePanning", [](ComponentSound*) { return Sound3D::panningEnabled; },
         "PlaySound", &ComponentSound::PlaySound,
         "PlayMusic", &ComponentSound::PlayMusic,
         "StopMusic", &ComponentSound::StopMusic,
@@ -610,6 +612,8 @@ inline void LUAIntegration(sol::state &lua)
     sol::base_classes, sol::bases<Component>(),
         "setKeyboardEnabled", &ComponentInput::setKeyboardEnabled,
         "setMouseEnabled", &ComponentInput::setMouseEnabled,
+        "setRelativeMouseMode", &ComponentInput::setRelativeMouseMode,
+        "isRelativeMouseMode", &ComponentInput::isRelativeMouseMode,
         "setPadEnabled", &ComponentInput::setPadEnabled,
         "isKeyboardEnabled", &ComponentInput::isKeyboardEnabled,
         "isMouseEnabled", &ComponentInput::isMouseEnabled,
@@ -681,7 +685,15 @@ inline void LUAIntegration(sol::state &lua)
         "getDeltaTimeMicro",  &Brakeza::getScriptDeltaTimeMicro,
         "getDeltaTimeMS",  &Brakeza::getScriptDeltaTimeMS,
         "getExecutionTime", &Brakeza::getExecutionTime,
-        "uniqueObjectLabel", &Brakeza::UniqueObjectLabel,
+        // Función estática: vale Brakeza.uniqueObjectLabel("x") y también Brakeza:uniqueObjectLabel("x"). Con los dos
+        // puntos Lua pasa 'Brakeza' como primer argumento y el const char* quedaba NULL (strlen(NULL), crash)
+        "uniqueObjectLabel", [](sol::variadic_args va) -> std::string {
+            for (std::size_t i = 0; i < va.size(); ++i) {
+                sol::object o = va.get<sol::object>(i);
+                if (o.is<std::string>()) return Brakeza::UniqueObjectLabel(o.as<std::string>().c_str());
+            }
+            return Brakeza::UniqueObjectLabel("Object");
+        },
         "Shutdown", &Brakeza::Shutdown,
         "requestExit", [](Brakeza& b, sol::object codeArg) {
             int code = (codeArg.valid() && codeArg.get_type() == sol::type::number) ? codeArg.as<int>() : 0;
@@ -740,6 +752,11 @@ inline void LUAIntegration(sol::state &lua)
         },
         "getProjectileByName", [](Brakeza* b, const std::string& name) -> Projectile* {
             return dynamic_cast<Projectile*>(b->getObjectByName(name));
+        },
+        // Emisor de partículas por nombre (nil si no existe o no es un ParticleEmitter): permite
+        // setStopAdd/setContext sobre emisores cargados desde una escena
+        "getParticleEmitterByName", [](Brakeza* b, const std::string& name) -> ParticleEmitter* {
+            return dynamic_cast<ParticleEmitter*>(b->getObjectByName(name));
         },
         "loadLightsFromFBX", [](Brakeza* b, const std::string& path,
                                    float posX, float posY, float posZ,
@@ -938,7 +955,9 @@ inline void LUAIntegration(sol::state &lua)
         "UpdateBillboardSize", &Image3DAnimation::UpdateBillboardSize,
         "setTowardsCamera", &Image3DAnimation::setTowardsCamera,
         "setSize", &Image3DAnimation::setSize,
-        "setRenderFB", &Image3DAnimation::setRenderFB
+        "setRenderFB", &Image3DAnimation::setRenderFB,
+        // true: el objeto se elimina solo al terminar UNA pasada de la animación (WeaponFX, sprites de un solo uso)
+        "setAutoRemoveAfterAnimation", &Image3DAnimation::setAutoRemoveAfterAnimation
     );
 
     lua.new_usertype<Image3DAnimation360>("BillboardAnimation8Directions",
@@ -1106,6 +1125,21 @@ inline void LUAIntegration(sol::state &lua)
         "ROTATION_SPEED_MIN", &ParticlesContext::ROTATION_SPEED_MIN,
         "ROTATION_SPEED_MAX", &ParticlesContext::ROTATION_SPEED_MAX,
         "ROTATION_RANDOM_DIR", &ParticlesContext::ROTATION_RANDOM_DIR,
+        "SWIRL_SPEED", &ParticlesContext::SWIRL_SPEED,
+        "SWIRL_PULL", &ParticlesContext::SWIRL_PULL,
+        "SPIRAL_RADIAL_SPEED", &ParticlesContext::SPIRAL_RADIAL_SPEED,
+        "SPIRAL_ARMS", &ParticlesContext::SPIRAL_ARMS,
+        "SPIRAL_SPIN", &ParticlesContext::SPIRAL_SPIN,
+        "SHAPE", &ParticlesContext::SHAPE,
+        "SHAPE_RADIUS", &ParticlesContext::SHAPE_RADIUS,
+        "SHAPE_HEIGHT", &ParticlesContext::SHAPE_HEIGHT,
+        "SHAPE_TUBE_RADIUS", &ParticlesContext::SHAPE_TUBE_RADIUS,
+        "SHAPE_SIZE_X", &ParticlesContext::SHAPE_SIZE_X,
+        "SHAPE_SIZE_Y", &ParticlesContext::SHAPE_SIZE_Y,
+        "SHAPE_SIZE_Z", &ParticlesContext::SHAPE_SIZE_Z,
+        "SHAPE_SURFACE_ONLY", &ParticlesContext::SHAPE_SURFACE_ONLY,
+        "SHAPE_DIRECTION", &ParticlesContext::SHAPE_DIRECTION,
+        "SHAPE_MESH", &ParticlesContext::SHAPE_MESH,
         "defaultParticlesContext", &ParticlesContext::defaultParticlesContext
     );
 
@@ -1143,6 +1177,21 @@ inline void LUAIntegration(sol::state &lua)
         },
         "setFollowTarget", &ParticleEmitter::setFollowTarget,
         "getFollowTarget", &ParticleEmitter::getFollowTarget
+    );
+
+    lua.new_enum("EmitterShape",
+        "POINT", EmitterShape::POINT,
+        "BOX", EmitterShape::BOX,
+        "SPHERE", EmitterShape::SPHERE,
+        "CONE", EmitterShape::CONE,
+        "CYLINDER", EmitterShape::CYLINDER,
+        "TORUS", EmitterShape::TORUS,
+        "MESH", EmitterShape::MESH
+    );
+
+    lua.new_enum("EmitterShapeDirection",
+        "AXIS", EmitterShapeDirection::AXIS,
+        "OUTWARD", EmitterShapeDirection::OUTWARD
     );
 
     lua.new_enum("CollisionShape",

@@ -1,0 +1,17 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/10_Lighting.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/10_Lighting.json",
+	"name":	"10_Lighting",
+	"types":	[
+		{
+			"name":	"ambientIntensity",
+			"type":	"float",
+			"value":	0.2
+		},
+		{
+			"name":	"sunRotationSpeed",
+			"type":	"float",
+			"value":	0.5
+		}
+	]
+}

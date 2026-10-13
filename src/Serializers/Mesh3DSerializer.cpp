@@ -9,7 +9,7 @@
 #include "../../include/OpenGL/Nodes/ShaderNodesMesh3D.h"
 #include "../../include/GUI/ShaderNodeEditorManager.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/ShadersGUI.h"
+#include "../../include/GUI/Windows/ShadersGUI.h"
 #include "../../include/Threads/ThreadJobLoadMesh3D.h"
 #include "../../include/Render/JSONSerializerRegistry.h"
 #include "../../include/Serializers/Object3DSerializer.h"

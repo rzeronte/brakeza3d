@@ -1,0 +1,17 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/15_Audio.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/15_Audio.json",
+	"name":	"15_Audio",
+	"types":	[
+		{
+			"name":	"musicVolume",
+			"type":	"int",
+			"value":	100
+		},
+		{
+			"name":	"soundsVolume",
+			"type":	"int",
+			"value":	100
+		}
+	]
+}

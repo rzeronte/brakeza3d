@@ -6,7 +6,7 @@
 
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
 
 GuiAddonConsole::GuiAddonConsole()
 {

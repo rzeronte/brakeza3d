@@ -289,11 +289,12 @@ from a specific project. You can instruct Brakeza3D to do this via the command l
 
 Windows:
 ```bash
-> brakeza3d.exe -p MyProject.json 
-> brakeza3d.exe --project MyProject.json
+> brakeza3d.exe -p TutorialsProject.json
+> brakeza3d.exe --project TutorialsProject.json
 ```
 
-This will run the project automatically without the UI.
+This will run the project automatically without the UI. `TutorialsProject.json` is the project that ships with the engine:
+it opens the demo browser with every tutorial lesson and demo (see `assets/scripts/README.md`). Use your own project file the same way.
 
 :::note
 The project file path is relative to the base projects directory: **/assets/projects/**
@@ -310,36 +311,41 @@ project's behavior from the command line — useful for automated test scenarios
 rendering, or any other unattended run.
 
 ```bash
-> brakeza3d.exe -p MyProject.json --set level=level_03 --set skipIntro=true
+> brakeza3d.exe -p TutorialsProject.json --set demoBrowserTour=true --set demoTourDwell=3
 ```
 
 ```lua
 function onStart()
-    local level     = Brakeza:getCliParam("level")       -- "level_03" (string)
-    local skipIntro = Brakeza:getCliParam("skipIntro")    -- true (boolean)
+    local tour  = Brakeza:getCliParam("demoBrowserTour")   -- true (boolean)
+    local dwell = Brakeza:getCliParam("demoTourDwell")     -- 3 (number)
 
-    if level then
-        print("Booting into level: " .. level)
+    if tour then
+        print("Touring the demos, " .. dwell .. " s each")
     end
 end
 ```
 
+(`demoBrowserTour` and `demoTourDwell` are the two parameters `TutorialsProject.json` declares: the demo browser tour is a test that
+visits every demo and takes a screenshot of each.)
+
 ### Declaring accepted parameters (`cli_params`)
 
-A project can optionally declare, in its own project JSON (`/assets/projects/MyProject.json`), which
+A project can optionally declare, in its own project JSON (for instance `/assets/projects/TutorialsProject.json`), which
 parameters it expects, along with their type and default value. This has two benefits: `getCliParam`
 returns a properly typed value (`string`, `bool`, or `number`) instead of a raw string, and Brakeza3D
 logs a warning for any `--set` that doesn't match a declared name — handy for catching typos.
 
 ```json
 {
-  "name": "MyProject",
+  "name": "ProjectDemo",
   "cli_params": [
-    { "name": "level",      "type": "string", "default": "level_01" },
-    { "name": "skipIntro",  "type": "bool",   "default": false }
+    { "name": "demoBrowserTour", "type": "bool",   "default": false },
+    { "name": "demoTourDwell",   "type": "number", "default": 4.0 }
   ]
 }
 ```
+
+The accepted types are `string` (the default when `type` is missing), `bool` and `number`; any other value is treated as `string`.
 
 If a parameter isn't passed on the command line, `getCliParam` returns the declared `default`. If a
 project doesn't declare `cli_params` at all, `getCliParam` simply returns `nil` for any key.
@@ -357,7 +363,7 @@ Combine the parameters above with an exit watchdog to run Brakeza3D fully unatte
 from a CI job or a script that launches the engine, waits for it to finish, and inspects the result:
 
 ```bash
-> brakeza3d.exe -p MyProject.json --set level=level_03 --exit-after 300
+> brakeza3d.exe -p TutorialsProject.json --set demoBrowserTour=true --exit-after 300
 ```
 
 `--exit-after <seconds>` force-quits the process after the given number of seconds regardless of what

@@ -3,12 +3,12 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Render/Profiler.h"
 #include "../../include/GUI/GUIManager.h"
-#include "../../include/GUI/Objects/Object3DGUI.h"
-#include "../../include/GUI/Objects/ShadersGUI.h"
-#include "../../include/GUI/Objects/ScriptLuaGUI.h"
-#include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
-#include "../../include/GUI/Objects/IconsGUI.h"
+#include "../../include/GUI/Inspectors/Object3DGUI.h"
+#include "../../include/GUI/Windows/ShadersGUI.h"
+#include "../../include/GUI/Windows/ScriptLuaGUI.h"
+#include "../../include/GUI/Inspectors/Mesh3DAnimationGUI.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
+#include "../../include/GUI/Widgets/IconsGUI.h"
 #include "../../include/GUI/AddOns/GUIConsole.h"
 #include "../../include/GUI/AddOns/GUIAddonObject3DProperties.h"
 #include "../../include/GUI/AddOns/GUIAddonObjects3D.h"
@@ -17,10 +17,11 @@
 #include "../../include/GUI/AddOns/GUIAddonToolbar.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/GUI/AddOns/GUIAddonDocumentation.h"
-#include "../../include/GUI/Objects/StatusBarGUI.h"
-#include "../../include/GUI/Objects/ThreadGUI.h"
-#include "../../include/GUI/Objects/UIManagerGUI.h"
+#include "../../include/GUI/Windows/StatusBarGUI.h"
+#include "../../include/GUI/Windows/ThreadGUI.h"
+#include "../../include/GUI/Windows/UIManagerGUI.h"
 #include "../../include/Loaders/SceneChecker.h"
+#include "../../include/GUI/Widgets/GUIHelpers.h"
 
 static bool            g_soloActive = false;
 static GUIType::Window g_soloWindow = GUIType::Window::SCENE_OBJECTS;
@@ -293,8 +294,7 @@ void GUIManager::DrawWinEditableOpenResources()
     if (!openFiles.empty())
     {
         if (ImGui::BeginTable("TabsHeader", 2, ImGuiTableFlags_None)) {
-            ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
-            ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+            GUIHelpers::SetupLeftRightColumns();
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -343,9 +343,7 @@ void GUIManager::DrawRegisteredWindows()
 
         if (!window.isDockable) {
             flags |= ImGuiWindowFlags_NoDocking;
-            ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImVec2 center = viewport->GetCenter();
-            ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+            GUIHelpers::CenterNextWindow();
         }
 
         ImGui::SetNextWindowBgAlpha(0.99f);
@@ -353,7 +351,13 @@ void GUIManager::DrawRegisteredWindows()
 
         bool isSolo = g_soloActive && g_soloWindow == window.window;
         bool* pOpen = isSolo ? nullptr : &window.isOpen;
-        if (ImGui::Begin(window.label.c_str(), pOpen, flags)) {
+        // Título visible con el atajo ("Project Setup (F11)"). El "###" hace que el ID de la ventana de ImGui se calcule solo
+        // con lo que va detrás: no cambia aunque cambie el texto visible, y los layouts guardados (config/ImGui*.ini)
+        // siguen encontrando la ventana. Las ventanas sin atajo conservan su título de siempre.
+        const std::string title = window.shortCut.empty()
+            ? window.label
+            : window.label + " (" + window.shortCut + ")###" + window.label;
+        if (ImGui::Begin(title.c_str(), pOpen, flags)) {
             if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
                 focusedWindow = window.window;
             DrawWindowMenuBar(window);

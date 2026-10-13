@@ -7,7 +7,7 @@
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include <set>
 

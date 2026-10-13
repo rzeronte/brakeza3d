@@ -3,49 +3,138 @@
 	"description":	"A project demo with some scenes",
 	"gravity":	{
 		"x":	0,
-		"y":	-9.8000001907348633,
+		"y":	-9.800000190734863,
 		"z":	0
 	},
-	"scripts":	[{
+	"scripts":	[
+		{
 			"name":	"DemoBrowser",
-			"codeFile":	"../assets/scripts/Tutorials/Global/DemoBrowser.lua",
-			"typesFile":	"../assets/scripts/Tutorials/Global/DemoBrowser.json"
-		}, {
+			"codeFile":	"../assets/scripts/Browser/DemoBrowser.lua",
+			"typesFile":	"../assets/scripts/Browser/DemoBrowser.json"
+		},
+		{
 			"name":	"DemoBrowserTour",
-			"codeFile":	"../assets/scripts/Tutorials/Tests/DemoBrowserTour.lua",
-			"typesFile":	"../assets/scripts/Tutorials/Tests/DemoBrowserTour.json",
+			"codeFile":	"../assets/scripts/Browser/DemoBrowserTour.lua",
+			"typesFile":	"../assets/scripts/Browser/DemoBrowserTour.json",
 			"onlyWithCliParam":	"demoBrowserTour"
-		}],
-	"scenes":	[{
-			"path":	"../assets/scenes/ShowRoomTest.json"
-		}, {
-			"path":	"../assets/scenes/LightsTest.json"
-		}, {
-			"path":	"../assets/scenes/ParticleTest.json"
-		}, {
-			"path":	"../assets/scenes/PerformanceTest.json"
-		}, {
-			"path":	"../assets/scenes/RainCubesTest.json"
-		}, {
-			"path":	"../assets/scenes/SwarmBoidsTest.json"
-		}, {
-			"path":	"../assets/scenes/TextRenderingTest.json"
-		}, {
-			"path":	"../assets/scenes/PostProcessingTest.json"
-		}, {
-			"path":	"../assets/scenes/ProjectileTest.json"
-		}, {
-			"path":	"../assets/scenes/UITest.json"
-		}],
-	"cli_params":	[{
+		}
+	],
+	"scenes":	[
+		{
+			"path":	"../assets/scenes/Examples/Basics/01_HelloWorld.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/02_Input.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/03_Movement.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/04_Rotation.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/05_ObjectManagement.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/06_Parenting.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/07_LookAt.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/08_CameraFollow.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/09_ObjectVariables.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/10_Lighting.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/11_Physics.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/12_Collisions.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/13_Animation.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/14_Particles.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/15_Audio.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Basics/16_CustomShaderUpdate.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Graphics/ShowRoomTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Graphics/LightsTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Graphics/PostProcessingTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/ParticlesAndCrowds/ParticleTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/ParticlesAndCrowds/SwarmBoidsTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Physics/RainCubesTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Physics/ProjectileTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Characters/DemoFirstPerson.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Characters/DemoThirdPerson.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Characters/DemoPlatformsScene.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Characters/TwinStickShooter.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/InputAndUI/UITest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/InputAndUI/TextRenderingTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/InputAndUI/MouseCursorTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/InputAndUI/MultiSelectionTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/AudioAndVideo/Sound3DTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/AudioAndVideo/VideoPlayerTest.json"
+		},
+		{
+			"path":	"../assets/scenes/Examples/Performance/PerformanceTest.json"
+		}
+	],
+	"cli_params":	[
+		{
 			"name":	"demoBrowserTour",
 			"type":	"bool",
 			"default":	false
-		}, {
+		},
+		{
 			"name":	"demoTourDwell",
-			"type":	"float",
+			"type":	"number",
 			"default":	4.0
-		}],
+		}
+	],
 	"sound":	{
 		"volume_fx":	50,
 		"volume_music":	40

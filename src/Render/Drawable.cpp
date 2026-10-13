@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "imgui_internal.h"
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
 
 void Drawable::drawVertex(const Vertex3D &V, Color color)
 {

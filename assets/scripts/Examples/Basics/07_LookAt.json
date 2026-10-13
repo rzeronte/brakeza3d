@@ -1,0 +1,27 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/07_LookAt.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/07_LookAt.json",
+	"name":	"07_LookAt",
+	"types":	[
+		{
+			"name":	"targetName",
+			"type":	"string",
+			"value":	"Target"
+		},
+		{
+			"name":	"lookSpeed",
+			"type":	"float",
+			"value":	5.0
+		},
+		{
+			"name":	"smoothLookAt",
+			"type":	"int",
+			"value":	1
+		},
+		{
+			"name":	"orbitTarget",
+			"type":	"int",
+			"value":	1
+		}
+	]
+}

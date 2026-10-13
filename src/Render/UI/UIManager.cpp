@@ -2342,6 +2342,10 @@ UIElementData UIManager::solTableToElementData(sol::table t)
     if (enabledObj.valid() && enabledObj.get_type() == sol::type::boolean)
         d.enabled = enabledObj.as<bool>();
 
+    sol::object hiddenObj = t["hidden"];
+    if (hiddenObj.valid() && hiddenObj.get_type() == sol::type::boolean)
+        d.hidden = hiddenObj.as<bool>();
+
     sol::object wObj = t["w"];
     if (wObj.valid()) d.w = wObj.as<float>();
 

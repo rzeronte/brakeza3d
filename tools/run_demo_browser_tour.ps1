@@ -4,7 +4,7 @@
     on every demo.
 
 .DESCRIPTION
-    --set demoBrowserTour=true loads assets/scripts/Tutorials/Tests/DemoBrowserTour.lua, which goes
+    --set demoBrowserTour=true loads assets/scripts/Browser/DemoBrowserTour.lua, which goes
     through every demo of DemoBrowser and prints "[DemoTour] ready <NN>" when each one has settled.
     The engine's own screenshot does not include the UI, so this script captures the game window
     (PrintWindow) at each "ready": logs/demo_tour_<NN>.png and logs/demo_tour_list.png (demo list

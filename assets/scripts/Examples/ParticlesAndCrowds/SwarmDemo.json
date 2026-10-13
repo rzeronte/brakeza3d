@@ -1,0 +1,7 @@
+{
+    "codeFile":  "../assets/scripts/Examples/ParticlesAndCrowds/SwarmDemo.lua",
+    "typesFile": "../assets/scripts/Examples/ParticlesAndCrowds/SwarmDemo.json",
+    "name": "SwarmDemo",
+    "type": "Global",
+    "types": []
+}

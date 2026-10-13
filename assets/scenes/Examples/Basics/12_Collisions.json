@@ -1,0 +1,391 @@
+{
+	"screenshot":	"",
+	"ads":	{
+		"direction":	{
+			"x":	0.3,
+			"y":	-0.7,
+			"z":	-0.6
+		},
+		"diffuse":	{
+			"x":	0.8,
+			"y":	0.8,
+			"z":	0.8
+		},
+		"specular":	{
+			"x":	0.4,
+			"y":	0.4,
+			"z":	0.4
+		},
+		"ambient":	{
+			"x":	0.25,
+			"y":	0.25,
+			"z":	0.25
+		}
+	},
+	"objects":	[
+		{
+			"name":	"Ground",
+			"scale":	30,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	-14.5,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.004000000189989805,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	11.937715530395508,
+					"y":	4.3490095138549805,
+					"z":	8.685700416564941
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			}
+		},
+		{
+			"name":	"Player",
+			"scale":	1.4,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	7,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"scripts":	[
+				{
+					"codeFile":	"../assets/scripts/Examples/Basics/12_Collisions.lua",
+					"typesFile":	"../assets/scripts/Examples/Basics/12_Collisions.json",
+					"name":	"12_Collisions",
+					"type":	"Object",
+					"ticks_per_second":	0,
+					"types":	[
+						{
+							"name":	"knockbackForce",
+							"type":	"float",
+							"value":	5.0
+						}
+					]
+				}
+			],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2,
+			"collider":	{
+				"mode":	1,
+				"shape":	0,
+				"friction":	0.5,
+				"mass":	1,
+				"margin":	0.004000000189989805,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	false,
+				"simpleShapeSize":	{
+					"x":	0.6779919999999999,
+					"y":	0.6779919999999999,
+					"z":	0.6779919999999999
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			}
+		},
+		{
+			"name":	"Enemy_1",
+			"scale":	2,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	1.0,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cone.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.004000000189989805,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	11.937715530395508,
+					"y":	4.3490095138549805,
+					"z":	8.685700416564941
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			}
+		},
+		{
+			"name":	"Pickup_1",
+			"scale":	1.2,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	3.2,
+				"y":	0.8,
+				"z":	-10
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"scripts":	[],
+			"model":	"../assets/models/basic/icosphere.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.004000000189989805,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	11.937715530395508,
+					"y":	4.3490095138549805,
+					"z":	8.685700416564941
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			}
+		},
+		{
+			"name":	"Target",
+			"scale":	2,
+			"alpha":	1,
+			"enabled":	true,
+			"selectable":	true,
+			"position":	{
+				"x":	0,
+				"y":	1.0,
+				"z":	-18
+			},
+			"rotation":	{
+				"x":	0,
+				"y":	0,
+				"z":	0
+			},
+			"renderSettings":	{
+				"blend":	true,
+				"culling":	true,
+				"depthTest":	true,
+				"writeDepth":	true,
+				"shadowMap":	true,
+				"frustumCulling":	true,
+				"blend_function_src":	1,
+				"blend_function_dst":	771
+			},
+			"isCollisionsEnabled":	true,
+			"scripts":	[],
+			"model":	"../assets/models/basic/cube.fbx",
+			"enableLights":	true,
+			"renderDefaultPipeline":	true,
+			"frustumCullSubmeshes":	false,
+			"shaders":	[],
+			"type":	2,
+			"collider":	{
+				"mode":	1,
+				"shape":	2,
+				"friction":	1,
+				"mass":	0,
+				"margin":	0.004000000189989805,
+				"ccdMotionThreshold":	0,
+				"ccdSweptSphereRadius":	0,
+				"linearDamping":	0,
+				"angularDamping":	0,
+				"restitution":	0,
+				"colliderStatic":	true,
+				"simpleShapeSize":	{
+					"x":	11.937715530395508,
+					"y":	4.3490095138549805,
+					"z":	8.685700416564941
+				},
+				"kinematicCapsuleSize":	{
+					"x":	0.5,
+					"y":	1.7999999523162842
+				},
+				"angularFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				},
+				"linearFactor":	{
+					"x":	1,
+					"y":	1,
+					"z":	1
+				}
+			}
+		}
+	],
+	"shaders":	[],
+	"scripts":	[],
+	"camera":	{
+		"position":	{
+			"x":	0,
+			"y":	3,
+			"z":	10
+		},
+		"rotation":	{
+			"x":	8,
+			"y":	0,
+			"z":	0
+		}
+	}
+}

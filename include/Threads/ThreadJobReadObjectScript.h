@@ -5,7 +5,7 @@
 #include "../3D/Object3D.h"
 #include "../Misc/ScriptLUA.h"
 #include "../Misc/Tools.h"
-#include "../GUI/Objects/ScriptLuaGUI.h"
+#include "../GUI/Windows/ScriptLuaGUI.h"
 
 // Carga un script de objeto en segundo plano (worker: I/O de ficheros)
 // y lo aplica al objeto en el callback de hilo principal (antes de que corra Lua).

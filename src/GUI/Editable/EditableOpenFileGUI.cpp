@@ -6,6 +6,7 @@
 
 #include "../../../include/GUI/Editable/EditableOpenFile.h"
 #include "../../../include/Brakeza.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 
 
 void EditableOpenFileGUI::DrawCodeEditorTab(EditableOpenFile &file, int tabIndex)
@@ -39,13 +40,11 @@ void EditableOpenFileGUI::DrawCodeEditorTab(EditableOpenFile &file, int tabIndex
     if (file.getWinType() == POPUP) {
         // Obtener el tamaño del viewport
         ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImVec2 center = viewport->GetCenter();
 
         // Establecer tamaño grande (80% del viewport)
         ImVec2 windowSize = ImVec2(viewport->Size.x * 0.8f, viewport->Size.y * 0.8f);
         ImGui::SetNextWindowSize(windowSize, ImGuiCond_Appearing);
-        // Centrar la ventana
-        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        GUIHelpers::CenterNextWindow();
 
         // Crear popup modal
         if (ImGui::BeginPopupModal(uniqueTabId.c_str(), nullptr, ImGuiWindowFlags_NoCollapse)) {

@@ -7,8 +7,9 @@
 #include "imgui_internal.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/GUI/Widgets/GUIHelpers.h"
 
 
 // ========== ICON OBJECT DEFINITIONS ==========
@@ -226,8 +227,7 @@ void GUI::ImGuiSetColors()
 
 void GUI::ShowPopUp(const char* title, const char *message, const std::function<void()>& onConfirm)
 {
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    GUIHelpers::CenterNextWindow();
 
     if (ImGui::BeginPopupModal(title, nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text(message);
@@ -240,7 +240,7 @@ void GUI::ShowPopUp(const char* title, const char *message, const std::function<
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
 
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+        if (GUIHelpers::CancelButton()) {
             ImGui::CloseCurrentPopup();
         }
 

@@ -5,7 +5,7 @@
 #include <filesystem>
 #include "../../include/Loaders/SceneLoader.h"
 #include "../../include/Config.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
