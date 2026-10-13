@@ -1,0 +1,7 @@
+{
+    "codeFile":  "../assets/scripts/Examples/InputAndUI/UIWidgetsDemo.lua",
+    "typesFile": "../assets/scripts/Examples/InputAndUI/UIWidgetsDemo.json",
+    "name": "UIWidgetsDemo",
+    "type": "Global",
+    "types": []
+}

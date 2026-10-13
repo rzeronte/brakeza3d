@@ -143,7 +143,7 @@ engine resolves these names after all objects have been added to the scene.
 ## Example — SwarmBoidsTest
 ---
 
-`assets/scenes/SwarmBoidsTest.json` ships with the engine and demonstrates a fully configured swarm:
+`assets/scenes/Examples/ParticlesAndCrowds/SwarmBoidsTest.json` ships with the engine and demonstrates a fully configured swarm:
 
 - **30 icosphere boids** scattered around the origin.
 - **1 red cube predator** at (6, 5, 0) that the boids flee from.

@@ -211,7 +211,11 @@ public:
 
     // MOUSE
     float MOUSE_SENSITIVITY = 0.075;
-    bool MOUSE_LOOK = true;
+    // Pan (Shift + botón central): 1 = la escena sigue al cursor píxel a píxel (como Blender), a la
+    // distancia del objeto seleccionado o, sin selección, del punto de enfoque de la cámara
+    float MOUSE_PAN_SENSITIVITY = 1.0f;
+    // Rueda del ratón: acercarse/alejarse hacia donde apunta el cursor en vez de hacia delante
+    bool ZOOM_TO_CURSOR = false;
     bool MOUSE_CLICK_SELECT_OBJECT3D = true;
 
     // COLLISION SYSTEM

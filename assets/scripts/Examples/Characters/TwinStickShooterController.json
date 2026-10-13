@@ -1,0 +1,83 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Characters/TwinStickShooterController.lua",
+	"typesFile":	"../assets/scripts/Examples/Characters/TwinStickShooterController.json",
+	"name":	"TwinStickShooterController",
+	"type":	"Object",
+	"types":	[
+		{
+			"name":	"moveSpeed",
+			"type":	"float",
+			"value":	8.0
+		},
+		{
+			"name":	"dashSpeed",
+			"type":	"float",
+			"value":	25.0
+		},
+		{
+			"name":	"dashDuration",
+			"type":	"float",
+			"value":	0.15
+		},
+		{
+			"name":	"dashCooldown",
+			"type":	"float",
+			"value":	0.8
+		},
+		{
+			"name":	"fireRate",
+			"type":	"float",
+			"value":	0.12
+		},
+		{
+			"name":	"bulletSpeed",
+			"type":	"float",
+			"value":	30.0
+		},
+		{
+			"name":	"bulletLifetime",
+			"type":	"float",
+			"value":	1.5
+		},
+		{
+			"name":	"maxAmmo",
+			"type":	"int",
+			"value":	30
+		},
+		{
+			"name":	"reloadTime",
+			"type":	"float",
+			"value":	1.5
+		},
+		{
+			"name":	"aimLineLength",
+			"type":	"float",
+			"value":	8.0
+		},
+		{
+			"name":	"cameraHeight",
+			"type":	"float",
+			"value":	14.0
+		},
+		{
+			"name":	"cameraDistance",
+			"type":	"float",
+			"value":	6.0
+		},
+		{
+			"name":	"stickDeadzone",
+			"type":	"float",
+			"value":	0.25
+		},
+		{
+			"name":	"dummyCount",
+			"type":	"int",
+			"value":	8
+		},
+		{
+			"name":	"dummyHealth",
+			"type":	"int",
+			"value":	3
+		}
+	]
+}

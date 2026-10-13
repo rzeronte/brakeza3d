@@ -77,4 +77,4 @@ Features:
 ## Scene Object Management
 All scene objects live in a flat list managed by `SceneLoader`. The object hierarchy (parent-child) is maintained via `Object3D::parent` pointer. During serialization, the full hierarchy is preserved in JSON.
 
-**How to apply:** When adding new entity types, subclass `Object3D`, add a corresponding `Serializer`, register in `JSONSerializerRegistry`, add GUI inspector in `/src/GUI/Objects/`, add `ThreadJob` for async loading.
+**How to apply:** When adding new entity types, subclass `Object3D`, add a corresponding `Serializer`, register in `JSONSerializerRegistry`, add GUI inspector in `/src/GUI/Inspectors/`, add `ThreadJob` for async loading.

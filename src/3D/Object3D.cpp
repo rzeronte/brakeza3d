@@ -8,7 +8,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/GUI/Objects/Object3DGUI.h"
+#include "../../include/GUI/Inspectors/Object3DGUI.h"
 #include "../../include/Render/Profiler.h"
 
 Object3D::Object3D()

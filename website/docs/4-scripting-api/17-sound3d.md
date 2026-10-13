@@ -209,7 +209,7 @@ Brakeza:addObject3D(bgm, "bgm")
 ## Test scene
 ---
 
-`assets/scenes/Sound3DTest.json` ships with the engine and demonstrates three `Sound3D` objects
+`assets/scenes/Examples/AudioAndVideo/Sound3DTest.json` ships with the engine and demonstrates three `Sound3D` objects
 placed at different positions:
 
 - **Radio Beep (left)** — small inner radius (5), medium outer radius (22).

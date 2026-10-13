@@ -1,0 +1,33 @@
+{
+	"codeFile":	"../assets/scripts/Examples/ParticlesAndCrowds/ParticleCarousel.lua",
+	"typesFile":	"../assets/scripts/Examples/ParticlesAndCrowds/ParticleCarousel.json",
+	"name":	"ParticleCarousel",
+	"type":	"Global",
+	"types":	[
+		{
+			"name":	"radius",
+			"type":	"float",
+			"value":	33.0
+		},
+		{
+			"name":	"centerX",
+			"type":	"float",
+			"value":	0.0
+		},
+		{
+			"name":	"centerZ",
+			"type":	"float",
+			"value":	9.0
+		},
+		{
+			"name":	"dwellTime",
+			"type":	"float",
+			"value":	6.0
+		},
+		{
+			"name":	"glideTime",
+			"type":	"float",
+			"value":	1.2
+		}
+	]
+}

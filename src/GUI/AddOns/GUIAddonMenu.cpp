@@ -26,10 +26,10 @@
 #include "../../../include/Serializers/Image3DAnimationSerializer.h"
 #include "../../../include/Serializers/SwarmSerializer.h"
 #include "../../../include/Serializers/Sound3DSerializer.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
-#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
-#include "../../../include/GUI/Objects/ShadersGUI.h"
-#include "../../../include/GUI/Objects/UIManagerGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/ScriptLuaGUI.h"
+#include "../../../include/GUI/Windows/ShadersGUI.h"
+#include "../../../include/GUI/Windows/UIManagerGUI.h"
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/Loaders/ProjectLoader.h"
 #include "../../../include/Loaders/SceneLoader.h"
@@ -502,11 +502,23 @@ void GUIAddonMenu::MenuCamera()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_CLICK_OBJECTS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable click objects", nullptr, &setup->MOUSE_CLICK_SELECT_OBJECT3D);
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::MenuItem("Enable Mouse Look (Right Button)", nullptr, &Config::get()->MOUSE_LOOK);
-    if (Config::get()->MOUSE_LOOK) {
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::TOOLBAR_DRAG_SELECT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    {
+        auto &selection = Components::get()->Render()->getSelectionManager();
+        bool dragSelect = selection.isRectSelectEnabled();
+        if (ImGui::MenuItem("Enable drag selection (box)", nullptr, &dragSelect)) {
+            selection.setRectSelectEnabled(dragSelect);
+        }
+    }
+
+    {
         ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::DragFloat("Sensibility", &Config::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::DragFloat("Pan sensibility (Shift)", &Config::get()->MOUSE_PAN_SENSITIVITY, 0.01f, 0.05f, 5.0f, "%.2f");
+        if (ImGui::IsItemHovered()) ImGui::SetTooltip("Shift + middle button. 1.0 = the scene follows the cursor pixel by pixel (like Blender)");
+        ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+        ImGui::MenuItem("Zoom towards cursor (wheel)", nullptr, &Config::get()->ZOOM_TO_CURSOR);
     }
 
     ImGui::SeparatorText("Snap camera to selected object");

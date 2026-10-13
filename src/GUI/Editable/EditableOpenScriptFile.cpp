@@ -5,7 +5,8 @@
 #include "../../../include/GUI/Editable/EditableOpenScriptFile.h"
 
 #include "../../../include/Brakeza.h"
-#include "../include/GUI/Objects/ScriptLuaGUI.h"
+#include "../include/GUI/Windows/ScriptLuaGUI.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 
 EditableOpenScriptFile::EditableOpenScriptFile(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ScriptLUA *script)
 :
@@ -32,8 +33,7 @@ void EditableOpenScriptFile::DrawEditableOpenFileConfig()
 void EditableOpenScriptFile::DrawCodeEditActionButtons()
 {
     if (ImGui::BeginTable("ScriptFileButtons", 2, ImGuiTableFlags_None)) {
-        ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+        GUIHelpers::SetupLeftRightColumns();
 
         ImGui::TableNextRow();
 

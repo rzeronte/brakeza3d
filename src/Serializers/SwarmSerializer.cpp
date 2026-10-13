@@ -31,6 +31,7 @@ cJSON* SwarmSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(root, "centerAttractionWeight", swarm->centerAttractionWeight);
     cJSON_AddNumberToObject(root, "predatorThreshold",      swarm->predatorThreshold);
     cJSON_AddNumberToObject(root, "predatorAvoidanceWeight",swarm->predatorAvoidanceWeight);
+    cJSON_AddNumberToObject(root, "predatorPanicSpeedFactor",swarm->predatorPanicSpeedFactor);
     cJSON_AddNumberToObject(root, "globalBiasSeparation",   swarm->globalBiasSeparation);
     cJSON_AddNumberToObject(root, "globalBiasAlignment",    swarm->globalBiasAlignment);
     cJSON_AddNumberToObject(root, "globalBiasCohesion",     swarm->globalBiasCohesion);
@@ -92,6 +93,7 @@ void SwarmSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     readFloat("centerAttractionWeight", swarm->centerAttractionWeight);
     readFloat("predatorThreshold",      swarm->predatorThreshold);
     readFloat("predatorAvoidanceWeight",swarm->predatorAvoidanceWeight);
+    readFloat("predatorPanicSpeedFactor",swarm->predatorPanicSpeedFactor);
     readFloat("globalBiasSeparation",   swarm->globalBiasSeparation);
     readFloat("globalBiasAlignment",    swarm->globalBiasAlignment);
     readFloat("globalBiasCohesion",     swarm->globalBiasCohesion);

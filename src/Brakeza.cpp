@@ -9,7 +9,7 @@
 #include "../cxxxopts/cxxxopts.h"
 #include "../include/Brakeza.h"
 #include "../include/Components/Components.h"
-#include "../include/GUI/Objects/FileSystemGUI.h"
+#include "../include/GUI/Windows/FileSystemGUI.h"
 #include "../include/Render/Profiler.h"
 #include "../include/Render/EngineObserver.h"
 #include "../include/Loaders/SceneLoader.h"
@@ -148,15 +148,25 @@ void Brakeza::MainLoop()
         Profiler::get()->ResetTotalFrameTime();                              // Reset profiler measures
         ++frameIndex;
 
+        // Tramos del bucle fuera de las fases de componente: cada uno con su propia medida
+        // ("Loop_*", visibles en ProfilerLua.snapshot().cpu) para que el tiempo del frame se pueda atribuir
+        auto &loopMeasures = Profiler::get()->getComponentMeasures();
+        Profiler::StartMeasure(loopMeasures, "Loop_FrameRateControl");
         ControlFrameRate();                                                  // Control framerate based on SDL_Delay
+        Profiler::EndMeasure(loopMeasures, "Loop_FrameRateControl");
         UpdateTimer();                                                       // Refresh main timer
+        Profiler::StartMeasure(loopMeasures, "Loop_MainThreadCallbacks");
         PoolImages().processMainThreadCallbacks();                           // Main Thread pool images
         PoolCompute().processMainThreadCallbacks();                          // Main Thread pool compute
+        Profiler::EndMeasure(loopMeasures, "Loop_MainThreadCallbacks");
 
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("PreUpdate");
         PreUpdateComponents();                                               // PreUpdate for componentes
+        Profiler::StartMeasure(loopMeasures, "Loop_CaptureInput");
         CaptureInputEvents(event);                                        // Capture keyboard/mouse status
+        Profiler::EndMeasure(loopMeasures, "Loop_CaptureInput");
 
+        Profiler::StartMeasure(loopMeasures, "Loop_ImGuiFrame");
         if (Config::get()->ENABLE_IMGUI) {
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL2_NewFrame();
@@ -164,8 +174,11 @@ void Brakeza::MainLoop()
             Components::get()->Render()->DrawSelectionRectFill();
             Brakeza::get()->GUI()->DrawGUI();
         }
+        Profiler::EndMeasure(loopMeasures, "Loop_ImGuiFrame");
 
+        Profiler::StartMeasure(loopMeasures, "Loop_ClearFramebuffers");
         Components::get()->Window()->ClearOGLFrameBuffers();                 // Clean video framebuffers
+        Profiler::EndMeasure(loopMeasures, "Loop_ClearFramebuffers");
 
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("OnUpdate+ObjectShaders");
         OnUpdateComponents();                                                // OnUpdate for componentes
@@ -187,7 +200,9 @@ void Brakeza::MainLoop()
 
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("FlipToWindow");
         Profiler::get()->EndTotalFrameTime();                                // End frame time measures
-        Components::get()->Window()->FlipGlobalToWindow();                   // Flip to screen
+        Profiler::StartMeasure(loopMeasures, "Loop_FlipToWindow");
+        Components::get()->Window()->FlipGlobalToWindow();                   // Flip to screen (ImGui render + SwapWindow)
+        Profiler::EndMeasure(loopMeasures, "Loop_FlipToWindow");
 
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("idle");
 
@@ -200,10 +215,23 @@ void Brakeza::MainLoop()
 
 void Brakeza::CaptureInputEvents(SDL_Event &e) const
 {
+    // Con ImGui apagado (F5, botón de la barra o modo autoload) no se llama a ImGui::NewFrame(), que es quien vacía
+    // la cola de eventos de ImGui. Si se siguieran enviando eventos, la cola crecía sin límite y, al volver a
+    // encender ImGui, la versión con "trickling" los reproducía a razón de un cambio de botón o tecla por frame:
+    // pasaban unos segundos antes de poder controlar la interfaz. Por eso, apagado, no se le envía nada, y al
+    // encenderlo se parte de una cola y un estado de teclas vacíos.
+    static bool imguiWasEnabled = true;
+    const bool imguiEnabled = Config::get()->ENABLE_IMGUI;
+    if (imguiEnabled && !imguiWasEnabled) {
+        ImGui::GetIO().ClearEventsQueue();
+        ImGui::GetIO().ClearInputKeys();
+    }
+    imguiWasEnabled = imguiEnabled;
+
     while (SDL_PollEvent(&e)) {
         Components::get()->Window()->CheckForResizeOpenGLWindow(e);
         onUpdateSDLPollEventComponents(&e);
-        ImGui_ImplSDL2_ProcessEvent(&e);
+        if (imguiEnabled) ImGui_ImplSDL2_ProcessEvent(&e);
     }
 }
 
@@ -223,6 +251,12 @@ void Brakeza::AddObject3D(Object3D *obj, const std::string &label)
     obj->setName(label);
     {
         std::unique_lock lock(objectsMutex);
+        // ObjectFactory.* ya encola el alta del objeto (ThreadJobLoad*), así que un script que además
+        // llame a AddObject3D lo añadiría dos veces: al borrarlo se liberaría dos veces (heap corrupto)
+        if (objectsById.find(obj->getId()) != objectsById.end()) {
+            LOG_MESSAGE("[AddObject] '%s' ya estaba en la escena, se ignora el alta duplicada", label.c_str());
+            return;
+        }
         objects.push_back(obj);
         objectsByName[label] = obj;
         objectsById[obj->getId()] = obj;

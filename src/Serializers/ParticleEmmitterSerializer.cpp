@@ -38,6 +38,21 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(contextParticles, "ROTATION_SPEED_MIN", light->getContextPointer().ROTATION_SPEED_MIN);
     cJSON_AddNumberToObject(contextParticles, "ROTATION_SPEED_MAX", light->getContextPointer().ROTATION_SPEED_MAX);
     cJSON_AddBoolToObject(contextParticles, "ROTATION_RANDOM_DIR", light->getContextPointer().ROTATION_RANDOM_DIR);
+    cJSON_AddNumberToObject(contextParticles, "SWIRL_SPEED", light->getContextPointer().SWIRL_SPEED);
+    cJSON_AddNumberToObject(contextParticles, "SWIRL_PULL", light->getContextPointer().SWIRL_PULL);
+    cJSON_AddNumberToObject(contextParticles, "SPIRAL_RADIAL_SPEED", light->getContextPointer().SPIRAL_RADIAL_SPEED);
+    cJSON_AddNumberToObject(contextParticles, "SPIRAL_ARMS", light->getContextPointer().SPIRAL_ARMS);
+    cJSON_AddNumberToObject(contextParticles, "SPIRAL_SPIN", light->getContextPointer().SPIRAL_SPIN);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE", static_cast<int>(light->getContextPointer().SHAPE));
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_RADIUS", light->getContextPointer().SHAPE_RADIUS);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_HEIGHT", light->getContextPointer().SHAPE_HEIGHT);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_TUBE_RADIUS", light->getContextPointer().SHAPE_TUBE_RADIUS);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_SIZE_X", light->getContextPointer().SHAPE_SIZE_X);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_SIZE_Y", light->getContextPointer().SHAPE_SIZE_Y);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_SIZE_Z", light->getContextPointer().SHAPE_SIZE_Z);
+    cJSON_AddBoolToObject(contextParticles, "SHAPE_SURFACE_ONLY", light->getContextPointer().SHAPE_SURFACE_ONLY);
+    cJSON_AddNumberToObject(contextParticles, "SHAPE_DIRECTION", static_cast<int>(light->getContextPointer().SHAPE_DIRECTION));
+    cJSON_AddStringToObject(contextParticles, "SHAPE_MESH", light->getContextPointer().SHAPE_MESH.c_str());
     cJSON_AddItemToObject(root, "context", contextParticles);
 
     cJSON_AddItemToObject(root, "colorFrom", ToolsJSON::ColorToJSON(light->getColorFrom()));
@@ -134,6 +149,29 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     context.ROTATION_SPEED_MIN    = rotMinItem ? static_cast<float>(rotMinItem->valuedouble) : 0.0f;
     context.ROTATION_SPEED_MAX    = rotMaxItem ? static_cast<float>(rotMaxItem->valuedouble) : 0.0f;
     context.ROTATION_RANDOM_DIR   = cJSON_IsTrue(rotDirItem);
+    // Espiral / vórtice (escenas antiguas no lo tienen: sin vórtice)
+    auto numOr = [contextJSON](const char *key, double def) {
+        auto *item = cJSON_GetObjectItemCaseSensitive(contextJSON, key);
+        return item ? item->valuedouble : def;
+    };
+    context.SWIRL_SPEED         = static_cast<float>(numOr("SWIRL_SPEED", 0.0));
+    context.SWIRL_PULL          = static_cast<float>(numOr("SWIRL_PULL", 0.0));
+    context.SPIRAL_RADIAL_SPEED = static_cast<float>(numOr("SPIRAL_RADIAL_SPEED", 0.0));
+    context.SPIRAL_ARMS         = static_cast<int>(numOr("SPIRAL_ARMS", 0.0));
+    context.SPIRAL_SPIN         = static_cast<float>(numOr("SPIRAL_SPIN", 0.0));
+    // Forma de emisión (escenas antiguas no la tienen: POINT, comportamiento original)
+    context.SHAPE               = static_cast<EmitterShape>(static_cast<int>(numOr("SHAPE", 0.0)));
+    context.SHAPE_RADIUS        = static_cast<float>(numOr("SHAPE_RADIUS", 1.0));
+    context.SHAPE_HEIGHT        = static_cast<float>(numOr("SHAPE_HEIGHT", 2.0));
+    context.SHAPE_TUBE_RADIUS   = static_cast<float>(numOr("SHAPE_TUBE_RADIUS", 0.3));
+    context.SHAPE_SIZE_X        = static_cast<float>(numOr("SHAPE_SIZE_X", 2.0));
+    context.SHAPE_SIZE_Y        = static_cast<float>(numOr("SHAPE_SIZE_Y", 2.0));
+    context.SHAPE_SIZE_Z        = static_cast<float>(numOr("SHAPE_SIZE_Z", 2.0));
+    context.SHAPE_SURFACE_ONLY  = cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(contextJSON, "SHAPE_SURFACE_ONLY"));
+    context.SHAPE_DIRECTION     = static_cast<EmitterShapeDirection>(static_cast<int>(numOr("SHAPE_DIRECTION", 0.0)));
+    if (auto *meshItem = cJSON_GetObjectItemCaseSensitive(contextJSON, "SHAPE_MESH"); cJSON_IsString(meshItem) && meshItem->valuestring != nullptr) {
+        context.SHAPE_MESH = meshItem->valuestring;
+    }
 
     emitter->setContext(context);
 

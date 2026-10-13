@@ -6,7 +6,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.inl>
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/LightSpotGUI.h"
+#include "../../include/GUI/Inspectors/LightSpotGUI.h"
 #include "../../include/Components/Components.h"
 
 LightSpot::LightSpot(

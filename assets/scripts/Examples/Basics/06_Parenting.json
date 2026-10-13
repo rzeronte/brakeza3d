@@ -1,0 +1,17 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/06_Parenting.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/06_Parenting.json",
+	"name":	"06_Parenting",
+	"types":	[
+		{
+			"name":	"childCount",
+			"type":	"int",
+			"value":	4
+		},
+		{
+			"name":	"orbitSpeed",
+			"type":	"float",
+			"value":	2.0
+		}
+	]
+}

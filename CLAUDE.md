@@ -36,6 +36,8 @@ Executable: `Brakeza3D`. Assets must be in `assets/` relative to the executable.
 | Shader node editor | `src/GUI/ShaderNodeEditorManager.cpp` |
 | Lua bridge | `include/LUA/BrakezaLuaBridge.h` |
 | Path constants | `include/Render/FilePaths.h` — use these, never hardcode paths |
+| Tutorial / demos | `assets/scripts/Examples/` + `assets/scenes/Examples/` (project `TutorialsProject.json`, browser in `assets/scripts/Browser/`); README in `assets/scripts/README.md` |
+| GUI layout | `include/GUI/{Inspectors,Windows,Widgets,AddOns,Editable}` + `src/GUI/...`; shared widgets in `Widgets/` |
 
 ### Entity Hierarchy
 ```
@@ -56,7 +58,7 @@ Collider → Object3D → Mesh3D / Mesh3DAnimation / LightPoint / LightSpot /
 1. Subclass `Object3D` → `include/3D/` + `src/3D/`
 2. Add `JSONSerializer` subclass → `include/Serializers/` + `src/Serializers/`
 3. Register in `JSONSerializerRegistry` → `src/Render/JSONSerializerRegistry.cpp`
-4. Add GUI inspector → `src/GUI/Objects/`
+4. Add GUI inspector → `src/GUI/Inspectors/` (use `include/GUI/Widgets/GUIFields.h` for the fields)
 5. Add `ThreadJob` for async loading → `include/Threads/`
 
 ### Adding New Post-Process Shaders
@@ -96,3 +98,5 @@ Collider → Object3D → Mesh3D / Mesh3DAnimation / LightPoint / LightSpot /
 - Async loading always via ThreadPool jobs — never load assets on main thread
 - ImGui addons in `src/GUI/AddOns/` follow the `GUIAddon*` naming pattern
 - Shader node types registered in `ShaderNodeEditorManager`
+- All `.cpp` live in `src/` (headers in `include/`); do not add `.cpp` under `include/`
+- Editor mouse camera (wheel, middle button, Shift+middle pan) is automatic: off while scripts run unless Right Ctrl is held

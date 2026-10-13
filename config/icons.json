@@ -432,9 +432,13 @@
 			"x":	9,
 			"y":	18
 		}, {
+			"name":	"TOOLBAR_DRAG_SELECT",
+			"x":	11,
+			"y":	0
+		}, {
 			"name":	"TOOLBAR_MOUSE_LOOK",
-			"x":	10,
-			"y":	18
+			"x":	2,
+			"y":	36
 		}, {
 			"name":	"TOOLBAR_ENABLE_LIGHT_SYSTEM",
 			"x":	4,

@@ -11,7 +11,8 @@
 #include "../../../include/Config.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/HttpClient/ResourceHubClient.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 #include "../../../include/Render/Drawable.h"
 
 GUIAddonResourceHub::GUIAddonResourceHub()
@@ -75,8 +76,7 @@ void GUIAddonResourceHub::render() {
 
 void GUIAddonResourceHub::renderLoginWindow() {
     ImGui::SetNextWindowSize(ImVec2(400, 300), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x * 0.5f, ImGui::GetIO().DisplaySize.y * 0.5f),
-                            ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+    GUIHelpers::CenterNextWindow(ImGuiCond_FirstUseEver);
 
     ImGui::SetNextWindowBgAlpha(0.99f);
 

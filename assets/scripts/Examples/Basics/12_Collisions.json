@@ -1,0 +1,12 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/12_Collisions.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/12_Collisions.json",
+	"name":	"12_Collisions",
+	"types":	[
+		{
+			"name":	"knockbackForce",
+			"type":	"float",
+			"value":	5.0
+		}
+	]
+}

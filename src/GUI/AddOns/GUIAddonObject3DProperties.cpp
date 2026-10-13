@@ -6,7 +6,7 @@
 
 #include "../../../include/Brakeza.h"
 #include "../../../include/Components/Components.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../../include/Render/Drawable.h"
 
 void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)

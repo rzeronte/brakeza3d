@@ -5,6 +5,7 @@
 #include <vector>
 #include <functional>
 #include <unordered_map>
+#include "../Widgets/GUIHelpers.h"
 
 namespace CustomImGui {
 
@@ -214,8 +215,7 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
             }
 
             if (!item.confirmTitle.empty()) {
-                ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-                ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+                GUIHelpers::CenterNextWindow();
                 if (ImGui::BeginPopupModal(item.confirmTitle.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
                     ImGui::Text("%s", item.confirmQuestion.c_str());
                     ImGui::Separator();
@@ -225,7 +225,7 @@ inline bool CustomTreeNode(CustomTreeNodeConfig& config, bool* p_selected = null
                     }
                     ImGui::SetItemDefaultFocus();
                     ImGui::SameLine();
-                    if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+                    if (GUIHelpers::CancelButton()) {
                         ImGui::CloseCurrentPopup();
                     }
                     ImGui::EndPopup();

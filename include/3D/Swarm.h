@@ -43,6 +43,9 @@ class Swarm : public Object3D {
 
     float predatorThreshold = 3.0f;
     float predatorAvoidanceWeight = 30.0;
+    // Un boid que huye de un depredador puede superar maxSpeed por este factor (1 = sin pánico).
+    // Sin él la huida quedaba recortada por limitVelocity() al mismo tope que el paseo normal.
+    float predatorPanicSpeedFactor = 2.0f;
 
     float globalBiasSeparation = 1;
     float globalBiasAlignment = 1;
@@ -53,6 +56,8 @@ class Swarm : public Object3D {
 
     Vertex3D size;
 
+    float resolveRetryTimer = 0.0f;   // reintento de resolvePendingMembers mientras falten miembros
+
     std::vector<std::string> pendingBoidNames;
     std::vector<std::string> pendingPredatorNames;
 public:
@@ -62,7 +67,7 @@ public:
     void separation(SwarmObject *swarmObject, std::vector<SwarmObject*> &objects, float weight) const;
     void alignment(SwarmObject *object, std::vector<SwarmObject*> &objects, float weight) const;
     void cohesion(SwarmObject *swarmObject, std::vector<SwarmObject*> &objects, float weight) const;
-    void limitVelocity(SwarmObject *object) const;
+    void limitVelocity(SwarmObject *object, float speedFactor = 1.0f) const;
     void updateBounds();
     void onUpdate() override;
     SwarmObject* createBoid(Object3D *object);
@@ -72,13 +77,16 @@ public:
     ObjectType getTypeObject() const override;
     GUIType::Sheet getIcon() override;
     void attractTo(SwarmObject *swarmObject, Vertex3D center, bool ignoreThresold, float weight) const;
-    void avoidPredators(SwarmObject *swarmObject);
+    // true si hay algún depredador dentro de predatorThreshold (el boid está huyendo)
+    bool avoidPredators(SwarmObject *swarmObject);
     void checkBoundsAndAdjustVelocity(SwarmObject* swarmObject);
     void addPredator(SwarmObject *o);
     void reset();
     void removeBoid(SwarmObject *o);
     void removePredator(SwarmObject *o);
-    void resolvePendingMembers();
+    // quiet = no registrar en el log los miembros que aún no existen (reintentos periódicos)
+    void resolvePendingMembers(bool quiet = false);
+    [[nodiscard]] bool hasPendingMembers() const { return !pendingBoidNames.empty() || !pendingPredatorNames.empty(); }
     void DrawPropertiesGUI() override;
     static void updatePosition(SwarmObject *o, float weight);
 

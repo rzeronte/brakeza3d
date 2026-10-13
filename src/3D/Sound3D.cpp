@@ -5,10 +5,11 @@
 #include "../../include/3D/Sound3D.h"
 #include <algorithm>
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/Sound3DGUI.h"
+#include "../../include/GUI/Inspectors/Sound3DGUI.h"
 #include "../../include/Misc/Logging.h"
 
 float Sound3D::ambienceVolumeScale = 1.0f;
+bool  Sound3D::panningEnabled = false;   // apagado por defecto: el RTS y los proyectos existentes suenan como siempre
 
 bool Sound3D::DecodeFile(const std::string& srcFile, ma_audio_buffer& outBuffer, void*& outData)
 {
@@ -70,6 +71,19 @@ void Sound3D::onUpdate()
     }
     float volScaled = (vol / 128.0f) * ambienceVolumeScale;
 
+    // Paneo: componente de la dirección a la fuente sobre el eje derecho de la cámara (-1 izquierda, +1 derecha).
+    // Se atenúa cerca de la fuente: dentro de ~2 u la dirección cambia muy deprisa y el sonido bailaría.
+    float pan = 0.0f;
+    if (panningEnabled) {
+        const Vertex3D toSource = position - camPos;
+        const float len = toSource.getModule();
+        if (len > 0.001f) {
+            const Vertex3D camRight = cam->getRotation().getTranspose() * Vertex3D(1, 0, 0);   // mismo eje derecho que usa Camera3D::UpdateVelocity
+            const float side = (toSource.x * camRight.x + toSource.y * camRight.y + toSource.z * camRight.z) / len;
+            pan = std::clamp(side, -1.0f, 1.0f) * std::clamp(len / 2.0f, 0.0f, 1.0f);
+        }
+    }
+
     if (volScaled > 0.0f) {
         if (!voiceInitialized) {
             auto* engine = Components::get()->Sound()->getEngine();
@@ -83,6 +97,7 @@ void Sound3D::onUpdate()
                     voiceInitialized = true;
                     ma_sound_set_looping(&voice, loop ? MA_TRUE : MA_FALSE);
                     ma_sound_set_volume(&voice, volScaled);
+                    ma_sound_set_pan(&voice, pan);
                     ma_sound_start(&voice);
                     isPlaying = true;
                 } else {
@@ -92,6 +107,7 @@ void Sound3D::onUpdate()
             }
         } else {
             ma_sound_set_volume(&voice, volScaled);
+            ma_sound_set_pan(&voice, pan);
         }
     } else {
         if (voiceInitialized) {

@@ -5,6 +5,8 @@
 #ifndef BRAKEDA3D_PARTICLEEMISSOR_H
 #define BRAKEDA3D_PARTICLEEMISSOR_H
 
+#include <utility>
+#include <vector>
 #include "Object3D.h"
 #include "LightPoint.h"
 #include "../Misc/Counter.h"
@@ -18,11 +20,21 @@ typedef enum {
     EXPLOSION = 1,
 } ParticleEmitterState;
 
+class Mesh3D;
+
 class ParticleEmitter : public Object3D
 {
     bool active = true;
     bool stopAdd = false;
     int LastUsedParticle = 0;
+    // Emisión desde la superficie de una malla (EmitterShape::MESH): tabla de áreas acumuladas por triángulo
+    Mesh3D *shapeMesh = nullptr;
+    glm::mat4 shapeMeshModel = glm::mat4(1.0f);
+    std::vector<float> shapeTriCumArea;
+    std::vector<std::pair<int, int>> shapeTris;      // (submesh, índice del primer vértice del triángulo)
+
+    float spiralPhase = 0.0f;        // acimut de salida actual (rad) para SPIRAL_ARMS / SPIRAL_SPIN
+    int   spiralArmCounter = 0;      // siguiente brazo a emitir
     float spawnAccumulator = 0.0f;   // fracción de partícula pendiente entre frames (ParticlesToSpawn)
     Object3D* followTarget    = nullptr;
     float selfDestructTimer   = -1.0f;
@@ -76,6 +88,11 @@ public:
     void postUpdate() override;
     glm::vec3 AddNoiseToDirection(const glm::vec3 &direction, float noiseRange);
     glm::vec3 AddNoiseKeepingSpeed(const glm::vec3 &velocity, float noiseRange);
+    glm::vec3 SpiralLaunchVelocity(const glm::vec3 &axis);
+    // Un punto de nacimiento según context.SHAPE: desplazamiento respecto al emisor (mundo) y dirección hacia fuera
+    bool SampleShape(glm::vec3 &offset, glm::vec3 &outward);
+    bool SampleMeshSurface(glm::vec3 &offset, glm::vec3 &outward);
+    void PrepareShapeMesh();
     int ParticlesToSpawn(float delta);
 
     void setContext(const ParticlesContext &context);

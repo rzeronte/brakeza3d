@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include "../../include/Components/ComponentInput.h"
 #include "../../include/Components/Components.h"
@@ -58,6 +59,17 @@ void ComponentInput::postUpdate()
 
 void ComponentInput::onEnd()
 {
+    setRelativeMouseMode(false);   // nunca dejar el ratón capturado al cerrar
+}
+
+void ComponentInput::setRelativeMouseMode(bool enabled)
+{
+    SDL_SetRelativeMouseMode(enabled ? SDL_TRUE : SDL_FALSE);
+}
+
+bool ComponentInput::isRelativeMouseMode() const
+{
+    return SDL_GetRelativeMouseMode() == SDL_TRUE;
 }
 
 void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
@@ -83,16 +95,41 @@ void ComponentInput::onSDLPollEvent(SDL_Event *e, bool &finish)
     }
 }
 
+bool ComponentInput::IsEditorMouseCameraAllowed() const
+{
+    if (!Components::get()->Scripting()->isExecuting()) return true;
+    return keyboard[SDL_SCANCODE_RCTRL] != 0;
+}
+
 void ComponentInput::HandleMouseLook(SDL_Event *event)
 {
     ImGuiIO& io = ImGui::GetIO();
     if (io.WantCaptureMouse) return;
 
-    if (!Config::get()->MOUSE_LOOK) return;
+    if (!IsEditorMouseCameraAllowed()) return;
 
     if (event->type == SDL_MOUSEWHEEL && event->wheel.y != 0) {
         auto camera = Components::get()->Camera()->getCamera();
-        camera->MoveForward((float)event->wheel.y * Config::get()->WALKING_SPEED * 3.0f);
+        const float step = (float)event->wheel.y * Config::get()->WALKING_SPEED * 3.0f;
+        cameraFocusDistance = std::max(0.1f, cameraFocusDistance - step);
+
+        if (Config::get()->ZOOM_TO_CURSOR) {
+            // Zoom direccional: avanzar por el rayo que atraviesa el cursor. El centro de la pantalla
+            // coincide con el avance normal; cuanto más lejos del centro, más se va hacia ese lado.
+            int mx = 0, my = 0;
+            SDL_GetMouseState(&mx, &my);
+            const auto window = Components::get()->Window();
+            const float w = (float) std::max(1, window->getWidth());
+            const float h = (float) std::max(1, window->getHeight());
+            const glm::mat4 proj = Camera3D::getGLMMat4ProjectionMatrix();
+            const float ndcX = 2.0f * (float) mx / w - 1.0f;
+            const float ndcY = 1.0f - 2.0f * (float) my / h;
+            const Vertex3D dirCam = Vertex3D(ndcX / proj[0][0], ndcY / proj[1][1], -1.0f).getNormalize();
+            const Vertex3D dirWorld = camera->getRotation().getTranspose() * dirCam;
+            camera->setPosition(camera->getPosition() + dirWorld.getScaled(step));
+        } else {
+            camera->MoveForward(step);
+        }
     }
 
     // Reset accumulator + filter on middle-button-down so each drag starts clean
@@ -109,13 +146,29 @@ void ComponentInput::HandleMouseLook(SDL_Event *event)
     }
 }
 
+float ComponentInput::GetCameraFocusDistance() const
+{
+    // Con un objeto seleccionado se enfoca a él (profundidad a lo largo de la dirección de la cámara)
+    if (const auto *selected = Components::get()->Render()->getSelectedObject(); selected != nullptr) {
+        auto camera = Components::get()->Camera()->getCamera();
+        const Vertex3D fwd = camera->getRotation().getTranspose() * Vertex3D(0, 0, -1);
+        const float depth = (selected->getPosition() - camera->getPosition()) * fwd;
+        if (depth > 0.1f) return depth;
+    }
+    return cameraFocusDistance;
+}
+
 void ComponentInput::ApplySmoothedMouseLook()
 {
-    if (!Config::get()->MOUSE_LOOK) return;
+    if (!IsEditorMouseCameraAllowed()) return;
     if (Config::get()->ENABLE_IMGUI && ImGui::GetIO().WantCaptureMouse) {
         pendingMouseLookDx = pendingMouseLookDy = 0.0f;
         return;
     }
+
+    // Deltas sin filtrar de este frame: el pan los usa tal cual para que la escena siga al cursor
+    const float rawDx = pendingMouseLookDx;
+    const float rawDy = pendingMouseLookDy;
 
     // Per-frame low-pass. Larger alpha = snappier; smaller = smoother/more lag.
     constexpr float kAlpha = 0.5f;
@@ -138,13 +191,20 @@ void ComponentInput::ApplySmoothedMouseLook()
         // Blender-style pan: mouse right → view content moves right → camera translates left.
         // getRotation() is world→camera; its transpose gives camera-basis in world space
         // (same convention as getGLMMat4ViewMatrix uses to derive forward).
-        const float panSpeed = Config::get()->MOUSE_SENSITIVITY * 2.0f;
+        //
+        // Unidades de mundo por píxel a la distancia de enfoque: así el punto que hay bajo el cursor
+        // lo sigue exactamente (1 px de ratón = 1 px de pantalla) y el movimiento se afina solo al
+        // acercarse. Antes era una constante por píxel (0.15 u), imposible de controlar de cerca.
+        const float h = (float) std::max(1, Components::get()->Window()->getHeight());
+        const float tanHalfV = 1.0f / Camera3D::getGLMMat4ProjectionMatrix()[1][1];
+        const float worldPerPixel = 2.0f * GetCameraFocusDistance() * tanHalfV / h;
+        const float panSpeed = worldPerPixel * Config::get()->MOUSE_PAN_SENSITIVITY;
         auto invRot = camera->getRotation().getTranspose();
         const auto right = invRot * Vertex3D(1, 0, 0);
         const auto up    = invRot * Vertex3D(0, 1, 0);
         camera->setPosition(camera->getPosition()
-            + right.getScaled(-smoothedMouseLookDx * panSpeed)
-            + up.getScaled(    smoothedMouseLookDy * panSpeed));
+            + right.getScaled(-rawDx * panSpeed)
+            + up.getScaled(    rawDy * panSpeed));
     } else {
         camera->Yaw(-smoothedMouseLookDx * Config::get()->MOUSE_SENSITIVITY);
         camera->Pitch(smoothedMouseLookDy * Config::get()->MOUSE_SENSITIVITY);
@@ -498,7 +558,7 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             }
         }
 
-        // Delete (X / Supr) y deselect (ESC) — funcionan con cualquier número de seleccionados
+        // Delete (solo X, como en Blender: Supr no borra a propósito) y deselect (ESC) — funcionan con cualquier número de seleccionados
         auto render = Components::get()->Render();
         if (!render->getSelectedObjects().empty()) {
             if (keyboard[SDL_SCANCODE_X]) {

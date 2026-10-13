@@ -40,7 +40,14 @@ originSessionId: dc70ba7c-6393-464f-b834-22487807b205
 - **Collider:** shape selector, mass, friction, damping, body mode
 - **Swarm:** attached objects list
 
-Inspectors live in `/src/GUI/Objects/` + `/include/GUI/Objects/`
+Inspectors live in `/src/GUI/Inspectors/` + `/include/GUI/Inspectors/`
+
+## GUI folder layout (reorganized 2026-10-13; `GUI/Objects/` no longer exists)
+- `Inspectors/` — per-object property panels (Object3D, Mesh3D, Collider, Image*, Light*, ParticleEmitter, Swarm, Sound3D)
+- `Windows/` — standalone windows (FileSystem, Thread, StatusBar, UIManager, ScriptLua, Shaders, TextureAnimatedAnimation)
+- `Widgets/` — shared building blocks: `GUIFields.h` (2-column sections with tooltips: `BeginSection/EndSection`, `Float/Int/Check/Combo/Color3/Slider/Text/Row`), `GUIHelpers.h` (`CenterNextWindow`, `CancelButton`, `SetupLeftRightColumns`, `ImageDropTarget`), `IconsGUI.h`, `ImGuiLayoutHelpers.h`
+- `AddOns/` (`GUIAddon*`), `Editable/` (code editors), `NodeTypes/` in `src/GUI/`
+- New inspectors should use `GUIFields` so every panel looks the same.
 
 ## Toolbar Buttons
 - Transform: Translate, Rotate, Scale (gizmos)
@@ -56,7 +63,7 @@ Inspectors live in `/src/GUI/Objects/` + `/include/GUI/Objects/`
 - Engine version
 
 ## Icon System
-- `include/GUI/IconsGUI.h` — 150+ sprite sheet icons
+- `include/GUI/Widgets/IconsGUI.h` — 150+ sprite sheet icons
 - Object type icons + UI state indicators
 
 ## Shader Node Editor
@@ -93,4 +100,4 @@ Modular addon classes in `/src/GUI/AddOns/` + `/include/GUI/AddOns/`:
 - `EditableOpenShaderFile` — GLSL shader selector
 - `EditableOpenNode` — node graph file selector
 
-**How to apply:** To add a new inspector panel for a new entity type: subclass the addon pattern in `/src/GUI/Objects/`, register in `GUIManager`. To add a node shader type: add to `ShaderBaseNodes` subclass + register in `ShaderNodeEditorManager`.
+**How to apply:** To add a new inspector panel for a new entity type: subclass the addon pattern in `/src/GUI/Inspectors/`, register in `GUIManager`. To add a node shader type: add to `ShaderBaseNodes` subclass + register in `ShaderNodeEditorManager`.

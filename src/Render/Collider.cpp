@@ -3,7 +3,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/ColliderGUI.h"
+#include "../../include/GUI/Inspectors/ColliderGUI.h"
 
 Collider::Collider()
 :

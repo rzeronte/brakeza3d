@@ -4,7 +4,7 @@
 
 #include "../../include/2D/Image2D.h"
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/Image2DGUI.h"
+#include "../../include/GUI/Inspectors/Image2DGUI.h"
 #include "../../include/Misc/VideoPlayer.h"
 
 Image2D::Image2D(const std::string &file, float widthScale, float heightScale)

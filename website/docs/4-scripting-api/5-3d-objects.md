@@ -181,7 +181,8 @@ local unit = ObjectFactory.Image3DAnimation360(
     3.5                             -- billboard height (world units)
 )
 unit:setName("soldier_01")
-Brakeza:AddObject3D(unit, "soldier_01")
+-- ObjectFactory already adds the object to the scene (in the background);
+-- do not call Brakeza:AddObject3D on it again
 ```
 
 ### Adding directional animations

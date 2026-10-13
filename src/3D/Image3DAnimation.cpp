@@ -2,7 +2,7 @@
 #include "../../include/3D/Image3DAnimation.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/Image3DAnimationGUI.h"
+#include "../../include/GUI/Inspectors/Image3DAnimationGUI.h"
 #include "../../include/Cache/TextureAnimatedCache.h"
 
 Image3DAnimation::Image3DAnimation(const Vertex3D &position, float w, float h)

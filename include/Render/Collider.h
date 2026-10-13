@@ -9,7 +9,7 @@
 #include <glm/vec2.hpp>
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
-#include "../GUI/Objects/ColliderGUI.h"
+#include "../GUI/Inspectors/ColliderGUI.h"
 
 enum CollisionShape {
     SIMPLE_SHAPE = 0,

@@ -1,0 +1,12 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Graphics/CycleDayNightDemo.lua",
+	"typesFile":	"../assets/scripts/Examples/Graphics/CycleDayNightDemo.json",
+	"name":	"CycleDayNightDemo",
+	"type":	"Global",
+	"ticks_per_second":	6,
+	"types":	[{
+			"name":	"test",
+			"type":	"string",
+			"value": "ohla"
+		}]
+}

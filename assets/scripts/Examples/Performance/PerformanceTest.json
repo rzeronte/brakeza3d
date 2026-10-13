@@ -1,0 +1,23 @@
+{
+    "codeFile":  "../assets/scripts/Examples/Performance/PerformanceTest.lua",
+    "typesFile": "../assets/scripts/Examples/Performance/PerformanceTest.json",
+    "name": "PerformanceTest",
+    "type": "Global",
+    "types": [
+        {
+            "name":  "maxObjects",
+            "type":  "int",
+            "value": 500
+        },
+        {
+            "name":  "spawnArea",
+            "type":  "float",
+            "value": 15.0
+        },
+        {
+            "name":  "spawnY",
+            "type":  "float",
+            "value": 12.0
+        }
+    ]
+}

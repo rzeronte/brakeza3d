@@ -1,0 +1,17 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/13_Animation.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/13_Animation.json",
+	"name":	"13_Animation",
+	"types":	[
+		{
+			"name":	"defaultAnimation",
+			"type":	"string",
+			"value":	"idle"
+		},
+		{
+			"name":	"animationSpeed",
+			"type":	"float",
+			"value":	1.0
+		}
+	]
+}

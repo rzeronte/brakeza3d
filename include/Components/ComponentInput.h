@@ -86,6 +86,10 @@ class ComponentInput : public Component
     float smoothedMouseLookDx = 0.0f;
     float smoothedMouseLookDy = 0.0f;
 
+    // Distancia de enfoque de la cámara del editor cuando no hay objeto seleccionado (pan y zoom)
+    float cameraFocusDistance = 10.0f;
+    [[nodiscard]] float GetCameraFocusDistance() const;
+
 public:
     ComponentInput() = default;
     void onStart() override;
@@ -100,6 +104,9 @@ public:
     void HandleKeyboardMovingCamera() const;
     void HandleMouseLook(SDL_Event *);
     void ApplySmoothedMouseLook();
+    // La cámara del editor con el ratón (rotar, pan, rueda) solo responde con el editor: mientras se
+    // ejecutan scripts el juego controla su propia cámara. Ctrl derecho la devuelve temporalmente.
+    [[nodiscard]] bool IsEditorMouseCameraAllowed() const;
     void ResetMouseMapping();
     void UpdateGamePadStates();
     void HandleCheckPadConnection(SDL_Event *pEvent);
@@ -108,6 +115,10 @@ public:
     void setKeyboardEnabled(bool value);
 
     void setMouseEnabled(bool value);
+    // Ratón capturado (SDL relative mouse mode): el cursor se oculta y queda en la ventana, y el movimiento relativo
+    // no se acaba nunca al llegar al borde. Para mirar libremente en primera persona.
+    void setRelativeMouseMode(bool enabled);
+    [[nodiscard]] bool isRelativeMouseMode() const;
 
     void setPadEnabled(bool value);
 

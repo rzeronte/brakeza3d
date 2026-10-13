@@ -5,7 +5,7 @@
 #include "../../include/Misc/Logging.h"
 #include "../../include/Misc/Tools.h"
 #include "../../include/Components/Components.h"
-#include "../../include/GUI/Objects/TextureAnimatedAnimationGUI.h"
+#include "../../include/GUI/Windows/TextureAnimatedAnimationGUI.h"
 
 TextureAnimated::TextureAnimated(std::string baseFile, int numFrames, int fps)
 :

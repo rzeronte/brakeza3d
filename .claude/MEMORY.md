@@ -55,13 +55,13 @@
 - ImGui + SDL2 backend. 20+ dockable windows. Manager: `src/GUI/GUIManager.cpp`
 - Shortcuts: F9 Scene Objects, F10 Object Properties, F11 Project Settings, F12 File Browser
 - Shader node editor: `src/GUI/ShaderNodeEditorManager.cpp`. 30+ node types. Generates GLSL, real-time compile.
-- Addons: `src/GUI/AddOns/GUIAddon*.cpp`. Object inspectors: `src/GUI/Objects/`
+- Addons: `src/GUI/AddOns/GUIAddon*.cpp`. Object inspectors: `src/GUI/Inspectors/`, windows: `src/GUI/Windows/`, shared field/helper widgets: `include/GUI/Widgets/` (`GUIFields.h`, `GUIHelpers.h` — use them in new inspectors)
 
 ## Checklist: Add New Entity Type
 1. Subclass `Object3D` in `include/3D/` + `src/3D/`
 2. Add `JSONSerializer` subclass in `include/Serializers/` + `src/Serializers/`
 3. Register in `src/Render/JSONSerializerRegistry.cpp`
-4. Add GUI inspector in `src/GUI/Objects/`
+4. Add GUI inspector in `src/GUI/Inspectors/`
 5. Add `ThreadJob` in `include/Threads/`
 
 ## Known Issues (todo.md)

@@ -13,6 +13,10 @@ class Sound3D : public Object3D
 {
 public:
     static float ambienceVolumeScale;
+    // Paneo izquierda/derecha según dónde queda la fuente respecto a la cámara (derecha de la cámara = canal derecho).
+    // Desactivado (por defecto): sonido mono centrado, solo cambia el volumen con la distancia.
+    // Se activa desde Lua con Components:Sound():setAmbiencePanning(true) (lo hace la demo Sound3D).
+    static bool  panningEnabled;
 
     std::string sourceFile;
 

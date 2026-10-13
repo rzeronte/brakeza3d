@@ -35,7 +35,7 @@ render:clearWidgets()                                  -- unload everything
 ```
 
 :::tip
-The **UITest** scene (TutorialsProject) runs `Demos/GlobalScripts/UIWidgetsDemo.lua`, a minimal example of a
+The **UITest** scene (TutorialsProject) runs `Examples/InputAndUI/UIWidgetsDemo.lua`, a minimal example of a
 plain widget, a nested widget and an array using the sample widgets in `assets/ui/` (`exampleCard`,
 `exampleNestedWidget`, `exampleArrayWidget`).
 :::

@@ -1,0 +1,17 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/04_Rotation.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/04_Rotation.json",
+	"name":	"04_Rotation",
+	"types":	[
+		{
+			"name":	"rotationSpeed",
+			"type":	"float",
+			"value":	90.0
+		},
+		{
+			"name":	"autoRotate",
+			"type":	"int",
+			"value":	0
+		}
+	]
+}

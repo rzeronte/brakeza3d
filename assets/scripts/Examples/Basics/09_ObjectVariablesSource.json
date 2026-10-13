@@ -1,0 +1,22 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Basics/09_ObjectVariablesSource.lua",
+	"typesFile":	"../assets/scripts/Examples/Basics/09_ObjectVariablesSource.json",
+	"name":	"09_ObjectVariablesSource",
+	"type":	"Object",
+	"types":	[
+		{
+			"name":	"offset",
+			"type":	"Vertex3D",
+			"value":	{
+				"x":	1.0,
+				"y":	2.0,
+				"z":	3.0
+			}
+		},
+		{
+			"name":	"count",
+			"type":	"int",
+			"value":	0
+		}
+	]
+}

@@ -8,10 +8,11 @@
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
-#include "../../../include/GUI/Objects/FileSystemGUI.h"
-#include "../../../include/GUI/Objects/ScriptLuaGUI.h"
-#include "../../../include/GUI/Objects/ShadersGUI.h"
+#include "../../../include/GUI/Windows/FileSystemGUI.h"
+#include "../../../include/GUI/Windows/ScriptLuaGUI.h"
+#include "../../../include/GUI/Windows/ShadersGUI.h"
 #include "../../../include/Render/Drawable.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 
 // Static member definitions
 bool GUIAddonProjectSetup::openPopupEditProject = false;
@@ -860,8 +861,7 @@ void GUIAddonProjectSetup::DrawProjectEditPopup()
         openPopupEditProject = false;
     }
 
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    GUIHelpers::CenterNextWindow();
     ImGui::SetNextWindowSize(ImVec2(450, 300), ImGuiCond_FirstUseEver);
 
     if (ImGui::BeginPopupModal("Edit Project", nullptr, ImGuiWindowFlags_None)) {
@@ -924,7 +924,7 @@ void GUIAddonProjectSetup::DrawProjectEditPopup()
 
         ImGui::SameLine(0, spacing);
 
-        if (ImGui::Button("Cancel", ImVec2(buttonWidth, 0))) {
+        if (GUIHelpers::CancelButton(buttonWidth)) {
             ImGui::CloseCurrentPopup();
         }
 
@@ -939,8 +939,7 @@ void GUIAddonProjectSetup::DrawAdditiveScenePopup()
         openPopupAdditiveScene = false;
     }
 
-    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+    GUIHelpers::CenterNextWindow();
     ImGui::SetNextWindowSize(ImVec2(280, 0), ImGuiCond_Always);
 
     if (ImGui::BeginPopupModal("Load Additive Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -970,7 +969,7 @@ void GUIAddonProjectSetup::DrawAdditiveScenePopup()
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();
-        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+        if (GUIHelpers::CancelButton()) {
             ImGui::CloseCurrentPopup();
         }
 

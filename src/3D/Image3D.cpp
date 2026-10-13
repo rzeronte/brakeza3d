@@ -2,7 +2,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/Objects/Image3DGUI.h"
+#include "../../include/GUI/Inspectors/Image3DGUI.h"
 
 Image3D::Image3D(const Vertex3D &position, float width, float height, const std::string &filePath)
 :

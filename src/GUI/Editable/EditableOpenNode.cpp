@@ -6,6 +6,7 @@
 
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Tools.h"
+#include "../../../include/GUI/Widgets/GUIHelpers.h"
 
 
 EditableOpenNode::EditableOpenNode(const std::string &uniqueId, const std::string &tabLabel, const std::string &path, ShaderBaseNodes *shaderNodes, bool isLiveShader)
@@ -34,12 +35,10 @@ void EditableOpenNode::DrawTabEdition(int tabIndex)
     if (getWinType() == POPUP) {
         // Obtener el tamaño del viewport
         ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImVec2 center = viewport->GetCenter();
         // Establecer tamaño grande (80% del viewport)
         ImVec2 windowSize = ImVec2(viewport->Size.x * 0.8f, viewport->Size.y * 0.8f);
         ImGui::SetNextWindowSize(windowSize, ImGuiCond_Appearing);
-        // Centrar la ventana
-        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+        GUIHelpers::CenterNextWindow();
 
         // Crear popup modal
         if (ImGui::BeginPopupModal(uniqueTabId.c_str(), nullptr, ImGuiWindowFlags_NoCollapse)) {
@@ -71,8 +70,7 @@ void EditableOpenNode::DrawNodeEditorTab() const
 void EditableOpenNode::DrawCodeEditActionButtons()
 {
     if (ImGui::BeginTable("ScriptFileButtons", 2, ImGuiTableFlags_None)) {
-        ImGui::TableSetupColumn("Left", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_WidthFixed);
+        GUIHelpers::SetupLeftRightColumns();
         ImGui::TableNextRow();
         // Columna izquierda - botones
         ImGui::TableSetColumnIndex(0);

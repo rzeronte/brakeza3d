@@ -124,6 +124,7 @@ class ComponentRender : public Component
     // Fase 4b: misma idea que opaqueQueue pero para el pase de picking (ShaderOGLColor). Mismo
     // ciclo de vida -- vive solo dentro de un frame.
     std::vector<PickingQueueEntry> pickingQueue;
+    double pickingEnqueueSeconds = 0.0;   // CPU acumulada de EnqueuePicking en el frame (profiler: "PickingEnqueue")
 
     // Mesh3D con custom shaders (p.ej. WaterRTS) deben escribir su G-Buffer DESPUES del pase
     // opaco normal, no entrelazados objeto-a-objeto -- si no, un objeto que se procesa antes que

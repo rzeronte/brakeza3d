@@ -17,6 +17,6 @@ Create a new post-processing shader effect for Brakeza3D.
 
 4. **Register** in `ComponentRender` — add to the scene shader list so it appears in the GUI.
 
-5. **Add GUI controls** if the shader has editable parameters — add to `src/GUI/Objects/ShadersGUI.cpp`.
+5. **Add GUI controls** if the shader has editable parameters — add to `src/GUI/Windows/ShadersGUI.cpp`.
 
 Usage: `/new-shader FogOfWar`

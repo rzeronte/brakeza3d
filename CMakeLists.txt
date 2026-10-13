@@ -135,16 +135,16 @@ add_executable(Brakeza3D
         include/GUI/AddOns/GUIAddonToolbar.h
         include/GUI/AddOns/GUIConsole.h
 
-        # GUI/Objects
-        include/GUI/Objects/Image2DAnimationGUI.h
-        include/GUI/Objects/Image3DAnimation360GUI.h
-        include/GUI/Objects/Image3DAnimationGUI.h
-        include/GUI/Objects/Image3DGUI.h
-        include/GUI/Objects/LightSpotGUI.h
-        include/GUI/Objects/Mesh3DAnimationGUI.h
-        include/GUI/Objects/Object3DGUI.h
-        include/GUI/Objects/ScriptLuaGUI.h
-        include/GUI/Objects/SwarmGUI.h
+        # GUI/Inspectors, Windows, Widgets
+        include/GUI/Inspectors/Image2DAnimationGUI.h
+        include/GUI/Inspectors/Image3DAnimation360GUI.h
+        include/GUI/Inspectors/Image3DAnimationGUI.h
+        include/GUI/Inspectors/Image3DGUI.h
+        include/GUI/Inspectors/LightSpotGUI.h
+        include/GUI/Inspectors/Mesh3DAnimationGUI.h
+        include/GUI/Inspectors/Object3DGUI.h
+        include/GUI/Windows/ScriptLuaGUI.h
+        include/GUI/Inspectors/SwarmGUI.h
 
         # imgui
         imgui/imgui.cpp imgui/imgui.h
@@ -283,22 +283,22 @@ add_executable(Brakeza3D
         src/Render/Transforms.cpp include/Render/Transforms.h
         include/Render/AABB3D.h
         include/Render/EngineObserver.h
-        src/GUI/Objects/Mesh3DGUI.cpp
-        src/GUI/Objects/Object3DGUI.cpp
-        src/GUI/Objects/ScriptLuaGUI.cpp
-        src/GUI/Objects/ShadersGUI.cpp include/GUI/Objects/ShadersGUI.h
-        src/GUI/Objects/FileSystemGUI.cpp include/GUI/Objects/FileSystemGUI.h
+        src/GUI/Inspectors/Mesh3DGUI.cpp
+        src/GUI/Inspectors/Object3DGUI.cpp
+        src/GUI/Windows/ScriptLuaGUI.cpp
+        src/GUI/Windows/ShadersGUI.cpp include/GUI/Windows/ShadersGUI.h
+        src/GUI/Windows/FileSystemGUI.cpp include/GUI/Windows/FileSystemGUI.h
         src/3D/Cone3D.cpp include/3D/Cone3D.h
-        include/Render/Profiler.cpp include/Render/Profiler.h
+        src/Render/Profiler.cpp include/Render/Profiler.h
         src/GUI/AddOns/GUIAddonMenu.cpp
         src/GUI/AddOns/GUIAddonToolbar.cpp
         include/GUI/GUI.h src/GUI/GUI.cpp
-        include/GUI/Objects/IconsGUI.h
+        include/GUI/Widgets/IconsGUI.h
         src/GUI/AddOns/GUIAddonObject3DProperties.cpp
         src/GUI/AddOns/GUIAddonProjectSetup.cpp
         src/GUI/AddOns/GUIAddonObjects3D.cpp
         src/GUI/AddOns/GUIConsole.cpp
-        src/GUI/Objects/Mesh3DGUIAnimation.cpp
+        src/GUI/Inspectors/Mesh3DGUIAnimation.cpp
         src/OpenGL/Quad/ShaderOGLGrid.cpp include/OpenGL/Quad/ShaderOGLGrid.h
         src/Render/ThreadPool.cpp include/Render/ThreadPool.h
         include/Threads/ThreadJobBase.h
@@ -324,7 +324,7 @@ add_executable(Brakeza3D
         include/LUA/ObjectFactory.h
         include/Threads/ThreadJobStepSimulation.h
         include/Threads/ThreadJobClearWorld.h
-        include/Render/PostProcessingManager.cpp include/Render/PostProcessingManager.h
+        src/Render/PostProcessingManager.cpp include/Render/PostProcessingManager.h
         imgui/ImGuiColorTextEdit/TextEditor.h
         imgui/ImGuiColorTextEdit/TextEditor.cpp
         include/GUI/Editable/EditableOpenFile.h
@@ -333,7 +333,7 @@ add_executable(Brakeza3D
         src/GUI/Editable/EditableOpenScriptFile.cpp
         src/GUI/Editable/EditableOpenShaderFile.cpp
         include/GUI/AddOns/GUIAddonDocumentation.h
-        include/LUA/ObjectFactory.cpp
+        src/LUA/ObjectFactory.cpp
         include/Threads/ThreadJobMakeRigidBody.h
         src/Loaders/SceneChecker.cpp include/Loaders/SceneChecker.h
         include/OpenGL/ShaderPreProcessor.h
@@ -374,22 +374,22 @@ add_executable(Brakeza3D
         src/GUI/Editable/EditableOpenNode.cpp include/GUI/Editable/EditableOpenNode.h
         src/GUI/NodeTypes/InternalTextureNode.h
         src/GUI/NodeTypes/MeshTextureNode.h
-        include/GUI/ImGuiLayoutHelpers.h
+        include/GUI/Widgets/ImGuiLayoutHelpers.h
         src/Loaders/ProjectChecker.cpp include/Loaders/ProjectChecker.h
         include/HttpClient/ResourceHubClient.h
         src/HttpClient/ResourceHubClient.cpp
         include/GUI/AddOns/GUIAddonResourceHub.h
         src/GUI/AddOns/GUIAddonResourceHub.cpp
-        src/GUI/Objects/ThreadGUI.cpp include/GUI/Objects/ThreadGUI.h
-        src/GUI/Objects/UIManagerGUI.cpp include/GUI/Objects/UIManagerGUI.h
-        src/GUI/Objects/StatusBarGUI.cpp include/GUI/Objects/StatusBarGUI.h
+        src/GUI/Windows/ThreadGUI.cpp include/GUI/Windows/ThreadGUI.h
+        src/GUI/Windows/UIManagerGUI.cpp include/GUI/Windows/UIManagerGUI.h
+        src/GUI/Windows/StatusBarGUI.cpp include/GUI/Windows/StatusBarGUI.h
         include/Loaders/Scene.h
         include/Loaders/Project.h
         include/GUI/AddOns/CustomTreeNode.h
         src/GUI/AddOns/CustomTreeNode.cpp
         include/Threads/ThreadJobCleanWorld.h
-        include/GUI/Objects/ColliderGUI.h
-        src/GUI/Objects/ColliderGUI.cpp
+        include/GUI/Inspectors/ColliderGUI.h
+        src/GUI/Inspectors/ColliderGUI.cpp
 )
 
 # Suppress warnings in third-party sources

@@ -15,8 +15,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include "../Objects/FileSystemGUI.h"
+#include "../Windows/FileSystemGUI.h"
 #include "../GUI.h"
+#include "../Widgets/GUIHelpers.h"
 
 struct GUIFilePicker
 {
@@ -54,7 +55,7 @@ struct GUIFilePicker
             ImGui::TextDisabled("Select file:");
             ImGui::Separator();
             drawFolder(popupId, _baseFolder);
-            if (ImGui::Button("Cancel")) ImGui::CloseCurrentPopup();
+            if (GUIHelpers::CancelButton()) ImGui::CloseCurrentPopup();
             ImGui::EndPopup();
         }
         return accepted;

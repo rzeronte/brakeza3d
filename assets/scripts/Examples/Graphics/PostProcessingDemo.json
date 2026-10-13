@@ -1,0 +1,7 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Graphics/PostProcessingDemo.lua",
+	"typesFile":	"../assets/scripts/Examples/Graphics/PostProcessingDemo.json",
+	"name":	"PostProcessingDemo",
+	"type":	"Global",
+	"types":	[]
+}

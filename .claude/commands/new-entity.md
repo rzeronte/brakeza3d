@@ -21,7 +21,7 @@ The new entity name is: **$ARGUMENTS**
 5. **Create ThreadJob** for async loading:
    - `include/Threads/ThreadJobLoad$ARGUMENTS.h`
 
-6. **Add GUI inspector** in `src/GUI/Objects/` — follow the pattern of existing inspector files
+6. **Add GUI inspector** in `src/GUI/Inspectors/` — follow the pattern of existing inspector files
 
 7. **Add to scene hierarchy panel** — `src/GUI/AddOns/GUIAddonObjects3D.cpp` (type filter + icon)
 

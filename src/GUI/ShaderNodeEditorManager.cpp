@@ -35,8 +35,8 @@
 #include <cmath>
 
 #include "../../include/Brakeza.h"
-#include "../../include/GUI/ImGuiLayoutHelpers.h"
-#include "../../include/GUI/Objects/FileSystemGUI.h"
+#include "../../include/GUI/Widgets/ImGuiLayoutHelpers.h"
+#include "../../include/GUI/Windows/FileSystemGUI.h"
 #include "NodeTypes/InternalTextureNode.h"
 #include "NodeTypes/MeshTextureNode.h"
 

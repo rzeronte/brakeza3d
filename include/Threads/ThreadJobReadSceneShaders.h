@@ -7,7 +7,7 @@
 
 #include "ThreadJobBase.h"
 #include "../Components/Components.h"
-#include "../GUI/Objects/ShadersGUI.h"
+#include "../GUI/Windows/ShadersGUI.h"
 #include "../Misc/cJSON.h"
 #include "../OpenGL/Code/ShaderOGLCustomCodePostprocessing.h"
 #include "../OpenGL/Code/ShaderBaseCustomOGLCode.h"

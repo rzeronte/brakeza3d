@@ -1,0 +1,18 @@
+{
+	"codeFile":	"../assets/scripts/Examples/Physics/RainCubesDemo.lua",
+	"typesFile":	"../assets/scripts/Examples/Physics/RainCubesDemo.json",
+	"name":	"RainCubesDemo",
+	"type":	"Object",
+	"types":	[
+		{
+			"name":	"frequency",
+			"type":	"float",
+			"value":	0.5
+		},
+		{
+			"name":	"maxCubes",
+			"type":	"int",
+			"value":	30
+		}
+	]
+}

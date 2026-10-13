@@ -5,7 +5,7 @@
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Render/Drawable.h"
-#include "../../include/GUI/Objects/Mesh3DAnimationGUI.h"
+#include "../../include/GUI/Inspectors/Mesh3DAnimationGUI.h"
 #include "../../include/Cache/AnimationDataCache.h"
 #include "../../include/Cache/SceneCache.h"
 

@@ -8,9 +8,27 @@
 
 #include <SDL_stdinc.h>
 #include <vector>
+#include <string>
 #include "../3D/Vertex3D.h"
 #include "../Config.h"
 #include <glm/vec4.hpp>
+
+// Forma desde la que nacen las partículas (el eje de la forma es el "arriba" local del emisor)
+enum class EmitterShape : int {
+    POINT = 0,      // un punto (comportamiento original)
+    BOX,            // caja de SHAPE_SIZE_X/Y/Z, centrada en el emisor
+    SPHERE,         // esfera de SHAPE_RADIUS
+    CONE,           // vértice en el emisor, se abre hacia +Y: radio SHAPE_RADIUS a SHAPE_HEIGHT de altura
+    CYLINDER,       // radio SHAPE_RADIUS, altura SHAPE_HEIGHT, centrado en el emisor
+    TORUS,          // anillo en el plano XZ: radio mayor SHAPE_RADIUS, radio del tubo SHAPE_TUBE_RADIUS
+    MESH            // superficie de una malla de la escena (SHAPE_MESH = su nombre)
+};
+
+// Hacia dónde salen: por el eje del emisor (original) o hacia fuera de la forma (normal)
+enum class EmitterShapeDirection : int {
+    AXIS = 0,
+    OUTWARD = 1
+};
 
 struct OCParticle {
     glm::vec4 position;
@@ -91,6 +109,26 @@ struct ParticlesContext {
     float ROTATION_SPEED_MIN    = 0.0f;   // velocidad de giro, grados/s (cada partícula elige una en [min, max])
     float ROTATION_SPEED_MAX    = 0.0f;
     bool  ROTATION_RANDOM_DIR   = false;  // sentido de giro aleatorio por partícula (si no, todas igual)
+
+    // Espirales / vórtice alrededor del EJE del emisor (su "arriba" local, pasando por su posición).
+    // Todo a 0 = comportamiento original (sin vórtice).
+    float SWIRL_SPEED = 0.0f;           // grados/s: las partículas giran alrededor del eje (posición y velocidad). Signo = sentido
+    float SWIRL_PULL  = 0.0f;           // 1/s²: atracción hacia el eje proporcional a la distancia (hélices cerradas; 0 = ninguna)
+    float SPIRAL_RADIAL_SPEED = 0.0f;   // u/s: velocidad de salida hacia fuera del eje, además de la velocidad normal
+    int   SPIRAL_ARMS = 0;              // 0 = acimut de salida aleatorio (disco/anillo); N >= 1 = N brazos repartidos por igual
+    float SPIRAL_SPIN = 0.0f;           // grados/s: avance del acimut de salida (el "aspersor"); con brazos dibuja la espiral
+
+    // Forma de emisión. POINT + AXIS = comportamiento original (el reparto de POSITION_NOISE se suma siempre).
+    EmitterShape SHAPE = EmitterShape::POINT;
+    float SHAPE_RADIUS = 1.0f;          // esfera, cono, cilindro; radio mayor del toroide
+    float SHAPE_HEIGHT = 2.0f;          // cono, cilindro
+    float SHAPE_TUBE_RADIUS = 0.3f;     // radio del tubo del toroide
+    float SHAPE_SIZE_X = 2.0f;          // caja: lados completos
+    float SHAPE_SIZE_Y = 2.0f;
+    float SHAPE_SIZE_Z = 2.0f;
+    bool  SHAPE_SURFACE_ONLY = false;   // true = nacen sobre la superficie; false = por todo el volumen (MESH siempre es superficie)
+    EmitterShapeDirection SHAPE_DIRECTION = EmitterShapeDirection::AXIS;
+    std::string SHAPE_MESH;             // MESH: nombre del Mesh3D de la escena (se resuelve cada frame; sigue su movimiento)
 };
 
 #endif //BRAKEZA3D_PARTICLESCONTEXT_H

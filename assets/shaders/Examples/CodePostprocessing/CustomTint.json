@@ -1,0 +1,28 @@
+{
+	"name":	"Custom",
+	"typesFile":	"../assets/shaders/Examples/CodePostprocessing/CustomTint.json",
+	"vsFile":	"../assets/shaders/Examples/CodePostprocessing/CustomTint.vs",
+	"fsFile":	"../assets/shaders/Examples/CodePostprocessing/CustomTint.fs",
+	"type":	"Postprocessing",
+	"types":	[
+		{
+			"name":	"sceneTexture",
+			"type":	"scene"
+		},
+		{
+			"name":	"r_factor",
+			"type":	"float",
+			"value":	0.0
+		},
+		{
+			"name":	"g_factor",
+			"type":	"float",
+			"value":	0.0
+		},
+		{
+			"name":	"a_factor",
+			"type":	"float",
+			"value":	0.0
+		}
+	]
+}
