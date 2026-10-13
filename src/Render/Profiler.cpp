@@ -719,20 +719,44 @@ void Profiler::DrawFrameBuffers()
     if (!window) return;
 
     static float texScale = 2.5f;
+    static bool  fitWidth = true;
     static GLuint zoomTex = 0;
     static std::string zoomLabel;
 
     const float BASE_W   = 96.0f;
-    const float BASE_H   = 54.0f;
-    const float THUMB_W  = BASE_W * texScale;
-    const float THUMB_H  = BASE_H * texScale;
     const float CARD_PAD = 10.0f;
 
     ImGui::SetNextItemWidth(160.0f);
     ImGui::SliderFloat("Preview size", &texScale, 0.5f, 5.0f, "%.1fx");
     ImGui::SameLine();
+    ImGui::Checkbox("Fit width", &fitWidth);
+    if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("On: the previews grow to fill the window width (the slider sets how many fit per row).\nOff: fixed size, wrapping to the next row.");
+    ImGui::SameLine();
     ImGui::TextDisabled("click to zoom");
     ImGui::Spacing();
+
+    // Cuadrícula adaptable: cuántas tarjetas caben por fila con el tamaño pedido y, con "Fit width", se estiran
+    // para repartir el ancho sobrante. Todas las secciones usan el mismo tamaño para que se lean igual.
+    const float availW = std::max(ImGui::GetContentRegionAvail().x, 1.0f);
+    const float wantW  = BASE_W * texScale;
+    const int   cols   = std::max(1, (int)((availW + CARD_PAD) / (wantW + CARD_PAD)));
+    float THUMB_W = fitWidth ? std::floor((availW - CARD_PAD * (cols - 1)) / cols) : wantW;
+    THUMB_W = std::max(24.0f, std::min(THUMB_W, 720.0f));
+    const float THUMB_H = THUMB_W * 9.0f / 16.0f;
+
+    int cardsInRow = 0;   // tarjetas ya puestas en la fila actual
+    // Tras cada tarjeta: seguir en la misma fila o saltar a la siguiente cuando está llena
+    auto nextCard = [&]() {
+        cardsInRow++;
+        if (cardsInRow < cols) ImGui::SameLine(0.0f, CARD_PAD);
+        else cardsInRow = 0;
+    };
+    // Al terminar una sección: cerrar la fila a medias, si la hay
+    auto endRow = [&]() {
+        if (cardsInRow != 0) ImGui::NewLine();
+        cardsInRow = 0;
+    };
 
     // Zoom popup
     if (ImGui::BeginPopup("##fb_texzoom")) {
@@ -765,7 +789,7 @@ void Profiler::DrawFrameBuffers()
             ImGui::TextDisabled("—");
         }
         ImGui::EndGroup();
-        ImGui::SameLine(0.0f, CARD_PAD);
+        nextCard();
     };
 
     auto& buf = window->getGlobalBuffers();
@@ -784,7 +808,7 @@ void Profiler::DrawFrameBuffers()
     TexCard(buf.backgroundTexture, "Background", fboSub(buf.backgroundFBO).c_str());
     TexCard(buf.foregroundTexture, "Foreground", fboSub(buf.foregroundFBO).c_str());
     TexCard(buf.uiTexture,         "UI",         fboSub(buf.uiFBO).c_str());
-    ImGui::NewLine();
+    endRow();
 
     // ── GBuffer ────────────────────────────────────────
     ImGui::Spacing();
@@ -806,8 +830,8 @@ void Profiler::DrawFrameBuffers()
         ImGui::SetTooltip("Depth texture — not displayable as RGBA");
     ImGui::TextDisabled("(depth)");
     ImGui::EndGroup();
-    ImGui::SameLine(0.0f, CARD_PAD);
-    ImGui::NewLine();
+    nextCard();
+    endRow();
 
     // ── Picking Buffer ─────────────────────────────────
     ImGui::Spacing();
@@ -815,7 +839,7 @@ void Profiler::DrawFrameBuffers()
     ImGui::Spacing();
 
     TexCard(pb.rbgTexture, "Color ID", fboSub(pb.FBO).c_str());
-    ImGui::NewLine();
+    endRow();
 }
 
 void Profiler::DrawOpenGLStatus()
@@ -1241,10 +1265,11 @@ void Profiler::DrawScriptDetail()
 
 void Profiler::DrawWinProfiler()
 {
-    DrawPlotFrameTime(measureFrameTime);
-    ImGui::Spacing();
+    // ---- Resumen: tiempo de frame + memoria del sistema ------------------------------------------------------
+    auto drawSummary = [&]() {
+        DrawPlotFrameTime(measureFrameTime);
+        ImGui::Spacing();
 
-    {
         static uint64_t totalMB = 0, freeMB = 0;
         static float    refreshTimer = 0.0f;
         refreshTimer += ImGui::GetIO().DeltaTime;
@@ -1271,75 +1296,147 @@ void Profiler::DrawWinProfiler()
         ImGui::ProgressBar(usedRatio, ImVec2(-1.0f, 0.0f), label);
         ImGui::PopStyleColor();
         ImGui::Spacing();
-    }
+    };
 
-    // Helper: styled collapsing header
-    auto Section = [](const char* label, ImVec4 baseColor) -> bool {
+    // Cabecera desplegable con color. `defaultOpen` solo se aplica la primera vez (luego manda ImGui)
+    auto Section = [](const char* label, ImVec4 baseColor, bool defaultOpen = false) -> bool {
         ImVec4 hov  = { baseColor.x + 0.08f, baseColor.y + 0.08f, baseColor.z + 0.08f, 1.0f };
         ImVec4 act  = { baseColor.x + 0.16f, baseColor.y + 0.16f, baseColor.z + 0.16f, 1.0f };
         ImGui::PushStyleColor(ImGuiCol_Header,        baseColor);
         ImGui::PushStyleColor(ImGuiCol_HeaderHovered, hov);
         ImGui::PushStyleColor(ImGuiCol_HeaderActive,  act);
-        bool open = ImGui::CollapsingHeader(label);
+        bool open = ImGui::CollapsingHeader(label, defaultOpen ? ImGuiTreeNodeFlags_DefaultOpen : 0);
         ImGui::PopStyleColor(3);
         return open;
     };
 
-    if (Section("  Components", ImVec4(0.15f, 0.30f, 0.55f, 1.0f))) {
-        ImGui::Spacing();
-        DrawComponentsTable(25.0f);
-        ImGui::Spacing();
-        DrawFlameGraph();
-        ImGui::Spacing();
+    // ---- Resumen fijo arriba + pestañas por tema ------------------------------------------------------------
+    drawSummary();
+    ImGui::Separator();
+
+    // Resúmenes para las etiquetas (solo lectura de datos ya medidos: no crean entradas ni cuestan nada)
+    auto componentMs = [&](const char* needle) -> float {
+        float total = 0.0f;
+        for (auto c : Components::get()->getComponents()) {
+            if (c->getLabel().find(needle) == std::string::npos) continue;
+            for (const char* suffix : { ProfilerConstants::SUFFIX_PRE, ProfilerConstants::SUFFIX_UPDATE, ProfilerConstants::SUFFIX_POST }) {
+                auto it = componentMeasures.find(c->getLabel() + suffix);
+                if (it != componentMeasures.end()) total += AverageHistory(it->second);
+            }
+        }
+        return total;
+    };
+
+    float scriptsMs = 0.0f;
+    if (scriptDetailEnabled) {
+        for (const auto& [key, measure] : scriptMeasures) {
+            const bool isUpdate = key.size() > 7 && key.compare(key.size() - 7, 7, "_update") == 0;
+            const bool isPost   = key.size() > 5 && key.compare(key.size() - 5, 5, "_post")   == 0;
+            if (isUpdate || isPost) scriptsMs += AverageHistory(measure);
+        }
     }
 
-    if (Section("  Render Pipeline", ImVec4(0.20f, 0.18f, 0.45f, 1.0f))) {
-        ImGui::Spacing();
-        DrawRenderDetail();
-        ImGui::Spacing();
+    // El texto de las etiquetas cambia cada frame: lo que va tras "###" es el id estable (si no, ImGui olvidaría
+    // qué pestaña/sección estaba abierta cada vez que cambia el número)
+    char renderTab[64], scriptsTab[64], renderHdr[96], glHdr[96], postHdr[96], poolsHdr[96], cacheHdr[96];
+
+    snprintf(renderTab, sizeof(renderTab), "Render  %.1f ms###prof_tab_render", componentMs("Render"));
+    if (scriptDetailEnabled) snprintf(scriptsTab, sizeof(scriptsTab), "Scripts  %.1f ms###prof_tab_scripts", scriptsMs);
+    else                     snprintf(scriptsTab, sizeof(scriptsTab), "Scripts###prof_tab_scripts");
+
+    if (countDrawCalls && lastDrawCalls > 0)
+        snprintf(renderHdr, sizeof(renderHdr), "  Render Pipeline  -  %.1f ms  -  %d draws###prof_render", componentMs("Render"), lastDrawCalls);
+    else
+        snprintf(renderHdr, sizeof(renderHdr), "  Render Pipeline  -  %.1f ms###prof_render", componentMs("Render"));
+
+    if (countDrawCalls && lastDrawCalls > 0)
+        snprintf(glHdr, sizeof(glHdr), "  OpenGL Status  -  %d draws  -  %d tris###prof_gl", lastDrawCalls, lastTriangles);
+    else
+        snprintf(glHdr, sizeof(glHdr), "  OpenGL Status###prof_gl");
+
+    {
+        int active = 0, total = 0;
+        for (auto shader : Components::get()->Render()->getSceneShaders()) {
+            total++;
+            if (shader && shader->isEnabled()) active++;
+        }
+        snprintf(postHdr, sizeof(postHdr), "  Post-Processing Chain  -  %d/%d active###prof_post", active, total);
     }
 
-    if (Section("  Scripts", ImVec4(0.38f, 0.22f, 0.12f, 1.0f))) {
-        ImGui::Spacing();
-        DrawScriptDetail();
-        ImGui::Spacing();
+    {
+        const size_t pending = Brakeza::get()->PoolCompute().getPendingTasks() + Brakeza::get()->PoolImages().getPendingTasks();
+        snprintf(poolsHdr, sizeof(poolsHdr), "  Thread Pools  -  %zu pending###prof_pools", pending);
     }
+    snprintf(cacheHdr, sizeof(cacheHdr), "  Cache  -  %d images  -  %.1f MB###prof_cache", getNumberOfImages(), getMemoryImageUsageKB() / 1024.0f);
 
-    if (Section("  Thread Pools", ImVec4(0.18f, 0.42f, 0.22f, 1.0f))) {
-        ImGui::Spacing();
-        DrawPools();
-        ImGui::Spacing();
-    }
+    // El cuerpo ocupa el resto de la ventana y es lo único que hace scroll: el resumen de arriba no se va
+    if (ImGui::BeginChild("##profiler_body", ImVec2(0, 0), false)) {
+        if (ImGui::BeginTabBar("##profiler_tabs", ImGuiTabBarFlags_FittingPolicyScroll)) {
 
-    if (Section("  Cache", ImVec4(0.12f, 0.46f, 0.30f, 1.0f))) {
-        ImGui::Spacing();
-        DrawCachesTable();
-        ImGui::Spacing();
-    }
+            if (ImGui::BeginTabItem("Overview###prof_tab_overview")) {
+                ImGui::Spacing();
+                DrawComponentsTable(25.0f);
+                ImGui::Spacing();
+                DrawFlameGraph();
+                ImGui::EndTabItem();
+            }
 
-    if (Section("  Frame Buffers", ImVec4(0.35f, 0.18f, 0.48f, 1.0f))) {
-        ImGui::Spacing();
-        DrawFrameBuffers();
-        ImGui::Spacing();
-    }
+            if (ImGui::BeginTabItem(renderTab)) {
+                ImGui::Spacing();
+                if (Section(renderHdr, ImVec4(0.20f, 0.18f, 0.45f, 1.0f), true)) {
+                    ImGui::Spacing();
+                    DrawRenderDetail();
+                    ImGui::Spacing();
+                }
+                if (Section("  Frame Buffers###prof_fbo", ImVec4(0.35f, 0.18f, 0.48f, 1.0f))) {
+                    ImGui::Spacing();
+                    DrawFrameBuffers();
+                    ImGui::Spacing();
+                }
+                if (Section(postHdr, ImVec4(0.10f, 0.38f, 0.42f, 1.0f))) {
+                    ImGui::Spacing();
+                    DrawPostProcessingChain();
+                    ImGui::Spacing();
+                }
+                if (Section(glHdr, ImVec4(0.40f, 0.14f, 0.14f, 1.0f))) {
+                    ImGui::Spacing();
+                    DrawOpenGLStatus();
+                    ImGui::Spacing();
+                }
+                ImGui::EndTabItem();
+            }
 
-    if (Section("  Post-Processing Chain", ImVec4(0.10f, 0.38f, 0.42f, 1.0f))) {
-        ImGui::Spacing();
-        DrawPostProcessingChain();
-        ImGui::Spacing();
-    }
+            if (ImGui::BeginTabItem(scriptsTab)) {
+                ImGui::Spacing();
+                DrawScriptDetail();
+                ImGui::EndTabItem();
+            }
 
-    if (Section("  Colliders", ImVec4(0.15f, 0.55f, 0.25f, 1.0f))) {
-        ImGui::Spacing();
-        DrawCollidersTable();
-        ImGui::Spacing();
-    }
+            if (ImGui::BeginTabItem("Resources###prof_tab_resources")) {
+                ImGui::Spacing();
+                if (Section(poolsHdr, ImVec4(0.18f, 0.42f, 0.22f, 1.0f), true)) {
+                    ImGui::Spacing();
+                    DrawPools();
+                    ImGui::Spacing();
+                }
+                if (Section(cacheHdr, ImVec4(0.12f, 0.46f, 0.30f, 1.0f), true)) {
+                    ImGui::Spacing();
+                    DrawCachesTable();
+                    ImGui::Spacing();
+                }
+                ImGui::EndTabItem();
+            }
 
-    if (Section("  OpenGL Status", ImVec4(0.40f, 0.14f, 0.14f, 1.0f))) {
-        ImGui::Spacing();
-        DrawOpenGLStatus();
-        ImGui::Spacing();
+            if (ImGui::BeginTabItem("Physics###prof_tab_physics")) {
+                ImGui::Spacing();
+                DrawCollidersTable();
+                ImGui::EndTabItem();
+            }
+
+            ImGui::EndTabBar();
+        }
     }
+    ImGui::EndChild();
 }
 
 void Profiler::DrawPostProcessingChain()
@@ -2192,51 +2289,76 @@ double Profiler::Ticks()
 
 void Profiler::DrawFlameGraph()
 {
-    float totalTime = AverageHistory(measureFrameTime);  // ms, averaged
-    float barHeight = 30.0f;
-    ImVec2 cursor = ImGui::GetCursorScreenPos();
+    const float totalTime = AverageHistory(measureFrameTime);  // ms, averaged
+    const float barHeight = 30.0f;
+    const ImVec2 cursor = ImGui::GetCursorScreenPos();
     ImDrawList* drawList = ImGui::GetWindowDrawList();
-    float barWidth = ImGui::GetContentRegionAvail().x;
+    const float barWidth = ImGui::GetContentRegionAvail().x;
 
-    float xOffset = 0.0f;
-
-    // Colores predefinidos
-    ImU32 colors[] = {
-        IM_COL32(255, 100, 100, 255),  // Rojo
-        IM_COL32(100, 255, 100, 255),  // Verde
-        IM_COL32(100, 100, 255, 255),  // Azul
-        IM_COL32(255, 255, 100, 255),  // Amarillo
-        IM_COL32(255, 100, 255, 255),  // Magenta
-        IM_COL32(100, 255, 255, 255),  // Cyan
+    // Tramos de ESPERA del bucle: SDL_Delay del control de fps y el volcado a pantalla (incluye el vsync).
+    // No son trabajo del motor y suelen ocupar media barra, así que van al final y en gris para no tapar lo demás.
+    auto isWait = [](const std::string& name) {
+        return name == "Loop_FrameRateControl" || name == "Loop_FlipToWindow";
     };
 
-    int colorIndex = 0;
+    struct Entry { const std::string* name; float ms; bool wait; };
+    std::vector<Entry> entries;
+    entries.reserve(componentMeasures.size());
+    for (const auto& [name, measure] : componentMeasures) {
+        const float ms = AverageHistory(measure);
+        if (ms <= 0.001f) continue;
+        entries.push_back({ &name, ms, isWait(name) });
+    }
 
-    for (auto& [name, measure] : componentMeasures) {
-        float ms = AverageHistory(measure);
-        float percentage = totalTime > 0.0f ? (ms / totalTime) : 0.0f;
-        float width = barWidth * percentage;
+    // Orden estable (el unordered_map cambia de orden): primero el trabajo, de mayor a menor; después las esperas
+    std::sort(entries.begin(), entries.end(), [](const Entry& x, const Entry& y) {
+        if (x.wait != y.wait) return !x.wait;
+        if (x.ms != y.ms) return x.ms > y.ms;
+        return *x.name < *y.name;
+    });
 
-        // Dibujar rectángulo
-        ImVec2 rectMin(cursor.x + xOffset, cursor.y);
-        ImVec2 rectMax(cursor.x + xOffset + width, cursor.y + barHeight);
+    // Color fijo por nombre: no parpadea al cambiar el orden
+    const ImU32 colors[] = {
+        IM_COL32(255, 100, 100, 255), IM_COL32(100, 255, 100, 255), IM_COL32(100, 100, 255, 255),
+        IM_COL32(255, 255, 100, 255), IM_COL32(255, 100, 255, 255), IM_COL32(100, 255, 255, 255),
+    };
 
-        drawList->AddRectFilled(rectMin, rectMax, colors[colorIndex % 6]);
+    float xOffset = 0.0f;
+    const float maxX = barWidth;
+    for (const auto& e : entries) {
+        const float percentage = totalTime > 0.0f ? (e.ms / totalTime) : 0.0f;
+        const float width = std::min(barWidth * percentage, maxX - xOffset);
+        if (width <= 0.0f) continue;
+
+        const ImVec2 rectMin(cursor.x + xOffset, cursor.y);
+        const ImVec2 rectMax(cursor.x + xOffset + width, cursor.y + barHeight);
+
+        const size_t hash = std::hash<std::string>{}(*e.name);
+        const ImU32 fill = e.wait ? IM_COL32(95, 95, 105, 255) : colors[hash % 6];
+
+        drawList->AddRectFilled(rectMin, rectMax, fill);
         drawList->AddRect(rectMin, rectMax, IM_COL32(0, 0, 0, 255));
 
-        // Texto si hay espacio
         if (width > 50) {
-            char label[64];
-            snprintf(label, sizeof(label), "%s\n%.2f%%", name.c_str(), percentage * 100.0f);
+            char label[96];
+            snprintf(label, sizeof(label), "%s\n%.2f%%", e.name->c_str(), percentage * 100.0f);
+            // El texto se recorta a su tramo: un nombre largo no invade a los vecinos
+            drawList->PushClipRect(rectMin, rectMax, true);
             drawList->AddText(ImVec2(rectMin.x + 5, rectMin.y + 5),
-                            IM_COL32(0, 0, 0, 255), label);
+                              e.wait ? IM_COL32(230, 230, 235, 255) : IM_COL32(0, 0, 0, 255), label);
+            drawList->PopClipRect();
+        }
+
+        // Los tramos estrechos no caben con texto: al pasar el ratón se ve cuál es
+        if (ImGui::IsMouseHoveringRect(rectMin, rectMax)) {
+            ImGui::SetTooltip("%s%s\n%.3f ms  (%.1f%% of the frame)", e.name->c_str(), e.wait ? "  [waiting]" : "", e.ms, percentage * 100.0f);
         }
 
         xOffset += width;
-        colorIndex++;
     }
 
     ImGui::Dummy(ImVec2(barWidth, barHeight + 5));
+    ImGui::TextDisabled("Gray = waiting (frame-rate delay, vsync / buffer swap); not engine work.");
 }
 
 float Profiler::AverageHistory(const Measure &m)
