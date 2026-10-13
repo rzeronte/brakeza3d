@@ -1,0 +1,847 @@
+{
+	"screenshot": "",
+	"ads": {
+		"direction": {
+			"x": 0.3,
+			"y": -0.8,
+			"z": -0.5
+		},
+		"diffuse": {
+			"x": 0.55,
+			"y": 0.55,
+			"z": 0.55
+		},
+		"specular": {
+			"x": 0.4,
+			"y": 0.4,
+			"z": 0.4
+		},
+		"ambient": {
+			"x": 0.28,
+			"y": 0.28,
+			"z": 0.3
+		}
+	},
+	"objects": [
+		{
+			"name": "Ground",
+			"scale": 40,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 0,
+				"y": -19.4,
+				"z": 0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/cube.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [],
+			"type": 2
+		},
+		{
+			"name": "Hologram",
+			"scale": 2.0,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -12,
+				"y": 1.2,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/Hologram.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "NeonPulse",
+			"scale": 1.9,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -8,
+				"y": 1.4,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/torus.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/NeonPulse.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "DiagonalStripes",
+			"scale": 1.9,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -4,
+				"y": 1.0,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/cilinder.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/DiagonalStripes.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "Lava",
+			"scale": 2.0,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 0,
+				"y": 1.2,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/Lava.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "Checkerboard",
+			"scale": 2.0,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 4,
+				"y": 1.2,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/Checkerboard.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "NormalColors",
+			"scale": 2.0,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 8,
+				"y": 1.2,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/NormalColors.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "FireGlow",
+			"scale": 2.0,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 12,
+				"y": 1.2,
+				"z": -3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/basic/icosphere.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/FireGlow.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "HitFlash",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -12,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/HitFlash.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "WaterSurface",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -8,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/WaterSurface.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "BurnDissolve",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -4,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/BurnDissolve.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "RimLight",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 0,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/RimLight.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "ToonOutline",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 4,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/ToonOutline.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "ScanLine",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 8,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/ScanLine.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "PixelatedTexture",
+			"scale": 0.35,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 12,
+				"y": 0.9,
+				"z": 3.0
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"model": "../assets/models/ChessPawn.fbx",
+			"enableLights": true,
+			"renderDefaultPipeline": true,
+			"frustumCullSubmeshes": false,
+			"shaders": [
+				{
+					"typesFile": "../assets/shaders/Examples/NodeMesh3D/PixelatedTexture.json"
+				}
+			],
+			"type": 2
+		},
+		{
+			"name": "KeyLight",
+			"scale": 1,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": -9,
+				"y": 9,
+				"z": 10
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"ambient": {
+				"x": 0.05,
+				"y": 0.05,
+				"z": 0.05
+			},
+			"diffuse": {
+				"x": 1.0,
+				"y": 0.95,
+				"z": 0.9
+			},
+			"specular": {
+				"x": 1,
+				"y": 1,
+				"z": 1
+			},
+			"constant": 1,
+			"linear": 0.045,
+			"quadratic": 0.0075,
+			"type": 4
+		},
+		{
+			"name": "FillLight",
+			"scale": 1,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 9,
+				"y": 8,
+				"z": 10
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"ambient": {
+				"x": 0.05,
+				"y": 0.05,
+				"z": 0.05
+			},
+			"diffuse": {
+				"x": 0.7,
+				"y": 0.8,
+				"z": 1.0
+			},
+			"specular": {
+				"x": 1,
+				"y": 1,
+				"z": 1
+			},
+			"constant": 1,
+			"linear": 0.045,
+			"quadratic": 0.0075,
+			"type": 4
+		},
+		{
+			"name": "BackLight",
+			"scale": 1,
+			"alpha": 1,
+			"enabled": true,
+			"selectable": true,
+			"position": {
+				"x": 0,
+				"y": 9,
+				"z": -9
+			},
+			"rotation": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"renderSettings": {
+				"blend": true,
+				"culling": true,
+				"depthTest": true,
+				"writeDepth": true,
+				"shadowMap": true,
+				"frustumCulling": true,
+				"blend_function_src": 1,
+				"blend_function_dst": 771
+			},
+			"isCollisionsEnabled": false,
+			"scripts": [],
+			"ambient": {
+				"x": 0.05,
+				"y": 0.05,
+				"z": 0.05
+			},
+			"diffuse": {
+				"x": 1.0,
+				"y": 0.8,
+				"z": 0.6
+			},
+			"specular": {
+				"x": 1,
+				"y": 1,
+				"z": 1
+			},
+			"constant": 1,
+			"linear": 0.045,
+			"quadratic": 0.0075,
+			"type": 4
+		}
+	],
+	"shaders": [
+		{
+			"name": "Sepia",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/Sepia.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "Duotone",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/Duotone.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "NightVision",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/NightVision.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "Thermal",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/Thermal.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "ChromaticAberration",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/ChromaticAberration.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "Underwater",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/Underwater.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "RetroPixels",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/RetroPixels.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "ComicPosterize",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/ComicPosterize.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "FilmGrain",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/FilmGrain.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "Ripple",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/Ripple.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "GhostEcho",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/GhostEcho.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		},
+		{
+			"name": "MirrorScreen",
+			"typesFile": "../assets/shaders/Examples/NodePostprocessing/MirrorScreen.json",
+			"type": "NodePostProcessing",
+			"enabled": false
+		}
+	],
+	"scripts": [
+		{
+			"codeFile": "../assets/scripts/Examples/Graphics/ShaderShowcase.lua",
+			"typesFile": "../assets/scripts/Examples/Graphics/ShaderShowcase.json",
+			"name": "ShaderShowcase",
+			"type": "Global",
+			"types": []
+		}
+	],
+	"camera": {
+		"position": {
+			"x": 0,
+			"y": 6.5,
+			"z": 24
+		},
+		"rotation": {
+			"x": 12,
+			"y": 0,
+			"z": 0
+		}
+	}
+}

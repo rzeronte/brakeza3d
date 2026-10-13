@@ -436,8 +436,13 @@ inline void LUAIntegration(sol::state &lua)
         "getGlobalIlluminationAmbient", &ComponentRender::getGlobalIlluminationAmbient,
         "getGlobalIlluminationDiffuse", &ComponentRender::getGlobalIlluminationDiffuse,
         "getGlobalIlluminationSpecular", &ComponentRender::getGlobalIlluminationSpecular,
-        "getSceneShaderByLabel", [](ComponentRender& r, const std::string& label) -> ShaderBaseCustomOGLCode* {
-            return dynamic_cast<ShaderBaseCustomOGLCode*>(r.getSceneShaderByLabel(label));
+        // Shader de escena por etiqueta. Un shader de código se devuelve como ShaderOpenGLCustom (con sus
+        // uniforms); cualquier otro (p. ej. de nodos) como ShaderCustom, que solo permite activarlo/desactivarlo.
+        "getSceneShaderByLabel", [](ComponentRender& r, const std::string& label, sol::this_state ts) -> sol::object {
+            ShaderBaseCustom* shader = r.getSceneShaderByLabel(label);
+            if (shader == nullptr) return sol::make_object(ts, sol::lua_nil);
+            if (auto* codeShader = dynamic_cast<ShaderBaseCustomOGLCode*>(shader)) return sol::make_object(ts, codeShader);
+            return sol::make_object(ts, shader);
         },
         "clearSceneShaders", &ComponentRender::clearSceneShaders,
         "getFps", &ComponentRender::getFps,
@@ -1282,6 +1287,13 @@ inline void LUAIntegration(sol::state &lua)
             },
             "setEnabled", [](ShaderBaseCustomOGLCode& s, bool v) { s.setEnabled(v); },
             "isEnabled",  [](ShaderBaseCustomOGLCode& s) { return s.isEnabled(); }
+    );
+
+    // Shader de escena genérico (de nodos u otro tipo sin uniforms accesibles desde Lua)
+    lua.new_usertype<ShaderBaseCustom>("ShaderCustom",
+        "getLabel",   [](ShaderBaseCustom& s) { return s.getLabel(); },
+        "setEnabled", [](ShaderBaseCustom& s, bool v) { s.setEnabled(v); },
+        "isEnabled",  [](ShaderBaseCustom& s) { return s.isEnabled(); }
     );
 
     lua.new_usertype<glm::vec2>("vec2",
