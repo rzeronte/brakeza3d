@@ -64,8 +64,8 @@ function onStart()
     print("[NinjaGaidenGhost] Controller initialized!")
     print("[NinjaGaidenGhost] Using GHOST collider - manual physics")
 
-    rotationRight = M3:getMatrixRotationForEulerAngles(0, 0, 0)
-    rotationLeft = M3:getMatrixRotationForEulerAngles(180, 0, 0)
+    rotationRight = M3.getMatrixRotationForEulerAngles(0, 0, 0)
+    rotationLeft = M3.getMatrixRotationForEulerAngles(180, 0, 0)
     this:setRotation(rotationRight)
 
     spawnPosition = this:getPosition()

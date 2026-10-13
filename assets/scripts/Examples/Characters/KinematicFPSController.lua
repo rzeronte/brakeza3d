@@ -60,6 +60,8 @@ function onStart()
     input  = Components:Input()
     camera = Components:Camera():getCamera()
     tw     = ObjectFactory.TextWriter("../assets/fonts/Courier.ttf")
+    -- Arrastrar con el botón izquierdo mira/apunta: el recuadro de selección del editor sobraría
+    pcall(function() Components:Render():setDragSelectEnabled(false) end)
 
     -- Un exe anterior no tiene la captura de ratón: Tab sigue activando mirar sin botón, pero con el cursor visible
     hasCapture = pcall(function() return input:isRelativeMouseMode() end)
@@ -75,7 +77,7 @@ function onStart()
     end
 
     -- El cuerpo (cápsula) solo debe girar en yaw; si el binding no está disponible se usa la rotación completa de la cámara
-    yawOnlyBody = pcall(function() return M3:getMatrixRotationForEulerAngles(0, 0, 0):getTranspose() end)
+    yawOnlyBody = pcall(function() return M3.getMatrixRotationForEulerAngles(0, 0, 0):getTranspose() end)
 end
 
 -- Cabeceo al andar: devuelve el desplazamiento vertical y lateral de la cámara.
@@ -112,7 +114,7 @@ local function look()
     camera:setRotationFromEulerAngles(pitch, yaw, 0)
 
     if yawOnlyBody then
-        this:setRotation(M3:getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
+        this:setRotation(M3.getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
     else
         this:setRotation(camera:getRotation():getTranspose())
     end
@@ -197,6 +199,7 @@ end
 function onEnd()
     -- Soltar el ratón al salir: si no, quedaría capturado en la siguiente demo
     if freeLook then setFreeLook(false) end
+    pcall(function() Components:Render():setDragSelectEnabled(true) end)   -- devolver la selección con recuadro
     pcall(function() this:setAlpha(1.0); this:setAlphaEnabled(false) end)
 end
 

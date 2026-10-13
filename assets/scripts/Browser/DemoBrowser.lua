@@ -217,6 +217,7 @@ local function resetEngineState()
         inp:setMouseEnabled(true)
         inp:setRelativeMouseMode(false)      -- exe antiguo sin este binding: se ignora
     end)
+    pcall(function() Components:Render():setDragSelectEnabled(true) end)   -- recuadro de selección (lo apagan las demos de cámara)
     pcall(function() Components:Sound():setAmbiencePanning(false) end)
     pcall(function() Components:Sound():setAmbienceVolume(100) end)
     pcall(function() Components:Sound():StopMusic() end)

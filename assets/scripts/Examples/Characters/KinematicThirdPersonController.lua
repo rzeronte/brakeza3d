@@ -43,10 +43,12 @@ end
 function onStart()
     input  = Components:Input()
     camera = Components:Camera():getCamera()
+    -- Arrastrar con el botón izquierdo mira/apunta: el recuadro de selección del editor sobraría
+    pcall(function() Components:Render():setDragSelectEnabled(false) end)
     speed, strafe = 0, 0
     jumpBuffer = 0.0
     yaw = 0.0
-    this:setRotation(M3:getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
+    this:setRotation(M3.getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
 end
 
 -- Giro: arrastrar con el botón izquierdo gira el personaje alrededor del eje vertical (Y).
@@ -56,7 +58,7 @@ local function turn()
     if not (input:isLeftMouseButtonPressed() and input:isMouseMotion()) then return end
     local dx = clamp(input:getMouseMotionXRel(), -MAX_MOUSE_STEP, MAX_MOUSE_STEP)
     yaw = yaw + dx * num(mouseSensibility, 0.1)
-    this:setRotation(M3:getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
+    this:setRotation(M3.getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
 end
 
 -- La cámara se coloca detrás del personaje (cameraOffset: x lateral, y altura, z distancia) y mira a
@@ -124,6 +126,10 @@ function onUpdate()
         this:Jump(Vertex3D.new(0, num(jumpForce, 10), 0))
         jumpBuffer = 0.0
     end
+end
+
+function onEnd()
+    pcall(function() Components:Render():setDragSelectEnabled(true) end)   -- devolver la selección con recuadro
 end
 
 function onCollision(with)
