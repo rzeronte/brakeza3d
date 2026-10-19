@@ -43,6 +43,8 @@ public:
     void CreateAnimation(const std::string& sprite, int w, int h, int numFrames, int fps);
     void CreateAnimationFromCache(const std::string& sprite, int w, int h, int numFrames, int fps);
     void setAnimation(int);
+    // Fija el frame de la animación actual y la pausa: el frame lo manda el script (p.ej. sprite de sirena sincronizado con el giro del haz)
+    void setFrame(int frame);
     void UpdateTexture();
     void UpdateTrianglesCoordinatesAndTexture();
     void DrawPropertiesGUI() override;

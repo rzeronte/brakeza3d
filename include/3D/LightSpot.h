@@ -52,6 +52,7 @@ public:
 
     friend class LightSpotSerializer;
     friend class LightSpotGUI;
+    friend class UndoManager;
 };
 
 #endif //BRAKEZA3D_SPOTLIGHT3D_H

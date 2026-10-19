@@ -3,6 +3,7 @@
 #include "../../../include/3D/LightSpot.h"
 #include "../../../include/Components/ComponentScripting.h"
 #include "imgui.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 
 static float g_constant   = 0.77f;
 static float g_linear     = 0.02f;
@@ -48,12 +49,15 @@ void GUIAddonCityLights::Draw()
     }
     ImGui::NewLine();
 
-    ImGui::SeparatorText("Global spot config");
-
-    ImGui::SliderFloat("Constant",  &g_constant, 0.0f, 2.0f);
-    ImGui::SliderFloat("Linear",    &g_linear,   0.0f, 0.2f);
-    ImGui::SliderFloat("Cut off",   &g_cutoff,   0.0f, 1.0f);
-    ImGui::SliderFloat("Outer cut", &g_outer,    0.0f, 1.0f);
+    {
+        GUIFields::Section spotConfig("GLOBAL SPOT CONFIG");
+        if (spotConfig) {
+            GUIFields::Slider("Constant",  &g_constant, 0.0f, 2.0f);
+            GUIFields::Slider("Linear",    &g_linear,   0.0f, 0.2f);
+            GUIFields::Slider("Cut off",   &g_cutoff,   0.0f, 1.0f);
+            GUIFields::Slider("Outer cut", &g_outer,    0.0f, 1.0f);
+        }
+    }
 
     ImGui::Spacing();
     if (ImGui::Button("Apply to all city lights", ImVec2(-1, 0)))

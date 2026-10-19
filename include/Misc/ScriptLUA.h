@@ -4,6 +4,8 @@
 #ifndef BRAKEZA3D_SCRIPTLUA_H
 #define BRAKEZA3D_SCRIPTLUA_H
 
+#include <atomic>
+#include <cstdint>
 #include <map>
 #include <unordered_map>
 #include <string>
@@ -81,6 +83,37 @@ struct ScriptMetaInfo {
 
 class Scene;
 
+// Callback de un entorno de OBJETO (onUpdate / postUpdate) ya resuelto: se busca por nombre una vez y se reutiliza cada frame,
+// igual que ya hacen los scripts globales con globalFuncCache. Lo guarda el Object3D que posee el entorno, y es ese objeto
+// quien lo invalida (Object3D::invalidateScriptCallbacks) cuando algo redefine funciones EN SU entorno: el resto de la
+// escena no se entera. Limitación: si un script reasigna su propio onUpdate en pleno juego, el cambio no se ve hasta la
+// siguiente recarga del entorno.
+//
+// IMPORTANTE: solo guarda un lua_State* y un entero (referencia del registro de Lua), NO un sol::protected_function. Los tipos
+// de sol dentro de Object3D no tienen el mismo tamaño en todas las unidades de compilación (depende de en qué orden se incluyan
+// las macros SOL_*), y eso desplazaba los miembros de las subclases: el código de los bindings de Lua escribía en otro offset
+// (heap corrupto en el RTS al abrir, 2026-10-14). Con tipos triviales el tamaño es el mismo en todas partes.
+struct ScriptCallbackSlot
+{
+    lua_State *L = nullptr;
+    int ref = LUA_NOREF;      // luaL_ref de la función en el registro; LUA_NOREF = no existe o aún sin resolver
+    bool resolved = false;
+
+    ScriptCallbackSlot() = default;
+    // Copiar un objeto no copia la referencia: la copia empieza sin resolver
+    ScriptCallbackSlot(const ScriptCallbackSlot &) {}
+    ScriptCallbackSlot &operator=(const ScriptCallbackSlot &) { invalidate(); return *this; }
+    ~ScriptCallbackSlot() { invalidate(); }
+
+    void invalidate()
+    {
+        if (L != nullptr && ref != LUA_NOREF && ref != LUA_REFNIL) luaL_unref(L, LUA_REGISTRYINDEX, ref);
+        L = nullptr;
+        ref = LUA_NOREF;
+        resolved = false;
+    }
+};
+
 class ScriptLUA
 {
     bool paused = false;
@@ -111,7 +144,7 @@ public:
     ScriptLUA(const std::string& name, const std::string &codeFile, const std::string &typesFile, const cJSON *types);
 
     bool hasDataType(const char *name, const char *type) const;
-    void RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt) const;
+    void RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg = std::nullopt, ScriptCallbackSlot *slot = nullptr) const;
     void RunGlobal(const std::string& func);
     void AddDataType(const char *name, const char *type, cJSON *value);
     void ProcessFileTypes();

@@ -7,6 +7,7 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/GUI/Windows/FileSystemGUI.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 
 GuiAddonConsole::GuiAddonConsole()
 {
@@ -94,12 +95,29 @@ void GuiAddonConsole::DrawWinLogging()
 
     // Options menu
     if (ImGui::BeginPopup("Options")) {
-        ImGui::Checkbox("Auto-scroll", &AutoScroll);
+        {
+            GUIFields::Section options("OPTIONS", 90.0f, 40.0f);
+            if (options) {
+                GUIFields::Check("Auto-scroll", &AutoScroll);
+            }
+        }
         ImGui::EndPopup();
     }
 
     // Options, Filter
     GUI::DrawButton("Clear", IconGUI::LOGGING_CLEAR, GUIType::Sizes::ICONS_CONSOLE, true, [&]{ ClearLog(); });
+    ImGui::SameLine();
+    // ImGui delega en el backend (SDL_SetClipboardText): funciona igual en Windows/Linux/macOS
+    if (ImGui::Button("Copy")) {
+        std::string text;
+        for (const char* item : Items) {
+            if (!Filter.PassFilter(item)) continue;
+            text += item;
+            if (text.empty() || text.back() != '\n') text += '\n';
+        }
+        ImGui::SetClipboardText(text.c_str());
+    }
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Copy the visible log lines (respecting the filter) to the clipboard");
     ImGui::SameLine();
     Filter.Draw("Filter", 180);
     ImGui::SameLine();

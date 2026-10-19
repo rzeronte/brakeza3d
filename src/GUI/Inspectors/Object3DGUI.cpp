@@ -13,51 +13,50 @@
 
 void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 {
-    static int cont = 0;
     static char name[256];
-    strncpy(name, o->name.c_str(), sizeof(name));
-    ImGui::PushID(++cont);
-    ImGui::Image(FileSystemGUI::Icon(o->getIcon()), ImVec2(22, 24));
-    ImGui::PopID();
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(125.0f);
-    ImGui::InputText("Name##nameObject", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AlwaysOverwrite);
-    if (ImGui::IsItemEdited()) {
-        o->setName(name);
+    strncpy(name, o->name.c_str(), sizeof(name) - 1);
+    name[sizeof(name) - 1] = '\0';
+    {
+        GUIFields::Section identity("IDENTITY");
+        if (identity) {
+            GUIFields::NextRowIcon(FileSystemGUI::Icon(o->getIcon()), ImVec2(22, 24));
+            if (GUIFields::String("Name", name, IM_ARRAYSIZE(name), nullptr, ImGuiInputTextFlags_AlwaysOverwrite)) {
+                o->setName(name);
+            }
+        }
     }
-    ImGui::Separator();
 
     if (o->featuresGUI.position || o->featuresGUI.rotation || o->featuresGUI.scale) {
         if (ImGui::CollapsingHeader("Transformations")) {
             using namespace GUIFields;
 
-            // Botón de reset (icono) a la izquierda del control; el control llena el resto de la columna
-            auto resetButton = [](const char* id, const char* tooltip, const std::function<void()>& action) {
+            // Fila Float3 con botón de reset (icono) a la izquierda; el control llena el resto de la columna
+            auto vec3Row = [](const char* label, const char* help, const char* id, const char* tooltip, float* v,
+                              float speed, float vmin, float vmax, const char* fmt, const std::function<void()>& onReset) {
+                Row(label, help);
                 ImGui::PushID(id);
-                GUI::DrawButton(tooltip, IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, action);
+                GUI::DrawButton(tooltip, IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, onReset);
                 ImGui::PopID();
                 ImGui::SameLine();
                 ImGui::SetNextItemWidth(-FLT_MIN);
+                return ImGui::DragFloat3("##v", v, speed, vmin, vmax, fmt);
             };
 
-            if (BeginSection("TRANSFORM")) {
-                // position
+            Section transform("TRANSFORM");
+            if (transform) {
                 if (o->featuresGUI.position) {
-                    Row("Position");
-                    resetButton("reset_position", "Reset position", [&] {
-                        LOG_MESSAGE("Reset Position");
-                        o->setPosition(Vertex3D(0, 0, 0));
-                    });
                     float vec3f[3];
                     o->getPosition().toFloat(vec3f);
-                    if (ImGui::DragFloat3("##v", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+                    if (vec3Row("Position", nullptr, "reset_position", "Reset position", vec3f, 0.01f, -999999.0f, 999999.0f, "%.3f", [&] {
+                        LOG_MESSAGE("Reset Position");
+                        o->setPosition(Vertex3D(0, 0, 0));
+                    })) {
                         o->position.x = vec3f[0];
                         o->position.y = vec3f[1];
                         o->position.z = vec3f[2];
                     }
                 }
 
-                // rotation
                 if (o->featuresGUI.rotation) {
                     // Edit-buffer pattern: avoid re-decomposing the matrix to Euler on every
                     // frame while the user is dragging — that roundtrip is unstable near
@@ -66,14 +65,6 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                     static float           editBuf[3] = {0, 0, 0};
                     static bool            wasActive  = false;
 
-                    Row("Rotation");
-                    resetButton("reset_rotation", "Reset rotation", [&] {
-                        LOG_MESSAGE("Reset Rotation");
-                        o->setRotation(M3::getMatrixIdentity());
-                        editBuf[0] = editBuf[1] = editBuf[2] = 0.0f;
-                        editedObj = o;
-                    });
-
                     // Resync from the matrix only when NOT actively dragging (or switched object)
                     if (!wasActive || editedObj != o) {
                         editBuf[0] = o->getRotation().getPitchDegree();
@@ -81,7 +72,12 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                         editBuf[2] = o->getRotation().getRollDegree();
                     }
 
-                    bool changed = ImGui::DragFloat3("##v", editBuf, 0.5f, -360.0f, 360.0f, "%.2f");
+                    bool changed = vec3Row("Rotation", nullptr, "reset_rotation", "Reset rotation", editBuf, 0.5f, -360.0f, 360.0f, "%.2f", [&] {
+                        LOG_MESSAGE("Reset Rotation");
+                        o->setRotation(M3::getMatrixIdentity());
+                        editBuf[0] = editBuf[1] = editBuf[2] = 0.0f;
+                        editedObj = o;
+                    });
                     bool nowActive = ImGui::IsItemActive();
 
                     if (changed) {
@@ -96,29 +92,24 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                     if (nowActive) editedObj = o;
                     wasActive = nowActive;
 
-                    Row("Draw offset", "Visual offset of the model without moving the object (and its collider).");
-                    resetButton("reset_drawoffset", "Reset draw offset", [&] {
-                        LOG_MESSAGE("Reset DrawOffset");
-                        o->setDrawOffset(Vertex3D(0, 0, 0));
-                    });
                     float vec3f[3];
                     o->drawOffset.toFloat(vec3f);
-                    if (ImGui::DragFloat3("##v", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+                    if (vec3Row("Draw offset", "Visual offset of the model without moving the object (and its collider).", "reset_drawoffset", "Reset draw offset", vec3f, 0.01f, -999999.0f, 999999.0f, "%.3f", [&] {
+                        LOG_MESSAGE("Reset DrawOffset");
+                        o->setDrawOffset(Vertex3D(0, 0, 0));
+                    })) {
                         o->drawOffset.x = vec3f[0];
                         o->drawOffset.y = vec3f[1];
                         o->drawOffset.z = vec3f[2];
                     }
                 }
 
-                // scale
                 if (o->featuresGUI.scale) {
-                    Row("Scale");
-                    resetButton("reset_scale", "Reset scale", [&] {
+                    float sv[3] = {o->scale3D.x, o->scale3D.y, o->scale3D.z};
+                    if (vec3Row("Scale", nullptr, "reset_scale", "Reset scale", sv, 0.01f, -360.f, 360.f, "%.3f", [&] {
                         LOG_MESSAGE("Reset Scale");
                         o->setScale(1.f);
-                    });
-                    float sv[3] = {o->scale3D.x, o->scale3D.y, o->scale3D.z};
-                    if (ImGui::DragFloat3("##v", sv, 0.01f, -360.f, 360.f, "%.3f")) {
+                    })) {
                         o->scale3D = Vertex3D(sv[0], sv[1], sv[2]);
                     }
 
@@ -135,7 +126,6 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                         }
                     }
                 }
-                EndSection();
             }
         }
     }
@@ -151,11 +141,9 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
                 Check("Highlighted", &o->highlighted, "Draw the object with a highlight color.");
                 if (o->highlighted) {
                     float col[4] = {o->highlightColor.r, o->highlightColor.g, o->highlightColor.b, o->highlightColor.a};
-                    Row("Highlight color");
-                    if (ImGui::ColorEdit4("##v", col, ImGuiColorEditFlags_NoInputs)) {
+                    if (Color4("Highlight color", col)) {
                         o->highlightColor = Color(col[0], col[1], col[2], col[3]);
                     }
-                    EndRow();
                 }
                 bool avatarGlobal = Config::get()->SHOW_AVATARS;
                 ImGui::BeginDisabled(!avatarGlobal);
@@ -203,7 +191,14 @@ void Object3DGUI::DrawPropertiesGUI(Object3D *o)
 
     if (o->featuresGUI.attached) {
         if (ImGui::CollapsingHeader("Collider")) {
-            if (ImGui::Checkbox("Enable collider", &o->collisionsEnabled)) {
+            bool colliderToggled = false;
+            {
+                GUIFields::Section colliderSection("COLLIDER");
+                if (colliderSection) {
+                    colliderToggled = GUIFields::Check("Enable collider", &o->collisionsEnabled);
+                }
+            }
+            if (colliderToggled) {
                 if (!o->collisionsEnabled) {
                     o->RemoveCollisionObject();
                 } else {
@@ -288,15 +283,16 @@ void Object3DGUI::DrawSelectedObjectGuizmo()
 
 void Object3DGUI::SelectorOGLBlendMode(GLenum &mode_src, GLenum &mode_dst)
 {
-    // Selector para Source
+    GUIFields::Section blend("BLEND MODE");
+    if (!blend) return;
+
     int current_src = Config::FindBlendModeIndex(mode_src);
-    if (ImGui::Combo("Source Blend Mode##", &current_src, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
+    if (GUIFields::Combo("Source", &current_src, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
         mode_src = Config::blend_values[current_src];
     }
 
-    // Selector para Destination
     int current_dst = Config::FindBlendModeIndex(mode_dst);
-    if (ImGui::Combo("Destination Blend Mode##", &current_dst, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
+    if (GUIFields::Combo("Destination", &current_dst, Config::blend_modes, IM_ARRAYSIZE(Config::blend_modes))) {
         mode_dst = Config::blend_values[current_dst];
     }
 }

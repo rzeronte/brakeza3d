@@ -60,7 +60,7 @@
 				"ccdSweptSphereRadius":	0,
 				"linearDamping":	0,
 				"angularDamping":	0,
-				"restitution":	0,
+				"restitution":	0.8,
 				"colliderStatic":	true,
 				"collisionGroup":	1,
 				"collisionMask":	-1,

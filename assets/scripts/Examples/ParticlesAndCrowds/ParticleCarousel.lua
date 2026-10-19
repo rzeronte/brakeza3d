@@ -120,8 +120,12 @@ local function alive(o)
     return ok and not removed
 end
 
+-- The automatic view only ever steps BACK (zoom <= 0): moving the camera towards a small effect put it inside the particles and the
+-- effect disappeared. The wheel still zooms in on demand.
 local function moodOf(name)
-    return MOODS[name] or { bg = DEFAULT_BG, zoom = 0, desc = "" }
+    local m = MOODS[name] or { bg = DEFAULT_BG, zoom = 0, desc = "" }
+    if m.zoom > 0 then m = { bg = m.bg, zoom = 0, desc = m.desc, pulse = m.pulse } end
+    return m
 end
 
 local function currentName()
@@ -235,6 +239,28 @@ local function updateZoom(dt)
     camera:setPosition(Vertex3D.new(b.x + f.x * state.zoom, b.y + f.y * state.zoom, b.z + f.z * state.zoom))
 end
 
+-- La cámara mira al efecto que está al frente (a media altura de su columna de partículas), con un giro suave: así el efecto queda
+-- centrado en pantalla en vez de en el borde inferior
+local LOOK_HEIGHT, LOOK_SMOOTH = 3.0, 4.0
+local function updateLookAt(dt)
+    local b = state.camBase
+    if b == nil then return end
+    local it = state.items[wrapIndex(state.target, #EFFECTS) + 1]
+    if it == nil or not alive(it.emitter) then return end
+
+    local ringRadius = cfgNum(radius, 33.0)
+    local tx, ty, tz = cfgNum(centerX, 0.0), (it.baseY or 0) + LOOK_HEIGHT, cfgNum(centerZ, 9.0) + ringRadius
+    local dx, dy, dz = tx - b.x, ty - b.y, tz - b.z
+    local yaw     = math.deg(math.atan2(dx, -dz))
+    local pitchUp = math.deg(math.atan2(dy, math.sqrt(dx * dx + dz * dz)))
+
+    if state.lookYaw == nil then state.lookYaw, state.lookPitch = yaw, pitchUp end
+    local k = math.min(1.0, LOOK_SMOOTH * dt)
+    state.lookYaw   = state.lookYaw   + (yaw     - state.lookYaw)   * k
+    state.lookPitch = state.lookPitch + (pitchUp - state.lookPitch) * k
+    Components:Camera():getCamera():setRotationFromEulerAngles(-state.lookPitch, state.lookYaw, 0)
+end
+
 -- Fondo del efecto que está al frente, con transición suave
 local function updateBackground(dt)
     local goal = state.autoView and moodOf(currentName()).bg or { 0.0, 0.0, 0.0 }
@@ -285,7 +311,7 @@ function onStart()
     win    = Components:Window()
     render = Components:Render()
     tw     = render:getTextWriter()
-    state.items, state.ready = {}, false
+    state.items, state.ready, state.started = {}, false, false
     state.playing, state.emitting, state.showHUD, state.autoView = true, true, true, true
     state.cur, state.from, state.target, state.glideT, state.dwell = 0.0, 0.0, 0, 1.0, 0.0
     state.retry, state.t = 0.0, 0.0
@@ -309,6 +335,11 @@ local function _update()
         if state.retry <= 0 then
             state.retry = 0.25
             resolveItems()
+            if state.ready and not state.started then
+                -- arranca en el último efecto (confeti) en vez del primero: más vistoso para abrir la demo
+                state.started = true
+                state.cur, state.from, state.target = #EFFECTS - 1, #EFFECTS - 1, #EFFECTS - 1
+            end
         end
     end
 
@@ -340,6 +371,7 @@ local function _update()
     end
 
     updatePulses()
+    updateLookAt(dt)
     updateZoom(dt)
     updateBackground(dt)
     layout()

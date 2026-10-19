@@ -11,10 +11,14 @@
 
 void ColliderGUI::DrawColliderWorldVariables(Object3D *o)
 {
-        bool dbg = o->isDebugDraw();
-        if (ImGui::Checkbox("Debug Draw", &dbg))
-            o->setDebugDraw(dbg);
-        ImGui::Separator();
+        {
+            GUIFields::Section debug("DEBUG");
+            if (debug) {
+                bool dbg = o->isDebugDraw();
+                if (GUIFields::Check("Debug Draw", &dbg))
+                    o->setDebugDraw(dbg);
+            }
+        }
 
         if (o->getCollisionMode() == BODY) {
 
@@ -286,7 +290,6 @@ void ColliderGUI::DrawPopUpColliderSetting(Object3D *o)
     }
 
     ImGui::Separator();
-    ImGui::SeparatorText("Collision Filters");
 
     struct GroupEntry { const char* label; int bit; };
     static const GroupEntry groups[] = {
@@ -299,31 +302,29 @@ void ColliderGUI::DrawPopUpColliderSetting(Object3D *o)
         { "StaticWorld",    Config::collisionGroups::StaticWorld     },
     };
 
-    ImGui::Text("Group:");
-    ImGui::SameLine();
-    for (auto& g : groups) {
-        bool active = (o->collisionGroup & g.bit) != 0;
-        if (ImGui::Checkbox(("##G_" + std::string(g.label)).c_str(), &active)) {
-            if (active) o->collisionGroup |= g.bit;
-            else        o->collisionGroup &= ~g.bit;
+    {
+        GUIFields::Section groupSection("COLLISION GROUP");
+        if (groupSection) {
+            for (auto& g : groups) {
+                bool active = (o->collisionGroup & g.bit) != 0;
+                if (GUIFields::Check(g.label, &active)) {
+                    if (active) o->collisionGroup |= g.bit;
+                    else        o->collisionGroup &= ~g.bit;
+                }
+            }
         }
-        ImGui::SameLine();
-        ImGui::Text("%s", g.label);
-        ImGui::SameLine(0, 12);
     }
-    ImGui::NewLine();
 
-    ImGui::Text("Mask: ");
-    ImGui::SameLine();
-    for (auto& g : groups) {
-        bool active = (o->collisionMask & g.bit) != 0;
-        if (ImGui::Checkbox(("##M_" + std::string(g.label)).c_str(), &active)) {
-            if (active) o->collisionMask |= g.bit;
-            else        o->collisionMask &= ~g.bit;
+    {
+        GUIFields::Section maskSection("COLLISION MASK");
+        if (maskSection) {
+            for (auto& g : groups) {
+                bool active = (o->collisionMask & g.bit) != 0;
+                if (GUIFields::Check(g.label, &active)) {
+                    if (active) o->collisionMask |= g.bit;
+                    else        o->collisionMask &= ~g.bit;
+                }
+            }
         }
-        ImGui::SameLine();
-        ImGui::Text("%s", g.label);
-        ImGui::SameLine(0, 12);
     }
-    ImGui::NewLine();
 }

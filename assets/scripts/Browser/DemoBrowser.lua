@@ -47,11 +47,15 @@ local prevLeft   = false
 local infoCache  = { key = nil, lines = nil }
 
 -- ── Style ─────────────────────────────────────────────────────────────────
-local S_TITLE = 0.62
-local S_TEXT  = 0.46
-local S_SMALL = 0.40
+-- The UI is designed for a 1009 px high window and scales with the real window height (applyScale), so in a
+-- small window the bar, the buttons, the panels and the text shrink instead of covering the demo.
+local DESIGN_H = 1009
+local U        = 1.0         -- current scale factor
+local S_TITLE, S_TEXT, S_SMALL = 0.62, 0.46, 0.40
 local BAR_H   = 56
 local PAD     = 10
+local BTN_W, BTN_W_S = 120, 90
+local GAP_S, GAP_M = 8, 10
 
 local C = {
     bar      = Color.new(0.06, 0.07, 0.09, 0.88),
@@ -83,7 +87,7 @@ local function textW(s, scale)
 end
 
 local function lineH(scale)
-    return math.floor(40 * scale + 6)
+    return math.floor(40 * scale + 6 * U)
 end
 
 -- Mouse state for this frame
@@ -222,6 +226,7 @@ local function resetEngineState()
     pcall(function() Components:Sound():setAmbienceVolume(100) end)
     pcall(function() Components:Sound():StopMusic() end)
     pcall(function() Components:Window():setClearColor(0.0, 0.0, 0.0, 0.0) end)   -- fondo por defecto (negro)
+    pcall(function() Components:Collisions():setEnableDebugMode(false) end)      -- wireframe de la fisica (lo enciende la demo de los cubos)
 end
 
 local function clearWorld()
@@ -305,7 +310,7 @@ local function wrap(str, scale, maxW, out, color)
 end
 
 local function section(out, title)
-    out[#out + 1] = { gap = 8 }
+    out[#out + 1] = { gap = GAP_S }
     out[#out + 1] = { t = title, c = C.section, s = S_SMALL }
 end
 
@@ -313,7 +318,7 @@ local function buildInfo(d, maxW)
     local out = {}
     out[#out + 1] = { t = string.upper(d.category), c = C.accent, s = S_SMALL }
     wrap(d.title, S_TITLE, maxW, out, C.title)
-    out[#out + 1] = { gap = 4 }
+    out[#out + 1] = { gap = math.floor(4 * U) }
     wrap(d.summary, S_TEXT, maxW, out, C.text)
 
     if #d.controls > 0 then
@@ -334,7 +339,7 @@ local function buildInfo(d, maxW)
     if #f.shaders > 0 then wrap("Post-processing: " .. table.concat(f.shaders, ", "), S_SMALL, maxW, out, C.dim) end
     if f.lightsFile ~= nil then wrap("Lights file: " .. baseName(f.lightsFile), S_SMALL, maxW, out, C.dim) end
 
-    out[#out + 1] = { gap = 10 }
+    out[#out + 1] = { gap = GAP_M }
     wrap("PgDn/PgUp next/previous - F3 tour/all - F4 auto - Home reload - F1 list - F2 hide this panel", S_SMALL, maxW, out, C.dim)
     return out
 end
@@ -342,10 +347,10 @@ end
 local function drawInfo(sw)
     local d = demos[current]
     if d == nil then return end
-    local w = math.min(540, math.max(360, math.floor(sw * 0.30)))
-    local x = sw - w - 16
-    local y = 16
-    local key = current .. ":" .. w
+    local w = math.floor(math.min(540 * U, sw * 0.36))
+    local x = sw - w - math.floor(16 * U)
+    local y = math.floor(16 * U)
+    local key = current .. ":" .. w .. ":" .. S_SMALL
     if infoCache.key ~= key then
         infoCache.key, infoCache.lines = key, buildInfo(d, w - 2 * PAD - 6)
     end
@@ -353,7 +358,7 @@ local function drawInfo(sw)
     local h = 2 * PAD + 6
     for _, l in ipairs(infoCache.lines) do h = h + (l.gap or lineH(l.s)) end
     rect(x, y, w, h, C.panel)
-    rect(x, y, 4, h, C.accent)
+    rect(x, y, math.max(2, math.floor(4 * U)), h, C.accent)
     uiArea(x, y, w, h)
 
     local ty = y + PAD + 2
@@ -372,15 +377,25 @@ end
 -- category does not fit in the height available above the bar.
 local LIST_ROW_H, LIST_ROW_GAP, LIST_COL_W = 30, 3, 360
 
+-- Recomputes every pixel size from the window height. Called once per frame.
+local function applyScale(sh)
+    U = math.max(0.55, math.min(1.5, sh / DESIGN_H))
+    S_TITLE, S_TEXT, S_SMALL = 0.62 * U, 0.46 * U, 0.40 * U
+    BAR_H, PAD = math.floor(56 * U), math.max(4, math.floor(10 * U))
+    BTN_W, BTN_W_S = math.floor(120 * U), math.floor(90 * U)
+    GAP_S, GAP_M = math.max(2, math.floor(8 * U)), math.max(2, math.floor(10 * U))
+    LIST_ROW_H, LIST_ROW_GAP, LIST_COL_W = math.floor(30 * U), math.max(1, math.floor(3 * U)), math.floor(360 * U)
+end
+
 local function drawList(barY)
-    local maxH   = barY - 2 * PAD - 8
+    local maxH   = barY - 2 * PAD - GAP_S
     local headH  = lineH(S_SMALL) + 2
     local titleH = lineH(S_SMALL)
 
     -- Reparto de categorías en columnas
     local cols, used = { {} }, { titleH + PAD }
     for _, cat in ipairs(categories) do
-        local blockH = headH + #cat.items * (LIST_ROW_H + LIST_ROW_GAP) + 8
+        local blockH = headH + #cat.items * (LIST_ROW_H + LIST_ROW_GAP) + GAP_S
         local c = #cols
         if used[c] + blockH > maxH and #cols[c] > 0 then
             cols[#cols + 1] = {}
@@ -394,7 +409,7 @@ local function drawList(barY)
     local h = PAD
     for _, u in ipairs(used) do h = math.max(h, u + PAD) end
     local w = #cols * (LIST_COL_W + PAD) + PAD
-    local x, y = PAD, barY - h - 8
+    local x, y = PAD, barY - h - GAP_S
     rect(x, y, w, h, C.panel)
     uiArea(x, y, w, h)
     text(x + PAD, y + PAD, "DEMOS (" .. #demos .. ")   -   " .. #categories .. " categories   -   * = in the tour", C.dim, S_SMALL)
@@ -412,7 +427,7 @@ local function drawList(barY)
                 end
                 ry = ry + LIST_ROW_H + LIST_ROW_GAP
             end
-            ry = ry + 8
+            ry = ry + GAP_S
         end
     end
 end
@@ -421,28 +436,28 @@ end
 local function drawBar(sw, sh)
     local y = sh - BAR_H
     rect(0, y, sw, BAR_H, C.bar)
-    rect(0, y, sw, 2, C.accent)
+    rect(0, y, sw, math.max(1, math.floor(2 * U)), C.accent)
     uiArea(0, y, sw, BAR_H)
 
     local busy = state ~= "idle"
     local bh, by = BAR_H - 2 * PAD, y + PAD
     local x = PAD
-    if button(x, by, 120, bh, "Demos", { active = showList }) then showList = not showList end
-    x = x + 120 + PAD
-    if button(x, by, 90, bh, mode == "tour" and "Tour" or "All", { active = mode == "tour", disabled = #tourList == 0 }) then toggleMode() end
-    x = x + 90 + PAD
-    if button(x, by, 120, bh, "Prev", { disabled = busy }) then step(-1) end
-    x = x + 120 + PAD
+    if button(x, by, BTN_W, bh, "Demos", { active = showList }) then showList = not showList end
+    x = x + BTN_W + PAD
+    if button(x, by, BTN_W_S, bh, mode == "tour" and "Tour" or "All", { active = mode == "tour", disabled = #tourList == 0 }) then toggleMode() end
+    x = x + BTN_W_S + PAD
+    if button(x, by, BTN_W, bh, "Prev", { disabled = busy }) then step(-1) end
+    x = x + BTN_W + PAD
 
     local right = sw - PAD
-    right = right - 90
-    if button(right, by, 90, bh, "Info", { active = showInfo }) then showInfo = not showInfo end
-    right = right - PAD - 120
-    if button(right, by, 120, bh, "Reload", { disabled = busy or current == 0 }) then requestDemo(current) end
-    right = right - PAD - 120
-    if button(right, by, 120, bh, "Next", { disabled = busy }) then step(1) end
-    right = right - PAD - 90
-    if button(right, by, 90, bh, "Auto", { active = autoplay }) then autoplay = not autoplay; idleTime = 0.0 end
+    right = right - BTN_W_S
+    if button(right, by, BTN_W_S, bh, "Info", { active = showInfo }) then showInfo = not showInfo end
+    right = right - PAD - BTN_W
+    if button(right, by, BTN_W, bh, "Reload", { disabled = busy or current == 0 }) then requestDemo(current) end
+    right = right - PAD - BTN_W
+    if button(right, by, BTN_W, bh, "Next", { disabled = busy }) then step(1) end
+    right = right - PAD - BTN_W_S
+    if button(right, by, BTN_W_S, bh, "Auto", { active = autoplay }) then autoplay = not autoplay; idleTime = 0.0 end
 
     -- Centre: current demo or loading state
     local label, color
@@ -530,6 +545,7 @@ function onUpdate()
     end
 
     local sw, sh = win:getWidth(), win:getHeight()
+    applyScale(sh)
     local barY = drawBar(sw, sh)
     if showList then drawList(barY) end
     if showInfo and state == "idle" then drawInfo(sw) end

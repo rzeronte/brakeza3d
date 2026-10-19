@@ -1,5 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include "../../include/Render/UndoManager.h"
 #include "../../include/Render/Drawable.h"
 #include "../../include/Render/Transforms.h"
 #include "../../include/Brakeza.h"
@@ -246,6 +247,7 @@ void Drawable::drawObject3DGizmo(
     );
 
     bool isUsingGizmo = ImGuizmo::IsUsing();
+    UndoManager::get().observe(o, UndoManager::SRC_GIZMO, isUsingGizmo);
 
     if (isUsingGizmo) {
         if (currentOperation == ImGuizmo::OPERATION::TRANSLATE) {

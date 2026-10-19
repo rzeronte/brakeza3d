@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <thread>
+#include "../../../include/GUI/Widgets/GUIFields.h"
 
 static const int DEFAULT_THREADS    = (int)std::max(1u, std::thread::hardware_concurrency());
 static const int DEFAULT_CALLBACKS  = 5;
@@ -141,71 +142,56 @@ void ThreadGUI::MenuWorker(ThreadPool &pool, std::string title)
     ImGui::Spacing();
 
     // ── Worker threads ────────────────────────────────────────────────────────
-    ImGui::TextColored(ImVec4(1.0f, 0.6f, 0.0f, 1.0f), "Worker Threads");
-    ImGui::Indent();
-    ImGui::Text("Pool threads: %zu  (hardware concurrency: %d)", numThreads, DEFAULT_THREADS);
-    ImGui::SetNextItemWidth(100);
-    ImGui::DragInt("##numThreads", &state.targetThreads, 0.2f, 1, 32, "%d threads");
-    ImGui::SameLine();
+    {
+        GUIFields::Section workers("WORKER THREADS");
+        if (workers) {
+            GUIFields::Text("Pool threads", "%zu  (hardware concurrency: %d)", numThreads, DEFAULT_THREADS);
+            GUIFields::Int("Target threads", &state.targetThreads, 0.2f, 1, 32, "%d threads", "Ctrl+click for exact value.");
+        }
+    }
     if (ImGui::Button("Apply##resize")) {
         pool.resize((size_t)state.targetThreads);
         state.initialized = false;
     }
-    ImGui::SameLine();
-    ImGui::TextDisabled("(Ctrl+click for exact value)");
-    ImGui::Unindent();
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
 
     // ── Configuration ─────────────────────────────────────────────────────────
-    ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.5f, 1.0f), "Configuration");
-    ImGui::Spacing();
+    {
+        GUIFields::Section config("CONFIGURATION", 190.0f);
+        if (config) {
+            auto ConfigRow = [](const char* label, int& val, int vmin, int vmax, const char* fmt, const char* tip) -> bool {
+                const bool changed = GUIFields::Int(label, &val, 0.3f, vmin, vmax, fmt, tip);
+                val = std::max(vmin, std::min(val, vmax));
+                return changed;
+            };
 
-    auto ConfigRow = [](const char* label, int& val, int vmin, int vmax, const char* fmt, const char* tip) -> bool {
-        bool changed = false;
-        ImGui::Text("%s", label);
-        ImGui::SameLine(220);
-        ImGui::SetNextItemWidth(160);
-        char id[64]; snprintf(id, sizeof(id), "##%s", label);
-        if (ImGui::DragInt(id, &val, 0.3f, vmin, vmax, fmt))
-            changed = true;
-        val = std::max(vmin, std::min(val, vmax));
-        ImGui::SameLine();
-        ImGui::TextDisabled("(?)");
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("%s", tip);
-        return changed;
-    };
+            if (ConfigRow("Max Callbacks/frame", state.maxCallbacks, 1, 100, "%d",
+                "Main thread callbacks processed per frame.\nLow = smoother but higher latency."))
+                pool.setMaxCallbacksPerFrame((size_t)state.maxCallbacks);
 
-    if (ConfigRow("Max Callbacks/frame", state.maxCallbacks, 1, 100, "%d",
-        "Main thread callbacks processed per frame.\nLow = smoother but higher latency."))
-        pool.setMaxCallbacksPerFrame((size_t)state.maxCallbacks);
+            if (ConfigRow("Max Concurrent Tasks", state.maxConcurrent, 1, 32, "%d",
+                "Tasks executing simultaneously.\nShould be <= Worker Threads."))
+                pool.setMaxConcurrentTasks((size_t)state.maxConcurrent);
 
-    ImGui::Spacing();
+            // Warning if maxConcurrent > numThreads
+            if ((size_t)state.maxConcurrent > numThreads) {
+                GUIFields::Row("");
+                ImGui::TextColored(ImVec4(1.0f,0.8f,0.0f,1.0f), "⚠ Max Concurrent > Worker Threads");
+                if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("Max Concurrent (%d) > Worker Threads (%zu).\nExtra slots will never be used.", state.maxConcurrent, numThreads);
+            }
 
-    if (ConfigRow("Max Concurrent Tasks", state.maxConcurrent, 1, 32, "%d",
-        "Tasks executing simultaneously.\nShould be <= Worker Threads."))
-        pool.setMaxConcurrentTasks((size_t)state.maxConcurrent);
+            if (ConfigRow("Max Queue (enqueued)", state.maxEnqueued, 1, 5000, "%d",
+                "Maximum queue depth. New tasks are dropped when full.\nIncrease if 'Queue full' appears in the log."))
+                pool.setMaxEnqueuedTasks((size_t)state.maxEnqueued);
 
-    // Warning if maxConcurrent > numThreads
-    if ((size_t)state.maxConcurrent > numThreads) {
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(1.0f,0.8f,0.0f,1.0f), "⚠");
-        if (ImGui::IsItemHovered())
-            ImGui::SetTooltip("Max Concurrent (%d) > Worker Threads (%zu).\nExtra slots will never be used.", state.maxConcurrent, numThreads);
+            if (ConfigRow("Max Callbacks Queue", state.maxEnqueuedCallbacks, 1, 5000, "%d",
+                "Maximum callbacks queue depth. Callbacks are dropped when full.\nPrevents memory exhaustion when spawn rate > drain rate."))
+                pool.setMaxEnqueuedCallbacks((size_t)state.maxEnqueuedCallbacks);
+        }
     }
-
-    ImGui::Spacing();
-
-    if (ConfigRow("Max Queue (enqueued)", state.maxEnqueued, 1, 5000, "%d",
-        "Maximum queue depth. New tasks are dropped when full.\nIncrease if 'Queue full' appears in the log."))
-        pool.setMaxEnqueuedTasks((size_t)state.maxEnqueued);
-
-    ImGui::Spacing();
-
-    if (ConfigRow("Max Callbacks Queue", state.maxEnqueuedCallbacks, 1, 5000, "%d",
-        "Maximum callbacks queue depth. Callbacks are dropped when full.\nPrevents memory exhaustion when spawn rate > drain rate."))
-        pool.setMaxEnqueuedCallbacks((size_t)state.maxEnqueuedCallbacks);
 
     ImGui::Spacing();
     ImGui::Separator();

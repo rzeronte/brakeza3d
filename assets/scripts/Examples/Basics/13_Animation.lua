@@ -4,10 +4,12 @@
 -- ============================================================================
 -- Learn how to control skeletal animations.
 -- This script should be attached to a Mesh3DAnimation object.
---   1 idle   2 walk   3 run   4 jump   5 crouch walk   P / O speed   L loop   W A S D walk/idle
+--   1 idle   2 walk   3 run   4 jump   5 crouch walk   P / O speed   L loop   B bones   W A S D walk/idle
 -- ============================================================================
 
 local currentAnimation = "idle"
+local wasMoving = false
+local userLoop = true        -- lo que elige el usuario con L; el salto se reproduce siempre una sola vez
 
 -- "this" llega a Lua como Object3D (sin métodos de animación): hay que pedir el mismo objeto como Mesh3DAnimation
 local anim = nil
@@ -37,6 +39,15 @@ function onStart()
     anim:setAnimationByName(ANIM[defaultAnimation] or defaultAnimation)
     anim:setAnimationSpeed(animationSpeed)
     anim:setLoop(true)
+
+    -- suelo claro (la textura por defecto del cubo es casi negra)
+    pcall(function()
+        local g = Brakeza:getMesh3DByName("Ground")
+        if g ~= nil then g:setDiffuseTexture(0, "../assets/textures/concrete.png") end
+    end)
+
+    -- el esqueleto (líneas amarillas entre huesos) se ve desde el principio; B lo apaga
+    pcall(function() anim:setDrawBones(true) end)
 
     print("Animation controller ready!")
 end
@@ -81,9 +92,13 @@ function onUpdate()
     -- TOGGLE LOOP WITH L
     -- ========================================
     if input:isCharFirstEventDown("L") then
-        local looping = anim:isLoop()
-        anim:setLoop(not looping)
-        print("Loop: " .. tostring(not looping))
+        userLoop = not userLoop
+        anim:setLoop(userLoop and currentAnimation ~= "jump")
+        print("Loop: " .. tostring(userLoop))
+    end
+
+    if input:isCharFirstEventDown("B") then
+        pcall(function() anim:setDrawBones(not anim:isDrawBones()) end)
     end
 
     -- ========================================
@@ -105,6 +120,9 @@ function playAnimation(name)
     if currentAnimation ~= name then
         currentAnimation = name
         anim:setAnimationByName(ANIM[name] or name)
+        -- el salto no se repite: al acabar vuelve solo a idle (isAnimationEnds solo se cumple sin bucle)
+        anim:setLoop(userLoop and name ~= "jump")
+        if name == "jump" then anim:restartAnimation() end
         print("Playing: " .. name)
     end
 end
@@ -120,17 +138,19 @@ function handleMovementAnimation()
         moving = true
     end
 
+    -- Only react when WASD starts or stops: otherwise this would override, every frame, the animation chosen with 1-5
+    local changed = (moving ~= wasMoving)
+    wasMoving = moving
+    if not changed then return end
+
     -- Don't interrupt the jump animation until it ends
     if currentAnimation == "jump" and not anim:isAnimationEnds() then
         return
     end
 
-    if moving then
-        playAnimation("walk")
-    else
-        playAnimation("idle")
-    end
+    playAnimation(moving and "walk" or "idle")
 end
 
 function onEnd()
+    pcall(function() if anim ~= nil then anim:setDrawBones(false) end end)
 end

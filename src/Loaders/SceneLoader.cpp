@@ -2,6 +2,7 @@
 // Created by eduardo on 10/10/23.
 //
 
+#include "../../include/Render/UndoManager.h"
 #include <filesystem>
 #include "../../include/Loaders/SceneLoader.h"
 #include "../../include/Config.h"
@@ -180,6 +181,7 @@ void SceneLoader::LoadFolders(const cJSON *contentJSON, Scene *scene)
 
 void SceneLoader::LoadScene(const FilePath::SceneFile& filename)
 {
+    UndoManager::get().clear();
     if (isLoading) {
         LOG_ERROR("[SceneLoader] Cannot do loading or cleaning while another same operation is working... Ignoring : '%s'", filename.c_str());
         return;
@@ -252,6 +254,7 @@ void SceneLoader::ReloadScene(const std::string& name)
 
 void SceneLoader::UnloadScene(const std::string& name)
 {
+    UndoManager::get().clear();
     auto *scripting = Components::get()->Scripting();
     auto *render    = Components::get()->Render();
 
@@ -381,6 +384,7 @@ void SceneLoader::ClearWorld()
         LOG_ERROR("[SceneLoader] Cannot do a load or cleaning while another same operation is working... Ignoring");
     }
 
+    UndoManager::get().clear();
     isClearing = true;
     LOG_MESSAGE("[SceneLoader] ClearWorld");
 

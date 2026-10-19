@@ -13,6 +13,7 @@
 #include "../../../include/GUI/Windows/ShadersGUI.h"
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/GUI/Widgets/GUIHelpers.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 
 // Static member definitions
 bool GUIAddonProjectSetup::openPopupEditProject = false;
@@ -880,19 +881,15 @@ void GUIAddonProjectSetup::DrawProjectEditPopup()
 
         ImGui::Spacing();
 
-        // Project Name input
-        ImGui::Text("Project Name:");
-        ImGui::SetNextItemWidth(-1);
-        ImGui::InputText("##ProjectName", project->editName, sizeof(project->editName));
-
-        ImGui::Spacing();
-        ImGui::Spacing();
-
-        // Project Description input
-        ImGui::Text("Description:");
-        ImGui::SetNextItemWidth(-1);
-        ImGui::InputTextMultiline("##ProjectDescription", project->editDescription, sizeof(project->editDescription),
-            ImVec2(-1, 100), ImGuiInputTextFlags_AllowTabInput);
+        {
+            GUIFields::Section projectFields("PROJECT", 90.0f, 360.0f);
+            if (projectFields) {
+                GUIFields::String("Project Name", project->editName, sizeof(project->editName));
+                GUIFields::Row("Description");
+                ImGui::InputTextMultiline("##v", project->editDescription, sizeof(project->editDescription),
+                    ImVec2(-FLT_MIN, 100), ImGuiInputTextFlags_AllowTabInput);
+            }
+        }
 
         ImGui::Spacing();
         ImGui::Separator();
@@ -950,10 +947,15 @@ void GUIAddonProjectSetup::DrawAdditiveScenePopup()
         ImGui::Separator();
         ImGui::Spacing();
 
-        ImGui::Checkbox("Scripts",         &additiveLoadScripts);
-        ImGui::Checkbox("Shaders",         &additiveLoadShaders);
-        ImGui::Checkbox("Camera",          &additiveLoadCamera);
-        ImGui::Checkbox("Render settings", &additiveLoadRenderSettings);
+        {
+            GUIFields::Section loadOptions("LOAD", 150.0f, 40.0f);
+            if (loadOptions) {
+                GUIFields::Check("Scripts",         &additiveLoadScripts);
+                GUIFields::Check("Shaders",         &additiveLoadShaders);
+                GUIFields::Check("Camera",          &additiveLoadCamera);
+                GUIFields::Check("Render settings", &additiveLoadRenderSettings);
+            }
+        }
 
         ImGui::Spacing();
         ImGui::Separator();

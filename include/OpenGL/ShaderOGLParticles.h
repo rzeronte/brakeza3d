@@ -41,7 +41,8 @@ public:
         GLuint particles_color_buffer,
         GLuint particles_rotation_buffer,
         GLuint textureID,
-        int particlesCount
+        int particlesCount,
+        bool depthTest = false
     );
     void Destroy() override;
 

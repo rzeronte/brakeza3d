@@ -264,6 +264,9 @@ void ComponentCollisions::DrawDebugCache() const
 
 void ComponentCollisions::setEnableDebugMode(bool value) const
 {
+    // The world only draws its debug lines while Config::BULLET_DEBUG_MODE is on (the toolbar / menu toggles set it before calling
+    // this): keep both in sync so a script calling setEnableDebugMode(true) gets the wireframes too
+    Config::get()->BULLET_DEBUG_MODE = value;
     if (value) {
         dynamicsWorld->getDebugDrawer()->setDebugMode(PhysicsDebugDraw::DBG_DrawWireframe | PhysicsDebugDraw::DBG_DrawContactPoints);
         LOG_MESSAGE("[Collisions] Physics Debug mode ON");

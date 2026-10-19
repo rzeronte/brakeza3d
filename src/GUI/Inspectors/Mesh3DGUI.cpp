@@ -14,6 +14,8 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             if (GUIFields::BeginSection("RENDER")) {
                 GUIFields::Check("Default pipeline", &o->renderDefaultPipeline, "Render through the deferred pipeline. Off = only the object shaders draw it.");
                 GUIFields::Check("Frustum cull submeshes", &o->frustumCullSubmeshes, "Skip submeshes outside the camera view.");
+                bool mip = o->isMipmaps();
+                if (GUIFields::Check("Mipmaps", &mip, "Mipmaps + trilinear + anisotropic filtering on this model's textures: removes the grainy look at a distance. Textures are shared by path, so it also affects other meshes using them.")) o->setMipmaps(mip);
                 GUIFields::Check("Emission", &o->emissionEnabled);
                 if (!o->emissionEnabled) ImGui::BeginDisabled();
                 GUIFields::Slider("Emission intensity", &o->emissionIntensity, 0.0f, 1.0f);
@@ -29,86 +31,181 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             ImGui::SameLine();
             ImGui::Text(o->sourceFile.c_str());
             ImGui::Spacing();
-            if (ImGui::BeginTable("MeshTable", 7, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame)) {
-                // Header
-                ImGui::TableSetupColumn("Mesh");
-                ImGui::TableSetupColumn("Vertices");
-                ImGui::TableSetupColumn("UVs");
-                ImGui::TableSetupColumn("Normals");
-                ImGui::TableSetupColumn("Textures");
-                ImGui::TableSetupColumn("AABB center");
-                ImGui::TableSetupColumn("Visible");
-                ImGui::TableHeadersRow();
+            // Filtro de texto sin distinguir mayusculas
+            auto containsCI = [](const std::string &hay, const char *needle) {
+                if (!needle[0]) return true;
+                std::string h = hay, n = needle;
+                std::transform(h.begin(), h.end(), h.begin(), [](unsigned char c) { return std::tolower(c); });
+                std::transform(n.begin(), n.end(), n.begin(), [](unsigned char c) { return std::tolower(c); });
+                return h.find(n) != std::string::npos;
+            };
+            auto textureName = [&](int materialIndex) -> std::string {
+                if (materialIndex < 0 || materialIndex >= (int) o->modelTextures.size() || !o->modelTextures[materialIndex]) return "";
+                return std::string(o->modelTextures[materialIndex]->getFileName().c_str());
+            };
 
-                // Rows
-                int cont = 1;
-                for (auto &m: o->meshes) {
-                    ImGui::TableNextRow();
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text("Mesh %d", cont);
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text("%d", (int) m.vertices.size());
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text("%d", (int) m.uvs.size());
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text("%d", (int) m.normals.size());
-
-                    ImGui::TableNextColumn();
-                    ImGui::Text("%d", (int) o->modelTextures.size());
-
-                    ImGui::TableNextColumn();
-                    {
-                        Vertex3D center(
-                            (m.localAabb.min.x + m.localAabb.max.x) * 0.5f,
-                            (m.localAabb.min.y + m.localAabb.max.y) * 0.5f,
-                            (m.localAabb.min.z + m.localAabb.max.z) * 0.5f
-                        );
-                        ImGui::Text("%.0f %.0f %.0f", center.x, center.y, center.z);
+            // ── Submeshes (colapsada; con buscador y lista virtualizada: una ciudad tiene miles) ──
+            if (ImGui::TreeNodeEx("Submeshes", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+                static char subFilter[64] = "";
+                static bool subEmissiveOnly = false;
+                {
+                    GUIFields::Section filter("SUBMESH FILTER");
+                    if (filter) {
+                        GUIFields::String("Filter", subFilter, sizeof(subFilter), "mesh #, material #, texture...");
+                        GUIFields::Check("Emitting only", &subEmissiveOnly);
                     }
-
-                    ImGui::TableNextColumn();
-                    if (o->frustumCullSubmeshes) {
-                        if (m.visibleInFrustum) {
-                            ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "YES");
-                        } else {
-                            ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "NO");
-                        }
-                    } else {
-                        ImGui::TextDisabled("--");
-                    }
-
-                    cont++;
                 }
 
-                ImGui::EndTable();
+                // indices que pasan el filtro
+                std::vector<int> rows;
+                rows.reserve(o->meshes.size());
+                for (int i = 0; i < (int) o->meshes.size(); i++) {
+                    const auto &m = o->meshes[i];
+                    if (subEmissiveOnly && !(o->emissionEnabled && o->isMaterialEmissive(m.materialIndex))) continue;
+                    if (subFilter[0]) {
+                        std::string key = "mesh " + std::to_string(i + 1) + " #" + std::to_string(m.materialIndex) + " " + textureName(m.materialIndex);
+                        if (!containsCI(key, subFilter)) continue;
+                    }
+                    rows.push_back(i);
+                }
+                ImGui::TextDisabled("%d / %d submeshes", (int) rows.size(), (int) o->meshes.size());
+
+                if (ImGui::BeginTable("MeshTable", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchSame | ImGuiTableFlags_ScrollY, ImVec2(0, 260))) {
+                    ImGui::TableSetupScrollFreeze(0, 1);
+                    ImGui::TableSetupColumn("Mesh");
+                    ImGui::TableSetupColumn("Vertices");
+                    ImGui::TableSetupColumn("UVs");
+                    ImGui::TableSetupColumn("Normals");
+                    ImGui::TableSetupColumn("Textures");
+                    ImGui::TableSetupColumn("AABB center");
+                    ImGui::TableSetupColumn("Visible");
+                    ImGui::TableSetupColumn("Material");
+                    ImGui::TableSetupColumn("Emits");
+                    ImGui::TableHeadersRow();
+
+                    ImGuiListClipper clipper;
+                    clipper.Begin((int) rows.size());
+                    while (clipper.Step()) {
+                        for (int r = clipper.DisplayStart; r < clipper.DisplayEnd; r++) {
+                            const int i = rows[r];
+                            const auto &m = o->meshes[i];
+                            ImGui::TableNextRow();
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("Mesh %d", i + 1);
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%d", (int) m.vertices.size());
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%d", (int) m.uvs.size());
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%d", (int) m.normals.size());
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%d", (int) o->modelTextures.size());
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%.0f %.0f %.0f",
+                                (m.localAabb.min.x + m.localAabb.max.x) * 0.5f,
+                                (m.localAabb.min.y + m.localAabb.max.y) * 0.5f,
+                                (m.localAabb.min.z + m.localAabb.max.z) * 0.5f);
+
+                            ImGui::TableNextColumn();
+                            if (o->frustumCullSubmeshes) {
+                                if (m.visibleInFrustum) ImGui::TextColored(ImVec4(0.2f, 1.0f, 0.2f, 1.0f), "YES");
+                                else                    ImGui::TextColored(ImVec4(1.0f, 0.3f, 0.3f, 1.0f), "NO");
+                            } else {
+                                ImGui::TextDisabled("--");
+                            }
+
+                            // Material de la submesh (indice en la lista de materiales) y si emite
+                            ImGui::TableNextColumn();
+                            ImGui::Text("#%d", m.materialIndex);
+
+                            ImGui::TableNextColumn();
+                            if (!o->emissionEnabled)                         ImGui::TextDisabled("--");
+                            else if (o->isMaterialEmissive(m.materialIndex)) ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "YES");
+                            else                                             ImGui::TextDisabled("no");
+                        }
+                    }
+                    ImGui::EndTable();
+                }
+                ImGui::TreePop();
             }
 
-            ImGui::Spacing();
-            ImGui::Separator();
-            ImGui::Spacing();
-
-            if (ImGui::BeginTable("TexturesTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp)) {
-                ImGui::TableSetupColumn("Textures");
-                ImGui::TableSetupColumn("Path");
-                ImGui::TableHeadersRow();
-
-                for (auto &m : o->modelTextures) {
-                    ImGui::TableNextRow();
-                    ImGui::TableNextColumn();
-
-                    float fixedWidth = std::min((int) ImGui::GetContentRegionAvail().x, m->width());
-                    float height = fixedWidth * ((float) m->height() / (float) m->width());
-                    ImGui::Image(m->getOGLImTexture(), ImVec2(fixedWidth, height));
-
-                    ImGui::TableNextColumn();
-                    ImGui::TextWrapped("%s", m->getFileName().c_str());
+            // ── Materiales (colapsada; buscador, marcado por nombre y miniaturas pequeñas) ──
+            if (ImGui::TreeNodeEx("Materials", ImGuiTreeNodeFlags_SpanFullWidth | ImGuiTreeNodeFlags_FramePadding)) {
+                if (!o->emissionEnabled) {
+                    ImGui::TextDisabled("Emission is off: enable it in RENDER to make the marked materials glow.");
+                } else if (o->emissiveMaterials.empty()) {
+                    ImGui::TextWrapped("None marked -> the WHOLE mesh emits. Tick materials to make only their submeshes emit.");
+                } else {
+                    ImGui::TextWrapped("%d marked -> only submeshes using them emit.", (int) o->emissiveMaterials.size());
                 }
 
-                ImGui::EndTable();
+                // El mismo texto filtra la lista y es el patron de Mark/Unmark
+                static char matFilter[64] = "";
+                static bool matEmissiveOnly = false;
+                {
+                    GUIFields::Section filter("MATERIAL FILTER");
+                    if (filter) {
+                        GUIFields::String("Filter", matFilter, sizeof(matFilter), "material #, texture name...");
+                        GUIFields::Check("Marked only", &matEmissiveOnly);
+                    }
+                }
+                if (ImGui::Button("Mark")) o->setMaterialsEmissiveByTexture(matFilter, true);
+                ImGui::SameLine();
+                if (ImGui::Button("Unmark")) o->setMaterialsEmissiveByTexture(matFilter, false);
+                ImGui::SameLine();
+                if (ImGui::Button("Clear all")) o->emissiveMaterials.clear();
+
+                std::vector<int> mats;
+                mats.reserve(o->modelTextures.size());
+                for (int i = 0; i < (int) o->modelTextures.size(); i++) {
+                    if (!o->modelTextures[i]) continue;
+                    if (matEmissiveOnly && !o->emissiveMaterials.count(i)) continue;
+                    if (matFilter[0] && !containsCI("#" + std::to_string(i) + " " + textureName(i), matFilter)) continue;
+                    mats.push_back(i);
+                }
+                ImGui::TextDisabled("%d / %d materials", (int) mats.size(), (int) o->modelTextures.size());
+
+                if (ImGui::BeginTable("TexturesTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_SizingStretchProp | ImGuiTableFlags_ScrollY, ImVec2(0, 260))) {
+                    ImGui::TableSetupScrollFreeze(0, 1);
+                    ImGui::TableSetupColumn("#", ImGuiTableColumnFlags_WidthFixed, 36.0f);
+                    ImGui::TableSetupColumn("Preview", ImGuiTableColumnFlags_WidthFixed, 56.0f);
+                    ImGui::TableSetupColumn("Texture");
+                    ImGui::TableSetupColumn("Emissive", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+                    ImGui::TableHeadersRow();
+
+                    ImGuiListClipper clipper;
+                    clipper.Begin((int) mats.size(), 52.0f);
+                    while (clipper.Step()) {
+                        for (int r = clipper.DisplayStart; r < clipper.DisplayEnd; r++) {
+                            const int i = mats[r];
+                            auto *t = o->modelTextures[i];
+                            ImGui::TableNextRow(0, 52.0f);
+
+                            ImGui::TableNextColumn();
+                            ImGui::Text("%d", i);
+
+                            ImGui::TableNextColumn();
+                            ImGui::Image(t->getOGLImTexture(), ImVec2(48, 48));
+
+                            ImGui::TableNextColumn();
+                            ImGui::TextWrapped("%s", t->getFileName().c_str());
+
+                            ImGui::TableNextColumn();
+                            bool em = o->emissiveMaterials.count(i) > 0;
+                            ImGui::PushID(i);
+                            if (ImGui::Checkbox("##emissive", &em)) o->setMaterialEmissive(i, em);
+                            ImGui::PopID();
+                        }
+                    }
+                    ImGui::EndTable();
+                }
+                ImGui::TreePop();
             }
             ImGui::TreePop();
         }

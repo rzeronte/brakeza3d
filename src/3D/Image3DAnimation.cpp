@@ -113,6 +113,21 @@ void Image3DAnimation::CreateAnimationFromCache(const std::string& sprite, int w
     this->animations.emplace_back(new TextureAnimated(tpl));
 }
 
+void Image3DAnimation::setFrame(int frame)
+{
+    if (animations.empty() || currentAnimationIndex < 0 || billboard == nullptr) return;
+
+    TextureAnimated *anim = getCurrentTextureAnimation();
+    const int n = anim->getNumFrames();
+    if (n <= 0) return;
+
+    anim->setPaused(true);
+    anim->currentFrame = ((frame % n) + n) % n;
+
+    Image *img = anim->getCurrentFrame();
+    if (img != nullptr) billboard->setImage(img);
+}
+
 void Image3DAnimation::UpdateTexture()
 {
     if (animations.empty()) return;

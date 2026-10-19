@@ -1,0 +1,5041 @@
+{
+ "1": {
+  "end": 9.8,
+  "steps": [],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.2,
+    "text": "Hi! Let's take a quick tour of Brakeza3D: a C++ engine with OpenGL deferred rendering, scripted in Lua."
+   },
+   {
+    "t": 4.7,
+    "d": 4.3,
+    "text": "This first demo is tiny: one Lua script prints a message, the run time and the FPS, every single frame."
+   }
+  ]
+ },
+ "2": {
+  "end": 10.9,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 0.6
+   },
+   {
+    "t": 1.9,
+    "key": "A",
+    "hold": 0.6
+   },
+   {
+    "t": 2.8,
+    "key": "S",
+    "hold": 0.6
+   },
+   {
+    "t": 3.7,
+    "key": "D",
+    "hold": 0.6
+   },
+   {
+    "t": 5.0,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 5.9,
+    "key": "E",
+    "hold": 0.12
+   },
+   {
+    "t": 7.2,
+    "move": [
+     0.3,
+     0.4,
+     0.7,
+     0.6
+    ],
+    "dur": 1.4
+   },
+   {
+    "t": 8.9,
+    "click": [
+     0.6,
+     0.5
+    ],
+    "button": "left"
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.8,
+    "text": "Input is polled from Lua. Keys I hold show up on the panel: 'held' versus 'just pressed' are different calls."
+   },
+   {
+    "t": 4.4,
+    "d": 2.6,
+    "text": "Space and E are single presses: they only fire on the first frame."
+   },
+   {
+    "t": 7.1,
+    "d": 3.0,
+    "text": "The mouse works the same way: position, buttons, and clicks."
+   }
+  ]
+ },
+ "3": {
+  "end": 13.5,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 0.7
+   },
+   {
+    "t": 1.9,
+    "key": "D",
+    "hold": 0.7
+   },
+   {
+    "t": 2.8,
+    "key": "S",
+    "hold": 0.7
+   },
+   {
+    "t": 3.7,
+    "key": "A",
+    "hold": 0.7
+   },
+   {
+    "t": 5.0,
+    "key": "SPACE",
+    "hold": 0.7
+   },
+   {
+    "t": 6.0,
+    "key": "C",
+    "hold": 0.7
+   },
+   {
+    "t": 7.5,
+    "key": "I",
+    "hold": 0.8
+   },
+   {
+    "t": 8.6,
+    "key": "K",
+    "hold": 0.8
+   },
+   {
+    "t": 10.0,
+    "key": "Q",
+    "hold": 0.9
+   },
+   {
+    "t": 11.1,
+    "key": "E",
+    "hold": 0.9
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.8,
+    "text": "This cube has an object script attached. 'this' is the object itself, so the same script works on anything."
+   },
+   {
+    "t": 4.7,
+    "d": 2.6,
+    "text": "Up and down along the world axes..."
+   },
+   {
+    "t": 7.3,
+    "d": 2.6,
+    "text": "...forward and back along the cube's own axis..."
+   },
+   {
+    "t": 9.9,
+    "d": 2.8,
+    "text": "...and rotating on the spot. Speeds are in units per second, rotations in degrees."
+   }
+  ]
+ },
+ "4": {
+  "end": 14.0,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 0.7
+   },
+   {
+    "t": 1.9,
+    "key": "S",
+    "hold": 0.7
+   },
+   {
+    "t": 2.8,
+    "key": "A",
+    "hold": 0.7
+   },
+   {
+    "t": 3.7,
+    "key": "D",
+    "hold": 0.7
+   },
+   {
+    "t": 4.6,
+    "key": "Q",
+    "hold": 0.7
+   },
+   {
+    "t": 5.5,
+    "key": "E",
+    "hold": 0.7
+   },
+   {
+    "t": 7.4,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 10.8,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 11.8,
+    "key": "R",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.8,
+    "text": "Rotation is just a matrix: W/S pitch, A/D yaw, Q/E roll. Each key multiplies the object's M3 by a small rotation."
+   },
+   {
+    "t": 7.2,
+    "d": 3.2,
+    "text": "Space switches on auto-rotation, applied every frame with the delta time so it's frame-rate independent."
+   },
+   {
+    "t": 11.0,
+    "d": 2.2,
+    "text": "And R puts everything back to the starting rotation."
+   }
+  ]
+ },
+ "5": {
+  "end": 11.7,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "C",
+    "hold": 0.12
+   },
+   {
+    "t": 1.8,
+    "key": "C",
+    "hold": 0.12
+   },
+   {
+    "t": 2.6,
+    "key": "C",
+    "hold": 0.12
+   },
+   {
+    "t": 3.4,
+    "key": "C",
+    "hold": 0.12
+   },
+   {
+    "t": 5.2,
+    "key": "V",
+    "hold": 0.12
+   },
+   {
+    "t": 6.2,
+    "key": "V",
+    "hold": 0.12
+   },
+   {
+    "t": 8.0,
+    "key": "X",
+    "hold": 0.12
+   },
+   {
+    "t": 8.8,
+    "key": "X",
+    "hold": 0.12
+   },
+   {
+    "t": 9.6,
+    "key": "X",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.6,
+    "text": "Objects can be created from a script. Every press of C drops a random coloured point light into the scene."
+   },
+   {
+    "t": 4.9,
+    "d": 2.9,
+    "text": "V hides and shows the last one. A disabled object costs nothing."
+   },
+   {
+    "t": 7.9,
+    "d": 3.0,
+    "text": "And X removes them for good. Removed objects are cleaned up by the engine."
+   }
+  ]
+ },
+ "6": {
+  "end": 12.8,
+  "steps": [
+   {
+    "t": 1.2,
+    "key": "W",
+    "hold": 0.8
+   },
+   {
+    "t": 2.2,
+    "key": "D",
+    "hold": 0.8
+   },
+   {
+    "t": 3.2,
+    "key": "Q",
+    "hold": 0.8
+   },
+   {
+    "t": 4.2,
+    "key": "E",
+    "hold": 0.8
+   },
+   {
+    "t": 6.2,
+    "key": "O",
+    "hold": 0.2
+   },
+   {
+    "t": 10.0,
+    "key": "O",
+    "hold": 0.2
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.8,
+    "text": "Parenting: four coloured lights are children of the cube. Wherever the parent goes, they follow."
+   },
+   {
+    "t": 5.8,
+    "d": 3.6,
+    "text": "Children keep their offset relative to the parent, so we can animate their orbits on top of the movement."
+   },
+   {
+    "t": 9.6,
+    "d": 2.4,
+    "text": "Switch it off and they sit still again."
+   }
+  ]
+ },
+ "7": {
+  "end": 13.8,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "S",
+    "hold": 0.12
+   },
+   {
+    "t": 2.0,
+    "key": "P",
+    "hold": 0.12
+   },
+   {
+    "t": 3.0,
+    "key": "P",
+    "hold": 0.12
+   },
+   {
+    "t": 4.0,
+    "key": "O",
+    "hold": 0.12
+   },
+   {
+    "t": 5.4,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 7.2,
+    "key": "A",
+    "hold": 1.0
+   },
+   {
+    "t": 8.5,
+    "key": "D",
+    "hold": 1.0
+   },
+   {
+    "t": 10.4,
+    "key": "TAB",
+    "hold": 0.12
+   },
+   {
+    "t": 11.4,
+    "key": "TAB",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.8,
+    "text": "The cone looks at the sphere with LookAt. Here it turns smoothly; I'm speeding that up and slowing it down."
+   },
+   {
+    "t": 5.2,
+    "d": 2.5,
+    "text": "Follow off: now I turn it by hand with A and D."
+   },
+   {
+    "t": 10.2,
+    "d": 2.8,
+    "text": "And Tab changes which object it tracks."
+   }
+  ]
+ },
+ "8": {
+  "end": 9.5,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 1.1
+   },
+   {
+    "t": 2.4,
+    "key": "D",
+    "hold": 1.1
+   },
+   {
+    "t": 3.8,
+    "key": "SPACE",
+    "hold": 1.1
+   },
+   {
+    "t": 5.2,
+    "key": "C",
+    "hold": 1.1
+   },
+   {
+    "t": 6.6,
+    "key": "I",
+    "hold": 1.1
+   },
+   {
+    "t": 8.0,
+    "key": "K",
+    "hold": 1.1
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "A follow camera is a few lines: each frame it eases towards a point behind the cube, then looks at it."
+   },
+   {
+    "t": 5.2,
+    "d": 3.5,
+    "text": "The script turns the keyboard off for the camera, so the keys only move the cube."
+   }
+  ]
+ },
+ "9": {
+  "end": 9.5,
+  "steps": [],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.2,
+    "text": "Scripts can talk to each other. The cube owns two variables, declared in its JSON file..."
+   },
+   {
+    "t": 4.7,
+    "d": 4.0,
+    "text": "...and the sphere reads them every second through getLocalScriptVar. The values go to the console."
+   }
+  ]
+ },
+ "10": {
+  "end": 13.2,
+  "steps": [
+   {
+    "t": 1.5,
+    "key": "Q",
+    "hold": 1.0
+   },
+   {
+    "t": 2.8,
+    "key": "E",
+    "hold": 1.0
+   },
+   {
+    "t": 4.1,
+    "key": "Z",
+    "hold": 1.0
+   },
+   {
+    "t": 5.4,
+    "key": "X",
+    "hold": 1.0
+   },
+   {
+    "t": 6.7,
+    "key": "I",
+    "hold": 1.0
+   },
+   {
+    "t": 8.0,
+    "key": "L",
+    "hold": 1.0
+   },
+   {
+    "t": 9.3,
+    "key": "K",
+    "hold": 1.0
+   },
+   {
+    "t": 10.6,
+    "key": "J",
+    "hold": 1.0
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "Lights from code. Q and E rotate the sun: the shading and the shadows follow in real time."
+   },
+   {
+    "t": 4.6,
+    "d": 2.6,
+    "text": "Z and X change the ambient light, the 'floor' of the lighting."
+   },
+   {
+    "t": 7.4,
+    "d": 5.0,
+    "text": "And a point light I created in the script, with attenuation, moves around the cubes."
+   }
+  ]
+ },
+ "11": {
+  "end": 12.8,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 0.5
+   },
+   {
+    "t": 1.9,
+    "key": "D",
+    "hold": 0.5
+   },
+   {
+    "t": 2.8,
+    "key": "S",
+    "hold": 0.5
+   },
+   {
+    "t": 3.7,
+    "key": "A",
+    "hold": 0.5
+   },
+   {
+    "t": 5.2,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 6.6,
+    "key": "I",
+    "hold": 0.8
+   },
+   {
+    "t": 7.7,
+    "key": "K",
+    "hold": 0.8
+   },
+   {
+    "t": 9.2,
+    "key": "X",
+    "hold": 0.12
+   },
+   {
+    "t": 10.4,
+    "key": "SPACE",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "Physics is Bullet. This box is a rigid body with mass and friction; W A S D push it with forces."
+   },
+   {
+    "t": 5.0,
+    "d": 1.3,
+    "text": "Space gives it an impulse: a jump."
+   },
+   {
+    "t": 6.4,
+    "d": 2.6,
+    "text": "I and K set its velocity directly instead. Different tools for different feels."
+   },
+   {
+    "t": 9.0,
+    "d": 3.0,
+    "text": "X stops all motion dead, and then... jump again."
+   }
+  ]
+ },
+ "12": {
+  "end": 10.0,
+  "steps": [
+   {
+    "t": 1.5,
+    "key": "R",
+    "hold": 0.12
+   },
+   {
+    "t": 3.3,
+    "key": "G",
+    "hold": 0.12
+   },
+   {
+    "t": 5.1,
+    "key": "R",
+    "hold": 0.12
+   },
+   {
+    "t": 6.9,
+    "key": "G",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.2,
+    "text": "The player box falls onto the enemy and gets knocked back: that's a collision callback running in Lua."
+   },
+   {
+    "t": 4.7,
+    "d": 4.5,
+    "text": "R fires a visible ray at the target (green is a hit), and G checks the ground below."
+   }
+  ]
+ },
+ "13": {
+  "end": 95.5,
+  "steps": [
+   {
+    "t": 4.5,
+    "key": "2",
+    "hold": 0.2
+   },
+   {
+    "t": 9.0,
+    "key": "3",
+    "hold": 0.2
+   },
+   {
+    "t": 13.5,
+    "key": "1",
+    "hold": 0.2
+   },
+   {
+    "t": 16.5,
+    "key": "4",
+    "hold": 0.2
+   },
+   {
+    "t": 21.0,
+    "key": "4",
+    "hold": 0.2
+   },
+   {
+    "t": 25.5,
+    "key": "4",
+    "hold": 0.2
+   },
+   {
+    "t": 30.0,
+    "key": "B",
+    "hold": 0.2
+   },
+   {
+    "t": 32.5,
+    "key": "B",
+    "hold": 0.2
+   },
+   {
+    "t": 35.0,
+    "key": "5",
+    "hold": 0.2
+   },
+   {
+    "t": 38.6,
+    "key": "1",
+    "hold": 0.2
+   },
+   {
+    "t": 39.8,
+    "editor": true
+   },
+   {
+    "t": 41.5,
+    "click": [
+     0.5055,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 44.0,
+    "click": [
+     0.5417,
+     0.5392
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 48.0,
+    "click": [
+     0.5055,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 50.5,
+    "click": [
+     0.5417,
+     0.5392
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 56.5,
+    "click": [
+     0.5,
+     0.5352
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 59.5,
+    "click": [
+     0.0245,
+     0.8256
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 62.0,
+    "wheel": -6,
+    "at": [
+     0.1198,
+     0.78
+    ]
+   },
+   {
+    "t": 64.5,
+    "wheel": -3,
+    "at": [
+     0.1198,
+     0.6938
+    ]
+   },
+   {
+    "t": 66.5,
+    "click": [
+     0.0521,
+     0.7364
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 71.0,
+    "click": [
+     0.0521,
+     0.7156
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 75.5,
+    "drag": [
+     0.1562,
+     0.8176,
+     0.125,
+     0.8176
+    ],
+    "button": "left",
+    "dur": 1.2
+   },
+   {
+    "t": 80.5,
+    "drag": [
+     0.125,
+     0.8176,
+     0.1562,
+     0.8176
+    ],
+    "button": "left",
+    "dur": 1.2
+   },
+   {
+    "t": 84.0,
+    "wheel": 3,
+    "at": [
+     0.1198,
+     0.6938
+    ]
+   },
+   {
+    "t": 85.5,
+    "click": [
+     0.0521,
+     0.6204
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 89.0,
+    "wheel": 8,
+    "at": [
+     0.1198,
+     0.78
+    ]
+   },
+   {
+    "t": 91.0,
+    "click": [
+     0.0245,
+     0.8256
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 93.5,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "Skeletal animation. The yellow lines are the skeleton: every bone moves the part of the mesh attached to it."
+   },
+   {
+    "t": 4.6,
+    "d": 4.2,
+    "text": "Walk: press 2 and the character switches to the walking clip."
+   },
+   {
+    "t": 9.1,
+    "d": 4.2,
+    "text": "Run: press 3. Same bones, a different clip."
+   },
+   {
+    "t": 13.6,
+    "d": 2.6,
+    "text": "Idle: back to the standing pose."
+   },
+   {
+    "t": 16.7,
+    "d": 4.0,
+    "text": "Jump: press 4. The clip plays once, and when it ends the script sends the character back to idle."
+   },
+   {
+    "t": 21.2,
+    "d": 4.0,
+    "text": "Another jump. Watch the legs bend and the whole skeleton lift."
+   },
+   {
+    "t": 25.7,
+    "d": 4.0,
+    "text": "And one more. isAnimationEnds() tells the script when the clip is over."
+   },
+   {
+    "t": 30.2,
+    "d": 2.2,
+    "text": "B hides the skeleton..."
+   },
+   {
+    "t": 32.7,
+    "d": 2.2,
+    "text": "...and shows it again."
+   },
+   {
+    "t": 35.2,
+    "d": 4.0,
+    "text": "Crouch walk is the fifth clip. Speed (P / O) and looping (L) can change while it plays."
+   },
+   {
+    "t": 41.2,
+    "d": 5.4,
+    "text": "The editor has its own debug tools. Interface, Draw Animation Bones: the skeleton goes off..."
+   },
+   {
+    "t": 48.2,
+    "d": 5.0,
+    "text": "...and on again. Any animated mesh, in any scene, with no script at all."
+   },
+   {
+    "t": 53.4,
+    "d": 4.0,
+    "text": "Animations can be chosen without any script, too. Select the character in the view..."
+   },
+   {
+    "t": 59.6,
+    "d": 4.4,
+    "text": "...and open Mesh3D Animation in its inspector: every clip stored in the FBX is in a list."
+   },
+   {
+    "t": 66.6,
+    "d": 4.2,
+    "text": "Click Walking and it plays at once..."
+   },
+   {
+    "t": 71.1,
+    "d": 4.2,
+    "text": "...click Running and it changes again."
+   },
+   {
+    "t": 75.6,
+    "d": 4.6,
+    "text": "The Speed field sets the playback rate. Slow motion..."
+   },
+   {
+    "t": 80.7,
+    "d": 3.2,
+    "text": "...and back to normal speed."
+   },
+   {
+    "t": 85.6,
+    "d": 4.2,
+    "text": "And Crouch walking, from the same list."
+   }
+  ]
+ },
+ "14": {
+  "end": 14.8,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "1",
+    "hold": 0.3
+   },
+   {
+    "t": 3.7,
+    "key": "2",
+    "hold": 0.3
+   },
+   {
+    "t": 6.4,
+    "key": "3",
+    "hold": 0.3
+   },
+   {
+    "t": 9.1,
+    "key": "4",
+    "hold": 0.3
+   },
+   {
+    "t": 12.2,
+    "key": "SPACE",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "A particle emitter created entirely from code: fire, smoke, magic sparks and snow are just parameter sets."
+   },
+   {
+    "t": 4.6,
+    "d": 5.0,
+    "text": "Emission rate, lifetime, gravity, speed and a colour gradient. Up to 512 particles per emitter."
+   },
+   {
+    "t": 12.0,
+    "d": 2.0,
+    "text": "Space toggles the emission."
+   }
+  ]
+ },
+ "15": {
+  "end": 9.9,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "Q",
+    "hold": 0.12
+   },
+   {
+    "t": 1.8,
+    "key": "W",
+    "hold": 0.12
+   },
+   {
+    "t": 2.6,
+    "key": "E",
+    "hold": 0.12
+   },
+   {
+    "t": 3.4,
+    "key": "R",
+    "hold": 0.12
+   },
+   {
+    "t": 4.2,
+    "key": "T",
+    "hold": 0.12
+   },
+   {
+    "t": 5.6,
+    "key": "M",
+    "hold": 0.2
+   },
+   {
+    "t": 9.4,
+    "key": "M",
+    "hold": 0.2
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.4,
+    "text": "Audio from Lua: register short sounds once, then play them by name whenever you need them."
+   },
+   {
+    "t": 5.3,
+    "d": 3.8,
+    "text": "Music loops in the background, and the volume can be set live."
+   }
+  ]
+ },
+ "16": {
+  "end": 9.6,
+  "steps": [],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.2,
+    "text": "A scene shader, written in GLSL, tints the whole screen."
+   },
+   {
+    "t": 4.6,
+    "d": 4.2,
+    "text": "The script writes new values into the shader's variables every frame. That's how you animate effects."
+   }
+  ]
+ },
+ "17": {
+  "end": 155.8,
+  "steps": [
+   {
+    "t": 10.8,
+    "editor": true
+   },
+   {
+    "t": 13.5,
+    "click": [
+     0.8094,
+     0.2134
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 17.5,
+    "click": [
+     0.8094,
+     0.1806
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 21.5,
+    "click": [
+     0.8094,
+     0.1494
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 27.0,
+    "click": [
+     0.8094,
+     0.1494
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 29.0,
+    "click": [
+     0.8094,
+     0.1806
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 31.0,
+    "click": [
+     0.8094,
+     0.2134
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 34.0,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 36.8,
+    "click": [
+     0.474,
+     0.1189
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 40.5,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 43.3,
+    "click": [
+     0.15,
+     0.0763
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 47.0,
+    "click": [
+     0.371,
+     0.549
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 50.5,
+    "click": [
+     0.271,
+     0.0375
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 53.5,
+    "drag": [
+     0.367,
+     0.514,
+     0.367,
+     0.425
+    ],
+    "button": "left",
+    "dur": 1.8,
+    "pre": 1.0
+   },
+   {
+    "t": 59.0,
+    "click": [
+     0.422,
+     0.479
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 62.0,
+    "click": [
+     0.29,
+     0.0375
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 65.0,
+    "drag": [
+     0.466,
+     0.449,
+     0.484,
+     0.532
+    ],
+    "button": "left",
+    "dur": 1.8,
+    "pre": 1.0
+   },
+   {
+    "t": 68.5,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 71.3,
+    "click": [
+     0.474,
+     0.0714
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 77.5,
+    "click": [
+     0.0245,
+     0.6412
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 81.5,
+    "drag": [
+     0.1432,
+     0.6997,
+     0.1693,
+     0.6997
+    ],
+    "button": "left",
+    "dur": 1.2,
+    "pre": 0.8
+   },
+   {
+    "t": 87.0,
+    "click": [
+     0.0245,
+     0.6412
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 90.0,
+    "click": [
+     0.0245,
+     0.672
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 93.0,
+    "wheel": -3,
+    "at": [
+     0.1198,
+     0.7929
+    ]
+   },
+   {
+    "t": 96.0,
+    "wheel": 6,
+    "at": [
+     0.1198,
+     0.7929
+    ]
+   },
+   {
+    "t": 97.5,
+    "click": [
+     0.0245,
+     0.672
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 100.5,
+    "click": [
+     0.0245,
+     0.7027
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 105.0,
+    "click": [
+     0.0245,
+     0.7027
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 108.0,
+    "click": [
+     0.0245,
+     0.7334
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 113.0,
+    "click": [
+     0.0245,
+     0.7334
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 116.0,
+    "click": [
+     0.0245,
+     0.7641
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 121.0,
+    "click": [
+     0.0245,
+     0.7641
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 124.0,
+    "click": [
+     0.0245,
+     0.7948
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 127.0,
+    "click": [
+     0.0521,
+     0.8246
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 130.0,
+    "wheel": -3,
+    "at": [
+     0.1198,
+     0.8424
+    ]
+   },
+   {
+    "t": 133.0,
+    "wheel": 3,
+    "at": [
+     0.1198,
+     0.8424
+    ]
+   },
+   {
+    "t": 135.0,
+    "click": [
+     0.0521,
+     0.8246
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 137.5,
+    "click": [
+     0.0521,
+     0.8494
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 142.0,
+    "click": [
+     0.0521,
+     0.8494
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 144.0,
+    "click": [
+     0.0245,
+     0.7948
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 147.0,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 149.8,
+    "click": [
+     0.15,
+     0.0446
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 151.4,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.3,
+    "text": "Hi! A quick tour of Brakeza3D: a C++ engine with OpenGL deferred rendering, scripted in Lua."
+   },
+   {
+    "t": 3.8,
+    "d": 3.2,
+    "text": "Geometry goes into a G-Buffer first, and the lighting comes after."
+   },
+   {
+    "t": 7.2,
+    "d": 3.0,
+    "text": "Per-pixel lights, shadows and a post-process on top."
+   },
+   {
+    "t": 11.0,
+    "d": 2.4,
+    "text": "Now the editor. First, the project panel."
+   },
+   {
+    "t": 13.6,
+    "d": 3.8,
+    "text": "Project scenes: every scene the project can load. This whole tour is one project of 35 scenes."
+   },
+   {
+    "t": 17.6,
+    "d": 3.8,
+    "text": "Project scripts: global scripts that run in every scene, like this demo browser."
+   },
+   {
+    "t": 21.6,
+    "d": 4.4,
+    "text": "And the project settings: name, file, gravity and resolution."
+   },
+   {
+    "t": 32.0,
+    "d": 4.2,
+    "text": "Layouts rearrange the editor: this one, Design, gives the scene all the room."
+   },
+   {
+    "t": 40.7,
+    "d": 5.2,
+    "text": "Script Controls, Stop: with the scripts stopped, the scene becomes editable, with its grid and gizmos."
+   },
+   {
+    "t": 47.2,
+    "d": 3.0,
+    "text": "Click an object and it gets a green outline."
+   },
+   {
+    "t": 50.7,
+    "d": 5.8,
+    "text": "Pick the Move tool and drag an arrow of the gizmo: the pawn slides up along that axis."
+   },
+   {
+    "t": 59.2,
+    "d": 2.6,
+    "text": "Select another one, switch to Rotate..."
+   },
+   {
+    "t": 65.2,
+    "d": 4.0,
+    "text": "...and turn it with the rotation ring."
+   },
+   {
+    "t": 71.7,
+    "d": 5.2,
+    "text": "Back in the Default layout, Object Properties is docked on the left: the inspector of the selected cube."
+   },
+   {
+    "t": 77.7,
+    "d": 3.7,
+    "text": "Transformations: position, rotation and scale."
+   },
+   {
+    "t": 81.7,
+    "d": 4.8,
+    "text": "Drag a field and the value changes live, right in the scene."
+   },
+   {
+    "t": 90.2,
+    "d": 3.4,
+    "text": "Render settings: alpha, selectable, lighting and raster state..."
+   },
+   {
+    "t": 93.6,
+    "d": 3.6,
+    "text": "...down to face culling and the rest of the flags."
+   },
+   {
+    "t": 100.7,
+    "d": 4.0,
+    "text": "Attached objects: the children hanging from this one."
+   },
+   {
+    "t": 108.2,
+    "d": 4.4,
+    "text": "Collider: the physics body of the object and its mode."
+   },
+   {
+    "t": 116.2,
+    "d": 4.4,
+    "text": "Misc: the object's id, its picking colour and its distance to the camera."
+   },
+   {
+    "t": 124.2,
+    "d": 2.6,
+    "text": "Mesh3D: everything about the model."
+   },
+   {
+    "t": 127.2,
+    "d": 3.0,
+    "text": "Mesh render options: pipeline, culling, mipmaps and emission..."
+   },
+   {
+    "t": 130.2,
+    "d": 4.4,
+    "text": "...scroll for the rest."
+   },
+   {
+    "t": 137.7,
+    "d": 4.0,
+    "text": "Mesh information: the model file, its submeshes and materials."
+   },
+   {
+    "t": 147.2,
+    "d": 4.0,
+    "text": "Script Controls, Play: the scripts run again."
+   },
+   {
+    "t": 152.0,
+    "d": 3.0,
+    "text": "And on with the tour."
+   }
+  ]
+ },
+ "18": {
+  "end": 29.6,
+  "steps": [
+   {
+    "t": 4.4,
+    "editor": true
+   },
+   {
+    "t": 5.6,
+    "click": [
+     0.0135,
+     0.2329
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 7.6,
+    "click": [
+     0.0135,
+     0.3076
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 10.0,
+    "click": [
+     0.075,
+     0.3328
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 14.2,
+    "click": [
+     0.075,
+     0.2577
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 16.0,
+    "click": [
+     0.0135,
+     0.3076
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 17.0,
+    "click": [
+     0.0135,
+     0.2329
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 18.4,
+    "editor": false
+   },
+   {
+    "t": 20.6,
+    "key": "1",
+    "hold": 0.15
+   },
+   {
+    "t": 22.0,
+    "key": "2",
+    "hold": 0.15
+   },
+   {
+    "t": 23.4,
+    "key": "1",
+    "hold": 0.15
+   },
+   {
+    "t": 24.8,
+    "key": "2",
+    "hold": 0.15
+   },
+   {
+    "t": 26.2,
+    "key": "3",
+    "hold": 0.15
+   },
+   {
+    "t": 27.6,
+    "key": "3",
+    "hold": 0.15
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "A global directional light turns in a 30-second loop to fake day and night."
+   },
+   {
+    "t": 5.0,
+    "d": 4.4,
+    "text": "Back in the editor: the object browser groups the scene by type, lights included."
+   },
+   {
+    "t": 10.2,
+    "d": 3.8,
+    "text": "Select a spotlight and the editor draws its debug cone: the volume of space it lights."
+   },
+   {
+    "t": 14.4,
+    "d": 2.2,
+    "text": "Select something else and it goes away."
+   },
+   {
+    "t": 18.6,
+    "d": 1.8,
+    "text": "Back to the demo."
+   },
+   {
+    "t": 20.4,
+    "d": 4.4,
+    "text": "Keys 1, 2 and 3 switch the lights off and on from Lua: setEnabled on each one."
+   },
+   {
+    "t": 25.0,
+    "d": 3.8,
+    "text": "The editor's light checkboxes call exactly the same thing."
+   }
+  ]
+ },
+ "19": {
+  "end": 157.0,
+  "steps": [
+   {
+    "t": 0.6,
+    "move": [
+     0.5,
+     0.5,
+     0.25,
+     0.25
+    ],
+    "dur": 1.0
+   },
+   {
+    "t": 1.8,
+    "move": [
+     0.25,
+     0.25,
+     0.75,
+     0.25
+    ],
+    "dur": 0.9
+   },
+   {
+    "t": 2.9,
+    "move": [
+     0.75,
+     0.25,
+     0.75,
+     0.75
+    ],
+    "dur": 0.7
+   },
+   {
+    "t": 3.8,
+    "move": [
+     0.75,
+     0.75,
+     0.25,
+     0.75
+    ],
+    "dur": 0.5
+   },
+   {
+    "t": 4.4,
+    "editor": true
+   },
+   {
+    "t": 5.6,
+    "click": [
+     0.796,
+     0.337
+    ],
+    "button": "left"
+   },
+   {
+    "t": 9.4,
+    "click": [
+     0.9005,
+     0.4004
+    ],
+    "button": "left"
+   },
+   {
+    "t": 10.3,
+    "move": [
+     0.9005,
+     0.4004,
+     0.3,
+     0.2
+    ],
+    "dur": 0.8
+   },
+   {
+    "t": 11.4,
+    "click": [
+     0.9005,
+     0.4242
+    ],
+    "button": "left"
+   },
+   {
+    "t": 12.3,
+    "move": [
+     0.9005,
+     0.4242,
+     0.65,
+     0.2
+    ],
+    "dur": 0.8
+   },
+   {
+    "t": 13.4,
+    "click": [
+     0.9005,
+     0.448
+    ],
+    "button": "left"
+   },
+   {
+    "t": 14.3,
+    "move": [
+     0.9005,
+     0.448,
+     0.45,
+     0.45
+    ],
+    "dur": 0.8
+   },
+   {
+    "t": 15.6,
+    "click": [
+     0.9005,
+     0.4004
+    ],
+    "button": "left"
+   },
+   {
+    "t": 16.8,
+    "click": [
+     0.9005,
+     0.4242
+    ],
+    "button": "left"
+   },
+   {
+    "t": 18.0,
+    "click": [
+     0.9005,
+     0.448
+    ],
+    "button": "left"
+   },
+   {
+    "t": 20.4,
+    "click": [
+     0.5953,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 23.0,
+    "click": [
+     0.625,
+     0.4044
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 27.5,
+    "move": [
+     0.34,
+     0.47,
+     0.52,
+     0.62
+    ],
+    "dur": 3.5
+   },
+   {
+    "t": 32.0,
+    "click": [
+     0.35,
+     0.4113
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 36.5,
+    "click": [
+     0.3036,
+     0.4886
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 42.5,
+    "key": "0",
+    "hold": 0.2
+   },
+   {
+    "t": 46.5,
+    "key": "9",
+    "hold": 0.2
+   },
+   {
+    "t": 52.0,
+    "click": [
+     0.349,
+     0.451
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 54.5,
+    "click": [
+     0.349,
+     0.4816
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 58.6,
+    "wheel": -5,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 62.0,
+    "wheel": -5,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 66.0,
+    "wheel": -8,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 70.0,
+    "wheel": 20,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 71.5,
+    "click": [
+     0.349,
+     0.4816
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 73.5,
+    "click": [
+     0.349,
+     0.5124
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 77.8,
+    "wheel": -6,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 83.0,
+    "wheel": 20,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 84.5,
+    "click": [
+     0.349,
+     0.5124
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 86.5,
+    "click": [
+     0.349,
+     0.543
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 91.0,
+    "wheel": -3,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 96.0,
+    "wheel": 10,
+    "at": [
+     0.4,
+     0.55
+    ]
+   },
+   {
+    "t": 97.0,
+    "click": [
+     0.349,
+     0.543
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 101.0,
+    "click": [
+     0.413,
+     0.4113
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 104.5,
+    "click": [
+     0.3036,
+     0.45
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 112.0,
+    "click": [
+     0.4521,
+     0.4113
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 119.0,
+    "click": [
+     0.4911,
+     0.4113
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 126.0,
+    "click": [
+     0.3156,
+     0.4113
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 132.0,
+    "click": [
+     0.7037,
+     0.2141
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 134.0,
+    "click": [
+     0.796,
+     0.337
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 137.0,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 139.6,
+    "click": [
+     0.15,
+     0.0763
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 143.0,
+    "wheel": 4,
+    "at": [
+     0.49,
+     0.4
+    ]
+   },
+   {
+    "t": 144.4,
+    "wheel": 4,
+    "at": [
+     0.49,
+     0.4
+    ]
+   },
+   {
+    "t": 146.8,
+    "wheel": -4,
+    "at": [
+     0.49,
+     0.4
+    ]
+   },
+   {
+    "t": 148.2,
+    "wheel": -4,
+    "at": [
+     0.49,
+     0.4
+    ]
+   },
+   {
+    "t": 150.8,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 153.4,
+    "click": [
+     0.15,
+     0.0446
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 154.7,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "Eight full-screen shaders in a chain: the image is handed from one to the next through two ping-pong buffers."
+   },
+   {
+    "t": 5.0,
+    "d": 4.0,
+    "text": "Here's the engine's own editor. Under 'Scene Shaders' you can see all eight of them."
+   },
+   {
+    "t": 9.1,
+    "d": 4.0,
+    "text": "Each green dot is the shader's on/off switch. Turn one off and its quarter of the screen goes back to normal."
+   },
+   {
+    "t": 13.2,
+    "d": 2.1,
+    "text": "Another one... they're independent, so you can mix them freely."
+   },
+   {
+    "t": 15.4,
+    "d": 4.0,
+    "text": "And back on. This is how you'd debug a long effects chain: switch things off one by one."
+   },
+   {
+    "t": 20.6,
+    "d": 6.4,
+    "text": "This demo is the heaviest on post-processing, so it's the perfect excuse to open the profiler: Windows, Profiler."
+   },
+   {
+    "t": 27.6,
+    "d": 4.2,
+    "text": "The overview: frame time, memory, and the cost of every engine component each frame."
+   },
+   {
+    "t": 32.2,
+    "d": 4.0,
+    "text": "The Render tab breaks the frame into its passes: scripts, G-Buffer, shadows, lights, transparencies, post-processing."
+   },
+   {
+    "t": 36.7,
+    "d": 5.6,
+    "text": "Switch on GPU timing and every pass also shows the time the graphics card spent on it."
+   },
+   {
+    "t": 42.4,
+    "d": 3.8,
+    "text": "Watch the Post-Processing row while I turn all eight shaders off..."
+   },
+   {
+    "t": 46.4,
+    "d": 5.2,
+    "text": "...and on again. Each shader in the chain adds a fullscreen pass."
+   },
+   {
+    "t": 52.1,
+    "d": 2.3,
+    "text": "The Render tab has more: Frame Buffers..."
+   },
+   {
+    "t": 54.6,
+    "d": 3.8,
+    "text": "Every offscreen target the engine renders to, as live thumbnails."
+   },
+   {
+    "t": 58.5,
+    "d": 3.3,
+    "text": "The layers of the final image: global, scene, background, foreground and the UI."
+   },
+   {
+    "t": 62.1,
+    "d": 3.8,
+    "text": "The G-Buffer of the deferred renderer: positions, normals, albedo and depth."
+   },
+   {
+    "t": 66.1,
+    "d": 3.8,
+    "text": "And the picking buffer: a colour ID per object, how a click knows what it hit."
+   },
+   {
+    "t": 73.6,
+    "d": 4.0,
+    "text": "Post-Processing Chain: for every shader, the texture it reads and the one it writes."
+   },
+   {
+    "t": 77.9,
+    "d": 4.8,
+    "text": "That's the ping-pong: each effect feeds the next, and the last one is copied to the global buffer."
+   },
+   {
+    "t": 86.7,
+    "d": 3.8,
+    "text": "OpenGL Status: the limits of this GPU and driver..."
+   },
+   {
+    "t": 91.1,
+    "d": 4.0,
+    "text": "...and the vendor, the renderer and the exact GL version in use."
+   },
+   {
+    "t": 101.2,
+    "d": 3.2,
+    "text": "Scripts: per-script timing is off by default, so measuring costs nothing until you ask for it."
+   },
+   {
+    "t": 104.7,
+    "d": 6.8,
+    "text": "Switched on, it lists how long each Lua script takes every frame. That's how the slow ones get found."
+   },
+   {
+    "t": 112.2,
+    "d": 6.4,
+    "text": "Resources: the thread pools that load assets in the background, with their queues and workloads."
+   },
+   {
+    "t": 119.2,
+    "d": 6.4,
+    "text": "Physics: how many Bullet bodies there are by type, their collision groups, and a switch for the debug wireframe."
+   },
+   {
+    "t": 126.2,
+    "d": 5.2,
+    "text": "And back to the overview. Everything here can be turned off with --no-profiler when you don't need it."
+   },
+   {
+    "t": 137.2,
+    "d": 4.8,
+    "text": "One more thing: stop the scripts, and the editor camera is free."
+   },
+   {
+    "t": 143.1,
+    "d": 3.2,
+    "text": "Zoom in on the pawn: every quarter has its own effect."
+   },
+   {
+    "t": 146.9,
+    "d": 3.2,
+    "text": "And out: the whole scene is filtered, not just the pawn."
+   },
+   {
+    "t": 150.9,
+    "d": 2.8,
+    "text": "Play again, and on with the tour."
+   }
+  ]
+ },
+ "20": {
+  "end": 190.6,
+  "steps": [
+   {
+    "t": 3.2,
+    "key": "RIGHT",
+    "hold": 0.12
+   },
+   {
+    "t": 4.8,
+    "key": "RIGHT",
+    "hold": 0.12
+   },
+   {
+    "t": 6.4,
+    "key": "RIGHT",
+    "hold": 0.12
+   },
+   {
+    "t": 8.0,
+    "key": "RIGHT",
+    "hold": 0.12
+   },
+   {
+    "t": 9.6,
+    "key": "RIGHT",
+    "hold": 0.12
+   },
+   {
+    "t": 11.2,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 12.6,
+    "editor": true
+   },
+   {
+    "t": 15.0,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 17.6,
+    "click": [
+     0.474,
+     0.0714
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 21.0,
+    "click": [
+     0.8099,
+     0.337
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 23.5,
+    "click": [
+     0.9151,
+     0.4242
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 26.5,
+    "click": [
+     0.2917,
+     0.2963
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 29.0,
+    "click": [
+     0.4688,
+     0.4955
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 30.4,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 37.0,
+    "click": [
+     0.8771,
+     0.1566
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 42.0,
+    "click": [
+     0.7964,
+     0.3053
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 44.5,
+    "click": [
+     0.9292,
+     0.3687
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 48.5,
+    "wheel": -4,
+    "at": [
+     0.573,
+     0.3964
+    ]
+   },
+   {
+    "t": 51.0,
+    "wheel": -4,
+    "at": [
+     0.573,
+     0.3964
+    ]
+   },
+   {
+    "t": 55.0,
+    "click": [
+     0.7943,
+     0.1962
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 57.5,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 60.0,
+    "click": [
+     0.474,
+     0.0714
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 63.4,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 66.0,
+    "click": [
+     0.15,
+     0.0763
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 68.9,
+    "click": [
+     0.0135,
+     0.2329
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 71.4,
+    "click": [
+     0.0677,
+     0.4222
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 74.4,
+    "click": [
+     0.4,
+     0.7574
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 76.9,
+    "click": [
+     0.2188,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 79.9,
+    "click": [
+     0.7031,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 83.4,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 84.8,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 93.4,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 95.4,
+    "click": [
+     0.0677,
+     0.2557
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 97.2,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 99.2,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 100.0,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 102.7,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 104.0,
+    "click": [
+     0.0677,
+     0.3033
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 105.8,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 107.8,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 108.6,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 111.3,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 112.6,
+    "click": [
+     0.0677,
+     0.3271
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 114.4,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 116.4,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 117.2,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 119.9,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 121.2,
+    "click": [
+     0.0677,
+     0.3984
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 123.0,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 125.0,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 125.8,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 128.5,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 129.8,
+    "click": [
+     0.0677,
+     0.446
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 131.6,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 133.6,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 134.4,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 137.1,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 138.4,
+    "click": [
+     0.0677,
+     0.4698
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 140.2,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 142.2,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 143.0,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 145.7,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 147.0,
+    "click": [
+     0.0677,
+     0.3746
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 148.8,
+    "click": [
+     0.7089,
+     0.8177
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 150.8,
+    "click": [
+     0.6875,
+     0.396
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 151.6,
+    "key": "F",
+    "hold": 0.2
+   },
+   {
+    "t": 154.3,
+    "click": [
+     0.7031,
+     0.2954
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 155.6,
+    "click": [
+     0.7141,
+     0.1516
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 158.0,
+    "click": [
+     0.5,
+     0.4658
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 161.0,
+    "click": [
+     0.0245,
+     0.6412
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 164.5,
+    "drag": [
+     0.1432,
+     0.7007,
+     0.1666,
+     0.7007
+    ],
+    "button": "left",
+    "dur": 1.4,
+    "pre": 0.8
+   },
+   {
+    "t": 169.0,
+    "click": [
+     0.0906,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 171.5,
+    "click": [
+     0.0833,
+     0.0446
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 175.5,
+    "click": [
+     0.0906,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 178.0,
+    "click": [
+     0.0833,
+     0.0654
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 181.5,
+    "click": [
+     0.0245,
+     0.6412
+    ],
+    "button": "left",
+    "pre": 0.6
+   },
+   {
+    "t": 184.5,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 187.1,
+    "click": [
+     0.15,
+     0.0446
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 187.8,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.0,
+    "text": "Node shaders: fourteen objects, each wearing a different one, and twelve full-screen effects."
+   },
+   {
+    "t": 3.3,
+    "d": 7.4,
+    "text": "Left and right switch the screen effect: sepia, duotone, night vision, thermal, chromatic aberration, underwater..."
+   },
+   {
+    "t": 15.2,
+    "d": 5.4,
+    "text": "Back in the editor. Every effect is a node graph: this is the Duotone one, opened from the Scene Shaders list."
+   },
+   {
+    "t": 26.7,
+    "d": 2.6,
+    "text": "Let me give it more room..."
+   },
+   {
+    "t": 29.4,
+    "d": 7.4,
+    "text": "...and press F to centre the whole graph: the scene texture goes through Grayscale, is mixed with two colours, and reaches the Output node."
+   },
+   {
+    "t": 42.2,
+    "d": 4.8,
+    "text": "Scripts open in the code editor, with syntax highlighting. This is the Lua script that drives this very demo."
+   },
+   {
+    "t": 48.6,
+    "d": 5.0,
+    "text": "It's a plain Lua file: the screen effects, the keys, and how each shader is switched on by its label."
+   },
+   {
+    "t": 57.7,
+    "d": 5.0,
+    "text": "Back to the default layout."
+   },
+   {
+    "t": 63.6,
+    "d": 2.6,
+    "text": "Now the objects. First, stop the scripts..."
+   },
+   {
+    "t": 71.6,
+    "d": 2.6,
+    "text": "...and select an object that wears an object shader: Lava."
+   },
+   {
+    "t": 74.6,
+    "d": 4.4,
+    "text": "Its row in the Object Shaders panel expands to list the nodes and how they connect."
+   },
+   {
+    "t": 80.1,
+    "d": 3.4,
+    "text": "Edit nodes opens the object's own graph, live, in the same node editor."
+   },
+   {
+    "t": 83.6,
+    "d": 8.0,
+    "text": "F centres it: time and UV coordinates drive an offset, and the result is the lava texture, wired to a mesh instead of the screen."
+   },
+   {
+    "t": 95.6,
+    "d": 4.4,
+    "text": "More objects wear other node shaders: BurnDissolve..."
+   },
+   {
+    "t": 104.2,
+    "d": 3.2,
+    "text": "Next object, next graph: DiagonalStripes."
+   },
+   {
+    "t": 112.8,
+    "d": 3.2,
+    "text": "Next object, next graph: FireGlow."
+   },
+   {
+    "t": 121.4,
+    "d": 3.2,
+    "text": "Next object, next graph: Hologram."
+   },
+   {
+    "t": 130.0,
+    "d": 3.2,
+    "text": "Next object, next graph: NeonPulse."
+   },
+   {
+    "t": 138.6,
+    "d": 3.2,
+    "text": "Next object, next graph: NormalColors."
+   },
+   {
+    "t": 147.2,
+    "d": 3.2,
+    "text": "Next object, next graph: HitFlash."
+   },
+   {
+    "t": 158.2,
+    "d": 2.6,
+    "text": "Click an object in the view, here the Lava sphere..."
+   },
+   {
+    "t": 161.2,
+    "d": 3.0,
+    "text": "...and the docked inspector shows its transform, render settings, collider and more."
+   },
+   {
+    "t": 164.7,
+    "d": 4.0,
+    "text": "Drag a field and the object moves right there in the scene. Every change goes into the undo history."
+   },
+   {
+    "t": 169.2,
+    "d": 6.0,
+    "text": "Edit, Undo (Ctrl+Z) puts it back where it was. The history size is configurable."
+   },
+   {
+    "t": 175.7,
+    "d": 5.0,
+    "text": "And Redo (Ctrl+Y) brings the move back."
+   },
+   {
+    "t": 184.7,
+    "d": 3.4,
+    "text": "Play again, and on with the tour."
+   }
+  ]
+ },
+ "21": {
+  "end": 29.7,
+  "steps": [
+   {
+    "t": 2.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 3.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 5.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 6.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 8.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 9.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 11.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 12.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 14.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 15.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 17.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 18.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 20.0,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 21.5,
+    "key": "LEFT",
+    "hold": 0.15
+   },
+   {
+    "t": 25.1,
+    "editor": true
+   },
+   {
+    "t": 28.5,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.2,
+    "text": "Thirty particle emitters on a carousel, starting with confetti. I'll flick through them backwards."
+   },
+   {
+    "t": 3.6,
+    "d": 4.3,
+    "text": "Black hole, fireworks, bubbles... every one is just a set of emitter parameters, no code."
+   },
+   {
+    "t": 8.1,
+    "d": 2.9,
+    "text": "Lightning, then a magic portal: a torus stood upright and swirling."
+   },
+   {
+    "t": 11.2,
+    "d": 4.3,
+    "text": "Particles can be born on a mesh surface, on a cone, a sphere or a ring."
+   },
+   {
+    "t": 15.7,
+    "d": 4.9,
+    "text": "And the newer spiral and vortex controls: a sprinkler, a galaxy with three arms, a tornado..."
+   },
+   {
+    "t": 20.9,
+    "d": 3.4,
+    "text": "...and a helix. Thirty effects, all made of the same emitter."
+   },
+   {
+    "t": 25.4,
+    "d": 3.0,
+    "text": "The editor: every emitter on the carousel is a regular object you can select and tweak."
+   }
+  ]
+ },
+ "22": {
+  "end": 16.2,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "1",
+    "hold": 0.12
+   },
+   {
+    "t": 3.2,
+    "key": "2",
+    "hold": 0.12
+   },
+   {
+    "t": 5.4,
+    "key": "3",
+    "hold": 0.12
+   },
+   {
+    "t": 8.0,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 9.5,
+    "key": "UP",
+    "hold": 0.12
+   },
+   {
+    "t": 11.6,
+    "editor": true
+   },
+   {
+    "t": 15.0,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.4,
+    "text": "Thirty meshes flying as a swarm. They follow three simple rules: separation, alignment and cohesion."
+   },
+   {
+    "t": 3.9,
+    "d": 3.4,
+    "text": "The red cube is a predator: the boids steer away from it."
+   },
+   {
+    "t": 7.8,
+    "d": 3.0,
+    "text": "I can pause it, or make it faster."
+   },
+   {
+    "t": 11.9,
+    "d": 3.0,
+    "text": "The editor again: the swarm is a regular object, with its own inspector."
+   }
+  ]
+ },
+ "23": {
+  "end": 14.5,
+  "steps": [],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.6,
+    "text": "Three emitters each spawn a physics cube every half second. The wireframes are Bullet's own debug view."
+   },
+   {
+    "t": 5.1,
+    "d": 4.4,
+    "text": "You can see the real collision shapes, and the contact points where the cubes touch."
+   },
+   {
+    "t": 9.7,
+    "d": 4.0,
+    "text": "The engine keeps only the newest cubes, so the physics world stays light."
+   }
+  ]
+ },
+ "24": {
+  "end": 32.4,
+  "steps": [
+   {
+    "t": 1.6,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 4.2,
+    "key": "A",
+    "hold": 0.3
+   },
+   {
+    "t": 5.4,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 7.8,
+    "key": "E",
+    "hold": 0.9
+   },
+   {
+    "t": 9.4,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 11.6,
+    "key": "P",
+    "hold": 0.15
+   },
+   {
+    "t": 12.8,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 14.2,
+    "key": "D",
+    "hold": 0.5
+   },
+   {
+    "t": 15.6,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 17.6,
+    "click": [
+     0.45,
+     0.45
+    ],
+    "button": "left"
+   },
+   {
+    "t": 19.4,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 21.4,
+    "key": "P",
+    "hold": 0.15
+   },
+   {
+    "t": 22.6,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 23.8,
+    "key": "X",
+    "hold": 0.15
+   },
+   {
+    "t": 24.8,
+    "key": "F",
+    "hold": 0.15
+   },
+   {
+    "t": 27.8,
+    "editor": true
+   },
+   {
+    "t": 31.2,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.8,
+    "text": "The launcher shoots bouncy physics projectiles at the base. A and D aim sideways, W and S up and down, with a smooth turn."
+   },
+   {
+    "t": 4.2,
+    "d": 3.2,
+    "text": "I nudge the aim and fire again: the shot arcs under gravity, hits the floor and bounces."
+   },
+   {
+    "t": 7.6,
+    "d": 3.6,
+    "text": "E adds power, so it flies further before the first bounce."
+   },
+   {
+    "t": 11.3,
+    "d": 5.4,
+    "text": "Now the physics debug view, with P: the wireframes are the real collision shapes Bullet is using."
+   },
+   {
+    "t": 17.2,
+    "d": 3.4,
+    "text": "A left click fires too."
+   },
+   {
+    "t": 21.1,
+    "d": 2.3,
+    "text": "P again hides it."
+   },
+   {
+    "t": 23.6,
+    "d": 3.4,
+    "text": "X makes the projectile bigger: more mass to push things around."
+   },
+   {
+    "t": 28.1,
+    "d": 3.0,
+    "text": "The editor, with the physics running underneath."
+   }
+  ]
+ },
+ "25": {
+  "end": 20.6,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 3.6
+   },
+   {
+    "t": 2.2,
+    "drag": [
+     0.5,
+     0.5,
+     0.58,
+     0.5
+    ],
+    "button": "left",
+    "dur": 1.2
+   },
+   {
+    "t": 5.2,
+    "key": "S",
+    "hold": 3.6
+   },
+   {
+    "t": 6.2,
+    "drag": [
+     0.58,
+     0.5,
+     0.44,
+     0.5
+    ],
+    "button": "left",
+    "dur": 1.4
+   },
+   {
+    "t": 9.6,
+    "key": "D",
+    "hold": 2.4
+   },
+   {
+    "t": 10.2,
+    "drag": [
+     0.44,
+     0.5,
+     0.5,
+     0.47
+    ],
+    "button": "left",
+    "dur": 1.0
+   },
+   {
+    "t": 12.4,
+    "key": "A",
+    "hold": 2.6
+   },
+   {
+    "t": 13.2,
+    "drag": [
+     0.5,
+     0.47,
+     0.5,
+     0.5
+    ],
+    "button": "left",
+    "dur": 1.0
+   },
+   {
+    "t": 15.6,
+    "key": "SPACE",
+    "hold": 0.2
+   },
+   {
+    "t": 16.4,
+    "key": "W",
+    "hold": 2.6
+   },
+   {
+    "t": 17.2,
+    "drag": [
+     0.5,
+     0.5,
+     0.56,
+     0.5
+    ],
+    "button": "left",
+    "dur": 1.2
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.4,
+    "text": "A first-person starter kit: a kinematic capsule with the camera in its eyes."
+   },
+   {
+    "t": 4.0,
+    "d": 4.6,
+    "text": "W and S walk forward and back; holding the left mouse button and dragging turns the head."
+   },
+   {
+    "t": 9.0,
+    "d": 5.8,
+    "text": "While it moves, the view sways gently from side to side, step after step, and A and D strafe."
+   },
+   {
+    "t": 15.3,
+    "d": 3.4,
+    "text": "Space jumps. It's a plain object script, so you can copy it onto your own character."
+   }
+  ]
+ },
+ "26": {
+  "end": 13.0,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "W",
+    "hold": 2.0
+   },
+   {
+    "t": 3.2,
+    "key": "SPACE",
+    "hold": 0.2
+   },
+   {
+    "t": 4.0,
+    "drag": [
+     0.5,
+     0.5,
+     0.62,
+     0.5
+    ],
+    "button": "left",
+    "dur": 1.0
+   },
+   {
+    "t": 5.6,
+    "key": "W",
+    "hold": 2.0
+   },
+   {
+    "t": 8.0,
+    "drag": [
+     0.5,
+     0.5,
+     0.38,
+     0.5
+    ],
+    "button": "left",
+    "dur": 1.0
+   },
+   {
+    "t": 9.4,
+    "key": "W",
+    "hold": 1.5
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.6,
+    "text": "Third person: the camera follows from behind and always looks at the character."
+   },
+   {
+    "t": 3.9,
+    "d": 4.6,
+    "text": "Dragging the mouse turns the character, and the camera swings round with it."
+   },
+   {
+    "t": 9.2,
+    "d": 3.0,
+    "text": "Same idea: one object script, ready to reuse."
+   }
+  ]
+ },
+ "27": {
+  "end": 30.2,
+  "steps": [
+   {
+    "t": 4.0,
+    "key": "D",
+    "hold": 20.0
+   },
+   {
+    "t": 5.0,
+    "key": "SPACE",
+    "hold": 0.5
+   },
+   {
+    "t": 6.0,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 6.45,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 6.9,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 7.35,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 7.8,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 8.25,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 8.7,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 9.15,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 9.6,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 10.05,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 10.5,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 10.95,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 11.4,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 11.85,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 12.3,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 12.75,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 13.2,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 13.65,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 14.1,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 14.55,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 15.0,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 15.45,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 15.9,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 16.35,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 16.8,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 17.25,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 17.7,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 18.15,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 18.6,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 19.05,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 19.5,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 19.95,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 20.4,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 20.85,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 21.3,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 21.75,
+    "key": "SPACE",
+    "hold": 0.1
+   },
+   {
+    "t": 23.0,
+    "key": "J",
+    "hold": 0.15
+   },
+   {
+    "t": 25.6,
+    "editor": true
+   },
+   {
+    "t": 29.0,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 3.6,
+    "text": "A 2D platformer inside a 3D level. No rigid bodies here: the player is moved by script."
+   },
+   {
+    "t": 4.0,
+    "d": 4.4,
+    "text": "Raycasts find the floor and the walls, which gives variable jump height, coyote time and jump buffering."
+   },
+   {
+    "t": 9.0,
+    "d": 5.0,
+    "text": "Up against a wall the player hooks on and slides down it. Space is a wall jump: it kicks off, D brings it back."
+   },
+   {
+    "t": 15.0,
+    "d": 5.0,
+    "text": "Jump after jump, it climbs the block and the wall."
+   },
+   {
+    "t": 22.9,
+    "d": 1.8,
+    "text": "And J attacks."
+   },
+   {
+    "t": 25.9,
+    "d": 3.0,
+    "text": "The editor around the 2D platformer."
+   }
+  ]
+ },
+ "28": {
+  "end": 74.5,
+  "steps": [
+   {
+    "t": 1.0,
+    "move": [
+     0.5,
+     0.5,
+     0.8,
+     0.4
+    ],
+    "dur": 0.8
+   },
+   {
+    "t": 1.8,
+    "key": "W",
+    "hold": 1.5
+   },
+   {
+    "t": 3.4,
+    "click": [
+     0.8,
+     0.4
+    ],
+    "button": "left"
+   },
+   {
+    "t": 3.9,
+    "click": [
+     0.8,
+     0.4
+    ],
+    "button": "left"
+   },
+   {
+    "t": 4.3,
+    "key": "D",
+    "hold": 1.5
+   },
+   {
+    "t": 4.4,
+    "move": [
+     0.8,
+     0.4,
+     0.3,
+     0.6
+    ],
+    "dur": 1.5
+   },
+   {
+    "t": 6.2,
+    "click": [
+     0.3,
+     0.6
+    ],
+    "button": "left"
+   },
+   {
+    "t": 6.7,
+    "click": [
+     0.3,
+     0.6
+    ],
+    "button": "left"
+   },
+   {
+    "t": 8.2,
+    "key": "S",
+    "hold": 1.5
+   },
+   {
+    "t": 9.9,
+    "key": "R",
+    "hold": 0.2
+   },
+   {
+    "t": 10.6,
+    "click": [
+     0.5,
+     0.3
+    ],
+    "button": "left"
+   },
+   {
+    "t": 12.4,
+    "editor": true
+   },
+   {
+    "t": 15.0,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 17.5,
+    "click": [
+     0.474,
+     0.0951
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 21.5,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 24.0,
+    "click": [
+     0.474,
+     0.1189
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 28.0,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 30.5,
+    "click": [
+     0.474,
+     0.0714
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 34.5,
+    "click": [
+     0.5953,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 37.0,
+    "move": [
+     0.625,
+     0.1189,
+     0.625,
+     0.5
+    ],
+    "dur": 6.0
+   },
+   {
+    "t": 45.0,
+    "click": [
+     0.5953,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 48.5,
+    "click": [
+     0.1375,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 50.1,
+    "move": [
+     0.1375,
+     0.0119,
+     0.5953,
+     0.0119
+    ],
+    "dur": 9.0
+   },
+   {
+    "t": 60.5,
+    "click": [
+     0.1927,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 62.1,
+    "move": [
+     0.224,
+     0.045,
+     0.224,
+     0.4
+    ],
+    "dur": 3.0
+   },
+   {
+    "t": 66.3,
+    "click": [
+     0.1927,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 68.0,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "A twin-stick shooter: one stick moves, the other aims. It works with a gamepad, or keyboard and mouse like now."
+   },
+   {
+    "t": 4.5,
+    "d": 3.8,
+    "text": "The mouse position becomes a world direction through a screen-to-world conversion."
+   },
+   {
+    "t": 8.5,
+    "d": 3.6,
+    "text": "R reloads, and the targets come back after a few seconds."
+   },
+   {
+    "t": 12.6,
+    "d": 2.2,
+    "text": "Last stop: the editor. Everything in it is a dockable window."
+   },
+   {
+    "t": 15.2,
+    "d": 6.0,
+    "text": "The Layouts menu rearranges the whole GUI. This one, Coding, puts the code editor in the middle."
+   },
+   {
+    "t": 21.7,
+    "d": 6.0,
+    "text": "Design gives the scene all the space it can get..."
+   },
+   {
+    "t": 28.2,
+    "d": 5.0,
+    "text": "...and Default brings back the usual arrangement. F6, F7 and F8 do the same, holding Right Ctrl while the scripts run."
+   },
+   {
+    "t": 34.7,
+    "d": 5.0,
+    "text": "The Windows menu lists every window of the editor: scene objects, properties, project, files, logs, profiler..."
+   },
+   {
+    "t": 40.2,
+    "d": 4.6,
+    "text": "Each one can be shown, hidden or docked wherever you like."
+   },
+   {
+    "t": 48.7,
+    "d": 11.5,
+    "text": "The menu bar holds the rest: script controls, add object, video, colliders, illumination, camera, sound, logs, layouts, interface..."
+   },
+   {
+    "t": 60.7,
+    "d": 5.2,
+    "text": "Add Object creates any entity type of the engine: meshes, animated models, lights, particle emitters, sound sources..."
+   },
+   {
+    "t": 68.6,
+    "d": 4.6,
+    "text": "And that's the tour. Every demo is a small, readable Lua script. Thanks for watching!"
+   }
+  ]
+ },
+ "29": {
+  "end": 103.0,
+  "steps": [
+   {
+    "t": 1.0,
+    "move": [
+     0.3,
+     0.3,
+     0.7,
+     0.6
+    ],
+    "dur": 2.0
+   },
+   {
+    "t": 3.6,
+    "click": [
+     0.5,
+     0.5
+    ],
+    "button": "left"
+   },
+   {
+    "t": 9.0,
+    "editor": true
+   },
+   {
+    "t": 11.0,
+    "click": [
+     0.4635,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 13.6,
+    "click": [
+     0.474,
+     0.0714
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 17.0,
+    "click": [
+     0.5953,
+     0.0119
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 19.6,
+    "click": [
+     0.6172,
+     0.4995
+    ],
+    "button": "left",
+    "pre": 1.0
+   },
+   {
+    "t": 21.5,
+    "click": [
+     0.7742,
+     0.1286
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 26.0,
+    "drag": [
+     0.3646,
+     0.1031,
+     0.7271,
+     0.1031
+    ],
+    "button": "left",
+    "dur": 1.4,
+    "pre": 0.6
+   },
+   {
+    "t": 29.5,
+    "click": [
+     0.675,
+     0.19
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 31.0,
+    "key": "E",
+    "hold": 0.1
+   },
+   {
+    "t": 31.6,
+    "key": "X",
+    "hold": 0.1
+   },
+   {
+    "t": 32.2,
+    "key": "A",
+    "hold": 0.1
+   },
+   {
+    "t": 32.8,
+    "key": "M",
+    "hold": 0.1
+   },
+   {
+    "t": 33.4,
+    "key": "P",
+    "hold": 0.1
+   },
+   {
+    "t": 35.0,
+    "click": [
+     0.6275,
+     0.2535
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 38.5,
+    "click": [
+     0.8075,
+     0.2008
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 41.0,
+    "click": [
+     0.8,
+     0.4647
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 43.0,
+    "click": [
+     0.8,
+     0.4335
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 45.5,
+    "click": [
+     0.8625,
+     0.5748
+    ],
+    "button": "left",
+    "pre": 0.7
+   },
+   {
+    "t": 48.5,
+    "click": [
+     0.8625,
+     0.465
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 51.0,
+    "click": [
+     0.8075,
+     0.2216
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 54.0,
+    "click": [
+     0.8075,
+     0.2424
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 57.0,
+    "click": [
+     0.8075,
+     0.2632
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 60.0,
+    "click": [
+     0.8075,
+     0.284
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 63.0,
+    "click": [
+     0.6275,
+     0.2743
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 66.0,
+    "drag": [
+     0.6958,
+     0.7918,
+     0.7328,
+     0.7918
+    ],
+    "button": "left",
+    "dur": 1.6,
+    "pre": 0.8
+   },
+   {
+    "t": 69.5,
+    "drag": [
+     0.7328,
+     0.7918,
+     0.6958,
+     0.7918
+    ],
+    "button": "left",
+    "dur": 1.6,
+    "pre": 0.8
+   },
+   {
+    "t": 73.5,
+    "drag": [
+     0.6828,
+     0.8186,
+     0.7141,
+     0.8186
+    ],
+    "button": "left",
+    "dur": 1.4,
+    "pre": 0.8
+   },
+   {
+    "t": 77.5,
+    "drag": [
+     0.7391,
+     0.8186,
+     0.7703,
+     0.8186
+    ],
+    "button": "left",
+    "dur": 1.4,
+    "pre": 0.8
+   },
+   {
+    "t": 82.0,
+    "wheel": -3,
+    "at": [
+     0.6725,
+     0.82
+    ]
+   },
+   {
+    "t": 85.0,
+    "wheel": -3,
+    "at": [
+     0.6725,
+     0.82
+    ]
+   },
+   {
+    "t": 88.0,
+    "click": [
+     0.6015,
+     0.7572
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 91.0,
+    "click": [
+     0.6015,
+     0.7572
+    ],
+    "button": "left",
+    "pre": 0.5
+   },
+   {
+    "t": 93.5,
+    "drag": [
+     0.7271,
+     0.1031,
+     0.3646,
+     0.1031
+    ],
+    "button": "left",
+    "dur": 1.4,
+    "pre": 0.6
+   },
+   {
+    "t": 96.5,
+    "click": [
+     0.7742,
+     0.1286
+    ],
+    "button": "left",
+    "pre": 0.8
+   },
+   {
+    "t": 99.5,
+    "editor": false
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.0,
+    "text": "UI widgets are described in JSON files: a nested panel, a list, and single cards."
+   },
+   {
+    "t": 4.5,
+    "d": 4.0,
+    "text": "Lua only feeds them data every frame. The layout stays out of the code."
+   },
+   {
+    "t": 9.2,
+    "d": 1.8,
+    "text": "And here is the tool to edit them."
+   },
+   {
+    "t": 17.2,
+    "d": 4.0,
+    "text": "Windows, UI Manager: every widget loaded in the engine, in one list."
+   },
+   {
+    "t": 21.6,
+    "d": 4.2,
+    "text": "The icon at the window's top right isolates it: every other window closes and the scene stays in view."
+   },
+   {
+    "t": 26.2,
+    "d": 3.0,
+    "text": "I slide it to the right, so the widgets in the middle stay visible."
+   },
+   {
+    "t": 29.6,
+    "d": 5.0,
+    "text": "Type in the filter to narrow it down, and pick a widget."
+   },
+   {
+    "t": 35.1,
+    "d": 3.2,
+    "text": "A widget is a list of elements. Click one to see it."
+   },
+   {
+    "t": 38.6,
+    "d": 2.4,
+    "text": "The first one is a rect: the card's background."
+   },
+   {
+    "t": 41.2,
+    "d": 1.8,
+    "text": "Layout: where the element sits."
+   },
+   {
+    "t": 43.1,
+    "d": 2.3,
+    "text": "Identity and type: its id and what it is."
+   },
+   {
+    "t": 45.6,
+    "d": 2.8,
+    "text": "The type selector lists every kind of element: rect, image, text, bars..."
+   },
+   {
+    "t": 51.1,
+    "d": 2.8,
+    "text": "Then an image: the avatar."
+   },
+   {
+    "t": 54.1,
+    "d": 2.8,
+    "text": "Text elements: the name..."
+   },
+   {
+    "t": 57.1,
+    "d": 2.8,
+    "text": "...and the subtitle, filled in from Lua."
+   },
+   {
+    "t": 60.1,
+    "d": 3.0,
+    "text": "And a progress bar for the health."
+   },
+   {
+    "t": 63.1,
+    "d": 2.8,
+    "text": "Another widget: the nested panel, drawn from its JSON file."
+   },
+   {
+    "t": 66.1,
+    "d": 3.2,
+    "text": "Scale resizes the whole widget at once, with every element inside it."
+   },
+   {
+    "t": 69.6,
+    "d": 3.6,
+    "text": "Drag it back down and the widget shrinks again."
+   },
+   {
+    "t": 73.6,
+    "d": 7.6,
+    "text": "X % and Y % place it as a fraction of the window, so it fits any resolution."
+   },
+   {
+    "t": 82.2,
+    "d": 5.0,
+    "text": "Further down: background, frame, border and text settings."
+   },
+   {
+    "t": 88.2,
+    "d": 4.4,
+    "text": "The Frame section takes a 9-slice image: corners stay sharp and the edges stretch."
+   },
+   {
+    "t": 93.6,
+    "d": 2.8,
+    "text": "Window back in place..."
+   },
+   {
+    "t": 96.6,
+    "d": 2.8,
+    "text": "...and the same icon brings the other windows back."
+   },
+   {
+    "t": 100.0,
+    "d": 1.7,
+    "text": "Back to the demo."
+   }
+  ]
+ },
+ "30": {
+  "end": 9.6,
+  "steps": [
+   {
+    "t": 1.2,
+    "key": "0",
+    "hold": 0.12
+   },
+   {
+    "t": 2.05,
+    "key": "0",
+    "hold": 0.12
+   },
+   {
+    "t": 2.9,
+    "key": "1",
+    "hold": 0.12
+   },
+   {
+    "t": 3.75,
+    "key": "2",
+    "hold": 0.12
+   },
+   {
+    "t": 4.6,
+    "key": "3",
+    "hold": 0.12
+   },
+   {
+    "t": 5.45,
+    "key": "4",
+    "hold": 0.12
+   },
+   {
+    "t": 6.3,
+    "key": "5",
+    "hold": 0.12
+   },
+   {
+    "t": 7.15,
+    "key": "6",
+    "hold": 0.12
+   },
+   {
+    "t": 8.0,
+    "key": "R",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.4,
+    "text": "Every way of drawing text: TTF auto-sized, TTF with a fixed size, centred, aligned, cached..."
+   },
+   {
+    "t": 4.8,
+    "d": 4.0,
+    "text": "The glyph atlas is the cheapest one, perfect for HUDs that change every frame."
+   }
+  ]
+ },
+ "31": {
+  "end": 12.3,
+  "steps": [
+   {
+    "t": 1.0,
+    "move": [
+     0.2,
+     0.5,
+     0.8,
+     0.5
+    ],
+    "dur": 3.0
+   },
+   {
+    "t": 4.3,
+    "move": [
+     0.8,
+     0.6,
+     0.3,
+     0.3
+    ],
+    "dur": 2.0
+   },
+   {
+    "t": 7.0,
+    "key": "1",
+    "hold": 0.12
+   },
+   {
+    "t": 8.0,
+    "key": "2",
+    "hold": 0.12
+   },
+   {
+    "t": 9.0,
+    "key": "3",
+    "hold": 0.12
+   },
+   {
+    "t": 10.0,
+    "key": "4",
+    "hold": 0.12
+   },
+   {
+    "t": 11.0,
+    "key": "0",
+    "hold": 0.12
+   },
+   {
+    "t": 12.2,
+    "key": "H",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.4,
+    "text": "The cursor changes with whatever is under the mouse. The engine tells the script which object is picked."
+   },
+   {
+    "t": 5.0,
+    "d": 1.8,
+    "text": "It's the same pattern the RTS uses."
+   },
+   {
+    "t": 6.9,
+    "d": 4.6,
+    "text": "I can also force a specific cursor with 1 to 4, and 0 goes back to automatic."
+   }
+  ]
+ },
+ "32": {
+  "end": 15.8,
+  "steps": [
+   {
+    "t": 1.0,
+    "click": [
+     0.285,
+     0.299
+    ],
+    "button": "left"
+   },
+   {
+    "t": 2.4,
+    "key": "LCTRL+click",
+    "pos": [
+     0.43,
+     0.289
+    ]
+   },
+   {
+    "t": 3.5,
+    "key": "LCTRL+click",
+    "pos": [
+     0.57,
+     0.299
+    ]
+   },
+   {
+    "t": 5.2,
+    "key": "W",
+    "hold": 1.2
+   },
+   {
+    "t": 6.8,
+    "key": "D",
+    "hold": 1.0
+   },
+   {
+    "t": 8.2,
+    "key": "O",
+    "hold": 0.8
+   },
+   {
+    "t": 9.6,
+    "key": "R",
+    "hold": 0.15
+   },
+   {
+    "t": 10.6,
+    "keydrag": "LCTRL",
+    "drag": [
+     0.15,
+     0.33,
+     0.46,
+     0.55
+    ],
+    "button": "left",
+    "dur": 1.4
+   },
+   {
+    "t": 12.9,
+    "key": "A",
+    "hold": 1.2
+   },
+   {
+    "t": 14.6,
+    "key": "Z",
+    "hold": 0.8
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 4.2,
+    "text": "Selecting things RTS-style: a click selects one object, and Ctrl plus click adds more to the group."
+   },
+   {
+    "t": 4.8,
+    "d": 4.0,
+    "text": "The group has its own centre, and I can move all of it at once with W A S D."
+   },
+   {
+    "t": 9.2,
+    "d": 1.1,
+    "text": "R clears the selection."
+   },
+   {
+    "t": 10.4,
+    "d": 4.6,
+    "text": "A rectangle selection with Ctrl and drag picks several at once."
+   }
+  ]
+ },
+ "33": {
+  "end": 46.0,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "T",
+    "hold": 0.15
+   },
+   {
+    "t": 18.0,
+    "key": "1",
+    "hold": 0.15
+   },
+   {
+    "t": 19.6,
+    "key": "1",
+    "hold": 0.15
+   },
+   {
+    "t": 21.0,
+    "key": "2",
+    "hold": 0.15
+   },
+   {
+    "t": 22.6,
+    "key": "2",
+    "hold": 0.15
+   },
+   {
+    "t": 24.2,
+    "key": "P",
+    "hold": 0.15
+   },
+   {
+    "t": 27.5,
+    "key": "TAB",
+    "hold": 0.15
+   },
+   {
+    "t": 29.5,
+    "key": "X",
+    "hold": 2.5
+   },
+   {
+    "t": 33.0,
+    "key": "Z",
+    "hold": 3.0
+   },
+   {
+    "t": 37.0,
+    "key": "V",
+    "hold": 3.0
+   },
+   {
+    "t": 41.0,
+    "key": "C",
+    "hold": 3.5
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 5.4,
+    "text": "Positional sound: four looping sources in space. The camera is the listener, and volume falls off with distance."
+   },
+   {
+    "t": 6.0,
+    "d": 5.6,
+    "text": "The camera circles the sources, always looking at the centre: the volume of each one rises and falls as it gets closer."
+   },
+   {
+    "t": 12.6,
+    "d": 5.0,
+    "text": "The panel lists distance, volume and left/right pan of every source, and changes as the camera moves."
+   },
+   {
+    "t": 18.2,
+    "d": 3.6,
+    "text": "Keys 1 to 4 mute each source on its own."
+   },
+   {
+    "t": 24.4,
+    "d": 3.0,
+    "text": "P switches the left/right panning off and on."
+   },
+   {
+    "t": 27.7,
+    "d": 1.7,
+    "text": "TAB picks the source to tune."
+   },
+   {
+    "t": 29.7,
+    "d": 3.2,
+    "text": "X grows its inner radius: full volume now reaches farther."
+   },
+   {
+    "t": 33.2,
+    "d": 3.4,
+    "text": "Z shrinks it again."
+   },
+   {
+    "t": 37.2,
+    "d": 3.4,
+    "text": "V widens the outer radius: the sound now fades out over a longer distance."
+   },
+   {
+    "t": 41.2,
+    "d": 3.8,
+    "text": "And C narrows it. All of it live, with setInnerRadius and setOuterRadius."
+   }
+  ]
+ },
+ "34": {
+  "end": 16.3,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "V",
+    "hold": 0.15
+   },
+   {
+    "t": 7.0,
+    "key": "B",
+    "hold": 0.15
+   },
+   {
+    "t": 11.5,
+    "key": "F",
+    "hold": 0.15
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 5.2,
+    "text": "Playing an MP4 from a script, full screen first."
+   },
+   {
+    "t": 6.8,
+    "d": 4.4,
+    "text": "Now the same video in a framed plane, with the scene visible around it."
+   },
+   {
+    "t": 11.3,
+    "d": 4.2,
+    "text": "And I can switch between both while it plays."
+   }
+  ]
+ },
+ "35": {
+  "end": 17.8,
+  "steps": [
+   {
+    "t": 1.0,
+    "key": "1",
+    "hold": 0.12
+   },
+   {
+    "t": 2.0,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 7.2,
+    "key": "SPACE",
+    "hold": 0.15
+   },
+   {
+    "t": 8.2,
+    "key": "2",
+    "hold": 0.12
+   },
+   {
+    "t": 9.2,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 12.0,
+    "key": "SPACE",
+    "hold": 0.12
+   },
+   {
+    "t": 13.0,
+    "key": "DELETE",
+    "hold": 0.12
+   },
+   {
+    "t": 14.0,
+    "key": "DELETE",
+    "hold": 0.12
+   },
+   {
+    "t": 15.0,
+    "key": "R",
+    "hold": 0.12
+   }
+  ],
+  "subs": [
+   {
+    "t": 0.3,
+    "d": 5.2,
+    "text": "A stress test: spawn static meshes, physics bodies, lights, particles, animated meshes, in batches."
+   },
+   {
+    "t": 6.0,
+    "d": 3.0,
+    "text": "The FPS readout tells how far the engine can go on this machine."
+   },
+   {
+    "t": 9.0,
+    "d": 4.6,
+    "text": "There's a Profiler window in the editor to see where each frame goes."
+   },
+   {
+    "t": 14.0,
+    "d": 3.0,
+    "text": "And that's the tour. Thanks for watching!"
+   }
+  ]
+ }
+}

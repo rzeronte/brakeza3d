@@ -8,6 +8,7 @@
 #include "../../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../../include/GUI/Editable/EditableOpenScriptFile.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/Render/Drawable.h"
 
@@ -16,47 +17,31 @@ void ScriptLuaGUI::DrawPropertiesGUI(ScriptLUA *o)
     ImGui::Spacing();
 
     int tps = o->getTicksPerSecond();
-    ImGui::SetNextItemWidth(100);
-    if (ImGui::InputInt("Ticks/sec##tps_props", &tps)) {
-        o->setTicksPerSecond(tps);
-    }
-    ImGui::SameLine();
-    if (tps <= 0)
-        ImGui::TextDisabled("(every frame)");
-    else
-        ImGui::TextDisabled("(%.0f ms/tick)", 1000.0f / static_cast<float>(tps));
-
-    ImGui::SeparatorText("Script variables values");
-
-    static ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp |
-                                ImGuiTableFlags_BordersOuter |
-                                ImGuiTableFlags_BordersInnerV;
-
-    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(8, 6));
-    if (ImGui::BeginTable("ScriptVariables", 2, flags)) {
-        if (!o->dataTypes.empty()) {
-            int i = 0;
-            for (auto& type: o->dataTypes) {
-                ImGui::TableNextRow();
-                ImGui::TableSetColumnIndex(0);
-                ImGui::AlignTextToFramePadding();
-                ImGui::Text("%s", type.name.c_str());
-
-                ImGui::TableSetColumnIndex(1);
-                ImGui::PushID(i);
-                DrawTypeImGuiControl(type, false, true, o);
-                ImGui::PopID();
-
-                i++;
+    {
+        GUIFields::Section ticks("TICKS");
+        if (ticks) {
+            if (GUIFields::Int("Ticks/sec", &tps, 1.0f, 0, 0, "%d", "0 or less = the script runs every frame.")) {
+                o->setTicksPerSecond(tps);
             }
-        } else {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            Drawable::WarningMessage("Script with no variables");
+            if (tps <= 0)
+                GUIFields::Text("Rate", "(every frame)");
+            else
+                GUIFields::Text("Rate", "(%.0f ms/tick)", 1000.0f / static_cast<float>(tps));
         }
-        ImGui::EndTable();
     }
-    ImGui::PopStyleVar();
+
+    if (o->dataTypes.empty()) {
+        ImGui::SeparatorText("Script variables values");
+        Drawable::WarningMessage("Script with no variables");
+    } else {
+        GUIFields::Section variables("SCRIPT VARIABLES VALUES");
+        if (variables) {
+            for (auto& type: o->dataTypes) {
+                GUIFields::Row(type.name.c_str());
+                DrawTypeImGuiControl(type, false, true, o);
+            }
+        }
+    }
 
     ImGui::Spacing();
 }
@@ -263,9 +248,12 @@ void ScriptLuaGUI::DrawScriptConfigInformation(EditableOpenScriptFile &file)
     static char infoBuf[1024];
     strncpy(infoBuf, script->information.c_str(), sizeof(infoBuf) - 1);
     infoBuf[sizeof(infoBuf) - 1] = '\0';
-    ImGui::TextDisabled("Description");
-    if (ImGui::InputTextMultiline("##info", infoBuf, IM_ARRAYSIZE(infoBuf), ImVec2(-FLT_MIN, 60))) {
-        script->information = infoBuf;
+    GUIFields::Section description("DESCRIPTION");
+    if (description) {
+        GUIFields::Row("Description");
+        if (ImGui::InputTextMultiline("##v", infoBuf, IM_ARRAYSIZE(infoBuf), ImVec2(-FLT_MIN, 60))) {
+            script->information = infoBuf;
+        }
     }
 }
 
@@ -274,15 +262,16 @@ void ScriptLuaGUI::DrawScriptConfigTicksPerSecond(EditableOpenScriptFile &file)
     ImGui::Separator();
     auto script = file.getScript();
     int tps = script->getTicksPerSecond();
-    ImGui::SetNextItemWidth(100);
-    if (ImGui::InputInt("Ticks/sec##tps", &tps)) {
-        script->setTicksPerSecond(tps);
+    GUIFields::Section ticks("TICKS");
+    if (ticks) {
+        if (GUIFields::Int("Ticks/sec", &tps, 1.0f, 0, 0, "%d", "0 or less = the script runs every frame.")) {
+            script->setTicksPerSecond(tps);
+        }
+        if (tps <= 0)
+            GUIFields::Text("Rate", "(every frame)");
+        else
+            GUIFields::Text("Rate", "(%.0f ms/tick)", 1000.0f / static_cast<float>(tps));
     }
-    ImGui::SameLine();
-    if (tps <= 0)
-        ImGui::TextDisabled("(every frame)");
-    else
-        ImGui::TextDisabled("(%.0f ms/tick)", 1000.0f / static_cast<float>(tps));
 }
 
 int ScriptLuaGUI::getNumAllowedVars(Object3D* o)
@@ -415,16 +404,17 @@ void ScriptLuaGUI::DrawScriptConfigEditName(EditableOpenScriptFile &file)
     auto label = shader->getName();
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
-    if (ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        shader->setName(name);
+    GUIFields::Section nameSection("NAME");
+    if (nameSection) {
+        if (GUIFields::String("Name", name, IM_ARRAYSIZE(name), nullptr, ImGuiInputTextFlags_AutoSelectAll)) {
+            shader->setName(name);
+        }
     }
 }
 
 void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
 {
-    ImGui::SeparatorText("Create new variable");
     static char localVarName[256] = "";
-    ImGui::InputText("Variable name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
 
     std::vector<std::string> typeKeys;
     std::vector<std::string> typeLabels;
@@ -438,7 +428,13 @@ void ScriptLuaGUI::DrawScriptConfigVarCreator(EditableOpenScriptFile &file)
     for (auto& label : typeLabels) labelsCStr.push_back(label.c_str());
 
     static int selectedItem = 0;
-    ImGui::Combo("Type", &selectedItem, labelsCStr.data(), labelsCStr.size());
+    {
+        GUIFields::Section creator("CREATE NEW VARIABLE");
+        if (creator) {
+            GUIFields::String("Variable name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+            GUIFields::ComboItems("Type", &selectedItem, labelsCStr);
+        }
+    }
 
     GUI::ImageButtonNormal(IconGUI::SCRIPT_CREATE_VARIABLE, "Create variable", [&] {
         if (localVarName[0] != '\0') {

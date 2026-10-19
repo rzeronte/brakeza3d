@@ -58,6 +58,7 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
     cJSON_AddItemToObject(root, "colorFrom", ToolsJSON::ColorToJSON(light->getColorFrom()));
     cJSON_AddItemToObject(root, "colorTo", ToolsJSON::ColorToJSON(light->getColorTo()));
     cJSON_AddBoolToObject(root, "gpuMode", light->isGPUMode());
+    cJSON_AddBoolToObject(root, "depthTest", light->isDepthTest());
 
     if (light->getTexture() != nullptr) {
         cJSON_AddStringToObject(root, "texture", light->getTexture()->getFileName().c_str());
@@ -185,6 +186,11 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     auto gpuModeItem = cJSON_GetObjectItemCaseSensitive(json, "gpuMode");
     if (gpuModeItem && cJSON_IsBool(gpuModeItem)) {
         emitter->setGPUMode(cJSON_IsTrue(gpuModeItem));
+    }
+
+    auto depthTestItem = cJSON_GetObjectItemCaseSensitive(json, "depthTest");
+    if (depthTestItem && cJSON_IsBool(depthTestItem)) {
+        emitter->setDepthTest(cJSON_IsTrue(depthTestItem));
     }
 
     auto attachedLightJson = cJSON_GetObjectItemCaseSensitive(json, "attachedLight");

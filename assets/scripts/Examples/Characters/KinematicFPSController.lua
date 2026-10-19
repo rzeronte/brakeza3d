@@ -15,7 +15,7 @@
 --   mouseSensibility  grados por píxel de ratón
 --   eyeHeight         altura de la cámara sobre el origen de la cápsula (los ojos, no el centro)
 --   airControl        fracción del movimiento que se conserva en el aire
---   bobAmount         cabeceo al andar: oscilación de la cámara en unidades (0 = sin cabeceo)
+--   bobAmount         balanceo al andar: oscilación lateral de la cámara en unidades, con una leve inclinación (0 = sin balanceo)
 --   bobFrequency      pasos por segundo del cabeceo a velocidad máxima
 --   hideBody          true: la cápsula no se dibuja (si no, al moverse se ve desde dentro)
 -- Estado visible en el inspector: speed, strafe, yaw, pitch.
@@ -80,8 +80,8 @@ function onStart()
     yawOnlyBody = pcall(function() return M3.getMatrixRotationForEulerAngles(0, 0, 0):getTranspose() end)
 end
 
--- Cabeceo al andar: devuelve el desplazamiento vertical y lateral de la cámara.
--- Dos subidas y bajadas por ciclo (un paso con cada pie) y un leve balanceo lateral.
+-- Balanceo al andar: devuelve el desplazamiento lateral de la cámara y una leve inclinación de la cabeza (roll, en grados).
+-- Sin subidas y bajadas: solo el vaivén de un lado a otro, al ritmo de los pasos.
 local function bobOffset(dt, onGround)
     local amount = num(bobAmount, 0.05)
     if amount <= 0 then
@@ -97,10 +97,11 @@ local function bobOffset(dt, onGround)
     bobBlend = bobBlend + (target - bobBlend) * math.min(1.0, dt * 10.0)
     bobPhase = bobPhase + dt * num(bobFrequency, 2.0) * 2.0 * math.pi * (0.5 + 0.5 * ratio)
 
-    return math.sin(bobPhase * 2.0) * amount * bobBlend, math.cos(bobPhase) * amount * 0.5 * bobBlend
+    local sway = math.cos(bobPhase)
+    return sway * amount * bobBlend, sway * 1.2 * bobBlend
 end
 
-local function look()
+local function look(roll)
     local sensibility = num(mouseSensibility, 0.1)
     local dx, dy = 0, 0
     if (freeLook or input:isLeftMouseButtonPressed()) and input:isMouseMotion() then
@@ -111,7 +112,7 @@ local function look()
     yaw   = yaw + dx * sensibility
     pitch = clamp(pitch + dy * sensibility, -PITCH_LIMIT, PITCH_LIMIT)
 
-    camera:setRotationFromEulerAngles(pitch, yaw, 0)
+    camera:setRotationFromEulerAngles(pitch, yaw, roll or 0)
 
     if yawOnlyBody then
         this:setRotation(M3.getMatrixRotationForEulerAngles(0, yaw, 0):getTranspose())
@@ -137,11 +138,11 @@ function onUpdate()
 
     -- La cámara sigue a la cápsula a la altura de los ojos
     local p = this:getPosition()
-    local bobY, bobSide = bobOffset(dt, this:onGround())
+    local bobSide, bobRoll = bobOffset(dt, this:onGround())
     local brx, brz = flat(this:AxisRight())
-    camera:setPosition(Vertex3D.new(p.x + brx * bobSide, p.y + num(eyeHeight, 0.7) + bobY, p.z + brz * bobSide))
+    camera:setPosition(Vertex3D.new(p.x + brx * bobSide, p.y + num(eyeHeight, 0.7), p.z + brz * bobSide))
 
-    look()
+    look(bobRoll)
 
     -- Entrada de movimiento: ejes -1/0/1 (W adelante = negativo, como siempre en este controlador)
     local inForward, inStrafe = 0, 0

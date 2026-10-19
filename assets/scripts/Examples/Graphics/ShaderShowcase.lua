@@ -88,6 +88,23 @@ local function reset()
     S.objects = {}        -- por posición en OBJECTS
     S.cam = { x = CAM_START_POS.x, y = CAM_START_POS.y, z = CAM_START_POS.z, yaw = 0.0, pitch = CAM_START_PITCH }
     S.looking = false     -- botón derecho mantenido: el ratón mira
+    S.seen = false        -- ya se vieron los objetos de la escena
+    S.missing = 0         -- frames seguidos sin ellos
+    S.dead = false        -- la escena se descargó: este script ya no hace nada
+end
+
+-- Si los scripts se paran y se vuelven a lanzar desde el editor (Stop / Play) con esta demo cargada, la copia del script
+-- puede sobrevivir a la descarga de su escena: seguiría dibujando su HUD y quitando el teclado a las demás demos.
+-- Cuando los objetos de la escena desaparecen tras haberse visto, el script se limpia una vez y se apaga.
+local function sceneGone()
+    if S.dead then return true end
+    if Brakeza:getObjectByName(OBJECTS[1].name) ~= nil then S.seen = true; S.missing = 0; return false end
+    if not S.seen then return false end
+    S.missing = S.missing + 1
+    if S.missing < 30 then return false end
+    S.dead = true
+    onEnd()
+    return true
 end
 
 local function resolveShaders()
@@ -183,6 +200,7 @@ function onStart()
 end
 
 function onUpdate()
+    if sceneGone() then return end
     local ok, err = pcall(function()
         local input = Components:Input()
         local dt = Brakeza:getDeltaTime()
@@ -217,7 +235,7 @@ function onUpdate()
 end
 
 function postUpdate()
-    if tw == nil then return end
+    if tw == nil or sceneGone() then return end
     pcall(function()
         if not S.hud then
             tw:writeTextTTFAutoSize(20, 20, "H - show panel", C_DIM, 0.5)

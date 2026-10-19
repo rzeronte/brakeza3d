@@ -2057,11 +2057,13 @@ void UIManager::renderIcons(const UIElement& el, float x, float y, const UIEleme
 {
     if (hitTestOnly) return;
     float cx = x + el.x;
+    // Alfa propio del elemento: { list = {...}, color = Color(1,1,1,a) } desde Lua atenua los iconos (fundidos de HUD)
+    const float iconAlpha = globalAlpha * (data.colorProvided ? std::clamp(data.color.a, 0.0f, 1.0f) : 1.0f);
     for (auto& key : data.iconList) {
         auto mapIt = el.iconMapping.find(key);
         if (mapIt == el.iconMapping.end()) continue;
         drawImageCached(mapIt->second, (int)cx, (int)y,
-                        (int)el.iconSize, (int)el.iconSize, globalAlpha);
+                        (int)el.iconSize, (int)el.iconSize, iconAlpha);
         cx += el.iconSize + el.iconGap;
     }
 }

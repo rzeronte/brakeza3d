@@ -326,8 +326,10 @@ end
 -- ── cámara y marca de hacia dónde mira ──────────────────────────────────────
 local function updateCamera()
     local p = this:getPosition()
-    camera:setPosition(Vertex3D.new(p.x, p.y + num(cameraHeight, 14.0), p.z + num(cameraDistance, 6.0)))
-    camera:LookAt(this)
+    local height, dist = num(cameraHeight, 14.0), num(cameraDistance, 6.0)
+    camera:setPosition(Vertex3D.new(p.x, p.y + height, p.z + dist))
+    -- Fixed tilt towards the player (the same 66 degrees the scene camera has). camera:LookAt(this) left the view empty
+    camera:setRotationFromEulerAngles(math.deg(math.atan2(height, dist)), 0, 0)
 end
 
 local function updateMuzzle()
@@ -348,32 +350,33 @@ local function drawUI()
         ammoText = "RELOADING " .. math.floor((1 - reloadTimer / num(reloadTime, 1.5)) * 100) .. "%"
         ammoColor = Color.new(1, 1, 0, 1)
     end
-    textWriter:writeTextTTFAutoSize(20, h - 80, ammoText, ammoColor, 1.1)
+    textWriter:writeTextTTFAutoSize(20, h - 150, ammoText, ammoColor, 1.1)
 
     local dashReady = dashCooldownTimer <= 0
-    textWriter:writeTextTTFAutoSize(20, h - 50, dashReady and "DASH READY" or string.format("DASH %.1f", dashCooldownTimer),
+    textWriter:writeTextTTFAutoSize(20, h - 118, dashReady and "DASH READY" or string.format("DASH %.1f", dashCooldownTimer),
         dashReady and Color.new(0.2, 0.9, 1, 1) or dim, 0.9)
 
     local acc = shots > 0 and math.floor(kills / shots * 1000) / 10 or 0
     textWriter:writeTextTTFAutoSize(20, 20, string.format("TARGETS DOWN %d     SHOTS %d", kills, shots), white, 1.0)
 
-    local x = w - 330
-    textWriter:writeTextTTFAutoSize(x, 20, usingPad and "[ GAMEPAD ]" or "[ KEYBOARD + MOUSE ]", Color.new(1, 0.9, 0.2, 1), 0.9)
+    local x = 20
+    local y0 = 56
+    textWriter:writeTextTTFAutoSize(x, y0, usingPad and "[ GAMEPAD ]" or "[ KEYBOARD + MOUSE ]", Color.new(1, 0.9, 0.2, 1), 0.9)
     if usingPad then
-        textWriter:writeTextTTFAutoSize(x, 46, "Left stick   move", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 70, "Right stick  aim", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 94, "RT / RB      shoot", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 118, "LT / A       dash", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 142, "X            reload", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 26, "Left stick   move", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 50, "Right stick  aim", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 74, "RT / RB      shoot", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 98, "LT / A       dash", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 122, "X            reload", dim, 0.8)
     else
-        textWriter:writeTextTTFAutoSize(x, 46, "W A S D      move", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 70, "Mouse        aim", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 94, "Left button  shoot", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 118, "Right button dash", dim, 0.8)
-        textWriter:writeTextTTFAutoSize(x, 142, "R            reload", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 26, "W A S D      move", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 50, "Mouse        aim", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 74, "Left button  shoot", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 98, "Right button dash", dim, 0.8)
+        textWriter:writeTextTTFAutoSize(x, y0 + 122, "R            reload", dim, 0.8)
     end
     if not input:isGameControllerAvailable() then
-        textWriter:writeTextTTFAutoSize(x, 172, "Plug in a gamepad for twin-stick", Color.new(0.5, 0.5, 0.55, 1), 0.7)
+        textWriter:writeTextTTFAutoSize(x, y0 + 152, "Plug in a gamepad for twin-stick", Color.new(0.5, 0.5, 0.55, 1), 0.7)
     end
 end
 

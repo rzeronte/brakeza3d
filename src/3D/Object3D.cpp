@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <algorithm>
+#include <thread>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 #include "../../include/3D/Object3D.h"
@@ -74,6 +75,7 @@ void Object3D::onUpdateScripts()
         for (auto *s : pendingScripts) {
             scripts.push_back(s);
             s->ReloadEnvironment(luaEnvironment);
+            invalidateScriptCallbacks();
             s->RunEnvironment(luaEnvironment, "onStart");
         }
         pendingScripts.clear();
@@ -118,11 +120,11 @@ void Object3D::RunScripts()
             const std::string key = "[O] " + getName() + "/" + script->getName() + "_update";
             auto& sm = profiler->getScriptMeasures();
             Profiler::StartMeasure(sm, key);
-            script->RunEnvironment(luaEnvironment, "onUpdate");
+            script->RunEnvironment(luaEnvironment, "onUpdate", std::nullopt, &cbUpdate);
             Profiler::EndMeasure(sm, key);
             Profiler::CountTick(sm, key, script->getTicksPerSecond(), script->didTickThisFrame());
         } else {
-            script->RunEnvironment(luaEnvironment, "onUpdate");
+            script->RunEnvironment(luaEnvironment, "onUpdate", std::nullopt, &cbUpdate);
         }
         if (isGUISelected()) {
             //script->RunEnvironment(luaEnvironment, "onClick");
@@ -152,10 +154,10 @@ void Object3D::postUpdate()
                 const std::string key = "[O] " + getName() + "/" + script->getName() + "_post";
                 auto& sm = profiler->getScriptMeasures();
                 Profiler::StartMeasure(sm, key);
-                script->RunEnvironment(luaEnvironment, "postUpdate");
+                script->RunEnvironment(luaEnvironment, "postUpdate", std::nullopt, &cbPostUpdate);
                 Profiler::EndMeasure(sm, key);
             } else {
-                script->RunEnvironment(luaEnvironment, "postUpdate");
+                script->RunEnvironment(luaEnvironment, "postUpdate", std::nullopt, &cbPostUpdate);
             }
         }
     }
@@ -242,6 +244,7 @@ void Object3D::AttachAndInitScript(ScriptLUA *script)
     scripts.push_back(script);
     if (luaEnvironment.valid()) {
         script->ReloadEnvironment(luaEnvironment);
+        invalidateScriptCallbacks();
         script->RunEnvironment(luaEnvironment, "onStart");
     }
     LOG_MESSAGE("[Object3D] AttachAndInitScript: '%s' attached to '%s'", script->getName().c_str(), getName().c_str());
@@ -257,6 +260,7 @@ void Object3D::ReloadScriptsEnvironment()
     for (auto &script : scripts) {
         script->ReloadEnvironment(luaEnvironment);
     }
+    invalidateScriptCallbacks();
 }
 
 void Object3D::ReloadScriptsCode() const
@@ -273,6 +277,7 @@ void Object3D::ReloadScriptEnvironment(ScriptLUA *script)
     script->RunEnvironment(luaEnvironment, "onEnd", std::nullopt);
     script->ReloadScriptCode();
     script->ReloadEnvironment(luaEnvironment);
+    invalidateScriptCallbacks();
     script->RunEnvironment(luaEnvironment, "onStart", std::nullopt);
 }
 
@@ -284,6 +289,7 @@ void Object3D::RemoveScript(const ScriptLUA *script)
         if ((*it)->scriptFilename == script->scriptFilename) {
             delete *it;
             scripts.erase(it);
+            invalidateScriptCallbacks();
             return;
         }
     }
@@ -294,6 +300,85 @@ void Object3D::RunStartScripts()
     for (auto &script : scripts) {
         script->RunEnvironment(luaEnvironment, "onStart");
     }
+}
+
+// ── Variables del script con tipo (ver Object3D.h) ────────────────────────────────────────────────────────────────
+// Lee env[varName] dejando el valor en la cima de la pila (el entorno hereda de _G por metatabla: lua_getfield la respeta).
+// Devuelve el lua_State* o nullptr si el entorno no es válido; el llamador DEBE hacer lua_pop(L, 2) después.
+static lua_State *pushScriptVar(const sol::environment &env, const char *varName)
+{
+    if (!env.valid()) return nullptr;
+    lua_State *L = env.lua_state();
+    env.push();
+    lua_getfield(L, -1, varName);
+    return L;
+}
+
+sol::optional<double> Object3D::getScriptNumber(const char *varName) const
+{
+    lua_State *L = pushScriptVar(luaEnvironment, varName);
+    if (L == nullptr) return sol::nullopt;
+    sol::optional<double> result;
+    if (lua_isnumber(L, -1)) result = static_cast<double>(lua_tonumber(L, -1));
+    lua_pop(L, 2);
+    return result;
+}
+
+sol::optional<std::string> Object3D::getScriptString(const char *varName) const
+{
+    lua_State *L = pushScriptVar(luaEnvironment, varName);
+    if (L == nullptr) return sol::nullopt;
+    sol::optional<std::string> result;
+    const int t = lua_type(L, -1);
+    if (t == LUA_TSTRING || t == LUA_TNUMBER) {
+        size_t len = 0;
+        const char *str = lua_tolstring(L, -1, &len);   // un número se convierte como lo haría tostring
+        if (str != nullptr) result = std::string(str, len);
+    } else if (t == LUA_TBOOLEAN && lua_toboolean(L, -1)) {
+        result = std::string("true");
+    }
+    lua_pop(L, 2);
+    return result;
+}
+
+sol::optional<bool> Object3D::getScriptBool(const char *varName) const
+{
+    lua_State *L = pushScriptVar(luaEnvironment, varName);
+    if (L == nullptr) return sol::nullopt;
+    sol::optional<bool> result;
+    if (lua_type(L, -1) == LUA_TBOOLEAN) result = lua_toboolean(L, -1) != 0;
+    lua_pop(L, 2);
+    return result;
+}
+
+void Object3D::setScriptNumber(const char *varName, double value)
+{
+    if (!luaEnvironment.valid()) return;
+    lua_State *L = luaEnvironment.lua_state();
+    luaEnvironment.push();
+    lua_pushnumber(L, value);
+    lua_setfield(L, -2, varName);
+    lua_pop(L, 1);
+}
+
+void Object3D::setScriptString(const char *varName, const std::string &value)
+{
+    if (!luaEnvironment.valid()) return;
+    lua_State *L = luaEnvironment.lua_state();
+    luaEnvironment.push();
+    lua_pushlstring(L, value.data(), value.size());
+    lua_setfield(L, -2, varName);
+    lua_pop(L, 1);
+}
+
+void Object3D::setScriptBool(const char *varName, bool value)
+{
+    if (!luaEnvironment.valid()) return;
+    lua_State *L = luaEnvironment.lua_state();
+    luaEnvironment.push();
+    lua_pushboolean(L, value ? 1 : 0);
+    lua_setfield(L, -2, varName);
+    lua_pop(L, 1);
 }
 
 void Object3D::setBelongToScene(bool belongToScene)
@@ -631,7 +716,23 @@ void Object3D::setEnabled(bool value)
 
 void Object3D::setPosition(const Vertex3D &p)
 {
+    if (debugJumpThreshold > 0.0f) {
+        const float dx = p.x - position.x, dz = p.z - position.z;
+        if (dx * dx + dz * dz > debugJumpThreshold * debugJumpThreshold) reportPositionJump(p);
+    }
     position = p;
+}
+
+void Object3D::reportPositionJump(const Vertex3D &p) const
+{
+    if (std::this_thread::get_id() != Brakeza::get()->getMainThreadId()) return;
+    if (!debugJumpFilter.empty() && getName().find(debugJumpFilter) == std::string::npos) return;
+    lua_State *L = Components::get()->Scripting()->getLua().lua_state();
+    luaL_traceback(L, L, "", 0);
+    const char *tb = lua_tostring(L, -1);
+    std::cout << "[JUMPTRACE] " << getName() << " (" << position.x << "," << position.z << ") -> (" << p.x << "," << p.z
+              << ")" << (tb != nullptr && tb[0] != '\0' ? tb : "\n\t[engine: sin script en marcha]") << std::endl;
+    lua_pop(L, 1);
 }
 
 void Object3D::setRotation(const M3 &r)
@@ -646,6 +747,7 @@ Object3D::~Object3D()
     // posible. Ver Brakeza::livePointers / isValidObjectPointer().
     Brakeza::get()->unregisterLiveObject(this);
     if (spatialSlot >= 0) Brakeza::get()->getSpatialIndex().unregister(this);
+    if (crowdSlot >= 0) Brakeza::get()->getCrowd().remove(this);
 
     // Log con nombre + puntero: el SEH handler (main.cpp) imprime la direccion de memoria
     // exacta que causo un 0xC0000005 -- cruzarla contra este log identifica que objeto se

@@ -13,6 +13,7 @@
 #include "../../../include/HttpClient/ResourceHubClient.h"
 #include "../../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../../include/GUI/Widgets/GUIHelpers.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 #include "../../../include/Render/Drawable.h"
 
 GUIAddonResourceHub::GUIAddonResourceHub()
@@ -81,17 +82,13 @@ void GUIAddonResourceHub::renderLoginWindow() {
     ImGui::SetNextWindowBgAlpha(0.99f);
 
     if (ImGui::Begin("Assets Hub - Login", &showLoginWindow, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoDocking)) {
-        // Username
-        ImGui::Text("Username:");
-        ImGui::SetNextItemWidth(-1);
-        ImGui::InputText("##username", username, sizeof(username));
-        ImGui::Spacing();
-
-        // Password
-        ImGui::Text("Password:");
-        ImGui::SetNextItemWidth(-1);
-        ImGui::InputText("##password", password, sizeof(password), ImGuiInputTextFlags_Password);
-        ImGui::Spacing();
+        {
+            GUIFields::Section credentials("CREDENTIALS", 90.0f);
+            if (credentials) {
+                GUIFields::String("Username", username, sizeof(username));
+                GUIFields::String("Password", password, sizeof(password), nullptr, ImGuiInputTextFlags_Password);
+            }
+        }
         ImGui::Spacing();
 
         // Error message
