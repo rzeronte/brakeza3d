@@ -55,6 +55,9 @@ class ParticleEmitter : public Object3D
 
     // GPU mode
     bool   gpuMode    = false;
+    // true: se dibuja en el sceneFBO con test de profundidad contra la geometría (el humo queda
+    // detrás de los edificios). false: foregroundFBO sin profundidad, siempre por encima de todo.
+    bool   depthTest  = false;
     float  gpuTotalTime = 0.0f;
     GLuint particles_state_buffer = 0;
     std::vector<OCParticle> gpuParticles;
@@ -113,6 +116,8 @@ public:
 
     [[nodiscard]] bool isActive() const                     { return active; }
     [[nodiscard]] bool isGPUMode() const                    { return gpuMode; }
+    [[nodiscard]] bool isDepthTest() const                  { return depthTest; }
+    void setDepthTest(bool enabled)                         { depthTest = enabled; }
     [[nodiscard]] ParticlesContext& getContextPointer()     { return context; }
     [[nodiscard]] ObjectType getTypeObject() const override { return ObjectType::ParticleEmitter; }
     GUIType::Sheet getIcon() override                       { return IconObject::PARTICLE_EMITTER; }
@@ -122,6 +127,7 @@ public:
 
     friend class ParticleEmitterSerializer;
     friend class ParticleEmitterGUI;
+    friend class UndoManager;
 };
 
 #endif //BRAKEDA3D_PARTICLEEMISSOR_H

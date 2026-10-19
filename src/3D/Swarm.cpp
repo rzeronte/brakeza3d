@@ -162,7 +162,13 @@ void Swarm::updateBoids()
     dropRemoved(objects);
     dropRemoved(predators);
 
+    // turnFactor = how much of the new steering is taken per frame at 60 fps (1 = instant, as before; small = smooth, with
+    // inertia). Converted to a per-second rate so it does not depend on the frame rate.
+    const float dt = Brakeza::get()->getDeltaTime();
+    const float turnBlend = 1.0f - std::pow(1.0f - std::clamp(turnFactor, 0.001f, 1.0f), std::clamp(dt, 0.0f, 0.1f) * 60.0f);
+
     for (auto o: objects) {
+        const Vertex3D previousVelocity = o->velocity;
         separation(o, objects, separationWeight * globalBiasSeparation);
         alignment(o, objects, alignmentWeight * globalBiasAlignment);
         cohesion(o, objects, cohesionWeight * globalBiasCohesion);
@@ -175,6 +181,9 @@ void Swarm::updateBoids()
         // Huyendo, el boid puede ir más rápido que su paso normal (pánico); si no, la huida
         // quedaba recortada al mismo tope que el paseo y el depredador alcanzaba a la bandada
         limitVelocity(o, fleeing ? std::max(1.0f, predatorPanicSpeedFactor) : 1.0f);
+
+        // Inertia: the boid turns towards the desired velocity instead of taking it from one frame to the next
+        o->velocity = previousVelocity + (o->velocity - previousVelocity).getScaled(turnBlend);
 
         updatePosition(o, velocityBoidsFactor);
 

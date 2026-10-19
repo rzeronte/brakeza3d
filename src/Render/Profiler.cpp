@@ -1265,6 +1265,14 @@ void Profiler::DrawScriptDetail()
 
 void Profiler::DrawWinProfiler()
 {
+    if (!measuring) {
+        ImGui::TextDisabled("Profiler measurements are disabled (--no-profiler or the Logs menu switch).");
+        if (ImGui::Button("Enable profiler measurements")) {
+            setMeasuring(true);
+        }
+        return;
+    }
+
     // ---- Resumen: tiempo de frame + memoria del sistema ------------------------------------------------------
     auto drawSummary = [&]() {
         DrawPlotFrameTime(measureFrameTime);
@@ -2015,7 +2023,7 @@ void Profiler::InitMeasure(MeasuresMap &map, const std::string &label)
 
 void Profiler::ResetTotalFrameTime()
 {
-    measureFrameTime.startTime = Ticks();
+    if (measuring) measureFrameTime.startTime = Ticks();
     measureFrameTime.endTime = 0;
     // diffTime keeps the previous frame's value so the GUI (drawn early in the frame)
     // can display accurate timing before EndTotalFrameTime() runs.
@@ -2073,6 +2081,7 @@ int Profiler::getLastTriangles() const { return lastTriangles; }
 
 void Profiler::EndTotalFrameTime()
 {
+    if (!measuring) return;
     measureFrameTime.endTime = Ticks();
     measureFrameTime.diffTime = measureFrameTime.endTime - measureFrameTime.startTime;
     UpdateHistory(measureFrameTime);
@@ -2100,7 +2109,7 @@ bool Profiler::isGpuTimingEnabled() const
 
 void Profiler::setGpuTimingEnabled(bool v)
 {
-    gpuTimingEnabled = v;
+    gpuTimingEnabled = v && measuring;
 }
 
 void Profiler::StartGpuMeasure(const std::string &name)
@@ -2215,11 +2224,13 @@ std::string Profiler::ExportFrameStatsCSV() const
 
 void Profiler::StartMeasure(MeasuresMap &map, const std::string &name)
 {
+    if (!measuring) return;
     map[name].startTime = Ticks();
 }
 
 void Profiler::EndMeasure(MeasuresMap &map, const std::string &name)
 {
+    if (!measuring) return;
     map[name].endTime = Ticks();
     map[name].diffTime = map[name].endTime - map[name].startTime;
 
@@ -2229,6 +2240,7 @@ void Profiler::EndMeasure(MeasuresMap &map, const std::string &name)
 // ventanas de 1 s (con ticks_per_second > 0 el motor se salta frames, ver ScriptLUA::ShouldTick).
 void Profiler::CountTick(MeasuresMap &map, const std::string &name, int configuredTps, bool ticked)
 {
+    if (!measuring) return;
     auto &m = map[name];
     m.configuredTps = configuredTps;
     if (ticked) m.tickCount++;
@@ -2278,8 +2290,8 @@ bool Profiler::isScriptDetailEnabled() const
 
 void Profiler::setScriptDetailEnabled(bool v)
 {
-    if (!v) scriptMeasures.clear();
-    scriptDetailEnabled = v;
+    if (!v || !measuring) scriptMeasures.clear();
+    scriptDetailEnabled = v && measuring;
 }
 
 double Profiler::Ticks()

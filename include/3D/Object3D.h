@@ -54,6 +54,8 @@ protected:
     // posición en su lista de miembros (-1 = no está). Solo los toca SpatialIndex.
     uint32_t spatialMask = 0;
     int spatialSlot = -1;
+    // Resolución de solapes (ver CrowdSolver): posición en su lista de agentes (-1 = no es agente). Solo la toca CrowdSolver.
+    int crowdSlot = -1;
     // Carpeta organizativa de su escena (Scene::folders, solo editor). 0 = sin carpeta.
     int folderId = 0;
     bool multiScene = false;
@@ -77,6 +79,8 @@ protected:
     std::vector<ScriptLUA*> pendingScripts;
     std::vector<Object3D*> attachedObjects;
     sol::environment luaEnvironment;
+    ScriptCallbackSlot cbUpdate, cbPostUpdate;   // onUpdate / postUpdate ya resueltos (ver ScriptCallbackSlot)
+    void invalidateScriptCallbacks() { cbUpdate.invalidate(); cbPostUpdate.invalidate(); }   // llamar cuando cambian las funciones de luaEnvironment
 
     Color pickingColor;
     M3 rotation = M3::getMatrixIdentity();
@@ -132,6 +136,15 @@ public:
     [[nodiscard]] const Vertex3D &getPosition() const                   { return position; }
     sol::object getLocalScriptVar(const char *varName)                  { if (!luaEnvironment.valid()) return sol::lua_nil; return luaEnvironment[varName]; }
     void setLocalScriptVar(const char *varName, sol::object value)      { if (luaEnvironment.valid()) luaEnvironment[varName] = value; }
+    // Variables del script con tipo: leen/escriben directamente en el entorno con la API de Lua, sin crear un sol::object ni una
+    // referencia del registro por llamada, y devuelven nil si no existe o no es de ese tipo.
+    //   Number: acepta números y cadenas numéricas (igual que tonumber). String: cadenas y números ("12"); true -> "true"; false/nil -> nil.
+    sol::optional<double>      getScriptNumber(const char *varName) const;
+    sol::optional<std::string> getScriptString(const char *varName) const;
+    sol::optional<bool>        getScriptBool(const char *varName) const;
+    void setScriptNumber(const char *varName, double value);
+    void setScriptString(const char *varName, const std::string &value);
+    void setScriptBool(const char *varName, bool value);
     [[nodiscard]] virtual ObjectType getTypeObject() const              { return ObjectType::Object3D; }
     [[nodiscard]] unsigned int getId() const                            { return id; }
     [[nodiscard]] float &getAlpha()                                     { return alpha; }
@@ -192,7 +205,17 @@ public:
 
     friend class Object3DSerializer;
     friend class SpatialIndex;
+    friend class CrowdSolver;
+public:
+    // Diagnostico de saltos de posicion (ProfilerLua.setJumpTrace): si setPosition() mueve a un objeto cuyo nombre contiene
+    // debugJumpFilter mas de debugJumpThreshold unidades (XZ) de golpe, escribe en stdout quien lo hizo (traceback de Lua, o
+    // "engine" si no hay script en marcha). Umbral 0 = apagado. Solo hilo principal.
+    static inline float debugJumpThreshold = 0.0f;
+    static inline std::string debugJumpFilter;
+private:
+    void reportPositionJump(const Vertex3D &p) const;
     friend class Object3DGUI;
+    friend class UndoManager;
 
 };
 

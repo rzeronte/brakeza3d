@@ -7,6 +7,7 @@
 #include <atomic>
 #include <algorithm>
 #include <memory>
+#include <set>
 #include <string>
 #include <assimp/scene.h>
 #include <glm/vec3.hpp>
@@ -103,8 +104,15 @@ protected:
 
     // Emisión sobre el diffuse (desactivada por defecto): el objeto se ve con el color de su
     // textura sin depender de las luces. intensity 0..1 = mezcla entre iluminado y diffuse puro.
+    // Mipmaps + trilineal + anisotropico en las texturas de este modelo (quita el granulado a distancia).
+    // Las texturas se comparten por ruta entre meshes: activarlo en uno las activa para todos los que las usen.
+    bool mipmaps = false;
     bool emissionEnabled = false;
     float emissionIntensity = 1.0f;
+    // Materiales (indices de modelTextures) que emiten. Vacio = emite todo el mesh (comportamiento clasico);
+    // con alguno marcado, solo las submeshes de esos materiales van a la cola emisiva. Es un set de indices
+    // y no un vector de bool para poder cargarlo de la escena antes de que termine la carga asincrona.
+    std::set<int> emissiveMaterials;
 public:
 
 
@@ -183,13 +191,26 @@ public:
     [[nodiscard]] bool isFrustumCullSubmeshes() const                             { return frustumCullSubmeshes; }
     void setFrustumCullSubmeshes(bool value)                                      { frustumCullSubmeshes = value; }
     [[nodiscard]] const std::string &getModelFile() const                         { return sourceFile.str(); }
+    [[nodiscard]] bool isMipmaps() const                                          { return mipmaps; }
+    void setMipmaps(bool value);
+    void applyMipmapsToTextures();                                                // hilo principal, con las texturas ya asignadas
     [[nodiscard]] bool isEmissionEnabled() const                                  { return emissionEnabled; }
     void setEmissionEnabled(bool value)                                           { emissionEnabled = value; }
     [[nodiscard]] float getEmissionIntensity() const                              { return emissionIntensity; }
     void setEmissionIntensity(float value)                                        { emissionIntensity = std::clamp(value, 0.0f, 1.0f); }
+    [[nodiscard]] const std::set<int> &getEmissiveMaterials() const               { return emissiveMaterials; }
+    // true si la submesh con ese materialIndex emite (con la emision del mesh activa)
+    [[nodiscard]] bool isMaterialEmissive(int materialIndex) const                { return emissiveMaterials.empty() || emissiveMaterials.count(materialIndex) > 0; }
+    [[nodiscard]] bool hasEmissiveMaterials() const                               { return !emissiveMaterials.empty(); }
+    void setMaterialEmissive(int materialIndex, bool value) {
+        if (value) emissiveMaterials.insert(materialIndex); else emissiveMaterials.erase(materialIndex);
+    }
+    // Marca/desmarca todos los materiales cuya textura contiene `pattern` (sin distinguir mayusculas). Devuelve cuantos.
+    int setMaterialsEmissiveByTexture(const std::string &pattern, bool value);
 
     friend class Mesh3DSerializer;
     friend class Mesh3DGUI;
+    friend class UndoManager;
 };
 
 #endif //SDL2_3D_ENGINE_MESH_H

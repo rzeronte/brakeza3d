@@ -4,6 +4,7 @@
 
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Inspectors/Mesh3DAnimationGUI.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -17,8 +18,12 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
     if (ImGui::CollapsingHeader("Mesh3D Animation")) {
 
         static char animFilter[128] = "";
-        ImGui::SetNextItemWidth(-1);
-        ImGui::InputTextWithHint(("##animfilter" + o->getName()).c_str(), "Filter animations...", animFilter, IM_ARRAYSIZE(animFilter));
+        {
+            GUIFields::Section animations("ANIMATIONS");
+            if (animations) {
+                GUIFields::String("Filter", animFilter, IM_ARRAYSIZE(animFilter), "Filter animations by name.");
+            }
+        }
 
         std::string filterStr = animFilter;
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), ::tolower);
@@ -44,12 +49,14 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
                 o->setIndexCurrentAnimation(filtered[selectedInFiltered]);
         }
 
-        ImGui::Separator();
-        ImGui::DragScalar("Speed", ImGuiDataType_Float, &o->animation_speed, 0.01f ,&range_min, &range_max, "%f", 1.0f);
-        ImGui::Separator();
-        ImGui::Checkbox("Loop", &o->loop);
-        ImGui::Separator();
-        ImGui::Checkbox("Bones Colliders", &o->boneColliderEnabled);
+        {
+            GUIFields::Section playback("PLAYBACK");
+            if (playback) {
+                GUIFields::Float("Speed", &o->animation_speed, 0.01f, range_min, range_max, "%.2f", "Animation playback speed multiplier.");
+                GUIFields::Check("Loop", &o->loop);
+                GUIFields::Check("Bones Colliders", &o->boneColliderEnabled, "Per-bone colliders defined in the bone mappings.");
+            }
+        }
 
         if (o->boneColliderEnabled) {
             if (ImGui::Button(std::string("Manage Bone Mappings##" + o->getName()).c_str())) {
@@ -75,12 +82,14 @@ void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
     ImGui::SetNextWindowBgAlpha(GUIType::Levels::WINDOW_ALPHA);
     auto dialogTitle = std::string("Bones Mapping Editor: " + a->getName());
     if (ImGui::Begin(dialogTitle.c_str(), &gui->showBoneMappingsEditorWindow, ImGuiWindowFlags_NoDocking)) {
-        ImGui::SeparatorText("Create new bones mapping:");
-
         static char localVarName[256] = "";
-        ImGui::InputText("Mapping name", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+        {
+            GUIFields::Section create("CREATE NEW BONES MAPPING");
+            if (create) {
+                GUIFields::String("Mapping name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+            }
+        }
 
-        ImGui::SameLine();
         if (ImGui::Button(std::string("Add mapping").c_str())) {
             if (localVarName[0] != '\0') {
                 a->createBonesMappingColliders(localVarName);
@@ -88,21 +97,28 @@ void Mesh3DAnimationDrawerGUI::DrawEditBonesMappingWindow(GUIManager *gui)
             }
         }
 
-        if (numMappings <= 0) return;
-
-        ImGui::SeparatorText("Bone mappings created");
-
-        const char* items[numMappings];
-        for (unsigned int i = 0; i < bc->size(); i++) {
-            items[i] = bc->at(i).nameMapping.c_str();
+        if (numMappings <= 0) {
+            ImGui::End();
+            return;
         }
 
-        auto comboTitle = "BoneMappings##" + a->getName();
-        ImGui::Combo("Bone Mappings", &a->BoneColliderIndexPointer(), items, IM_ARRAYSIZE(items));
+        std::vector<const char*> items;
+        items.reserve(bc->size());
+        for (const auto& m : *bc) {
+            items.push_back(m.nameMapping.c_str());
+        }
+
+        {
+            GUIFields::Section created("BONE MAPPINGS CREATED");
+            if (created) {
+                GUIFields::ComboItems("Bone Mappings", &a->BoneColliderIndexPointer(), items);
+            }
+        }
 
         if (a->BoneColliderIndexPointer() >= 0) {
             if (ImGui::Button(std::string("Delete mapping").c_str())) {
                 a->removeBonesColliderMapping(bc->at(a->BoneColliderIndexPointer()).nameMapping);
+                ImGui::End();
                 return;
             }
         }

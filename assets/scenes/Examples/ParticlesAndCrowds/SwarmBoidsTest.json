@@ -606,7 +606,7 @@
 			"neighborDist":	2,
 			"maxSpeed":	0.800000011920929,
 			"velocityBoidsFactor":	5,
-			"turnFactor":	0.15000000596046448,
+			"turnFactor":	0.06,
 			"centerThreshold":	1,
 			"centerAttractionWeight":	0.5,
 			"predatorThreshold":	6,

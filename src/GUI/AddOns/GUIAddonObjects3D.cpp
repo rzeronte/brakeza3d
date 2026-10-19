@@ -9,6 +9,7 @@
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
 #include "../../../include/GUI/Windows/ScriptLuaGUI.h"
 #include "../../../include/GUI/Widgets/GUIHelpers.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 #include "../../../include/Render/Drawable.h"
 #include "../../../include/Components/Components.h"
 
@@ -465,8 +466,14 @@ void GUIAddonObjects3D::DrawFolderModal()
     }
     if (ImGui::BeginPopupModal("Folder name##foldermodal", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         if (ImGui::IsWindowAppearing()) ImGui::SetKeyboardFocusHere();
-        const bool enter = ImGui::InputText("##foldername", folderModal.name, sizeof(folderModal.name),
-                                            ImGuiInputTextFlags_EnterReturnsTrue);
+        bool enter = false;
+        {
+            GUIFields::Section folderName("FOLDER", 90.0f, 220.0f);
+            if (folderName) {
+                enter = GUIFields::String("Name", folderModal.name, sizeof(folderModal.name), nullptr,
+                                          ImGuiInputTextFlags_EnterReturnsTrue);
+            }
+        }
         ImGui::Spacing();
         const bool ok = ImGui::Button(folderModal.folderId > 0 ? "Rename" : "Create") || enter;
         ImGui::SameLine();

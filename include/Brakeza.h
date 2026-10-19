@@ -10,6 +10,8 @@
 #include "GUI/GUIManager.h"
 #include "Render/ThreadPool.h"
 #include "Misc/SpatialIndex.h"
+#include <thread>
+#include "Misc/CrowdSolver.h"
 
 class Brakeza
 {
@@ -48,6 +50,7 @@ class Brakeza
 
     GUIManager managerGUI;
     SpatialIndex spatialIndex;          // bajo demanda: vacío y sin coste si ningún script lo usa
+    CrowdSolver crowdSolver;            // idem: sin agentes no hace nada (ver CrowdSolver.h)
     ThreadPool pool;
     ThreadPool poolImages;
 
@@ -76,6 +79,9 @@ public:
     Timer *getTimer() { return &this->timer; }
     uint64_t getFrameIndex() const { return frameIndex; }
     SpatialIndex &getSpatialIndex() { return spatialIndex; }
+    CrowdSolver &getCrowd() { return crowdSolver; }
+    std::thread::id mainThreadId = std::this_thread::get_id();   // el singleton se crea en el hilo principal (diagnostico de Object3D::reportPositionJump)
+    std::thread::id getMainThreadId() const { return mainThreadId; }
     Object3D *getObjectById(unsigned int id) const;
     Object3D *getObjectByName(const std::string &label) const;
     void removeObjectFromIndex(Object3D *obj);

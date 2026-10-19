@@ -8,6 +8,7 @@
 --
 -- Variables: frequency (s between cubes), maxCubes (cubes kept per emitter, 30 if the variable is missing).
 -- Physics from a script: object:setCollisionsEnabled(true), setMass, SetupRigidBodyCollider(shape).
+-- The physics debug view (colliders as wireframes) is switched on in onStart so the bodies are visible.
 -- ============================================================================
 
 local spawned = {}
@@ -15,6 +16,9 @@ local spawned = {}
 function onStart()
 	timer = 0
 	spawned = {}
+	-- Draws the physics shapes (Bullet debug wireframe + contact points) so the colliders can be seen. Switch it off again with
+	-- the "Physics debug" toggle of the editor toolbar, or Components:Collisions():setEnableDebugMode(false)
+	Components:Collisions():setEnableDebugMode(true)
 end
 
 function onUpdate()

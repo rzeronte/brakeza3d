@@ -55,6 +55,7 @@ class Profiler
     GpuMeasuresMap gpuMeasures;
 
     bool enable = false;
+    static inline bool measuring = true;
     bool scriptDetailEnabled = false;
     bool gpuTimingEnabled = false;
 
@@ -124,6 +125,11 @@ public:
     [[nodiscard]] int getMemoryImageUsage() const;
     [[nodiscard]] float getMemoryImageUsageKB() const;
     static void DrawPool(const std::string &label, ThreadPool &pool);
+    // Interruptor de TODAS las mediciones de tiempo (frame, componentes, tramos Loop_*, scripts, GPU).
+    // Se apaga con el parámetro de línea de comandos --no-profiler. Apagado, Start/EndMeasure no hacen nada
+    // (los contadores de draw calls siguen su propio interruptor).
+    static void setMeasuring(bool v) { measuring = v; }
+    [[nodiscard]] static bool isMeasuring() { return measuring; }
     static void InitMeasure(MeasuresMap &map, const std::string & label);
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);

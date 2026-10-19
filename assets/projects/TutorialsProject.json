@@ -136,6 +136,16 @@
 			"name":	"demoTourDwell",
 			"type":	"number",
 			"default":	4.0
+		},
+		{
+			"name":	"demoTourRecord",
+			"type":	"bool",
+			"default":	false
+		},
+		{
+			"name":	"demoTourTourOnly",
+			"type":	"bool",
+			"default":	false
 		}
 	],
 	"sound":	{

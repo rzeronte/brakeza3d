@@ -540,7 +540,8 @@ void ParticleEmitter::Draw()
         particles_color_buffer,
         particles_rotation_buffer,
         texture->getOGLTextureID(),
-        ParticlesCount
+        ParticlesCount,
+        depthTest
     );
 }
 
@@ -782,7 +783,8 @@ void ParticleEmitter::DrawGPU()
         context.SIZE_START,
         context.SIZE_END,
         NUM_GPU_PARTICLES,
-        static_cast<int>(sizeof(OCParticle))
+        static_cast<int>(sizeof(OCParticle)),
+        depthTest
     );
 }
 

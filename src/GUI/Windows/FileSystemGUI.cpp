@@ -20,6 +20,7 @@
 #include "../../../include/Loaders/SceneLoader.h"
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/Render/Drawable.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 
 bool FileSystemGUI::openPopUpCreateProject = false;
 bool FileSystemGUI::openPopupCreateScene = false;
@@ -239,8 +240,12 @@ void FileSystemGUI::DrawProjectCreatorDialog(GUIType::BrowserCache &browser, std
         ImGui::Text("Create a new project");
         GUIHelpers::PopupSeparator();
         static char localVarName[256] = "";
-        ImGui::SetNextItemWidth(150);
-        ImGui::InputText("Project name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+        {
+            GUIFields::Section fields("PROJECT", 100.0f, 200.0f);
+            if (fields) {
+                GUIFields::String("Project name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+            }
+        }
         GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
@@ -381,8 +386,12 @@ void FileSystemGUI::DrawSceneCreatorDialog(GUIType::BrowserCache &browser, std::
         ImGui::SameLine();
         static char localVarName[256] = "";
 
-        ImGui::SetNextItemWidth(150);
-        ImGui::InputText("Scene name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+        {
+            GUIFields::Section fields("SCENE", 100.0f, 200.0f);
+            if (fields) {
+                GUIFields::String("Scene name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+            }
+        }
         GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {
@@ -713,8 +722,7 @@ std::vector<const char*> FileSystemGUI::getShaderTypeItems()
 
 void FileSystemGUI::DrawShaderTypeCombo(int &selectedIndex, const std::vector<const char*> &items)
 {
-    ImGui::SetNextItemWidth(150);
-    if (ImGui::Combo("Type", &selectedIndex, items.data(), items.size())) {
+    if (GUIFields::ComboItems("Type", &selectedIndex, items)) {
         std::cout << "Seleccionado: " << items[selectedIndex] << std::endl;
     }
 }
@@ -827,9 +835,13 @@ void FileSystemGUI::DrawShaderCreatorDialog(GUIType::BrowserCache &browser, std:
 
         static char localVarName[256] = "";
 
-        ImGui::SetNextItemWidth(150);
-        ImGui::InputText("Shader name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
-        DrawShaderTypeCombo(item_current_idx, items);
+        {
+            GUIFields::Section fields("SHADER", 100.0f, 200.0f);
+            if (fields) {
+                GUIFields::String("Shader name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+                DrawShaderTypeCombo(item_current_idx, items);
+            }
+        }
 
         GUIHelpers::PopupSeparator();
 
@@ -940,11 +952,13 @@ void FileSystemGUI::DrawScriptCreatorDialog(GUIType::BrowserCache &browser, std:
         static int scriptTypeIndex = 0;
         const char* scriptTypeItems[] = { "Global", "Object" };
 
-        ImGui::SetNextItemWidth(150);
-        ImGui::InputText("Script name##", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
-
-        ImGui::SetNextItemWidth(150);
-        ImGui::Combo("Type##script_type", &scriptTypeIndex, scriptTypeItems, IM_ARRAYSIZE(scriptTypeItems));
+        {
+            GUIFields::Section fields("SCRIPT", 100.0f, 200.0f);
+            if (fields) {
+                GUIFields::String("Script name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+                GUIFields::Combo("Type", &scriptTypeIndex, scriptTypeItems, IM_ARRAYSIZE(scriptTypeItems));
+            }
+        }
 
         GUIHelpers::PopupSeparator();
 
@@ -1054,8 +1068,12 @@ void FileSystemGUI::DrawWidgetCreatorDialog(GUIType::BrowserCache &browser, std:
 {
     if (ImGui::BeginPopupModal(title.c_str(), nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         static char localVarName[256] = "";
-        ImGui::SetNextItemWidth(150);
-        ImGui::InputText("Widget name##wname", localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
+        {
+            GUIFields::Section fields("WIDGET", 100.0f, 200.0f);
+            if (fields) {
+                GUIFields::String("Widget name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+            }
+        }
         GUIHelpers::PopupSeparator();
 
         GUI::ImageButtonNormal(IconGUI::CANCEL, "Cancel", [&] {

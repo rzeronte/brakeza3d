@@ -19,6 +19,7 @@
 #include "../../include/Render/Transforms.h"
 #include "../../include/3D/LightPoint.h"
 #include "../../include/3D/Mesh3DAnimation.h"
+#include "../../include/3D/ParticleEmitter.h"
 #include "../../include/Render/EngineObserver.h"
 #include "../../include/Cache/ImageCache.h"
 #include "../../include/Cache/ModelDataCache.h"
@@ -423,6 +424,16 @@ bool ComponentRender::isInFrustum(const Object3D *o, float radiusOverride)
 
     const Vertex3D &pos = o->getPosition();
     float r = o->getBoundingRadius();
+
+    // A particle emitter is a point, but its particles travel away from it: culling by the point alone made the whole effect vanish
+    // as soon as the camera got close and the origin left the view. Use the distance the particles can reach as the radius.
+    if (type == ObjectType::ParticleEmitter) {
+        const auto &c = const_cast<ParticleEmitter*>(static_cast<const ParticleEmitter*>(o))->getContextPointer();
+        const float life = std::max(0.0f, c.PARTICLE_LIFESPAN);
+        float reach = c.MAX_VELOCITY * life + 0.5f * std::fabs(c.GRAVITY) * life * life + c.POSITION_NOISE;
+        reach += std::max({c.SHAPE_RADIUS + c.SHAPE_TUBE_RADIUS, c.SHAPE_HEIGHT, c.SHAPE_SIZE_X, c.SHAPE_SIZE_Y, c.SHAPE_SIZE_Z});
+        r = std::max(r, std::min(reach, 80.0f));
+    }
 
     for (const auto& p : frustumPlanes) {
         if (p.nx * pos.x + p.ny * pos.y + p.nz * pos.z + p.d < -r)
@@ -1413,8 +1424,8 @@ void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fb
 
     // Emisión desactivada por defecto: solo los Mesh3D que la activen explícitamente van a la cola
     // emisiva (ver FlushEmissiveQueue); el resto sigue exactamente el camino de siempre.
+    // Si el mesh marca materiales emisivos, solo esas submeshes van a la cola emisiva (por-submesh mas abajo).
     const bool emissive = o->isEmissionEnabled() && o->getEmissionIntensity() > 0.0f;
-    auto &queue = emissive ? emissiveQueue : opaqueQueue;
 
     const auto& textures = o->getModelTextures();
     const auto& specTextures = o->getModelSpecularTextures();
@@ -1437,7 +1448,9 @@ void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fb
         entry.normalBuffer = m.normalBuffer;
         entry.size = static_cast<int>(m.vertices.size());
         entry.alpha = o->getAlpha();
-        entry.emission = emissive ? o->getEmissionIntensity() : 0.0f;
+        const bool subEmissive = emissive && o->isMaterialEmissive(m.materialIndex);
+        auto &queue = subEmissive ? emissiveQueue : opaqueQueue;
+        entry.emission = subEmissive ? o->getEmissionIntensity() : 0.0f;
         entry.fbo = fbo;
         entry.indexBuffer = anim ? 0 : m.indexBuffer;
         entry.indexCount = anim ? 0 : m.indexCount;

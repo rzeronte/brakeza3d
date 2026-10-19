@@ -44,6 +44,7 @@ public:
                 if (Check("Emitting", &emitting, "Unchecked = stops spawning new particles (the alive ones finish their life).")) o->stopAdd = !emitting;
                 Float("Rate", &c.PARTICLES_BY_SECOND, 1.0f, 0.0f, 5000.0f, "%.1f /s", "Particles spawned per second (decimals allowed: 0.5 = one every 2 s).");
                 Float("Lifespan", &c.PARTICLE_LIFESPAN, 0.01f, 0.0f, 100.0f, "%.2f s", "Seconds each particle lives. Color, opacity and size interpolate over this time.");
+                Check("Depth test", &o->depthTest, "On: scene geometry (buildings...) hides the particles behind it. Off: drawn on top of everything.");
                 EndSection();
             }
 

@@ -63,6 +63,24 @@ ScriptLUA::ScriptLUA(const std::string& name, const std::string &codeFile, const
     ProcessFileTypes();
 }
 
+// Como lua.script(content, env) pero con el nombre del fichero como nombre del chunk ("@ruta"): los errores de Lua y el
+// muestreador de LuaJIT (jit.profile) muestran "fichero:linea" en vez de "[string]". Mismo contrato: lanza sol::error.
+static void RunScriptChunk(sol::state &lua, const std::string &content, const sol::environment &env, const std::string &filename)
+{
+    sol::load_result lr = lua.load(content, "@" + filename);
+    if (!lr.valid()) {
+        sol::error err = lr;
+        throw err;
+    }
+    sol::protected_function fn = lr;
+    sol::set_environment(env, fn);
+    sol::protected_function_result res = fn();
+    if (!res.valid()) {
+        sol::error err = res;
+        throw err;
+    }
+}
+
 void ScriptLUA::getCode(const std::string &script)
 {
     content = scriptDataCache.getOrLoad(script);
@@ -74,7 +92,7 @@ void ScriptLUA::InitEnvironment(sol::environment &environment)
 
     try {
 
-        lua.script(content, environment);
+        RunScriptChunk(lua, content, environment, scriptFilename);
 
         for (const auto& type : dataTypes) {
             switch (GetLUATypeInfo(type.type).type) {
@@ -140,7 +158,7 @@ namespace {
     };
 }
 
-void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg) const
+void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string& func, std::optional<sol::object> arg, ScriptCallbackSlot *slot) const
 {
     if (paused) return;
     if (!ShouldTick(func)) return;
@@ -151,19 +169,42 @@ void ScriptLUA::RunEnvironment(sol::environment &environment, const std::string&
         return;
     }
 
-    sol::object obj = environment[func];
-    if (!obj.is<sol::function>()) {
-        return;
-    }
-
     try {
-        sol::protected_function f = obj.as<sol::protected_function>();
-        sol::protected_function_result result;
+        if (slot != nullptr) {
+            // Camino con caché (onUpdate / postUpdate de objeto): la función se resuelve una vez por entorno y se llama
+            // directamente con la API de Lua (sin crear referencias ni objetos de sol en cada llamada)
+            lua_State *L = environment.lua_state();
+            if (!slot->resolved) {
+                sol::object obj = environment[func];
+                if (obj.is<sol::function>()) {
+                    obj.push();
+                    slot->ref = luaL_ref(L, LUA_REGISTRYINDEX);
+                    slot->L = L;
+                }
+                slot->resolved = true;
+            }
+            if (slot->ref == LUA_NOREF) return;
 
-        if (arg) {
-            result = f(*arg);
-        } else {
-            result = f();
+            lua_rawgeti(L, LUA_REGISTRYINDEX, slot->ref);   // la función queda en la pila: sobrevive aunque se invalide el slot dentro de la llamada
+            int nargs = 0;
+            if (arg) { arg->push(); nargs = 1; }
+            if (lua_pcall(L, nargs, 0, 0) != LUA_OK) {
+                const char *msg = lua_tostring(L, -1);
+                LOG_ERROR("[ScriptLUA] Error in function %s: %s", func.c_str(), msg ? msg : "(sin mensaje)");
+                lua_pop(L, 1);
+                Components::get()->Scripting()->StopLUAScripts();
+            }
+            return;
+        }
+
+        sol::protected_function_result result;
+        {
+            sol::object obj = environment[func];
+            if (!obj.is<sol::function>()) {
+                return;
+            }
+            sol::protected_function f = obj.as<sol::protected_function>();
+            result = arg ? f(*arg) : f();
         }
 
         if (!result.valid()) {
@@ -205,7 +246,7 @@ void ScriptLUA::RunGlobal(const std::string& func)
 
     try {
         if (!globalLoaded) {
-            lua.script(content, globalEnvironment);
+            RunScriptChunk(lua, content, globalEnvironment, scriptFilename);
             globalLoaded = true;
             globalFuncCache.clear();
         }
@@ -333,7 +374,7 @@ void ScriptLUA::ReloadEnvironment(sol::environment &environment)
     sol::state &lua = Components::get()->Scripting()->getLua();
 
     try {
-        lua.script(content, environment);
+        RunScriptChunk(lua, content, environment, scriptFilename);
     } catch (const sol::error& e) {
         LOG_ERROR("[ScriptLUA] Error loading script: %s", e.what());
         return;

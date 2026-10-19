@@ -69,7 +69,7 @@ namespace GUIType
     struct Sizes {
         static constexpr ImVec2 ICONS_TOOLBAR = ImVec2(18, 18);
         static constexpr ImVec2 ICONS_OBJECTS_ALLOWED = ImVec2(18, 18);
-        static constexpr ImVec2 ICONS_BROWSERS = ImVec2(16, 16);
+        static constexpr ImVec2 ICONS_BROWSERS = ImVec2(22, 22);
         static constexpr ImVec2 ICONS_CONSOLE = ImVec2(16, 16);
         static constexpr ImVec2 ICONS_LOG = ImVec2(16, 16);
         static constexpr ImVec2 ICON_SIZE_MENUS = ImVec2(16, 16);

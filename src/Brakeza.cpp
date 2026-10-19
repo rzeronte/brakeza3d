@@ -1,5 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include "../include/Render/UndoManager.h"
 #include <algorithm>
 #include <atomic>
 #include <thread>
@@ -93,6 +94,7 @@ void Brakeza::PreMainLoop()
 
     // Profiler tags
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "LightPass");
+    Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "CrowdStep");
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "FlipBuffersToGlobal");
     Profiler::InitMeasure(Profiler::get()->getComponentMeasures(), "PostProcessingShadersChain");
 }
@@ -266,6 +268,7 @@ void Brakeza::AddObject3D(Object3D *obj, const std::string &label)
     if (componentsManager->Scripting()->isExecuting()) {
         obj->RunStartScripts();
     }
+    UndoManager::get().onObjectAdded(obj);
 }
 
 void Brakeza::UpdateTimer()
@@ -448,6 +451,9 @@ bool Brakeza::ReadArgs(int argc, char **argv)
                 cxxopts::value<float>())
         ("log-console", "Enable the general log (ImGui console, stdout, Lua print). Off by default")
         ("observer-ai", "Enable EngineObserver (brakeza_events.jsonl + periodic state dump). Off by default")
+        ("no-profiler", "Disable all profiler time measurements (frame, components, loop sections, scripts, GPU) for the lowest overhead")
+        ("no-vsync", "Start with V-Sync off (A/B tests of the buffer-swap wait; the menu toggle still works)")
+        ("no-frame-limit", "Start without the frame-rate limiter (SDL_Delay), for performance measurements")
         ("h,help", "Help")
     ;
 
@@ -455,6 +461,9 @@ bool Brakeza::ReadArgs(int argc, char **argv)
 
     if (result.count("log-console")) Config::get()->ENABLE_LOGGING_CONSOLE = true;
     if (result.count("observer-ai")) Config::get()->OBSERVER_AI_ENABLED = true;
+    if (result.count("no-profiler")) Profiler::setMeasuring(false);
+    if (result.count("no-vsync")) Config::get()->V_SYNC = false;
+    if (result.count("no-frame-limit")) Config::get()->LIMIT_FRAMERATE = false;
 
     if (result.count("help")) {
         std::cout << options.help() << std::endl;

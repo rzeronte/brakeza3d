@@ -13,6 +13,9 @@
 #include "../../../include/Brakeza.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/GUI/Widgets/GUIHelpers.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
+#include <cfloat>
+#include <functional>
 #include "../../../include/Misc/ToolsMaths.h"
 #include "../../../include/Serializers/Object3DSerializer.h"
 #include "../../../include/Serializers/LightPointSerializer.h"
@@ -32,10 +35,38 @@
 #include "../../../include/GUI/Windows/ShadersGUI.h"
 #include "../../../include/GUI/Windows/UIManagerGUI.h"
 #include "../../../include/Render/Drawable.h"
+#include "../../../include/Render/UndoManager.h"
+#include "../../../include/Render/Profiler.h"
 #include "../../../include/Loaders/ProjectLoader.h"
 #include "../../../include/Loaders/SceneLoader.h"
 #include "../../../include/Loaders/FBXLightLoader.h"
 
+namespace
+{
+    // Los menús se autodimensionan: la columna del control necesita un ancho fijo
+    constexpr float kMenuLabelW = 190.0f;
+    constexpr float kMenuValueW = 200.0f;
+
+    // Icono de menú delante de la etiqueta de la próxima fila de GUIFields
+    void MenuFieldIcon(GUIType::Sheet icon)
+    {
+        GUIFields::NextRowIcon(FileSystemGUI::Icon(icon), GUIType::Sizes::ICON_SIZE_MENUS);
+    }
+
+    // Fila Float3 con botón de reset (icono) a la izquierda del control
+    bool MenuVec3Row(const char* label, GUIType::Sheet icon, const char* id, const char* tooltip, float* v,
+                     float speed, float vmin, float vmax, const std::function<void()>& onReset)
+    {
+        MenuFieldIcon(icon);
+        GUIFields::Row(label);
+        ImGui::PushID(id);
+        GUI::DrawButton(tooltip, IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, onReset);
+        ImGui::PopID();
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        return ImGui::DragFloat3("##v", v, speed, vmin, vmax);
+    }
+}
 
 void GUIAddonMenu::Draw(GUIManager *gui)
 {
@@ -65,6 +96,21 @@ void GUIAddonMenu::MenuBrakeza3D()
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::BRAKEZA_EXIT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Exit")) Config::get()->EXIT = true;
+}
+
+void GUIAddonMenu::MenuEdit()
+{
+    auto &undo = UndoManager::get();
+    const std::string undoText = undo.canUndo() ? "Undo " + undo.undoLabel() : "Undo";
+    const std::string redoText = undo.canRedo() ? "Redo " + undo.redoLabel() : "Redo";
+    if (ImGui::MenuItem(undoText.c_str(), "CTRL + Z", false, undo.canUndo())) undo.undo();
+    if (ImGui::MenuItem(redoText.c_str(), "CTRL + Y", false, undo.canRedo())) undo.redo();
+    ImGui::Separator();
+    GUIFields::Section history("History", kMenuLabelW, kMenuValueW);
+    if (history) {
+        if (GUIFields::Int("History steps", &Config::get()->UNDO_MAX_STEPS, 1.0f, 1, 1000, "%d",
+                           "How many undo steps are remembered (1-1000). Not saved between sessions.")) undo.trim();
+    }
 }
 
 void GUIAddonMenu::MenuScriptControls()
@@ -121,62 +167,62 @@ void GUIAddonMenu::MenuAddObject()
     ImGui::Image(FileSystemGUI::Icon(IconObject::OBJECT_3D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Object3D (Empty)")) {
-        Object3DSerializer().MenuLoad("");
+        UndoManager::get().expectCreation(); Object3DSerializer().MenuLoad("");
     }
     ImGui::SeparatorText("2D Objects");
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image2D")) {
-        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D, [](const std::string& path) { Image2DSerializer().MenuLoad(path); });
+        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D, [](const std::string& path) { UndoManager::get().expectCreation(); Image2DSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_2D_ANIMATION), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image2D Animation")) {
-        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D_ANIMATION, [](const std::string& path) { Image2DAnimationSerializer().MenuLoad(path); });
+        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_2D_ANIMATION, [](const std::string& path) { UndoManager::get().expectCreation(); Image2DAnimationSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::SeparatorText("3D Objects");
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image3D")) {
-        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D ,[](const std::string& path) { Image3DSerializer().MenuLoad(path); });
+        DrawItemsToLoad(setup->IMAGES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D ,[](const std::string& path) { UndoManager::get().expectCreation(); Image3DSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Image3D Animation")) {
-        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D_ANIMATION, [](const std::string& path) { Image3DAnimationSerializer().MenuLoad(path); });
+        DrawItemsToLoad(setup->SPRITES_FOLDER, Config::get()->IMAGES_EXT, IconObject::IMAGE_3D_ANIMATION, [](const std::string& path) { UndoManager::get().expectCreation(); Image3DAnimationSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::IMAGE_3D_ANIMATION_360), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Image3D Animation 360")) {
-        Image3DAnimation360Serializer().MenuLoad("");
+        UndoManager::get().expectCreation(); Image3DAnimation360Serializer().MenuLoad("");
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Mesh3D")) {
-        DrawItemsToLoad(setup->MODELS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D, [](const std::string& path) { Mesh3DSerializer().MenuLoad(path); });
+        DrawItemsToLoad(setup->MODELS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D, [](const std::string& path) { UndoManager::get().expectCreation(); Mesh3DSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::MESH_3D_ANIMATION), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::BeginMenu("Mesh3DAnimation")) {
-        DrawItemsToLoad(setup->ANIMATIONS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D_ANIMATION, [](const std::string& path) { Mesh3DAnimationSerializer().MenuLoad(path); });
+        DrawItemsToLoad(setup->ANIMATIONS_FOLDER, Config::get()->MESH3D_EXT, IconObject::MESH_3D_ANIMATION, [](const std::string& path) { UndoManager::get().expectCreation(); Mesh3DAnimationSerializer().MenuLoad(path); });
         ImGui::EndMenu();
     }
     ImGui::SeparatorText("Lights");
     ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("PointLight")) {
-        LightPointSerializer().MenuLoad("");
+        UndoManager::get().expectCreation(); LightPointSerializer().MenuLoad("");
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_SPOT), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("SpotLight")) {
-        LightSpotSerializer().MenuLoad("");
+        UndoManager::get().expectCreation(); LightSpotSerializer().MenuLoad("");
     }
     ImGui::Image(FileSystemGUI::Icon(IconObject::LIGHT_POINT), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
@@ -193,7 +239,7 @@ void GUIAddonMenu::MenuAddObject()
     ImGui::Image(FileSystemGUI::Icon(IconObject::PARTICLE_EMITTER), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("ParticleEmitter")) {
-        ParticleEmmitterSerializer().MenuLoad("");
+        UndoManager::get().expectCreation(); ParticleEmmitterSerializer().MenuLoad("");
         ImGui::EndMenu();
     }
 
@@ -201,7 +247,7 @@ void GUIAddonMenu::MenuAddObject()
     ImGui::Image(FileSystemGUI::Icon(IconObject::SWARM), GUIType::Sizes::ICON_SIZE_MENUS);
     ImGui::SameLine();
     if (ImGui::MenuItem("Swarm")) {
-        SwarmSerializer().MenuLoad("");
+        UndoManager::get().expectCreation(); SwarmSerializer().MenuLoad("");
         ImGui::EndMenu();
     }
 
@@ -210,11 +256,11 @@ void GUIAddonMenu::MenuAddObject()
     ImGui::SameLine();
     if (ImGui::BeginMenu("Sound3D")) {
         if (ImGui::MenuItem("Default (radio_beep.wav)")) {
-            Sound3DSerializer().MenuLoad("");
+            UndoManager::get().expectCreation(); Sound3DSerializer().MenuLoad("");
         }
         ImGui::Separator();
         DrawItemsToLoad(setup->SOUNDS_FOLDER, Config::get()->SOUNDS_EXT, IconObject::SOUND_3D, [](const std::string& path) {
-            Sound3DSerializer().MenuLoad(path);
+            UndoManager::get().expectCreation(); Sound3DSerializer().MenuLoad(path);
         });
         ImGui::EndMenu();
     }
@@ -243,9 +289,10 @@ void GUIAddonMenu::MenuVideo()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_LIMIT_FRAMERATE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Limit frame rate", nullptr,  &setup->LIMIT_FRAMERATE);
     if (setup->LIMIT_FRAMERATE) {
-        const int range_framerate_sensibility = 1;
-        ImGui::DragScalar("Max FPS:", ImGuiDataType_S32, &setup->FRAMERATE, range_framerate_sensibility, &GUIType::Levels::DRAG_FRAMERATE_MIN, &GUIType::Levels::DRAG_FRAMERATE_MAX, "%d", 1.0f);
-
+        GUIFields::Section limit("Frame rate limit", kMenuLabelW, kMenuValueW);
+        if (limit) {
+            GUIFields::Int("Max FPS", &setup->FRAMERATE, 1.0f, GUIType::Levels::DRAG_FRAMERATE_MIN, GUIType::Levels::DRAG_FRAMERATE_MAX);
+        }
     }
     ImGui::SeparatorText("Render modes");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::RENDER_PIXELS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -280,17 +327,21 @@ void GUIAddonMenu::MenuVideo()
     ImGui::MenuItem("Enable Frustum Culling", nullptr, &Config::get()->ENABLE_FRUSTUM_CULLING);
 
     {
-        const float sortMin = 0.0f, sortMax = 1000.0f;
-        ImGui::DragScalar("Sort objects interval (ms)", ImGuiDataType_Float, &Config::get()->SORT_OBJECTS_INTERVAL_MS, 5.0f, &sortMin, &sortMax, "%.0f ms");
+        GUIFields::Section sorting("Sorting", kMenuLabelW, kMenuValueW);
+        if (sorting) {
+            GUIFields::Float("Sort objects interval", &Config::get()->SORT_OBJECTS_INTERVAL_MS, 5.0f, 0.0f, 1000.0f, "%.0f ms");
+        }
     }
 
-    ImGui::SeparatorText("Clear color");
     {
-        auto win = Components::get()->Window();
-        float col[4] = { win->getClearColorR(), win->getClearColorG(), win->getClearColorB(), win->getClearColorA() };
-        ImGui::SetNextItemWidth(-1);
-        if (ImGui::ColorEdit4("##ClearColor", col, ImGuiColorEditFlags_AlphaBar)) {
-            win->setClearColor(col[0], col[1], col[2], col[3]);
+        GUIFields::Section clear("Clear color", kMenuLabelW, kMenuValueW);
+        if (clear) {
+            auto win = Components::get()->Window();
+            float col[4] = { win->getClearColorR(), win->getClearColorG(), win->getClearColorB(), win->getClearColorA() };
+            GUIFields::Row("Color");
+            if (ImGui::ColorEdit4("##v", col, ImGuiColorEditFlags_AlphaBar)) {
+                win->setClearColor(col[0], col[1], col[2], col[3]);
+            }
         }
     }
 
@@ -320,22 +371,23 @@ void GUIAddonMenu::MenuColliders()
 
     ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_HANDLE_OBJECTS_COLLISIONS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Handle object collisions", nullptr, &setup->BULLET_CHECK_ALL_PAIRS);
-    ImGui::SeparatorText("Step simulation setup");
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_MAX_SUBSTEPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragScalar("Max sub-steps", ImGuiDataType_S32, &setup->BULLET_MAX_SUBSTEPS, 1, &minSubsteps, &maxSubsteps, "%d", 1.0f);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_FIXED_TIMESTEP), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragScalar("Fixed time step (1/x)", ImGuiDataType_S32, &setup->BULLET_FIXED_TIME_STEPS, 1, &minFixedTime, &maxFixedTime, "%d", 1.0f);
+    GUIFields::Section step("Step simulation setup", kMenuLabelW, kMenuValueW);
+    if (!step) return;
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::COLLIDERS_GRAVITY), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    MenuFieldIcon(IconGUI::COLLIDERS_MAX_SUBSTEPS);
+    GUIFields::Int("Max sub-steps", &setup->BULLET_MAX_SUBSTEPS, 1.0f, minSubsteps, maxSubsteps);
+    MenuFieldIcon(IconGUI::COLLIDERS_FIXED_TIMESTEP);
+    GUIFields::Int("Fixed time step (1/x)", &setup->BULLET_FIXED_TIME_STEPS, 1.0f, minFixedTime, maxFixedTime);
+
+    MenuFieldIcon(IconGUI::COLLIDERS_GRAVITY);
     float vec3f[3];
     setup->gravity.toFloat(vec3f);
-    if (ImGui::DragFloat3("Gravity", vec3f, 0.01f, -1000.0f, 1000.0f)) {
+    if (GUIFields::Float3("Gravity", vec3f, 0.01f, -1000.0f, 1000.0f, "%.3f")) {
         setup->gravity.x = vec3f[0];
         setup->gravity.y = vec3f[1];
         setup->gravity.z = vec3f[2];
         Components::get()->Collisions()->setGravity(setup->gravity);
     }
-
 }
 
 void GUIAddonMenu::MenuIllumination()
@@ -351,52 +403,57 @@ void GUIAddonMenu::MenuIllumination()
     ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable Shadow Mapping", nullptr, &setup->ENABLE_SHADOW_MAPPING);
     if (setup->ENABLE_SHADOW_MAPPING) {
-        ImGui::SeparatorText("Shadow Mapping setup");
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f, 100.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        int minPcf = 0, maxPcf = 5;
-        ImGui::DragScalar("PCF Kernel Size", ImGuiDataType_S32, &setup->SHADOW_MAPPING_PCF_KERNEL_SIZE, 1.0f, &minPcf, &maxPcf, "%d", 1.0f);
+        GUIFields::Section shadows("Shadow Mapping setup", kMenuLabelW, kMenuValueW);
+        if (shadows) {
+            MenuFieldIcon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING);
+            GUIFields::Float("Shadows Intensity", &setup->SHADOW_MAPPING_INTENSITY, 0.1f, -5.0f, 5.0f, "%.3f");
+            MenuFieldIcon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING);
+            GUIFields::Float("DepthMaps Near plane", &setup->SHADOW_MAPPING_DEPTH_NEAR_PLANE, 0.1f, 1.0f, 500.0f, "%.3f");
+            MenuFieldIcon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING);
+            GUIFields::Float("DepthMaps Far plane", &setup->SHADOW_MAPPING_DEPTH_FAR_PLANE, 0.1f, 1.0f, 500.0f, "%.3f");
+            MenuFieldIcon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING);
+            GUIFields::FloatFree("DepthMaps Frustum Size", &setup->SHADOW_MAPPING_FRUSTUM_SIZE, 0.1f);
+            MenuFieldIcon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING);
+            GUIFields::Int("PCF Kernel Size", &setup->SHADOW_MAPPING_PCF_KERNEL_SIZE, 1.0f, 0, 5);
 
-        static const int resOptions[] = { 512, 1024, 2048, 4096 };
-        static const char* resLabels[] = { "512", "1024", "2048", "4096" };
-        int currentRes = 0;
-        for (int i = 0; i < 4; i++) {
-            if (resOptions[i] == setup->SHADOW_MAP_RESOLUTION) { currentRes = i; break; }
-        }
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        if (ImGui::Combo("Shadow Map Resolution", &currentRes, resLabels, 4)) {
-            setup->SHADOW_MAP_RESOLUTION = resOptions[currentRes];
-            Components::get()->Render()->getShaders()->shaderShadowPass->ResetFramebuffers();
+            static const int resOptions[] = { 512, 1024, 2048, 4096 };
+            static const char* resLabels[] = { "512", "1024", "2048", "4096" };
+            int currentRes = 0;
+            for (int i = 0; i < 4; i++) {
+                if (resOptions[i] == setup->SHADOW_MAP_RESOLUTION) { currentRes = i; break; }
+            }
+            MenuFieldIcon(IconGUI::ILLUMINATION_ENABLE_SHADOW_MAPPING);
+            if (GUIFields::Combo("Shadow Map Resolution", &currentRes, resLabels, 4)) {
+                setup->SHADOW_MAP_RESOLUTION = resOptions[currentRes];
+                Components::get()->Render()->getShaders()->shaderShadowPass->ResetFramebuffers();
+            }
         }
     }
-    ImGui::SeparatorText("Sun light setup");
     auto& dirLight = Components::get()->Render()->getShaders()->shaderOGLRender->getDirectionalLight();
+    {
+        GUIFields::Section sun("Sun light setup", kMenuLabelW, kMenuValueW);
+        if (sun) {
+            MenuFieldIcon(IconGUI::ILLUMINATION_SUN_DIRECTION);
+            GUIFields::Float3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f, "%.3f");
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_SUN_DIRECTION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragFloat3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f);
-
-    ImGui::Separator();
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::ILLUMINATION_COLORS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImVec4 colorAmbient = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
-    if (ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&colorAmbient), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
-        dirLight.ambient = {colorAmbient.x, colorAmbient.y, colorAmbient.z};
-    }
-    ImGui::SameLine();
-    ImVec4 colorSpecular = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
-    if (ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&colorSpecular), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
-        dirLight.specular = {colorSpecular.x, colorSpecular.y, colorSpecular.z};
-    }
-    ImVec4 colorDiffuse = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
-    ImGui::SameLine();
-    if (ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&colorDiffuse), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
-        dirLight.diffuse = {colorDiffuse.x, colorDiffuse.y, colorDiffuse.z};
+            // Tres selectores de color en una misma fila (solo el swatch; la etiqueta va a su derecha)
+            MenuFieldIcon(IconGUI::ILLUMINATION_COLORS);
+            GUIFields::Row("Colors");
+            ImVec4 colorAmbient = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
+            if (ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&colorAmbient), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+                dirLight.ambient = {colorAmbient.x, colorAmbient.y, colorAmbient.z};
+            }
+            ImGui::SameLine();
+            ImVec4 colorSpecular = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
+            if (ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&colorSpecular), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+                dirLight.specular = {colorSpecular.x, colorSpecular.y, colorSpecular.z};
+            }
+            ImVec4 colorDiffuse = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
+            ImGui::SameLine();
+            if (ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&colorDiffuse), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+                dirLight.diffuse = {colorDiffuse.x, colorDiffuse.y, colorDiffuse.z};
+            }
+        }
     }
     if (setup->ENABLE_SHADOW_MAPPING) {
         ImGui::Separator();
@@ -432,21 +489,18 @@ void GUIAddonMenu::MenuCamera()
     auto setup = Config::get();
     auto camera = Components::get()->Camera()->getCamera();
 
-    ImGui::SeparatorText("Camera setup");
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_FOV), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragScalar("FOV", ImGuiDataType_Float, &setup->HORIZONTAL_FOV, 1, &GUIType::Levels::DRAG_FOV_MIN, &GUIType::Levels::DRAG_FOV_MAX, "%f", 1.0f);
-    ImGui::DragScalar("Frustum Far Plane Distance", ImGuiDataType_Float, &setup->FRUSTUM_FARPLANE_DISTANCE, 50.0f, &GUIType::Levels::DRAG_FAR_PLANE_MIN, &GUIType::Levels::DRAG_FAR_PLANE_MAX, "%.0f");
+    {
+    GUIFields::Section cameraSection("Camera setup", kMenuLabelW, kMenuValueW + 40.0f);
+    if (cameraSection) {
+    MenuFieldIcon(IconGUI::CAMERA_FOV);
+    GUIFields::Float("FOV", &setup->HORIZONTAL_FOV, 1.0f, static_cast<float>(GUIType::Levels::DRAG_FOV_MIN), static_cast<float>(GUIType::Levels::DRAG_FOV_MAX), "%f");
+    GUIFields::Float("Frustum Far Plane Distance", &setup->FRUSTUM_FARPLANE_DISTANCE, 50.0f, GUIType::Levels::DRAG_FAR_PLANE_MIN, GUIType::Levels::DRAG_FAR_PLANE_MAX, "%.0f");
     // position
-    ImGui::PushID("reset_camera_position");
-    GUI::DrawButton("Reset position", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
-        camera->setPosition(Vertex3D(0, 0, 0));
-    });
-    ImGui::PopID();
-    ImGui::SameLine();
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_POSITION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     float vec3f[3];
     camera->getPosition().toFloat(vec3f);
-    if (ImGui::DragFloat3("Position", vec3f, 0.1f, -10000.0f, 10000.0f)) {
+    if (MenuVec3Row("Position", IconGUI::CAMERA_POSITION, "reset_camera_position", "Reset position", vec3f, 0.1f, -10000.0f, 10000.0f, [&] {
+        camera->setPosition(Vertex3D(0, 0, 0));
+    })) {
         camera->positionPointer().x = vec3f[0];
         camera->positionPointer().y = vec3f[1];
         camera->positionPointer().z = vec3f[2];
@@ -462,14 +516,9 @@ void GUIAddonMenu::MenuCamera()
     vec3f[0] = pitch;
     vec3f[1] = yaw;
     vec3f[2] = roll;
-    ImGui::PushID("reset_camera_rotation");
-    GUI::DrawButton("Reset rotation", IconGUI::RESET, GUIType::Sizes::ICON_SIZE_SMALL, true, [&] {
+    if (MenuVec3Row("Rotation", IconGUI::CAMERA_ROTATION, "reset_camera_rotation", "Reset rotation", vec3f, 0.01f, -999999.0f, 999999.0f, [&] {
         camera->setRotationFromEulerAngles(0, 0, 0);
-    });
-    ImGui::PopID();
-    ImGui::SameLine();
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_ROTATION), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    if (ImGui::DragFloat3("Rotation", vec3f, 0.01f, -999999.0f, 999999.0f)) {
+    })) {
         const float factor = 0.0025f;
         pitch = vec3f[0];
         yaw = vec3f[1];
@@ -492,11 +541,17 @@ void GUIAddonMenu::MenuCamera()
             M3::normalize(camera->rotationPointer());
         }
     }
-    ImGui::SeparatorText("Keyboard controls setup");
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_CURSOR_SPEED_WALKING), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragFloat("Cursors speed walking", &Config::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f);
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_CURSOR_SPEED_STRAFE), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragFloat("Cursors speed strafe", &Config::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f);
+    }   // if (cameraSection)
+    }   // Camera setup
+    {
+        GUIFields::Section keyboard("Keyboard controls setup", kMenuLabelW, kMenuValueW + 40.0f);
+        if (keyboard) {
+            MenuFieldIcon(IconGUI::CAMERA_CURSOR_SPEED_WALKING);
+            GUIFields::Float("Cursors speed walking", &Config::get()->WALKING_SPEED, 0.01f, 0.0f, 500.0f, "%.3f");
+            MenuFieldIcon(IconGUI::CAMERA_CURSOR_SPEED_STRAFE);
+            GUIFields::Float("Cursors speed strafe", &Config::get()->STRAFE_SPEED, 0.01f, 0.0f, 500.0f, "%.3f");
+        }
+    }
     ImGui::SeparatorText("Camera GUI features");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_CLICK_OBJECTS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Enable click objects", nullptr, &setup->MOUSE_CLICK_SELECT_OBJECT3D);
@@ -511,17 +566,26 @@ void GUIAddonMenu::MenuCamera()
     }
 
     {
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Sensibility", &Config::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Pan sensibility (Shift)", &Config::get()->MOUSE_PAN_SENSITIVITY, 0.01f, 0.05f, 5.0f, "%.2f");
-        if (ImGui::IsItemHovered()) ImGui::SetTooltip("Shift + middle button. 1.0 = the scene follows the cursor pixel by pixel (like Blender)");
+        {
+            GUIFields::Section mouse("Mouse", kMenuLabelW, kMenuValueW + 40.0f);
+            if (mouse) {
+                MenuFieldIcon(IconGUI::CAMERA_MOUSE_LOOK);
+                GUIFields::Float("Sensibility", &Config::get()->MOUSE_SENSITIVITY, 0.001f, 0.0f, 1.0f, "%.3f");
+                MenuFieldIcon(IconGUI::CAMERA_MOUSE_LOOK);
+                GUIFields::Float("Pan sensibility (Shift)", &Config::get()->MOUSE_PAN_SENSITIVITY, 0.01f, 0.05f, 5.0f, "%.2f",
+                                 "Shift + middle button. 1.0 = the scene follows the cursor pixel by pixel (like Blender)");
+            }
+        }
         ImGui::Image(FileSystemGUI::Icon(IconGUI::CAMERA_MOUSE_LOOK), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
         ImGui::MenuItem("Zoom towards cursor (wheel)", nullptr, &Config::get()->ZOOM_TO_CURSOR);
     }
 
-    ImGui::SeparatorText("Snap camera to selected object");
-    ImGui::DragFloat("Radius##snap", &GUIAddonMenu::snapRadius, 0.5f, 0.1f, 10000.0f, "%.1f");
+    {
+        GUIFields::Section snap("Snap camera to selected object", kMenuLabelW, kMenuValueW + 40.0f);
+        if (snap) {
+            GUIFields::Float("Radius", &GUIAddonMenu::snapRadius, 0.5f, 0.1f, 10000.0f, "%.1f");
+        }
+    }
 
     auto *selected = Components::get()->Render()->getSelectedObject();
     bool hasSelected = selected != nullptr;
@@ -570,13 +634,16 @@ void GUIAddonMenu::MenuSound()
     }
     ImGui::Separator();
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_MUSIC_VOLUME), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragScalar("Music volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
-    if (ImGui::IsItemEdited()) { Components::get()->Sound()->setMusicVolume(static_cast<int>(setup->SOUND_VOLUME_MUSIC)); }
+    GUIFields::Section volume("Volume", kMenuLabelW, kMenuValueW);
+    if (!volume) return;
 
-    ImGui::Image(FileSystemGUI::Icon(IconGUI::SOUND_GLOBAL_CHANNEL_VOLUME), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-    ImGui::DragScalar("Global Channel volume", ImGuiDataType_Float, &setup->SOUND_VOLUME_FX, range_sensibility_volume, &GUIType::Levels::DRAG_VOLUME_MIN, &GUIType::Levels::DRAG_VOLUME_MAX, "%f", 1.0f);
-    if (ImGui::IsItemEdited()) {
+    MenuFieldIcon(IconGUI::SOUND_MUSIC_VOLUME);
+    if (GUIFields::Float("Music volume", &setup->SOUND_VOLUME_MUSIC, range_sensibility_volume, GUIType::Levels::DRAG_VOLUME_MIN, GUIType::Levels::DRAG_VOLUME_MAX, "%f")) {
+        Components::get()->Sound()->setMusicVolume(static_cast<int>(setup->SOUND_VOLUME_MUSIC));
+    }
+
+    MenuFieldIcon(IconGUI::SOUND_GLOBAL_CHANNEL_VOLUME);
+    if (GUIFields::Float("Global Channel volume", &setup->SOUND_VOLUME_FX, range_sensibility_volume, GUIType::Levels::DRAG_VOLUME_MIN, GUIType::Levels::DRAG_VOLUME_MAX, "%f")) {
         Components::get()->Sound()->setSoundsVolume(static_cast<int>(setup->SOUND_VOLUME_FX));
     }
 }
@@ -593,6 +660,16 @@ void GUIAddonMenu::MenuLogging()
     ImGui::MenuItem("Verbose (per-object)", nullptr, &setup->ENABLE_LOGGING_VERBOSE);
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Observer AI", nullptr, &setup->OBSERVER_AI_ENABLED);
+    ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_OUTPUT_STD), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
+    bool profilerOn = Profiler::isMeasuring();
+    if (ImGui::MenuItem("Profiler measurements", nullptr, &profilerOn)) {
+        Profiler::setMeasuring(profilerOn);
+        if (!profilerOn) {   // sin medidas base tampoco tiene sentido el detalle por script ni los tiempos de GPU
+            Profiler::get()->setScriptDetailEnabled(false);
+            Profiler::get()->setGpuTimingEnabled(false);
+        }
+    }
+    if (ImGui::IsItemHovered()) ImGui::SetTooltip("Off = no time measurements (frame, components, loop sections, scripts, GPU). Same as --no-profiler.");
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LOGGING_COLLIDER), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Log collider collisions", nullptr, &setup->LOG_COLLISION_OBJECTS);
@@ -605,7 +682,12 @@ void GUIAddonMenu::MenuLayout()
     ImGui::SeparatorText("Layout modes");
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEFAULT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Default", "F6")) {
-        Brakeza::get()->GUI()->setLayoutToDefault(Config::ImGUIConfigs::DEFAULT);
+        auto window = Components::get()->Window();
+        if (window->getImGuiConfig() == Config::ImGUIConfigs::DEFAULT) {
+            window->forceReloadLayout();   // already in Default: setImGuiConfig would be a no-op, windows would stay floating
+        } else {
+            window->setImGuiConfig(Config::ImGUIConfigs::DEFAULT);
+        }
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_LAYOUT_DEVS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Coding", "F7")) {
@@ -618,7 +700,8 @@ void GUIAddonMenu::MenuLayout()
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_RESET_CURRENT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     if (ImGui::MenuItem("Reset to default")) {
-        Brakeza::get()->GUI()->setLayoutToDefault(Components::get()->Window()->getImGuiConfig());
+        // reloads the layout .ini (ImGui re-applies the saved DockId of every window) and then resets which windows are open
+        Components::get()->Window()->forceReloadLayout();
     }
     ImGui::Separator();
     ImGui::Image(FileSystemGUI::Icon(IconGUI::LAYOUTS_SAVE_LAYOUT), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
@@ -745,25 +828,29 @@ void GUIAddonMenu::MenuInterface()
     ImGui::MenuItem("Draw Grid", nullptr, &setup->ENABLE_GRID_BACKGROUND);
     if (setup->ENABLE_GRID_BACKGROUND) {
         auto shaderGrid = Components::get()->Render()->getShaders()->shaderOGLGrid;
-        const float sizeMin = 0; const float sizeMax = 100; const float sizeSens = 0.1;
-        const float alphaMin = 0; const float alphaMax = 1; const float alphaSens = 0.01;
-        ImGui::DragScalar("Size grid", ImGuiDataType_Float, &shaderGrid->gridSize, sizeSens, &sizeMin, &sizeMax, "%f", 1.0f);
-        ImGui::DragScalar("Alpha grid", ImGuiDataType_Float, &shaderGrid->opacity, alphaSens, &alphaMin, &alphaMax, "%f", 1.0f);
-        auto p = shaderGrid->color;
-        ImVec4 vecColor = {p.r, p.g, p.b, 1};
-        if (ImGui::ColorEdit4("Grid Color##", reinterpret_cast<float *>(&vecColor), ImGuiColorEditFlags_NoOptions)) {
-            shaderGrid->color = {vecColor.x, vecColor.y, vecColor.z};
+        {
+            GUIFields::Section grid("Grid", kMenuLabelW, kMenuValueW);
+            if (grid) {
+                GUIFields::Float("Size grid", &shaderGrid->gridSize, 0.1f, 0.0f, 100.0f, "%f");
+                GUIFields::Float("Alpha grid", &shaderGrid->opacity, 0.01f, 0.0f, 1.0f, "%f");
+                auto p = shaderGrid->color;
+                float rgb[3] = {p.r, p.g, p.b};
+                if (GUIFields::Color3("Grid Color", rgb)) {
+                    shaderGrid->color = {rgb[0], rgb[1], rgb[2]};
+                }
+                GUIFields::Float("Fade start", &shaderGrid->fadeStart, 1.0f, 0.0f, 500.0f, "%.0f");
+                GUIFields::Float("Fade end",   &shaderGrid->fadeEnd,   1.0f, 0.0f, 500.0f, "%.0f");
+            }
         }
-        const float fadeMin = 0.0f; const float fadeMax = 500.0f; const float fadeSens = 1.0f;
-        ImGui::DragScalar("Fade start", ImGuiDataType_Float, &shaderGrid->fadeStart, fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
-        ImGui::DragScalar("Fade end",   ImGuiDataType_Float, &shaderGrid->fadeEnd,   fadeSens, &fadeMin, &fadeMax, "%.0f", 1.0f);
         ImGui::Separator();
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_OBJECT_AXIS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Draw axis objects", nullptr, &setup->RENDER_OBJECTS_AXIS);
     if (setup->RENDER_OBJECTS_AXIS) {
-        const float sizeAxisMin = 0; const float sizeAxisMax = 1; const float sizeAxisSens = 0.01;
-        ImGui::DragScalar("Size Axis", ImGuiDataType_Float, &setup->OBJECT_AXIS_SIZE, sizeAxisSens, &sizeAxisMin, &sizeAxisMax, "%f", 1.0f);
+        GUIFields::Section axis("Axis", kMenuLabelW, kMenuValueW);
+        if (axis) {
+            GUIFields::Float("Size Axis", &setup->OBJECT_AXIS_SIZE, 0.01f, 0.0f, 1.0f, "%f");
+        }
     }
     ImGui::Image(FileSystemGUI::Icon(IconGUI::VIDEO_FPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
     ImGui::MenuItem("Show FPS", nullptr, &setup->DRAW_FPS_RENDER);
@@ -805,12 +892,17 @@ void GUIAddonMenu::MenuInterface()
     }
     if (setup->ENABLE_TRIANGLE_MODE_DEPTHMAP) {
         auto s = Components::get()->Render()->getShaderOGLDepthMap();
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f);
-        ImGui::Image(FileSystemGUI::Icon(IconGUI::WIN_DEPTH_LIGHTS_MAPS), GUIType::Sizes::ICON_SIZE_MENUS); ImGui::SameLine();
-        ImGui::DragFloat("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f);
+        {
+            GUIFields::Section depth("Depth map", kMenuLabelW, kMenuValueW);
+            if (depth) {
+                MenuFieldIcon(IconGUI::WIN_DEPTH_LIGHTS_MAPS);
+                GUIFields::Float("Intensity DepthMap", &s->intensity, 0.01f, 0.0f, 10.0f, "%.3f");
+                MenuFieldIcon(IconGUI::WIN_DEPTH_LIGHTS_MAPS);
+                GUIFields::Float("Far Plane", &s->farPlane, 0.01f, 0.0f, 100.0f, "%.3f");
+                MenuFieldIcon(IconGUI::WIN_DEPTH_LIGHTS_MAPS);
+                GUIFields::Float("Near Plane", &s->nearPlane, 0.01f, 0.0f, 100.0f, "%.3f");
+            }
+        }
         ImGui::Separator();
     }
 

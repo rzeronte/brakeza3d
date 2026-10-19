@@ -181,6 +181,7 @@ void GUIManager::RegisterMenu()
     menus = {
         {"Brakeza3D",       IconGUI::MNU_BRAKEZA,           [&] { GUIAddonMenu::MenuBrakeza3D(); }},
         {"File",            IconGUI::FOLDER,                [&] { GUIAddonMenu::MenuFile(this); }},
+        {"Edit",            IconGUI::SCRIPT_EDIT,           [&] { GUIAddonMenu::MenuEdit(); }},
         {"Script Controls", IconGUI::MNU_SCRIPT_CONTROLS,   [&] { GUIAddonMenu::MenuScriptControls(); }},
         {"Add Object",      IconGUI::MNU_ADD_OBJECT,        [&] { GUIAddonMenu::MenuAddObject(); }},
         {"Video",           IconGUI::MNU_VIDEO,             [&] { GUIAddonMenu::MenuVideo(); }},

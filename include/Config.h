@@ -126,6 +126,8 @@ public:
     float STATUS_BAR_HEIGHT = 29.0f;
     float TOOL_BAR_HEIGHT = 40.0f;
     bool ENABLE_GRID_BACKGROUND = true;
+    // Pasos que recuerda el undo/redo del editor (menú Edit). Se limita a [1, 1000]
+    int UNDO_MAX_STEPS = 100;
 
     // Render options
     bool LIMIT_FRAMERATE = false;

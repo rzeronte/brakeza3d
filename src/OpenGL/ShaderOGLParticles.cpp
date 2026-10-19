@@ -37,10 +37,16 @@ void ShaderOGLParticles::render(
     GLuint particles_color_buffer,
     GLuint particles_rotation_buffer,
     GLuint textureID,
-    int particlesCount
+    int particlesCount,
+    bool depthTest
 )
 {
-    Components::get()->Render()->ChangeOpenGLFramebuffer(Components::get()->Window()->getForegroundFramebuffer());
+    // depthTest: el sceneFBO comparte el depth del G-Buffer, así la geometría opaca oculta las partículas.
+    // El foregroundFBO no tiene profundidad, por eso allí siempre quedan por encima de todo.
+    auto* window = Components::get()->Window();
+    Components::get()->Render()->ChangeOpenGLFramebuffer(
+        depthTest ? window->getSceneFramebuffer() : window->getForegroundFramebuffer()
+    );
 
     Components::get()->Render()->ChangeOpenGLProgram(programID);
     glBindVertexArray(VertexArrayID);
@@ -51,6 +57,10 @@ void ShaderOGLParticles::render(
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (depthTest) {
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);      // prueba contra la escena pero no escribe: las partículas no se tapan entre sí
+    }
 
     Components::get()->Render()->ChangeOpenGLProgram(programID);
 
@@ -115,6 +125,7 @@ void ShaderOGLParticles::render(
     glDisableVertexAttribArray(3);
 
     glDisable(GL_BLEND);
+    if (depthTest) glDepthMask(GL_TRUE);
 
     Components::get()->Render()->ChangeOpenGLFramebuffer(0);
 }

@@ -27,7 +27,13 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
     cJSON_AddBoolToObject(root, "renderDefaultPipeline", mesh->isRenderPipelineDefault());
     cJSON_AddBoolToObject(root, "frustumCullSubmeshes", mesh->isFrustumCullSubmeshes());
     cJSON_AddBoolToObject(root, "emissionEnabled", mesh->isEmissionEnabled());
+    cJSON_AddBoolToObject(root, "mipmaps", mesh->isMipmaps());
     cJSON_AddNumberToObject(root, "emissionIntensity", mesh->getEmissionIntensity());
+    if (mesh->hasEmissiveMaterials()) {
+        cJSON *mats = cJSON_CreateArray();
+        for (int idx : mesh->getEmissiveMaterials()) cJSON_AddItemToArray(mats, cJSON_CreateNumber(idx));
+        cJSON_AddItemToObject(root, "emissiveMaterials", mats);
+    }
 
     // Shaders
     cJSON *effectsArrayJSON = cJSON_CreateArray();
@@ -62,11 +68,18 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     if (renderDefaultItem) mesh->setRenderPipelineDefault(renderDefaultItem->valueint);
     auto *frustumCullItem = cJSON_GetObjectItemCaseSensitive(json, "frustumCullSubmeshes");
     if (frustumCullItem) mesh->setFrustumCullSubmeshes(frustumCullItem->valueint);
+    auto *mipmapsItem = cJSON_GetObjectItemCaseSensitive(json, "mipmaps");      // opcional: escenas antiguas = false
+    if (mipmapsItem) mesh->setMipmaps(cJSON_IsTrue(mipmapsItem));
     // Opcionales: escenas anteriores a la emisión no los tienen -> se quedan los defaults (false / 1.0)
     auto *emissionEnabledItem = cJSON_GetObjectItemCaseSensitive(json, "emissionEnabled");
     if (emissionEnabledItem) mesh->setEmissionEnabled(cJSON_IsTrue(emissionEnabledItem));
     auto *emissionIntensityItem = cJSON_GetObjectItemCaseSensitive(json, "emissionIntensity");
     if (emissionIntensityItem) mesh->setEmissionIntensity((float) emissionIntensityItem->valuedouble);
+    auto *emissiveMatsItem = cJSON_GetObjectItemCaseSensitive(json, "emissiveMaterials");   // opcional: ausente = todo el mesh
+    if (cJSON_IsArray(emissiveMatsItem)) {
+        cJSON *it = nullptr;
+        cJSON_ArrayForEach(it, emissiveMatsItem) mesh->setMaterialEmissive((int) it->valuedouble, true);
+    }
 }
 
 Object3D* Mesh3DSerializer::ObjectByJson(cJSON *json)
@@ -228,6 +241,7 @@ Mesh3D* Mesh3DSerializer::CloneMesh3D(Mesh3D* src)
     dst->setFrustumCullSubmeshes(src->isFrustumCullSubmeshes());
     dst->setEmissionEnabled(src->isEmissionEnabled());
     dst->setEmissionIntensity(src->getEmissionIntensity());
+    for (int idx : src->getEmissiveMaterials()) dst->setMaterialEmissive(idx, true);
 
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
         std::make_shared<ThreadJobLoadMesh3D>(dst, json));

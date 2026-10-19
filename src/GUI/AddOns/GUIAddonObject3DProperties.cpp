@@ -8,6 +8,7 @@
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../../include/Render/Drawable.h"
+#include "../../../include/Render/UndoManager.h"
 
 void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
 {
@@ -31,11 +32,12 @@ void GUIAddonObject3DProperties::DrawWinObjectProps(GUIManager *gui)
 
     if (o->isRemoved()) return;
 
+    UndoManager::get().observe(o, UndoManager::SRC_FIELD, UndoManager::get().fieldEditing());
     o->DrawPropertiesGUI();
 
     ImGui::Separator();
 
     GUI::ImageButtonNormalConfirm(IconGUI::OBJECT_REMOVE_SCENE, "Remove", "Removing scene object...", "Are you sure to remove object from scene?", [&] () {
-        o->setRemoved(true);
+        UndoManager::get().removeObjects({o});
     });
 }

@@ -17,6 +17,7 @@ class Image {
     bool loaded = false;
     float alpha = 1;
     GLuint textureId = 0;
+    bool mipmaps = false;               // mipmaps + filtro trilineal (solo texturas de modelos 3D que lo piden)
     FilePath::ImageFile fileName;
     SDL_Surface *surface = nullptr;
     SDL_Texture *texture = nullptr;
@@ -50,6 +51,10 @@ public:
     void fillCircleGrad(int cx, int cy, int radius, uint8_t r, uint8_t g, uint8_t b, uint8_t a, float falloffRatio, float power);
     void upload();
     void setClampToEdge();
+    // Activa/desactiva mipmaps. Se recuerda aunque la textura GL aun no exista (carga asincrona):
+    // MakeAutoOGLImage() lo aplica al crearla. Solo toca GL si se llama desde el hilo principal.
+    void setMipmaps(bool value);
+    [[nodiscard]] bool isMipmaps() const                        { return mipmaps; }
 
     [[nodiscard]] float getAreaForVertices(const Vertex3D &A, const Vertex3D &B, const Vertex3D &C) const;
 
@@ -65,7 +70,8 @@ public:
     [[nodiscard]] const FilePath::ImageFile &getFileName() const { return fileName; }
     [[nodiscard]] Color getPixelColor(int x, int y) const;
 
-    static GLuint MakeOGLImage(const SDL_Surface *surfaceTTF);
+    static GLuint MakeOGLImage(const SDL_Surface *surfaceTTF, bool mipmaps = false);
+    static void ApplyMipmapState(GLuint texId, bool enabled);
 };
 
 #endif //BRAKEDA3D_IMAGE_H

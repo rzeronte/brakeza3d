@@ -203,7 +203,7 @@ end
 function drawHUD()
     local sw = win:getWidth();  if sw == 0 then sw = 1280 end
     local sh = win:getHeight(); if sh == 0 then sh = 720  end
-    local kx = sw - KW - 220
+    local kx = 14          -- bottom-left, under the stats: the right side belongs to the demo browser's info panel
     local ky = sh - KH - 16
 
     if showHUD then

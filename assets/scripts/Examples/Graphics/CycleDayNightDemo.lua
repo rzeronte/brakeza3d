@@ -24,9 +24,29 @@ function onStart()
     orig_direction = render:getGlobalIlluminationDirection()
 end
 
+-- Keys: 1 / 2 / 3 switch the point light and the two spotlights on / off (setEnabled), Space pauses the cycle
+local LIGHT_KEYS = { ["1"] = "light01", ["2"] = "spotlight01", ["3"] = "spotlight02" }
+local paused = false
+
+local function handleKeys()
+    local input = Components:Input()
+    for key, name in pairs(LIGHT_KEYS) do
+        if input:isCharFirstEventDown(key) then
+            local light = Brakeza:getObjectByName(name)
+            if light ~= nil and not light:isRemoved() then
+                light:setEnabled(not light:isEnabled())
+                print(string.format("[DayNight] %s %s", name, light:isEnabled() and "ON" or "OFF"))
+            end
+        end
+    end
+    if input:isCharFirstEventDown("Space") then paused = not paused end
+end
+
 function onUpdate()
 
     local deltaTime = Brakeza:getDeltaTime()
+    handleKeys()
+    if paused then deltaTime = 0 end
 
     render = Components:Render()
 

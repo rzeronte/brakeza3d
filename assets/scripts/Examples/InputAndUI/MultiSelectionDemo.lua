@@ -159,6 +159,11 @@ end
 -- ──────────────────────────────────────────────────────────────────────────────
 
 function handleInput()
+    -- the big floor is only scenery: a click on it or a rectangle that overlaps it must not select it
+    for _, o in ipairs(render:getSelectedObjects()) do
+        if o:getName() == "Ground" then render:removeFromSelection(o) end
+    end
+
     local selected = render:getSelectedObjects()
     local count    = #selected
 
@@ -232,7 +237,7 @@ function drawHUD()
     local y = PAD_Y
 
     -- Title
-    tw:writeTextTTFAutoSize(x, y, "[ Multi-Selection Demo ]", Color.new(1, 0.8, 0, 1), 1.1)
+    tw:writeTextTTFAutoSize(x, y, "[ Multi-Selection Demo ]", Color.new(1, 0.8, 0, 1), 0.85)
     y = y + LINE_H + 6
 
     -- Mode badge
@@ -250,7 +255,7 @@ function drawHUD()
 
     tw:writeTextTTFAutoSize(x, y,
         "Mode: " .. modeLabel .. "   |   Selected: " .. count,
-        modeColor, 1.0)
+        modeColor, 0.7)
     y = y + LINE_H + 4
 
     -- Single-object detail
@@ -259,18 +264,18 @@ function drawHUD()
         if single then
             local pos = single:getPosition()
             tw:writeTextTTFAutoSize(x, y,
-                "Name: " .. single:getName(), Color.new(0.9, 0.9, 0.9, 1), 1.0)
+                "Name: " .. single:getName(), Color.new(0.9, 0.9, 0.9, 1), 0.7)
             y = y + LINE_H
             tw:writeTextTTFAutoSize(x, y,
                 string.format("Pos:  (%.3f,  %.3f,  %.3f)", pos.x, pos.y, pos.z),
-                Color.new(0.7, 0.7, 0.7, 1), 1.0)
+                Color.new(0.7, 0.7, 0.7, 1), 0.7)
             y = y + LINE_H + 4
         end
     end
 
     -- Object list (multi-select)
     if count > 1 then
-        tw:writeTextTTFAutoSize(x, y, "Objects in group:", Color.new(0.8, 0.8, 0.8, 1), 1.0)
+        tw:writeTextTTFAutoSize(x, y, "Objects in group:", Color.new(0.8, 0.8, 0.8, 1), 0.7)
         y = y + LINE_H
 
         local limit   = math.min(count, MAX_LIST)
@@ -283,44 +288,46 @@ function drawHUD()
             tw:writeTextTTFAutoSize(x + 10, y,
                 string.format("%2d.  %-28s  (%.1f, %.1f, %.1f)",
                     i, obj:getName(), pos.x, pos.y, pos.z),
-                i % 2 == 0 and colPos or colObj, 0.9)
+                i % 2 == 0 and colPos or colObj, 0.65)
             y = y + LINE_H
         end
 
         if count > MAX_LIST then
             tw:writeTextTTFAutoSize(x + 10, y,
                 "... and " .. (count - MAX_LIST) .. " more",
-                Color.new(0.5, 0.5, 0.5, 1), 0.9)
+                Color.new(0.5, 0.5, 0.5, 1), 0.65)
             y = y + LINE_H
         end
         y = y + 4
     end
 
-    -- ── Controls legend (right side) ──────────────────────────────────────
-    local winW  = Components:Window():getWidthRender()
-    local lx    = (winW > 0 and winW or 1280) - 700
-    local ly    = PAD_Y
+    -- ── Controls legend: bottom-left, in two columns, clear of the objects (upper half) and of the demo browser's info panel (right) ──
+    local winH  = Components:Window():getHeightRender()
+    local lx    = PAD_X
+    local rx    = PAD_X + 400
+    local ly    = (winH > 0 and winH or 720) - 70 - LINE_H * 10 - 12     -- 70 px: the browser's bottom bar
 
     local cTitle = Color.new(1.0,  0.85, 0.2,  1)
     local cLine  = Color.new(0.75, 0.75, 0.75, 1)
+    local FS     = 0.58
 
-    tw:writeTextTTFAutoSize(lx, ly,                "[ CONTROLS ]",                   cTitle, 1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 1,   "Click          Select single",    cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 2,   "CTRL+Click     Toggle add/remove",cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 3,   "CTRL+Drag      Rectangle select", cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 4,   "W / S          Move +Z / -Z",     cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 5,   "A / D          Move -X / +X",     cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 6,   "Q / Z          Move +Y / -Y",     cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 7,   "X              Remove last",       cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 8,   "R              Clear selection",   cLine,  1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 9,   "P              Print to console",  cLine,  1.0)
+    tw:writeTextTTFAutoSize(lx, ly,                "[ CONTROLS ]",                   cTitle, FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 1,   "Click          Select single",    cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 2,   "CTRL+Click     Toggle add/remove",cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 3,   "CTRL+Drag      Rectangle select", cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 4,   "W / S          Move +Z / -Z",     cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 5,   "A / D          Move -X / +X",     cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 6,   "O / Z          Move +Y / -Y",     cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 7,   "X              Remove last",       cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 8,   "R              Clear selection",   cLine,  FS)
+    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 9,   "P              Print to console",  cLine,  FS)
 
-    -- Qué significa lo que se ve en la escena
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 11,  "[ WHAT YOU SEE ]",                cTitle, 1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 12,  "Orange outline  Selected",        Color.new(1.0, 0.55, 0.1, 1), 1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 13,  "Green ring      Single selection",Color.new(0.3, 1.0, 0.3, 1), 1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 14,  "Blue ring       Part of a group", Color.new(0.25, 0.75, 1.0, 1), 1.0)
-    tw:writeTextTTFAutoSize(lx, ly + LINE_H * 15,  "Yellow          Group centre",    Color.new(1.0, 0.85, 0.2, 1), 1.0)
+    -- What the effects in the scene mean
+    tw:writeTextTTFAutoSize(rx, ly,                "[ WHAT YOU SEE ]",                cTitle, FS)
+    tw:writeTextTTFAutoSize(rx, ly + LINE_H * 1,   "Orange outline  Selected",        Color.new(1.0, 0.55, 0.1, 1), FS)
+    tw:writeTextTTFAutoSize(rx, ly + LINE_H * 2,   "Green ring      Single selection",Color.new(0.3, 1.0, 0.3, 1), FS)
+    tw:writeTextTTFAutoSize(rx, ly + LINE_H * 3,   "Blue ring       Part of a group", Color.new(0.25, 0.75, 1.0, 1), FS)
+    tw:writeTextTTFAutoSize(rx, ly + LINE_H * 4,   "Yellow          Group centre",    Color.new(1.0, 0.85, 0.2, 1), FS)
 end
 
 -- ──────────────────────────────────────────────────────────────────────────────

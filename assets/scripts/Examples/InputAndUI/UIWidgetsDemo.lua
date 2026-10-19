@@ -55,9 +55,9 @@ function onUpdate()
     end
     render:drawWidget("exampleArrayWidget", data)
 
-    -- 3) Single card at an explicit pixel position (top-right area of the window)
+    -- 3) Single card at an explicit pixel position: the third piece of the group centred in the window
     local win = Components:Window()
-    render:drawWidgetAtPos("exampleCard", win:getWidth() - win:getWidth() * 0.1, 20, {
+    render:drawWidgetAtPos("exampleCard", win:getWidth() * 0.5875, win:getHeight() * 0.473, {
         avatar   = { path = ICON_APP },
         name     = { text = "Standalone" },
         subtitle = { text = "drawWidgetAtPos" },

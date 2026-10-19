@@ -19,7 +19,10 @@
 
 #include <cfloat>
 #include <cstdarg>
+#include <initializer_list>
+#include <vector>
 #include <imgui.h>
+#include "../../Render/UndoManager.h"
 
 namespace GUIFields
 {
@@ -27,7 +30,9 @@ namespace GUIFields
 
     // Título de sección + tabla de 2 columnas. El título identifica la tabla y abre un ámbito de IDs,
     // así que dos secciones pueden repetir etiquetas ("Size", "Radius"...) sin colisionar.
-    inline bool BeginSection(const char* title, float labelWidth = kLabelWidth)
+    // valueWidth > 0 fija el ancho de la columna del control: necesario en menús/popups, que se
+    // autodimensionan y colapsarían una columna que se estira. Con 0 (por defecto) el control llena el resto.
+    inline bool BeginSection(const char* title, float labelWidth = kLabelWidth, float valueWidth = 0.0f)
     {
         ImGui::SeparatorText(title);
         ImGui::PushID(title);
@@ -36,8 +41,18 @@ namespace GUIFields
             return false;
         }
         ImGui::TableSetupColumn("label", ImGuiTableColumnFlags_WidthFixed, labelWidth);
-        ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_WidthStretch);
+        if (valueWidth > 0.0f) ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_WidthFixed, valueWidth);
+        else                   ImGui::TableSetupColumn("value", ImGuiTableColumnFlags_WidthStretch);
         return true;
+    }
+
+    // Icono opcional delante de la etiqueta de la PRÓXIMA fila (estilo de los menús del editor)
+    inline ImTextureID g_nextRowIcon = nullptr;
+    inline ImVec2      g_nextRowIconSize = ImVec2(0, 0);
+    inline void NextRowIcon(ImTextureID icon, ImVec2 size)
+    {
+        g_nextRowIcon = icon;
+        g_nextRowIconSize = size;
     }
 
     // Cada fila abre su ámbito de IDs; se cierra sola al empezar la siguiente fila o al terminar la sección
@@ -47,6 +62,7 @@ namespace GUIFields
     inline void EndRow()
     {
         if (g_rowOpen) {
+            UndoManager::get().onFieldItem();   // el último widget es el campo recién dibujado
             ImGui::PopID();
             g_rowOpen = false;
         }
@@ -66,6 +82,11 @@ namespace GUIFields
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::AlignTextToFramePadding();
+        if (g_nextRowIcon != nullptr) {
+            ImGui::Image(g_nextRowIcon, g_nextRowIconSize);
+            ImGui::SameLine();
+            g_nextRowIcon = nullptr;
+        }
         ImGui::TextUnformatted(label);
         if (help != nullptr && ImGui::IsItemHovered()) ImGui::SetTooltip("%s", help);
         ImGui::TableSetColumnIndex(1);
@@ -137,6 +158,34 @@ namespace GUIFields
         return r;
     }
 
+    // Varios floats sueltos (no contiguos en memoria) en una misma fila, repartiendo el ancho a partes iguales.
+    // Devuelve una máscara de bits: bit i = el campo i se modificó este frame.
+    inline int FloatN(const char* label, std::initializer_list<float*> values, float speed, float vmin, float vmax,
+                      const char* fmt = "%.3f", const char* help = nullptr)
+    {
+        Row(label, help);
+        const int n = static_cast<int>(values.size());
+        const float spacing = ImGui::GetStyle().ItemInnerSpacing.x;
+        const float itemW = (ImGui::GetContentRegionAvail().x - spacing * static_cast<float>(n - 1)) / static_cast<float>(n);
+        int mask = 0, i = 0;
+        for (float* v : values) {
+            if (i > 0) ImGui::SameLine(0.0f, spacing);
+            ImGui::PushID(i);
+            ImGui::SetNextItemWidth(itemW);
+            if (ImGui::DragFloat("##v", v, speed, vmin, vmax, fmt)) mask |= (1 << i);
+            ImGui::PopID();
+            i++;
+        }
+        EndRow();
+        return mask;
+    }
+
+    // Float con límites opcionales (min == max == 0 -> sin límites, como DragFloat)
+    inline bool FloatFree(const char* label, float* v, float speed, const char* fmt = "%.3f", const char* help = nullptr)
+    {
+        return Float(label, v, speed, 0.0f, 0.0f, fmt, help);
+    }
+
     // Texto de solo lectura en la columna del valor
     inline void Text(const char* label, const char* fmt, ...) IM_FMTARGS(2);
     inline void Text(const char* label, const char* fmt, ...)
@@ -182,6 +231,51 @@ namespace GUIFields
         EndRow();
         return r;
     }
+
+    // Color RGBA. Edita un array de 4 floats.
+    inline bool Color4(const char* label, float* rgba, const char* help = nullptr)
+    {
+        Row(label, help);
+        const bool r = ImGui::ColorEdit4("##v", rgba, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoOptions);
+        EndRow();
+        return r;
+    }
+
+    // Texto editable sobre un buffer de char propio
+    inline bool String(const char* label, char* buf, size_t bufSize, const char* help = nullptr,
+                       ImGuiInputTextFlags flags = 0)
+    {
+        Row(label, help);
+        const bool r = ImGui::InputText("##v", buf, bufSize, flags);
+        EndRow();
+        return r;
+    }
+
+    // Lista de nombres dinámica (p. ej. construida cada frame). El índice se pasa y se devuelve como int.
+    inline bool ComboItems(const char* label, int* index, const std::vector<const char*>& names,
+                           const char* help = nullptr)
+    {
+        Row(label, help);
+        const bool r = ImGui::Combo("##v", index, names.data(), static_cast<int>(names.size()));
+        EndRow();
+        return r;
+    }
+
+    // Sección con ámbito (RAII): cierra la tabla sola al salir del bloque, aunque haya return/continue.
+    //   GUIFields::Section s("EMISSION");
+    //   if (s) { GUIFields::Float(...); }
+    class Section
+    {
+    public:
+        explicit Section(const char* title, float labelWidth = kLabelWidth, float valueWidth = 0.0f) : open(BeginSection(title, labelWidth, valueWidth)) {}
+        ~Section() { if (open) EndSection(); }
+        Section(const Section&) = delete;
+        Section& operator=(const Section&) = delete;
+        explicit operator bool() const { return open; }
+
+    private:
+        bool open;
+    };
 }
 
 #endif //BRAKEZA3D_GUIFIELDS_H

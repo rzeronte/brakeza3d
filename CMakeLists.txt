@@ -28,6 +28,14 @@ else()
     set(LUA_LIBRARY "lua5.2")
 endif()
 
+# LuaJIT (rama luajit): estatica, compilada con LUAJIT_ENABLE_LUA52COMPAT; cabeceras y .a en third_party/luajit.
+# -DUSE_LUAJIT=OFF vuelve a Lua 5.2 del sistema.
+option(USE_LUAJIT "Use the bundled LuaJIT instead of system Lua 5.2" ON)
+if(WIN32 AND USE_LUAJIT AND EXISTS "${CMAKE_SOURCE_DIR}/third_party/luajit/lib/libluajit.a")
+    set(LUA_LIBRARY "${CMAKE_SOURCE_DIR}/third_party/luajit/lib/libluajit.a")
+    set(LUAJIT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/third_party/luajit/include")
+endif()
+
 # OpenGL
 if(WIN32)
     set(OPENGL_LIBRARY "opengl32")
@@ -107,6 +115,7 @@ add_executable(Brakeza3D
         src/Render/ColliderMesh3DAnimation.cpp include/Render/AssimpAnimationService.h
         src/Render/CollisionInfo.cpp include/Render/CollisionInfo.h
         src/Render/Mesh3DShaderChain.cpp include/Render/Mesh3DShaderChain.h
+        src/Render/UndoManager.cpp include/Render/UndoManager.h
 
         # Components
         src/Components/Component.cpp include/Components/Component.h
@@ -183,6 +192,7 @@ add_executable(Brakeza3D
         src/Render/Grid3D.cpp include/Render/Grid3D.h
         src/Render/Octree.cpp include/Render/Octree.h
         src/Misc/SpatialIndex.cpp include/Misc/SpatialIndex.h
+        src/Misc/CrowdSolver.cpp include/Misc/CrowdSolver.h
         src/Misc/SoundPackage.cpp include/Misc/SoundPackage.h
         src/Misc/TextureAtlas.cpp include/Misc/TextureAtlas.h
         src/Render/GlyphAtlas.cpp include/Render/GlyphAtlas.h
@@ -334,6 +344,9 @@ add_executable(Brakeza3D
         src/GUI/Editable/EditableOpenShaderFile.cpp
         include/GUI/AddOns/GUIAddonDocumentation.h
         src/LUA/ObjectFactory.cpp
+        src/LUA/BrakezaLuaBridge.cpp src/LUA/BrakezaLuaBridge_Basics.cpp src/LUA/BrakezaLuaBridge_Components.cpp
+        src/LUA/BrakezaLuaBridge_Brakeza.cpp src/LUA/BrakezaLuaBridge_Meshes.cpp src/LUA/BrakezaLuaBridge_Lights.cpp
+        src/LUA/BrakezaLuaBridge_Shaders.cpp src/LUA/BrakezaLuaBridge_Tables.cpp
         include/Threads/ThreadJobMakeRigidBody.h
         src/Loaders/SceneChecker.cpp include/Loaders/SceneChecker.h
         include/OpenGL/ShaderPreProcessor.h
@@ -421,6 +434,12 @@ target_include_directories(Brakeza3D PRIVATE
         ${IMGUI_NODE_EDITOR_INCLUDE_DIRS}
         ${CMAKE_SOURCE_DIR}/third_party/miniaudio
 )
+
+if(LUAJIT_INCLUDE_DIR)
+    target_include_directories(Brakeza3D BEFORE PRIVATE ${LUAJIT_INCLUDE_DIR} ${LUAJIT_INCLUDE_DIR}/lua5.2)
+    # sol.hpp incluye <lua5.2/lua.h>: las cabeceras de LuaJIT viven en include/lua5.2 para que ese include las encuentre
+    target_compile_definitions(Brakeza3D PRIVATE SOL_LUAJIT=1)
+endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_compile_options(Brakeza3D PRIVATE -O0 -Wall -g)

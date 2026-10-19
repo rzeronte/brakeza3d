@@ -1073,6 +1073,32 @@ void Mesh3D::setRenderPipelineDefault(bool value)
     renderDefaultPipeline = value;
 }
 
+void Mesh3D::setMipmaps(bool value)
+{
+    mipmaps = value;
+    for (auto *t : modelTextures) if (t) t->setMipmaps(value);
+}
+
+int Mesh3D::setMaterialsEmissiveByTexture(const std::string &pattern, bool value)
+{
+    auto lower = [](std::string s) { std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return std::tolower(c); }); return s; };
+    const std::string needle = lower(pattern);
+    int count = 0;
+    for (size_t i = 0; i < modelTextures.size(); i++) {
+        if (!modelTextures[i]) continue;
+        if (lower(std::string(modelTextures[i]->getFileName().c_str())).find(needle) == std::string::npos) continue;
+        setMaterialEmissive((int) i, value);
+        count++;
+    }
+    return count;
+}
+
+void Mesh3D::applyMipmapsToTextures()
+{
+    if (!mipmaps) return;       // apagado: no se toca (la textura puede ser compartida con otro mesh que si lo pide)
+    for (auto *t : modelTextures) if (t) t->setMipmaps(true);
+}
+
 void Mesh3D::InitializeShaderChain(int screenWidth, int screenHeight)
 {
     if (shaderChain) {

@@ -45,6 +45,7 @@ public:
         }
 
         mesh->FillOGLBuffers();
+        mesh->applyMipmapsToTextures();
 
         Mesh3DSerializer::ApplyCustomShadersMainThread(mesh);
         Mesh3DSerializer::ApplyCollider(mesh, json);

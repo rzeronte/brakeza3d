@@ -9,7 +9,18 @@
     "SwarmBoidsTest",
     "RainCubesTest",
     "ProjectileTest",
+    "13_Animation",
+    "15_Audio",
+    "DemoFirstPerson",
     "DemoThirdPerson",
+    "DemoPlatformsScene",
+    "Sound3DTest",
+    "VideoPlayerTest",
+    "UITest",
+    "TextRenderingTest",
+    "MouseCursorTest",
+    "MultiSelectionTest",
+    "PerformanceTest",
     "TwinStickShooter"
   ],
   "demos": [
@@ -223,6 +234,7 @@
         "1 idle   2 walk   3 run   4 jump   5 crouch walk",
         "P / O   animation speed",
         "L   loop on / off",
+        "B   show / hide the skeleton (bones)",
         "W A S D   walk / idle"
       ],
       "learn": [
@@ -293,7 +305,10 @@
       "title": "Lights and day/night cycle",
       "category": "Graphics",
       "summary": "Point and spot lights plus a global (directional) light that a scene script rotates to simulate a 30 s day/night cycle, changing ambient and diffuse colours over time.",
-      "controls": [],
+      "controls": [
+        "1 / 2 / 3   point light / spotlight 1 / spotlight 2 on and off",
+        "Space   pause / resume the day cycle"
+      ],
       "learn": [
         "Scene script: CycleDayNightDemo.lua (onStart/onUpdate)",
         "render:getGlobalIlluminationDirection / setGlobalIllumination*",
@@ -405,7 +420,8 @@
         "Mouse   hold the right button and move to aim",
         "Q / E   less / more power (or the mouse wheel)",
         "Z / X   smaller / bigger projectile",
-        "F or left click   fire"
+        "F or left click   fire",
+        "P   physics debug view on / off (colliders and contact points)"
       ],
       "learn": [
         "Scene script: ProjectileLauncher.lua",

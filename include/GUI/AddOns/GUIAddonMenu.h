@@ -19,6 +19,7 @@ public:
 
     static void Draw(GUIManager *gui);
     static void MenuBrakeza3D();
+    static void MenuEdit();
     static void MenuScriptControls();
     static void MenuAddObject();
     static void MenuVideo();

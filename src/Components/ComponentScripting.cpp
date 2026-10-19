@@ -2,6 +2,7 @@
 // Created by Eduardo on 30/01/2025.
 //
 
+#include "../../include/Render/UndoManager.h"
 #include "../../include/Components/ComponentScripting.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
@@ -61,6 +62,11 @@ void ComponentScripting::onUpdate()
 
     if (stateScripts == Config::LUA_PLAY) {
         RunScripts();
+        // Tras todos los scripts: separa los agentes (CrowdSolver) con las posiciones que acaban de fijar
+        auto &measures = Profiler::get()->getComponentMeasures();
+        Profiler::StartMeasure(measures, "CrowdStep");
+        Brakeza::get()->getCrowd().step(Brakeza::get()->getScriptDeltaTime());
+        Profiler::EndMeasure(measures, "CrowdStep");
     }
 }
 
@@ -83,6 +89,7 @@ void ComponentScripting::onSDLPollEvent(SDL_Event *event, bool &finish)
 void ComponentScripting::PlayLUAScripts()
 {
     LOG_MESSAGE("[Scripting] Start scripts execution...");
+    UndoManager::get().clear();   // los scripts mueven objetos: lo anterior ya no vale
 
     Components::get()->Camera()->setEnabled(false);
     Components::get()->Scripting()->setEnabled(true);
@@ -332,6 +339,14 @@ void ComponentScripting::InitLUATypes()
     LOG_MESSAGE("[Scripting] Init LUA Global types");
 
     lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::table, sol::lib::string, sol::lib::package, sol::lib::io);
+#if defined(SOL_LUAJIT)
+    // LuaJIT: jit.* (opt, profile: muestreo de scripts), ffi y bit
+    lua.open_libraries(sol::lib::jit, sol::lib::ffi, sol::lib::bit32);
+    // Con los limites por defecto (maxtrace=1000, maxmcode=512 KB) el codigo de las IAs llena la cache de trazas, LuaJIT la
+    // vacia y vuelve a compilar una y otra vez: medido en la batalla 100v100, ~11 % del frame compilando; con estos limites 4 %
+    // y el frame baja de ~46 a ~40 ms (2026-10-14).
+    lua.script("jit.opt.start('maxtrace=4000', 'maxrecord=8000', 'maxmcode=8192', 'sizemcode=128', 'maxside=400', 'maxsnap=2000')");
+#endif
     lua["package"]["path"] = "../assets/scripts/?.lua;../assets/scripts/?/init.lua";
 
     LUAIntegration(lua);

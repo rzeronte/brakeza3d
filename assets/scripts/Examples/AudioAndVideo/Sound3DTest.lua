@@ -9,8 +9,12 @@
 --   1 - 4                silenciar / activar cada fuente
 --   M                    silenciar / activar todo el ambiente
 --   P                    paneo izquierda/derecha on / off
+--   TAB                  elegir la fuente a ajustar (marcada con >)
+--   Z / X                radio interior  - / +  (mantener pulsado)
+--   C / V                radio exterior  - / +
 --   R                    mostrar / ocultar los anillos (verde = volumen máximo, naranja = silencio)
 --   H                    mostrar / ocultar el panel
+--   T                    cámara automática: da la vuelta a las fuentes acercándose y alejándose, mirando siempre al centro
 --
 -- Cómo se usa Sound3D desde Lua:
 --   local s = ObjectFactory.Sound3D(fichero, posicion, radioInterior, radioExterior, volumen)
@@ -45,7 +49,9 @@ local SOURCES = {
 }
 
 local S = {
+    sel = 4,
     t = 0.0, muted = false, panning = true, rings = true, showHUD = true,
+    tourCam = false, tourT = 0.0,
     created = {},      -- [i] = { snd = Sound3D, marker = Mesh3D|nil, on = bool }
 }
 
@@ -104,7 +110,15 @@ function onStart()
     sound  = Components:Sound()
 
     S.t, S.muted, S.panning, S.rings, S.showHUD = 0.0, false, true, true, true
+    S.tourCam, S.tourT = false, 0.0
     S.created = {}
+    S.sel = 4
+
+    -- suelo claro: con la textura por defecto la escena se veía casi negra
+    pcall(function()
+        local g = Brakeza:getMesh3DByName("Ground")
+        if g ~= nil then g:setDiffuseTexture(0, "../assets/textures/concrete.png") end
+    end)
 
     pcall(function() sound:setAmbienceVolume(100) end)
     pcall(function() sound:setAmbiencePanning(true) end)   -- apagado por defecto en el motor; esta demo lo enciende (exe antiguo: se ignora)
@@ -154,14 +168,51 @@ local function handleInput()
         S.panning = not S.panning
         pcall(function() sound:setAmbiencePanning(S.panning) end)
     end
+    if input:isCharFirstEventDown("TAB") then S.sel = S.sel % #SOURCES + 1 end
+    -- ajustar los radios de la fuente elegida (en vivo: el sonido y los anillos cambian a la vez)
+    local dt = Brakeza:getDeltaTime()
+    local src, c = SOURCES[S.sel], S.created[S.sel]
+    if src ~= nil and c ~= nil and alive(c.snd) then
+        local dIn  = (input:isCharPressed("X") and 1 or 0) - (input:isCharPressed("Z") and 1 or 0)
+        local dOut = (input:isCharPressed("V") and 1 or 0) - (input:isCharPressed("C") and 1 or 0)
+        if dIn ~= 0 then
+            src.inner = math.max(1, math.min(src.outer - 1, src.inner + dIn * 6 * dt))
+            c.snd:setInnerRadius(src.inner)
+        end
+        if dOut ~= 0 then
+            src.outer = math.max(src.inner + 1, math.min(60, src.outer + dOut * 6 * dt))
+            c.snd:setOuterRadius(src.outer)
+        end
+    end
     if input:isCharFirstEventDown("R") then S.rings = not S.rings end
     if input:isCharFirstEventDown("H") then S.showHUD = not S.showHUD end
+    if input:isCharFirstEventDown("T") then S.tourCam = not S.tourCam; S.tourT = 0.0 end
+end
+
+-- Cámara automática: orbita el centro de las fuentes acercándose y alejándose, siempre mirando a él, de modo que las cuatro
+-- fuentes quedan a la vista y el volumen de cada una sube y baja según se acerca la cámara (la oyente)
+local TOUR_SWING  = 25       -- grados a cada lado del eje de partida
+local TOUR_PERIOD = 18.0     -- s por vuelta completa de ida y vuelta
+local function updateTourCamera(dt)
+    S.tourT = S.tourT + dt
+    local k   = S.tourT / TOUR_PERIOD * 2 * math.pi
+    local ang = math.rad(TOUR_SWING) * math.sin(k)                  -- gira a un lado y a otro
+    local rad = 27 - 8 * (0.5 - 0.5 * math.cos(2 * k))              -- 27 -> 19 -> 27: se acerca y se aleja
+    local h   = 15 + 3 * math.sin(k * 0.5 + 1.0)
+    local cx, cy, cz = ORBIT_CENTER.x + math.sin(ang) * rad, h, ORBIT_CENTER.z + math.cos(ang) * rad
+    local dx, dy, dz = ORBIT_CENTER.x - cx, ORBIT_CENTER.y - cy, ORBIT_CENTER.z - cz
+    local yaw   = math.deg(math.atan2(dx, -dz))                     -- yaw 0 mira hacia -Z
+    local pitch = math.deg(math.atan2(-dy, math.sqrt(dx * dx + dz * dz)))   -- positivo = mira hacia abajo
+    local cam = Components:Camera():getCamera()
+    cam:setPosition(Vertex3D.new(cx, cy, cz))
+    cam:setRotationFromEulerAngles(pitch, yaw, 0)
 end
 
 function onUpdate()
     local ok, err = pcall(function()
         input = Components:Input()
         handleInput()
+        if S.tourCam then updateTourCamera(Brakeza:getDeltaTime()) end
 
         -- La fuente que orbita: se mueve el Sound3D y su marcador a la vez
         S.t = S.t + Brakeza:getDeltaTime()
@@ -191,9 +242,8 @@ function postUpdate()
                 local c = S.created[i]
                 if c ~= nil and alive(c.snd) then
                     local alpha = (c.on and not S.muted) and 0.9 or 0.25
-                    render:drawGroundCircle(c.snd, 0.2, 1.0, 0.2, alpha, src.inner, 0.15)
-                    render:drawGroundCircle(c.snd, 1.0, 0.55, 0.1, alpha * 0.6, src.outer,
-                        math.max(0.1, (src.outer - src.inner) * 0.005))
+                    render:drawGroundCircle(c.snd, 0.2, 1.0, 0.2, alpha, src.inner, 0.12)
+                    render:drawGroundCircle(c.snd, 1.0, 0.55, 0.1, alpha * 0.8, src.outer, 0.05)
                 end
             end
         end
@@ -226,14 +276,14 @@ function postUpdate()
             else state, col = "SILENT", C_SILENT end
 
             local pan = S.panning and panOf(cam, camPos, pos) or 0
-            tw:writeTextTTFAutoSize(X, Y, string.format("[%d] %-20s d=%5.1f [%s] %-6s %s",
-                i, src.label, d, bar(active and frac or 0, 10), state,
+            tw:writeTextTTFAutoSize(X, Y, string.format("%s[%d] %-20s d=%5.1f [%s] %-6s %s",
+                (i == S.sel) and ">" or " ", i, src.label, d, bar(active and frac or 0, 10), state,
                 (active and vol > 0) and panBar(pan, 11) or ""), col, 0.5)
             Y = Y + LH
         end
 
         Y = Y + 8
-        local keys = { "1-4 mute a source", "M mute all", "P panning", "R rings", "H hide panel" }
+        local keys = { "1-4 mute", "TAB select", "Z/X inner radius", "C/V outer radius", "M mute all", "P panning", "R rings", "T auto camera", "H hide panel" }
         tw:writeTextTTFAutoSize(X, Y, table.concat(keys, "   "), C_KEY, 0.45)
         Y = Y + LH
         tw:writeTextTTFAutoSize(X, Y, "Move: arrows / wheel / Shift+Up,Down.  Look: hold middle mouse button and drag", C_HINT, 0.45)

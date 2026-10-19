@@ -1,6 +1,7 @@
 #include <SDL2/SDL_image.h>
 #include <algorithm>
 #include <cmath>
+#include <thread>
 
 #include "../../include/Render/Image.h"
 #include "../../include/Brakeza.h"
@@ -195,10 +196,37 @@ void Image::MakeAutoOGLImage()
         LOG_ERROR("[Image] MakeAutoOGLImage: surface is null");
         return;
     }
-    textureId = MakeOGLImage(surface);
+    textureId = MakeOGLImage(surface, mipmaps);
 }
 
-GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
+void Image::setMipmaps(bool value)
+{
+    mipmaps = value;
+    if (textureId == 0 || std::this_thread::get_id() != Brakeza::get()->getMainThreadId()) return;
+    ApplyMipmapState(textureId, value);
+}
+
+void Image::ApplyMipmapState(GLuint texId, bool enabled)
+{
+    GLint previous = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &previous);
+    glBindTexture(GL_TEXTURE_2D, texId);
+    if (enabled) {
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        if (GLEW_EXT_texture_filter_anisotropic) {
+            GLfloat maxAniso = 1.0f;
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, std::min(8.0f, maxAniso));
+        }
+    } else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        if (GLEW_EXT_texture_filter_anisotropic) glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+    }
+    glBindTexture(GL_TEXTURE_2D, (GLuint) previous);
+}
+
+GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF, bool mipmaps)
 {
     if (!surfaceTTF) {
         LOG_ERROR("[Image] MakeOGLImage: surface is null, returning 0");
@@ -249,6 +277,8 @@ GLuint Image::MakeOGLImage(const SDL_Surface *surfaceTTF)
     glTexImage2D(GL_TEXTURE_2D, 0, Mode, sw, sh, 0, Mode, GL_UNSIGNED_BYTE, uploadSurf->pixels);
 
     if (converted) SDL_FreeSurface(converted);
+
+    if (mipmaps) ApplyMipmapState(texID, true);
 
     return texID;
 }
@@ -316,30 +346,46 @@ void Image::fillCircleGrad(int cx, int cy, int radius,
     auto* pixels = static_cast<uint8_t*>(surface->pixels);
     int w = surface->w, h = surface->h;
     int falloff = std::max(2, (int)(radius * falloffRatio));
-    int inner = radius - falloff;
     int r2 = radius * radius;
-    int innerR2 = inner * inner;
 
-    for (int dz = -radius; dz <= radius; dz++) {
-        for (int dx = -radius; dx <= radius; dx++) {
-            int d2 = dx*dx + dz*dz;
+    // El alfa solo depende de d2 (radio, falloff y power casi nunca cambian): tabla por d2 en vez de sqrt+pow por pixel
+    struct AlphaLut { int radius; int falloff; float power; std::vector<float> alpha; };
+    static std::vector<AlphaLut> luts;
+    const AlphaLut* lut = nullptr;
+    for (const auto& l : luts) {
+        if (l.radius == radius && l.falloff == falloff && l.power == power) { lut = &l; break; }
+    }
+    if (lut == nullptr) {
+        if (luts.size() > 32) luts.clear();
+        AlphaLut n{radius, falloff, power, std::vector<float>(r2 + 1, 1.0f)};
+        int inner = radius - falloff;
+        int innerR2 = inner * inner;
+        for (int d2 = 0; d2 <= r2; d2++) {
+            if (d2 <= innerR2) continue;
+            float t = std::clamp((radius - std::sqrt(float(d2))) / float(falloff), 0.0f, 1.0f);
+            n.alpha[d2] = std::pow(t, power);
+        }
+        luts.push_back(std::move(n));
+        lut = &luts.back();
+    }
+    const float* alphaLut = lut->alpha.data();
+
+    // Recorte previo del cuadrado al lienzo (sin comprobar limites por pixel)
+    int z0 = std::max(-radius, -cy), z1 = std::min(radius, h - 1 - cy);
+    int x0 = std::max(-radius, -cx), x1 = std::min(radius, w - 1 - cx);
+
+    for (int dz = z0; dz <= z1; dz++) {
+        uint8_t* row = pixels + ((cy + dz) * w + cx) * 4;
+        int dz2 = dz * dz;
+        for (int dx = x0; dx <= x1; dx++) {
+            int d2 = dx*dx + dz2;
             if (d2 > r2) continue;
-            int nx = cx + dx, ny = cy + dz;
-            if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
-
-            float alpha = 1.0f;
-            if (d2 > innerR2) {
-                float dist = std::sqrt(float(d2));
-                float t = (radius - dist) / float(falloff);
-                t = std::clamp(t, 0.0f, 1.0f);
-                alpha = std::pow(t, power);
-            }
-
-            int idx = (ny * w + nx) * 4;
-            pixels[idx + 0] = std::max(pixels[idx + 0], (uint8_t)(r * alpha));
-            pixels[idx + 1] = std::max(pixels[idx + 1], (uint8_t)(g * alpha));
-            pixels[idx + 2] = std::max(pixels[idx + 2], (uint8_t)(b * alpha));
-            pixels[idx + 3] = std::max(pixels[idx + 3], (uint8_t)(a * alpha));
+            float alpha = alphaLut[d2];
+            uint8_t* p = row + dx * 4;
+            p[0] = std::max(p[0], (uint8_t)(r * alpha));
+            p[1] = std::max(p[1], (uint8_t)(g * alpha));
+            p[2] = std::max(p[2], (uint8_t)(b * alpha));
+            p[3] = std::max(p[3], (uint8_t)(a * alpha));
         }
     }
 }

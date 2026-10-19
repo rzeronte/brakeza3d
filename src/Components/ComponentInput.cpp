@@ -1,3 +1,4 @@
+#include "../../include/Render/UndoManager.h"
 #include <algorithm>
 #include <cmath>
 #include "../../include/Components/ComponentInput.h"
@@ -437,6 +438,12 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
     if (event->type == SDL_KEYDOWN) {
         auto scripting = Components::get()->Scripting();
 
+        // Ctrl+Z deshacer, Ctrl+Y / Ctrl+Shift+Z rehacer (si no se está escribiendo en un campo de texto)
+        if ((SDL_GetModState() & KMOD_CTRL) && !ImGui::GetIO().WantTextInput && event->key.repeat == 0) {
+            if (keyboard[SDL_SCANCODE_Z] && !(SDL_GetModState() & KMOD_SHIFT)) UndoManager::get().undo();
+            else if (keyboard[SDL_SCANCODE_Y] || (keyboard[SDL_SCANCODE_Z] && (SDL_GetModState() & KMOD_SHIFT))) UndoManager::get().redo();
+        }
+
         if (keyboard[SDL_SCANCODE_F1]) {
             if (scripting->isExecuting()) {
                 scripting->StopLUAScripts();
@@ -560,9 +567,7 @@ void ComponentInput::HandleGUIShortCuts(SDL_Event *event) const
             if (keyboard[SDL_SCANCODE_X]) {
                 // Copia local para evitar problemas si clearSelection invalida la referencia
                 const auto toDelete = render->getSelectedObjects();
-                for (auto* o : toDelete) {
-                    o->setRemoved(true);
-                }
+                UndoManager::get().removeObjects(toDelete);
                 render->clearSelection();
             }
             if (keyboard[SDL_SCANCODE_ESCAPE]) {
@@ -633,7 +638,7 @@ void ComponentInput::HandleDeleteSelectedObject(SDL_Event *e) const
         if (keyboard[SDL_SCANCODE_X]) {
             auto o = Components::get()->Render()->getSelectedObject();
             if (o != nullptr) {
-                o->setRemoved(true);
+                UndoManager::get().removeObjects({o});
                 Components::get()->Render()->setSelectedObject(nullptr);
             }
         }

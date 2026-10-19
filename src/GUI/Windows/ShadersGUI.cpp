@@ -12,6 +12,7 @@
 #include "../../../include/GUI/Editable/EditableOpenShaderFile.h"
 #include "../../../include/GUI/Editable/EditableOpenNode.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
+#include "../../../include/GUI/Widgets/GUIFields.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/OpenGL/Code/ShaderCustomOGLCodeTypes.h"
 #include "../../../include/OpenGL/Code/ShaderOGLCustomCodeMesh3D.h"
@@ -61,8 +62,11 @@ void ShadersGUI::DrawShaderConfigEditName(EditableOpenShaderFile &file)
     static char name[256];
     strncpy(name, label.c_str(), sizeof(name));
 
-    if (ImGui::InputText("Name##", name, IM_ARRAYSIZE(name), ImGuiInputTextFlags_AutoSelectAll)) {
-        file.getShader()->setLabel(name);
+    GUIFields::Section nameSection("NAME");
+    if (nameSection) {
+        if (GUIFields::String("Name", name, IM_ARRAYSIZE(name), nullptr, ImGuiInputTextFlags_AutoSelectAll)) {
+            file.getShader()->setLabel(name);
+        }
     }
 }
 
@@ -110,16 +114,18 @@ void ShadersGUI::DrawShaderConfigVarsCreator(EditableOpenShaderFile &file)
     const auto& glslTypes = isPostprocessing ? postprocessingGlslTypes : allGlslTypes;
     const auto& labelsCStr = isPostprocessing ? postprocessingLabelsCStr : allLabelsCStr;
 
-    ImGui::SeparatorText("Create new uniform");
-
     static char localVarName[256] = "";
-    auto fieldId = std::string("Uniform name##") + "_" + file.getShader()->getLabel();
-    ImGui::InputText(fieldId.c_str(), localVarName, IM_ARRAYSIZE(localVarName), ImGuiInputTextFlags_AutoSelectAll);
-
     static int selectedItem = 0;
 
-    auto comboId = std::string("Type##") + "_" + file.getShader()->getLabel();
-    ImGui::Combo(comboId.c_str(), &selectedItem, labelsCStr.data(), (int) labelsCStr.size());
+    ImGui::PushID(file.getShader()->getLabel().c_str());
+    {
+        GUIFields::Section creator("CREATE NEW UNIFORM");
+        if (creator) {
+            GUIFields::String("Uniform name", localVarName, IM_ARRAYSIZE(localVarName), nullptr, ImGuiInputTextFlags_AutoSelectAll);
+            GUIFields::ComboItems("Type", &selectedItem, labelsCStr);
+        }
+    }
+    ImGui::PopID();
     GUI::ImageButtonNormal(IconGUI::SHADER_CREATE_VARIABLE, "Create uniform", [&] {
         if (localVarName[0] != '\0' && selectedItem < (int)glslTypes.size()) {
             file.getShader()->AddDataTypeEmpty(localVarName, glslTypes[selectedItem].c_str());

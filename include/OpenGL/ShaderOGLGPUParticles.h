@@ -27,7 +27,8 @@ public:
         float sizeStart,
         float sizeEnd,
         int numParticles,
-        int stride
+        int stride,
+        bool depthTest = false
     );
     void Destroy() override;
 };
