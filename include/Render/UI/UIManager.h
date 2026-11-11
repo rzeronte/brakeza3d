@@ -86,6 +86,7 @@ struct UIElementData {
     float       scrollTo  = -1.0f;        // "scroll" elements: >= 0 sets the scroll offset (px) this frame (Lua: { scrollTo = 0 })
     bool        hidden    = false;        // true: the element is neither drawn nor hit-tested this frame
     float       scale     = 1.0f;         // "image" elements: size multiplier around the element's center (Lua: { scale = 1.05 }, e.g. a pulsing logo)
+    bool        flipX     = false;        // "image" elements: mirror horizontally (Lua: { flipX = true }); "color" (rgb) tints the image, e.g. { color = Color.new(0.4,0.4,0.4,1) } darkens it
 
     bool operator==(const UIElementData& o) const {
         return provided == o.provided && colorProvided == o.colorProvided && hidden == o.hidden &&
@@ -93,7 +94,7 @@ struct UIElementData {
                path == o.path && pathOff == o.pathOff && tooltip == o.tooltip &&
                value == o.value && maxValue == o.maxValue && w == o.w && h == o.h &&
                count == o.count && page == o.page && scrollTo == o.scrollTo && iconList == o.iconList &&
-               scale == o.scale &&
+               scale == o.scale && flipX == o.flipX &&
                (!colorProvided || (color.r == o.color.r && color.g == o.color.g &&
                                    color.b == o.color.b && color.a == o.color.a));
     }
@@ -172,6 +173,13 @@ struct UIElement {
     Color btnBg        {0.12f, 0.20f, 0.32f, 0.92f};
     Color btnHover     {0.22f, 0.38f, 0.58f, 0.96f};
     Color btnPressed   {0.08f, 0.13f, 0.22f, 1.00f};
+    // Skins: image per state stretched over the whole button (replaces the flat color rect of that state).
+    // Empty hover/pressed fall back to the normal skin; empty disabled falls back to normal (see UIElementData::enabled).
+    std::string btnSkin, btnSkinHover, btnSkinPressed, btnSkinDisabled;
+    // 9-slice for the skins (same cuts for the four states): L/T/R/B in IMAGE px, all 0 = stretch the whole image.
+    // btnSkinSliceScale = screen px per image px for corners/edges.
+    float btnSkinSlice[4]{0.0f, 0.0f, 0.0f, 0.0f};
+    float btnSkinSliceScale{1.0f};
     float btnImgOffsetX{0.0f};
     float btnImgOffsetY{0.0f};
     float btnTextOffsetX{0.0f};
@@ -209,6 +217,7 @@ struct UIElement {
     bool  arrayDistribute{false};       // true  → reparte items en todo el ancho (H) o alto (V) de ventana
     float arrayOffset{0};              // false → px extra entre items en la dirección de alineación
     std::string arrayPrefix;           // prefix for row data keys (default "": row i uses "i_", prefix "d" → "d0_")
+    bool  arrayCountIsMax{false};      // non-paginated: arrayCount is the MAXIMUM items drawn (Lua count above it is clamped); false = Lua count wins, arrayCount only when no data
     bool  arrayPaginate{false};        // enables paging: arrayCount=page size, data.count=total, data.page=current page
     std::string arrayPagerWidget;      // widget name used as pager bar (default "arrayPager")
     bool  arrayPagerTop{false};        // vertical arrays: pager ABOVE the items (they move down by its height)
@@ -261,6 +270,8 @@ struct UIWidget {
     std::string bgImage;   // optional: background image stretched over the widget box (declared width × height)
     float bgImageAlpha{1.0f};                   // opacity of bgImage, × the image's own alpha
     float bgImageInset{0.0f};                   // px (× widget scale): bgImage drawn inset from the edges, so it stays inside a frame with rounded/transparent corners
+    float bgColorInset[4]{0.0f, 0.0f, 0.0f, 0.0f}; // px (× widget scale) L,T,R,B: bgColor rect drawn inset from each edge (margin so the fill doesn't reach the corners); JSON "bgColorInset": N or [L,T,R,B]
+    float bgColorInsetScale{1.0f};                 // screen px per bgColorInset unit (× widget scale): like frameSliceScale, lets the inset be given in IMAGE px of a hi-res frame (e.g. 0.25)
     std::string frameImage;  // optional: 9-slice frame drawn OVER the background image, under the elements
     float frameSlice[4]{0.0f, 0.0f, 0.0f, 0.0f};  // 9-slice cuts L,T,R,B in IMAGE px; all 0 = frameImage stretched
     float frameSliceScale{1.0f};                    // screen px per image px for the borders (× widget scale)
@@ -336,6 +347,11 @@ public:
     // las variantes). Solo widgets de primer nivel: los anidados se hornean con su padre.
     bool invalidateWidget(const std::string& name);
     void invalidateAllWidgets();
+    // UI theme: images whose path goes through ".../UI/SLOTS/" are loaded from ".../UI/SLOTS_THEMES/<theme>/" instead
+    // (same file names in every theme folder). "" = no redirection. Live: drops the image pointers and rebakes the
+    // cacheable widgets.
+    void setUITheme(const std::string& theme);
+    const std::string& getUITheme() const { return uiTheme; }
     // Design resolution of the UI (window px the layouts were made at). When set (> 0), text sizes
     // of top-level widgets follow the window like the boxes do: × min(windowW / w, windowH / h), so
     // a text never outgrows its box on either axis. 0 = off (fixed text size). refHeight on a widget
@@ -414,6 +430,7 @@ private:
     std::unordered_map<std::string, bool> lastHoverState;
     std::unordered_map<std::string, std::string> textCacheContent; // dirty-check para "cached": texto + tamaño + color
     std::unordered_map<std::string, Image*> imagePointerCache;     // path → Image* para evitar getOrLoad cada frame
+    std::string uiTheme;                                           // "" = sin tema (carpeta SLOTS tal cual)
     std::string currentFB{"foreground"};
     bool textPass{false};
     bool hitTestOnly{false};
@@ -505,7 +522,8 @@ private:
     // and, with the same data, the cache never redid it (frames/icons missing from cached panels).
     bool bakeMissingImage{false};
     std::vector<std::string> collectCacheProblems(const UIWidget& w, const std::string& prefix, int depth) const;
-    void drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha);
+    void drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha,
+                         bool flipX = false, float tintR = 1.0f, float tintG = 1.0f, float tintB = 1.0f);
     Image* getCachedImage(const std::string& path);   // path → Image* (imagePointerCache)
     void renderElement(const UIElement& el, float baseX, float baseY, const UIElementData& data);
     void renderText(const UIElement& el, float x, float y, const UIElementData& data);

@@ -742,17 +742,26 @@ void GUIAddonMenu::MenuWindow(GUIManager *gui)
 
 void GUIAddonMenu::AboutMeModal()
 {
+    // Own copy of the splash, created each time the window opens: the GUI's one is created at startup and, after loading
+    // some projects (the tutorials one), its texture came out black in this window
+    static Image *aboutImage = nullptr;
+
     if (Config::get()->SHOW_ABOUT_ME_MODAL) {
         ImGui::OpenPopup("About Brakeza3D");
         Config::get()->SHOW_ABOUT_ME_MODAL = false;
+        // never delete it while its load job is still pending (the job holds the pointer)
+        if (aboutImage == nullptr || aboutImage->isLoaded()) {
+            delete aboutImage;
+            aboutImage = new Image(Config::get()->IMAGES_FOLDER + Config::get()->SPLASH_FILENAME);
+        }
     }
 
     if (ImGui::BeginPopupModal("About Brakeza3D", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         auto setup = Config::get();
-        auto splashImage = Brakeza::get()->GUI()->getSplashImage();
+        auto splashImage = aboutImage;
 
-        // Show splash image
-        if (splashImage != nullptr) {
+        // Show splash image (it loads asynchronously: a few frames after opening)
+        if (splashImage != nullptr && splashImage->isLoaded()) {
             float maxWidth = 400.0f;
             float scale = maxWidth / (float)splashImage->width();
             ImVec2 imageSize((float)splashImage->width() * scale, (float)splashImage->height() * scale);

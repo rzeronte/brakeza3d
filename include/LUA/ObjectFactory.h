@@ -27,7 +27,7 @@ class ObjectFactory {
     static Image3D* CreateImage3D(const std::string &file, const Vertex3D &position, float width, float height);
     static Image3DAnimation* CreateImage3DAnimation(const std::string &file, const Vertex3D &position, float width, float height, float sw, float sh, int frames, int fps);
     static Image3DAnimation360* CreateImage3DAnimation360(const std::string &file, const Vertex3D &position, float w, float h);
-    static Mesh3D* CreateMesh3D(const std::string &file, const Vertex3D &position);
+    static Mesh3D* CreateMesh3D(const std::string &file, const Vertex3D &position, bool mipmaps = false);   // mipmaps: ver Mesh3D::setMipmaps (hay que fijarlo AQUI: el job de carga relee el flag del JSON)
     static Mesh3DAnimation* CreateMesh3DAnimation(const std::string &file, const Vertex3D &position);
     static LightPoint* CreateLightPoint(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular);
     static LightSpot* CreateLightSpot(const Vertex3D &position, const Color &ambient, const Color &diffuse, const Color &specular);

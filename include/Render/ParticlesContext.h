@@ -30,6 +30,14 @@ enum class EmitterShapeDirection : int {
     OUTWARD = 1
 };
 
+// Cómo se orienta el quad de cada partícula. BILLBOARD = original (siempre mira a la cámara)
+enum class ParticleOrientation : int {
+    BILLBOARD = 0,
+    FLAT_GROUND,    // horizontal (plano XZ del mundo, normal +Y); la rotación de la partícula gira sobre Y
+    EMITTER_PLANE,  // en el plano XZ local del emisor (normal = su eje de emisión); con el emisor sin girar = FLAT_GROUND
+    VERTICAL_BILLBOARD // eje largo = vertical del mundo proyectada en pantalla, siempre encarado a la cámara (se acorta con la perspectiva): gotas de lluvia, rayas
+};
+
 struct OCParticle {
     glm::vec4 position;
     glm::vec4 rotation;
@@ -109,6 +117,14 @@ struct ParticlesContext {
     float ROTATION_SPEED_MIN    = 0.0f;   // velocidad de giro, grados/s (cada partícula elige una en [min, max])
     float ROTATION_SPEED_MAX    = 0.0f;
     bool  ROTATION_RANDOM_DIR   = false;  // sentido de giro aleatorio por partícula (si no, todas igual)
+    // Orientación del quad. BILLBOARD (por defecto) = original. En los otros modos la rotación de arriba gira la partícula
+    // sobre su normal (como una hoja sobre el suelo) y no se dibuja con culling (se ve por las dos caras).
+    ParticleOrientation ORIENTATION = ParticleOrientation::BILLBOARD;
+    // Balanceo de las partículas planas (solo con ORIENTATION != BILLBOARD): cada una se ladea sobre sus dos ejes hasta
+    // FLUTTER_ANGLE grados, con fase propia, a un ritmo de FLUTTER_SPEED ciclos por radián girado (el vaivén va ligado al giro: sin giro no hay balanceo).
+    // FLUTTER_ANGLE = 0 (por defecto) = sin balanceo.
+    float FLUTTER_ANGLE = 0.0f;
+    float FLUTTER_SPEED = 0.5f;
 
     // Espirales / vórtice alrededor del EJE del emisor (su "arriba" local, pasando por su posición).
     // Todo a 0 = comportamiento original (sin vórtice).

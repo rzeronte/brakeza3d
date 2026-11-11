@@ -100,6 +100,29 @@ Both values can also be set in the editor (**Object Properties › Emission**) a
 
 Emissive objects are rendered in their own pass, so scenes without any emissive object pay no extra cost.
 
+### Instance lists (scatter)
+
+A `Mesh3D` can draw a large list of instances of one model (`instancesFile`), for example thousands of trees or rocks scattered over a terrain. The engine culls them per chunk (camera frustum) and, optionally, by distance to the camera.
+
+| Method | Description |
+|--------|-------------|
+| `setInstanceMaxDistance(value)` / `getInstanceMaxDistance()` | Maximum distance from the camera at which the instances are drawn. `0` = no limit |
+
+The value is also available in the editor (**Object Properties › Max distance**) and is saved with the scene. Use `Brakeza:getMesh3DByName(name)` to get the object from Lua.
+
+```lua
+-- Show the whole forest from a high camera, then restore the limit
+local trees = Brakeza:getMesh3DByName("scatter_conifer1_cylinder_002")
+local saved = trees:getInstanceMaxDistance()
+trees:setInstanceMaxDistance(0)      -- no distance limit
+-- ...
+trees:setInstanceMaxDistance(saved)
+```
+
+:::note
+Distance culling only applies to instance lists; regular meshes ignore it.
+:::
+
 
 ## Mesh3DAnimation
 ---

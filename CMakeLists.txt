@@ -212,6 +212,7 @@ add_executable(Brakeza3D
         src/3D/LightPoint.cpp include/3D/LightPoint.h
         src/3D/LightSpot.cpp include/3D/LightSpot.h
         src/3D/Mesh3D.cpp include/3D/Mesh3D.h
+        src/3D/MeshInstances.cpp include/3D/MeshInstances.h
         src/3D/Mesh3DAnimation.cpp include/3D/Mesh3DAnimation.h
         src/3D/Object3D.cpp include/3D/Object3D.h
         src/3D/ParticleEmitter.cpp include/3D/ParticleEmitter.h
@@ -416,12 +417,10 @@ set_source_files_properties(
     PROPERTIES COMPILE_OPTIONS "-w"
 )
 
-if(WIN32)
-    set_source_files_properties(
-        src/Components/ComponentScripting.cpp
-        PROPERTIES COMPILE_OPTIONS "-Wa,-mbig-obj"
-    )
-endif()
+set_source_files_properties(
+    src/Components/ComponentScripting.cpp
+    PROPERTIES COMPILE_OPTIONS "-Wa,-mbig-obj"
+)
 
 target_include_directories(Brakeza3D PRIVATE
         ${SDL2_INCLUDE_DIRS}

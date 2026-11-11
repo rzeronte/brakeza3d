@@ -93,6 +93,10 @@ void Mesh3DShaderChain::ProcessChain(const Mesh3D* mesh, const std::vector<Shade
                 }
 
                 nodeManager->Update();
+                // Emision de esta submesh (u_Emission -> gEmission.a); solo la lee el ultimo shader, que dibuja al G-Buffer
+                nodeManager->SetEmission(
+                    (isLast && mesh->emissionViaObjectShader() && mesh->isMaterialEmissive(m.materialIndex)) ? mesh->getEmissionIntensity() : 0.0f
+                );
 
                 // Grafo sin compilar: el error ya se muestra en el editor de nodos (y se registra en el log
                 // al compilar); aquí solo se omite el dibujado en vez de repetir el mensaje cada frame

@@ -45,6 +45,9 @@ void LUAIntegrationLights(sol::state &lua)
         "ROTATION_SPEED_MIN", &ParticlesContext::ROTATION_SPEED_MIN,
         "ROTATION_SPEED_MAX", &ParticlesContext::ROTATION_SPEED_MAX,
         "ROTATION_RANDOM_DIR", &ParticlesContext::ROTATION_RANDOM_DIR,
+        "ORIENTATION", &ParticlesContext::ORIENTATION,
+        "FLUTTER_ANGLE", &ParticlesContext::FLUTTER_ANGLE,
+        "FLUTTER_SPEED", &ParticlesContext::FLUTTER_SPEED,
         "SWIRL_SPEED", &ParticlesContext::SWIRL_SPEED,
         "SWIRL_PULL", &ParticlesContext::SWIRL_PULL,
         "SPIRAL_RADIAL_SPEED", &ParticlesContext::SPIRAL_RADIAL_SPEED,
@@ -107,6 +110,13 @@ void LUAIntegrationLights(sol::state &lua)
         "CYLINDER", EmitterShape::CYLINDER,
         "TORUS", EmitterShape::TORUS,
         "MESH", EmitterShape::MESH
+    );
+
+    lua.new_enum("ParticleOrientation",
+        "BILLBOARD", ParticleOrientation::BILLBOARD,
+        "FLAT_GROUND", ParticleOrientation::FLAT_GROUND,
+        "EMITTER_PLANE", ParticleOrientation::EMITTER_PLANE,
+        "VERTICAL_BILLBOARD", ParticleOrientation::VERTICAL_BILLBOARD
     );
 
     lua.new_enum("EmitterShapeDirection",

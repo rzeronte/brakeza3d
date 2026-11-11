@@ -112,11 +112,12 @@ Image3DAnimation360* ObjectFactory::CreateImage3DAnimation360(const std::string 
     return o;
 }
 
-Mesh3D* ObjectFactory::CreateMesh3D(const std::string &file, const Vertex3D &position)
+Mesh3D* ObjectFactory::CreateMesh3D(const std::string &file, const Vertex3D &position, bool mipmaps)
 {
     auto *o = new Mesh3D(file);
     o->setName(Brakeza::UniqueObjectLabel("Mesh3D"));
     o->setPosition(position);
+    o->setMipmaps(mipmaps);     // antes de serializar: el job lee "mipmaps" del JSON; un setMipmaps posterior desde Lua lo pisaria
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3D>(o, json));
@@ -130,6 +131,7 @@ Mesh3DAnimation* ObjectFactory::CreateMesh3DAnimation(const std::string &file, c
     o->setSourceFile(file);
     o->setName(Brakeza::UniqueObjectLabel("Mesh3DAnimation"));
     o->setPosition(position);
+    o->setMipmaps(true);        // unidades, civiles, jinetes...: personajes animados siempre con mipmaps (quita el granulado a distancia)
 
     auto json = JSONSerializerRegistry::instance().serialize(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadMesh3DAnimation>(o, json));

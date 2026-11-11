@@ -15,6 +15,9 @@ void LUAIntegrationMeshes(sol::state &lua)
         // Ruta del .fbx con el que se creó el objeto (válida nada más crearlo, antes de que termine
         // la carga asíncrona) -- p.ej. RiderAttachment.lua clona el modelo de una unidad montada.
         "getModelFile", [](Mesh3D& m) -> std::string { return m.getModelFile(); },
+        // Distancia maxima de dibujo de las instancias (scatter de arboles/rocas): 0 = sin limite.
+        "getInstanceMaxDistance", &Mesh3D::getInstanceMaxDistance,
+        "setInstanceMaxDistance", &Mesh3D::setInstanceMaxDistance,
         "isMipmaps", &Mesh3D::isMipmaps,
         "setMipmaps", &Mesh3D::setMipmaps,
         "isEmissionEnabled", &Mesh3D::isEmissionEnabled,
@@ -32,7 +35,12 @@ void LUAIntegrationMeshes(sol::state &lua)
         "setDiffuseTexture", [](Mesh3D& m, int meshIdx, const std::string& path) {
             auto& textures = m.getModelTextures();
             if (meshIdx < 0 || meshIdx >= (int)textures.size()) return;
-            textures[meshIdx] = imageCache.getOrLoad(FilePath::ImageFile(path));
+            Image *img = imageCache.getOrLoad(FilePath::ImageFile(path));
+            textures[meshIdx] = img;
+            // La textura nueva nace sin mipmaps: si el modelo los tiene activados hay que aplicarlos a ella (antes el checkbox seguia en ON pero la
+            // textura cambiada con setDiffuseTexture -CityStyle, uniformes, banderas- quedaba sin mipmaps hasta apagarlo y encenderlo).
+            // Lua corre en el hilo principal, asi que setMipmaps toca GL directamente.
+            if (img && m.isMipmaps() && !img->isMipmaps()) img->setMipmaps(true);
         },
         "getDiffuseTextureFile", [](Mesh3D& m, int meshIdx) -> std::string {
             auto& textures = m.getModelTextures();

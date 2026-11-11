@@ -173,6 +173,14 @@ void UIManager::invalidateAllWidgets()
     for (auto& [_, w] : widgets) { w.cacheDirty = true; w.variantsDirty = true; }
 }
 
+void UIManager::setUITheme(const std::string& theme)
+{
+    if (theme == uiTheme) return;
+    uiTheme = theme;
+    imagePointerCache.clear();   // the paths resolve to another folder now (Images stay in ComponentRender's cache)
+    invalidateAllWidgets();      // cacheable widgets hold the old images baked in their FBO
+}
+
 // ---------------------------------------------------------------------------
 // parseWidgetJSON — parse + store in map; no ref resolution, no height computation.
 // Used by the two-pass bulk loader (loadWidgetsFromDir).
@@ -243,6 +251,11 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
     if (bgImageAlphaItem) widget.bgImageAlpha = std::clamp((float)bgImageAlphaItem->valuedouble, 0.0f, 1.0f);
     cJSON* bgImageInsetItem = cJSON_GetObjectItem(root, "bgImageInset");
     if (bgImageInsetItem) widget.bgImageInset = std::max(0.0f, (float)bgImageInsetItem->valuedouble);
+    // Margen del color de fondo: N (los 4 lados) o [L, T, R, B]
+    parseSlice(cJSON_GetObjectItem(root, "bgColorInset"), widget.bgColorInset);
+    for (float& v : widget.bgColorInset) v = std::max(0.0f, v);
+    cJSON* bgColorInsetScaleItem = cJSON_GetObjectItem(root, "bgColorInsetScale");
+    if (bgColorInsetScaleItem) widget.bgColorInsetScale = std::max(0.0f, (float)bgColorInsetScaleItem->valuedouble);
     // Marco 9-slice
     cJSON* frameImageItem = cJSON_GetObjectItem(root, "frameImage");
     if (frameImageItem && frameImageItem->valuestring) widget.frameImage = frameImageItem->valuestring;
@@ -320,6 +333,12 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             cJSON* btnBg  = cJSON_GetObjectItem(item, "btnBg");      if (btnBg)  el.btnBg      = ToolsJSON::getColorByJSON(btnBg);
             cJSON* btnHov = cJSON_GetObjectItem(item, "btnHover");   if (btnHov) el.btnHover   = ToolsJSON::getColorByJSON(btnHov);
             cJSON* btnPrs = cJSON_GetObjectItem(item, "btnPressed"); if (btnPrs) el.btnPressed = ToolsJSON::getColorByJSON(btnPrs);
+            cJSON* skN = cJSON_GetObjectItem(item, "btnSkin");         if (skN && skN->valuestring) el.btnSkin         = skN->valuestring;
+            cJSON* skH = cJSON_GetObjectItem(item, "btnSkinHover");    if (skH && skH->valuestring) el.btnSkinHover    = skH->valuestring;
+            cJSON* skP = cJSON_GetObjectItem(item, "btnSkinPressed");  if (skP && skP->valuestring) el.btnSkinPressed  = skP->valuestring;
+            cJSON* skD = cJSON_GetObjectItem(item, "btnSkinDisabled"); if (skD && skD->valuestring) el.btnSkinDisabled = skD->valuestring;
+            parseSlice(cJSON_GetObjectItem(item, "btnSkinSlice"), el.btnSkinSlice);
+            cJSON* skSc = cJSON_GetObjectItem(item, "btnSkinSliceScale"); if (skSc) el.btnSkinSliceScale = (float)skSc->valuedouble;
             cJSON* bImgOX = cJSON_GetObjectItem(item, "btnImgOffsetX");  if (bImgOX) el.btnImgOffsetX  = (float)bImgOX->valuedouble;
             cJSON* bImgOY = cJSON_GetObjectItem(item, "btnImgOffsetY");  if (bImgOY) el.btnImgOffsetY  = (float)bImgOY->valuedouble;
             cJSON* bTxtOX = cJSON_GetObjectItem(item, "btnTextOffsetX"); if (bTxtOX) el.btnTextOffsetX = (float)bTxtOX->valuedouble;
@@ -354,6 +373,8 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             if (arrayColumns) el.arrayColumns = std::max(1, arrayColumns->valueint);
             cJSON* arrayDistribute = cJSON_GetObjectItem(item, "arrayDistribute");
             if (arrayDistribute) el.arrayDistribute = (arrayDistribute->type == cJSON_True);
+            cJSON* arrayCountIsMax = cJSON_GetObjectItem(item, "arrayCountIsMax");
+            if (arrayCountIsMax) el.arrayCountIsMax = (arrayCountIsMax->type == cJSON_True);
             cJSON* arrayPaginate = cJSON_GetObjectItem(item, "arrayPaginate");
             if (arrayPaginate) el.arrayPaginate = (arrayPaginate->type == cJSON_True);
             cJSON* arrayPagerWidget = cJSON_GetObjectItem(item, "arrayPagerWidget");
@@ -522,8 +543,11 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
     ComponentRender::UIDeferScope uiDefer(render);
     // Pixel offset applied here (not in drawWidget/drawWidgetAtPos) so it also works when the
     // widget is rendered nested (widget/array elements, scroll, tooltip, pager).
-    x += w.offsetX;
-    y += w.offsetY;
+    // offsetX/Y are pixels at the design resolution: they scale with it like text does (a fixed 7 px
+    // gap drifted relative to the cards -- e.g. in the multi-select array -- as the window grew)
+    const float offScale = getDesignTextScale();
+    x += w.offsetX * offScale;
+    y += w.offsetY * offScale;
     static const UIElementData defaultData;
     const UIWidgetRenderData* prevData = currentData;
     currentData = &data;
@@ -637,7 +661,7 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
                     pg = std::min(pg, (totalIt + sc.arrayCount - 1) / sc.arrayCount - 1);
                 int pgOffset = sc.arrayPaginate ? (pg * sc.arrayCount) : 0;
                 int onPage   = (sc.arrayPaginate && totalIt > 0) ? std::min(sc.arrayCount, std::max(0, totalIt - pgOffset)) : 0;
-                int cnt      = sc.arrayPaginate ? onPage : ((elData.count > 0) ? elData.count : sc.arrayCount);
+                int cnt      = sc.arrayPaginate ? onPage : ((elData.count > 0) ? ((sc.arrayCountIsMax && sc.arrayCount > 0) ? std::min(elData.count, sc.arrayCount) : elData.count) : sc.arrayCount);
                 int totPages = (sc.arrayPaginate && totalIt > 0) ? ((totalIt + sc.arrayCount - 1) / sc.arrayCount) : -1;
                 // Same step as renderElement's arrayStep (window height × child height × scales + offset)
                 const float childH = (float)winPtr->getHeight() * it2->second.height * ss * s;
@@ -683,8 +707,14 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
         // Background, frame and border are fixed: baked with the cache, not drawn again over it
         const bool baseVisuals = !hitTestOnly && livePass != LivePass::OnlyLive && onlyPass != NestedPass::TextOnly;
         if (measuringBounds) unionBounds(x, y, x + dynamicW, y + dynamicH);
-        if (baseVisuals && w.bgColor.a > 0.0f)
-            render->DrawFilledRectToFB((int)x, (int)y, (int)dynamicW, (int)dynamicH, applyGA(w.bgColor), currentFB);
+        if (baseVisuals && w.bgColor.a > 0.0f) {
+            // bgColorInset: margin (px x bgColorInsetScale x widget scale) per side, so the fill doesn't reach the corners of a rounded/ornate frame
+            const float il = std::min(w.bgColorInset[0] * w.bgColorInsetScale * s, dynamicW * 0.5f), it = std::min(w.bgColorInset[1] * w.bgColorInsetScale * s, dynamicH * 0.5f);
+            const float ir = std::min(w.bgColorInset[2] * w.bgColorInsetScale * s, dynamicW * 0.5f), ib = std::min(w.bgColorInset[3] * w.bgColorInsetScale * s, dynamicH * 0.5f);
+            const int bw = (int)(dynamicW - il - ir), bh = (int)(dynamicH - it - ib);
+            if (bw > 0 && bh > 0)
+                render->DrawFilledRectToFB((int)(x + il), (int)(y + it), bw, bh, applyGA(w.bgColor), currentFB);
+        }
         // Optional background image: stretched over the widget box (its declared width × height --
         // dynamicH is the declared height, it does NOT grow with content), under the frame and every
         // element. bgImageInset pulls it in from the edges (e.g. to stay inside a rounded frame).
@@ -1205,6 +1235,7 @@ static void appendDataSignature(std::string& out, const UIElementData& d)
              (int)d.provided, (int)d.colorProvided, (int)d.enabled, (int)d.hidden,
              d.w, d.h, d.value, d.maxValue, d.count, d.page, d.scale);
     out += buf;
+    if (d.flipX) out += "F|";
     if (d.colorProvided) {
         snprintf(buf, sizeof(buf), "%g,%g,%g,%g|", d.color.r, d.color.g, d.color.b, d.color.a);
         out += buf;
@@ -1508,7 +1539,7 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
     if (totalPages > 0 && currentPage > totalPages - 1) currentPage = totalPages - 1;
     int  pageOffset   = isPaginated ? (currentPage * pageSize) : 0;
     int  itemsOnPage  = (isPaginated && totalItems > 0) ? std::min(pageSize, std::max(0, totalItems - pageOffset)) : 0;
-    int  resolvedCount = isPaginated ? itemsOnPage : ((data.count > 0) ? data.count : pageSize);
+    int  resolvedCount = isPaginated ? itemsOnPage : ((data.count > 0) ? ((el.arrayCountIsMax && pageSize > 0) ? std::min(data.count, pageSize) : data.count) : pageSize);
 
     // "grid": arrayColumns items per row, filled left to right and then top to bottom; arrayOffset is
     // the gap in both directions. Paging, background and borders work the same as in a list.
@@ -1945,19 +1976,25 @@ Image* UIManager::getCachedImage(const std::string& path)
     if (path.empty() || !render) return nullptr;
     auto it = imagePointerCache.find(path);
     if (it == imagePointerCache.end()) {
-        Image* img = render->getOrLoadImage(path);
+        std::string resolved = path;
+        static const std::string kSlots = "/UI/SLOTS/";
+        const size_t slots = uiTheme.empty() ? std::string::npos : path.find(kSlots);
+        if (slots != std::string::npos)
+            resolved = path.substr(0, slots) + "/UI/SLOTS_THEMES/" + uiTheme + "/" + path.substr(slots + kSlots.size());
+        Image* img = render->getOrLoadImage(resolved);
         imagePointerCache[path] = img;
         return img;
     }
     return it->second;
 }
 
-void UIManager::drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha)
+void UIManager::drawImageCached(const std::string& path, int x, int y, int w, int h, float alpha,
+                                bool flipX, float tintR, float tintG, float tintB)
 {
     Image* img = getCachedImage(path);
     if (img && !img->isLoaded()) bakeMissingImage = true;   // a cache baking now must be redone
     if (img)
-        render->DrawImage2DFromImageToFB(img, x, y, w, h, currentFB, alpha);
+        render->DrawImage2DFromImageToFB(img, x, y, w, h, currentFB, alpha, flipX, tintR, tintG, tintB);
 }
 
 void UIManager::renderImage(const UIElement& el, float x, float y, const UIElementData& data)
@@ -1976,7 +2013,11 @@ void UIManager::renderImage(const UIElement& el, float x, float y, const UIEleme
         ix = (int)(cx - (float)iw * 0.5f);
         iy = (int)(cy - (float)ih * 0.5f);
     }
-    drawImageCached(path, ix, iy, iw, ih, globalAlpha);
+    // data.flipX espeja la imagen; data.color (solo rgb) la tiñe -- p.ej. gris 0.4 = oscurecida (retrato del que no habla)
+    const float tr = data.colorProvided ? data.color.r : 1.0f;
+    const float tg = data.colorProvided ? data.color.g : 1.0f;
+    const float tb = data.colorProvided ? data.color.b : 1.0f;
+    drawImageCached(path, ix, iy, iw, ih, globalAlpha, data.flipX, tr, tg, tb);
     if (el.borderWidth > 0.0f) {
         int bw = (int)el.borderWidth;
         Color bc = applyGA(el.borderColor);
@@ -2071,7 +2112,7 @@ void UIManager::renderIcons(const UIElement& el, float x, float y, const UIEleme
 void UIManager::renderButton(const UIElement& el, float x, float y, const UIElementData& data)
 {
     const bool hasContent = data.provided || !el.staticText.empty() || !el.staticImagePath.empty() || !el.options.empty();
-    const bool hasVisuals = el.btnBg.a > 0.0f || el.btnHover.a > 0.0f || el.btnPressed.a > 0.0f || el.borderWidth > 0.0f;
+    const bool hasVisuals = el.btnBg.a > 0.0f || el.btnHover.a > 0.0f || el.btnPressed.a > 0.0f || el.borderWidth > 0.0f || !el.btnSkin.empty();
     if (!hasContent && !hasVisuals) return;
 
     float bx = x + el.x;
@@ -2159,8 +2200,27 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
     }
 
     if (!hitTestOnly) {
-        Color bg = applyGA(pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg);
-        render->DrawFilledRectToFB((int)bx, (int)by, (int)bw, (int)bh, bg, currentFB);
+        // Skin of the current state (image stretched over the button) replaces that state's flat rect
+        const std::string* skin = nullptr;
+        if (!el.btnSkin.empty()) {
+            skin = &el.btnSkin;
+            if (!data.enabled && !el.btnSkinDisabled.empty())          skin = &el.btnSkinDisabled;
+            else if (pressed && !el.btnSkinPressed.empty())            skin = &el.btnSkinPressed;
+            else if (hovered && !el.btnSkinHover.empty())              skin = &el.btnSkinHover;
+        }
+        if (skin) {
+            const bool nineSlice = el.btnSkinSlice[0] > 0.0f || el.btnSkinSlice[1] > 0.0f || el.btnSkinSlice[2] > 0.0f || el.btnSkinSlice[3] > 0.0f;
+            if (nineSlice) {
+                Image* skinImg = getCachedImage(*skin);
+                if (skinImg && !skinImg->isLoaded()) bakeMissingImage = true;
+                render->DrawImage2DNineSliceToFB(skinImg, bx, by, bw, bh, el.btnSkinSlice, el.btnSkinSliceScale, currentFB, globalAlpha);
+            } else {
+                drawImageCached(*skin, (int)bx, (int)by, (int)bw, (int)bh, globalAlpha);
+            }
+        } else {
+            Color bg = applyGA(pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg);
+            render->DrawFilledRectToFB((int)bx, (int)by, (int)bw, (int)bh, bg, currentFB);
+        }
 
         if (el.borderWidth > 0.0f) {
             int bord = (int)el.borderWidth;
@@ -2356,6 +2416,9 @@ UIElementData UIManager::solTableToElementData(sol::table t)
 
     sol::object scaleObj = t["scale"];
     if (scaleObj.valid() && scaleObj.get_type() == sol::type::number) d.scale = scaleObj.as<float>();
+
+    sol::object flipXObj = t["flipX"];
+    if (flipXObj.valid() && flipXObj.get_type() == sol::type::boolean) d.flipX = flipXObj.as<bool>();
 
     sol::object valueObj = t["value"];
     if (valueObj.valid()) d.value = valueObj.as<float>();

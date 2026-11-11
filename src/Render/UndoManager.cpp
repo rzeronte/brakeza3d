@@ -63,6 +63,8 @@ namespace
         o.i(static_cast<int>(c.SHAPE)); o.f(c.SHAPE_RADIUS); o.f(c.SHAPE_HEIGHT); o.f(c.SHAPE_TUBE_RADIUS);
         o.f(c.SHAPE_SIZE_X); o.f(c.SHAPE_SIZE_Y); o.f(c.SHAPE_SIZE_Z); o.b(c.SHAPE_SURFACE_ONLY);
         o.i(static_cast<int>(c.SHAPE_DIRECTION));
+        o.i(static_cast<int>(c.ORIENTATION));
+        o.f(c.FLUTTER_ANGLE); o.f(c.FLUTTER_SPEED);
         o.f(static_cast<float>(std::hash<std::string>{}(c.SHAPE_MESH) % 1000003u));
     }
 }

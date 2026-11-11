@@ -12,7 +12,7 @@ function HomepageHeader() {
         <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                 <h1 className="hero__title" style={{fontSize: '3.5rem', color: 'white', textShadow: '0 2px 10px rgba(0,0,0,0.3)'}}>
-                    Brakeza3D v0.26.10 <br/>Released!
+                    Brakeza3D v0.26.2 <br/>Released!
                 </h1>
                 <p className="hero__subtitle" style={{fontSize: '1.5rem', color: 'rgba(255, 255, 255, 0.95)', textShadow: '0 1px 5px rgba(0,0,0,0.2)'}}>
                     A powerful 2D/3D game engine for indie developers
@@ -113,14 +113,25 @@ function VideoSection() {
     return (
         <section className={styles.videoSection}>
             <div className="container">
-                <div className={styles.videoWrapper}>
-                    <iframe
-                        src="https://www.youtube.com/embed/IgxlN4l0b98"
-                        title="Video explicativo"
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    ></iframe>
+                <div className={styles.videoGrid}>
+                    <div className={styles.videoWrapper}>
+                        <iframe
+                            src="https://www.youtube.com/embed/_719nP1fJsY"
+                            title="Video 1"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
+                    <div className={styles.videoWrapper}>
+                        <iframe
+                            src="https://www.youtube.com/embed/VtCWW-WrppE"
+                            title="Video 2"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
                 </div>
             </div>
         </section>
@@ -230,8 +241,8 @@ export default function Home() {
             <HomepageHeader />
             <main>
                 <Stats />
-                <ProjectShowcase />
                 <VideoSection />
+                <ProjectShowcase />
                 <HomepageFeatures />
             </main>
             <FinalCTA />

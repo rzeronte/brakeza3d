@@ -417,6 +417,16 @@ void UIManagerGUI::DrawWinUIManager()
                     GUIFields::Section background("BACKGROUND");
                     if (background) {
                         RowColor("BG color", w.bgColor, true);
+                        {
+                            static const char* const insetLabels[4] = {"Color inset L px", "Color inset T px", "Color inset R px", "Color inset B px"};
+                            for (int k = 0; k < 4; k++)
+                                if (GUIFields::Float(insetLabels[k], &w.bgColorInset[k], 0.5f, 0.0f, 512.0f, "%.0f",
+                                        "Margin between the widget edge and the BG color fill (screen px, x widget scale).\n"
+                                        "Keeps the color from reaching the corners of a rounded or ornate frame.")) w.cacheDirty = true;
+                            if (GUIFields::Float("Color inset scale", &w.bgColorInsetScale, 0.01f, 0.0f, 8.0f, "%.2f",
+                                    "Screen px per inset unit (like Slice scale), e.g. 0.25 to give the inset in image px of a 4x hi-res frame"))
+                                w.cacheDirty = true;
+                        }
 
                         GUIFields::Row("BG image", "Optional image stretched over the whole widget, under the frame and all elements");
                         if (ImagePickerField("##bgimg", w.bgImage, s_pickerWBgImg, "UIWidget_BgImage_FilePicker", 260.0f))
@@ -1073,6 +1083,49 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 GUIFields::EndRow();
             }
         }
+        {
+            GUIFields::Section btnSkins("BUTTON SKINS");
+            if (btnSkins) {
+                struct SkinRow { const char* label; const char* id; const char* pickerId; std::string* path; };
+                const SkinRow rows[] = {
+                    {"Skin normal",   "##bskn", "UIBtn_SkinN_FilePicker", &el.btnSkin},
+                    {"Skin hover",    "##bskh", "UIBtn_SkinH_FilePicker", &el.btnSkinHover},
+                    {"Skin pressed",  "##bskp", "UIBtn_SkinP_FilePicker", &el.btnSkinPressed},
+                    {"Skin disabled", "##bskd", "UIBtn_SkinD_FilePicker", &el.btnSkinDisabled},
+                };
+                static GUIFilePicker s_pickerSkin[4];
+                for (int si = 0; si < 4; si++) {
+                    GUIFields::Row(rows[si].label, "Image stretched over the button in this state; replaces the flat color. Empty hover/pressed use the normal skin");
+                    ImagePickerField(rows[si].id, *rows[si].path, s_pickerSkin[si], rows[si].pickerId, 260.0f);
+                    GUIFields::EndRow();
+                }
+
+                // Skin mode: Stretch (whole image over the button) | 9-slice (corners keep their size). Same cuts for the four states.
+                const bool skinNineSlice = el.btnSkinSlice[0] > 0.0f || el.btnSkinSlice[1] > 0.0f || el.btnSkinSlice[2] > 0.0f || el.btnSkinSlice[3] > 0.0f;
+                int skinMode = skinNineSlice ? 1 : 0;
+                const char* skinModes[] = { "Stretch", "9-slice" };
+                if (GUIFields::Combo("Skin mode", &skinMode, skinModes, IM_ARRAYSIZE(skinModes),
+                        "Stretch: the whole skin is stretched over the button.\n"
+                        "9-slice: corners keep their size, edges stretch along one axis, the center both ways.\n"
+                        "The same cuts apply to the normal, hover, pressed and disabled skins.")) {
+                    for (float& v : el.btnSkinSlice) v = (skinMode == 1) ? 12.0f : 0.0f;   // sensible start / back to stretch
+                }
+                if (skinMode == 1) {
+                    static bool s_skinSliceLinked = true;
+                    const int sliceMask = GUIFields::FloatN("Slice (image px)",
+                        { &el.btnSkinSlice[0], &el.btnSkinSlice[1], &el.btnSkinSlice[2], &el.btnSkinSlice[3] },
+                        0.5f, 0.0f, 4096.0f, "%.0f", "Left, top, right and bottom cuts of the 9-slice, in image pixels");
+                    if (sliceMask != 0 && s_skinSliceLinked) {
+                        int k = 0;
+                        while (!(sliceMask & (1 << k))) k++;
+                        for (float& v : el.btnSkinSlice) v = el.btnSkinSlice[k];
+                    }
+                    GUIFields::Check("Slice linked", &s_skinSliceLinked, "Edit the four cuts together");
+                    GUIFields::Float("Slice scale", &el.btnSkinSliceScale, 0.01f, 0.05f, 8.0f, "%.2f",
+                        "Screen px per image px for corners/edges (e.g. 0.25 for a 4x hi-res skin)");
+                }
+            }
+        }
         BorderEditorSection(el, /*withStates*/ true);
     }
     else if (el.type == "widget") {
@@ -1122,6 +1175,10 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         {
             GUIFields::Section pagination("PAGINATION");
             if (pagination) {
+                GUIFields::Check("Count is max", &el.arrayCountIsMax,
+                    "Non-paginated arrays: arrayCount becomes the MAXIMUM number of items drawn.\n"
+                    "If Lua sends a larger count it is clamped, so the array never grows past the widget.\n"
+                    "Off: the count from Lua wins (arrayCount is only used when no data is sent).");
                 GUIFields::Check("Paginate", &el.arrayPaginate,
                     "Enables pagination.\n"
                     "arrayCount = items per page.\n"
@@ -1287,6 +1344,17 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
         cJSON_AddNumberToObject(bg, "a", w.bgColor.a);
         cJSON_AddItemToObject(root, "bgColor", bg);
     }
+    if (w.bgColor.a > 0.0f && (w.bgColorInset[0] > 0.0f || w.bgColorInset[1] > 0.0f || w.bgColorInset[2] > 0.0f || w.bgColorInset[3] > 0.0f)) {
+        const float* ci = w.bgColorInset;
+        if (ci[0] == ci[1] && ci[1] == ci[2] && ci[2] == ci[3]) {
+            cJSON_AddNumberToObject(root, "bgColorInset", ci[0]);
+        } else {
+            cJSON* arr = cJSON_CreateArray();
+            for (int k = 0; k < 4; k++) cJSON_AddItemToArray(arr, cJSON_CreateNumber(ci[k]));
+            cJSON_AddItemToObject(root, "bgColorInset", arr);
+        }
+        if (w.bgColorInsetScale != 1.0f) cJSON_AddNumberToObject(root, "bgColorInsetScale", w.bgColorInsetScale);
+    }
     if (!w.bgImage.empty()) cJSON_AddStringToObject(root, "bgImage", w.bgImage.c_str());
     if (!w.bgImage.empty() && w.bgImageAlpha != 1.0f) cJSON_AddNumberToObject(root, "bgImageAlpha", w.bgImageAlpha);
     if (!w.bgImage.empty() && w.bgImageInset > 0.0f) cJSON_AddNumberToObject(root, "bgImageInset", w.bgImageInset);
@@ -1438,6 +1506,16 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
                 cJSON_AddNumberToObject(col, "b", c.b); cJSON_AddNumberToObject(col, "a", c.a);
                 cJSON_AddItemToObject(item, key, col);
             };
+            if (!el.btnSkin.empty())         cJSON_AddStringToObject(item, "btnSkin",         el.btnSkin.c_str());
+            if (!el.btnSkinHover.empty())    cJSON_AddStringToObject(item, "btnSkinHover",    el.btnSkinHover.c_str());
+            if (!el.btnSkinPressed.empty())  cJSON_AddStringToObject(item, "btnSkinPressed",  el.btnSkinPressed.c_str());
+            if (!el.btnSkinDisabled.empty()) cJSON_AddStringToObject(item, "btnSkinDisabled", el.btnSkinDisabled.c_str());
+            if (el.btnSkinSlice[0] > 0.0f || el.btnSkinSlice[1] > 0.0f || el.btnSkinSlice[2] > 0.0f || el.btnSkinSlice[3] > 0.0f) {
+                cJSON* sl = cJSON_CreateArray();
+                for (float v : el.btnSkinSlice) cJSON_AddItemToArray(sl, cJSON_CreateNumber(v));
+                cJSON_AddItemToObject(item, "btnSkinSlice", sl);
+                if (el.btnSkinSliceScale != 1.0f) cJSON_AddNumberToObject(item, "btnSkinSliceScale", el.btnSkinSliceScale);
+            }
             addCol("btnBg",      el.btnBg);
             addCol("btnHover",   el.btnHover);
             addCol("btnPressed", el.btnPressed);
@@ -1509,6 +1587,8 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
                 cJSON_AddNumberToObject(item, "arrayColumns", el.arrayColumns);
             if (el.arrayDistribute)
                 cJSON_AddTrueToObject(item, "arrayDistribute");
+            if (el.arrayCountIsMax)
+                cJSON_AddTrueToObject(item, "arrayCountIsMax");
             if (el.arrayPaginate)
                 cJSON_AddTrueToObject(item, "arrayPaginate");
             if (!el.arrayPagerWidget.empty())

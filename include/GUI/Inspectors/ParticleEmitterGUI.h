@@ -72,6 +72,14 @@ public:
                 Check("Random start", &c.ROTATION_RANDOM_START, "Each particle is born rotated at a random angle (breaks the 'stamp' look of smoke).");
                 FloatRange("Spin speed", &c.ROTATION_SPEED_MIN, &c.ROTATION_SPEED_MAX, 0.25f, -1440.0f, 1440.0f, "min %.0f deg/s", "max %.0f deg/s", "Rotation speed in degrees/second, random between min and max (0 / 0 = no spin).");
                 Check("Random direction", &c.ROTATION_RANDOM_DIR, "Each particle spins clockwise or counter-clockwise at random.");
+                static const char *orientNames[] = { "Face the camera", "Flat on the ground", "Flat in the emitter plane", "Vertical billboard" };
+                int orient = static_cast<int>(c.ORIENTATION);
+                if (Combo("Orientation", &orient, orientNames, IM_ARRAYSIZE(orientNames),
+                          "Face the camera = original billboard. Flat on the ground = lies on the XZ plane (leaves, papers, stains); the spin turns it around the vertical. Flat in the emitter plane = same, in the emitter's own XZ plane (rotate the emitter to tilt it). Vertical billboard = its long axis follows the world vertical (projected on screen) and it always faces the camera, getting shorter as the view looks more from above: rain streaks. Flat and vertical particles are drawn two-sided.")) {
+                    c.ORIENTATION = static_cast<ParticleOrientation>(orient);
+                }
+                Float("Flutter angle", &c.FLUTTER_ANGLE, 0.5f, 0.0f, 85.0f, "%.1f deg", "Flat particles only: each one tilts back and forth on both axes up to this angle, like a paper tumbling in the wind (0 = off, stays perfectly flat).");
+                Float("Flutter speed", &c.FLUTTER_SPEED, 0.02f, 0.0f, 5.0f, "%.2f", "Flutter cycles per radian the particle spins, so it is tied to Spin speed (no spin = no flutter). Each particle has its own phase. Ignored when Flutter angle is 0.");
                 EndSection();
             }
 

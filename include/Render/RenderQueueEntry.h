@@ -39,6 +39,10 @@ struct RenderQueueEntry {
     GLuint vertexBoneDataBuffer = 0;
     const std::vector<glm::mat4> *boneMatrices = nullptr;
     int boneCount = 0;
+
+    // Instancing de un Mesh3D con lista de instancias (MeshInstances): matrices de MUNDO de las instancias visibles este frame
+    // (vive en el Mesh3D). Una entrada con esto nunca se agrupa con otras: se dibuja sola, un draw instanciado.
+    const std::vector<glm::mat4> *instances = nullptr;
 };
 
 #endif //BRAKEZA3D_RENDERQUEUEENTRY_H

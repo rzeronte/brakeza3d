@@ -145,6 +145,18 @@ static void RandomParticleRotation(const ParticlesContext& c, float& angle, floa
 }
 
 // ── Espirales / vórtice (ParticlesContext::SWIRL_* / SPIRAL_*) ────────────────────────────────
+// Ejes del quad cuando la partícula NO es billboard. FLAT_GROUND: plano XZ del mundo; EMITTER_PLANE: el plano XZ local del emisor
+// (con el emisor sin girar coincide con FLAT_GROUND). "Arriba" de la textura = -Z, como mirando el mapa desde arriba.
+static void FlatBasis(const ParticlesContext &c, M3 emitterRotation, glm::vec3 &right, glm::vec3 &up)
+{
+    right = glm::vec3(1.0f, 0.0f, 0.0f);
+    up    = glm::vec3(0.0f, 0.0f, -1.0f);
+    if (c.ORIENTATION == ParticleOrientation::EMITTER_PLANE) {
+        right = glm::normalize((emitterRotation * Vertex3D(1, 0, 0)).toGLM());
+        up    = glm::normalize((emitterRotation * Vertex3D(0, 0, -1)).toGLM());
+    }
+}
+
 // Rodrigues: rota v alrededor de `axis` (unitario) `angle` radianes
 static glm::vec3 RotateAroundAxis(const glm::vec3 &v, const glm::vec3 &axis, float angle)
 {
@@ -534,6 +546,9 @@ void ParticleEmitter::Draw()
     glBufferData(GL_ARRAY_BUFFER, MaxParticles * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
     glBufferSubData(GL_ARRAY_BUFFER, 0, ParticlesCount * sizeof(GLfloat), g_particule_rotation_data);
 
+    glm::vec3 flatRight, flatUp;
+    FlatBasis(context, getRotation(), flatRight, flatUp);
+
     Components::get()->Render()->getShaders()->shaderOGLParticles->render(
         billboard_vertex_buffer,
         particles_position_buffer,
@@ -541,7 +556,12 @@ void ParticleEmitter::Draw()
         particles_rotation_buffer,
         texture->getOGLTextureID(),
         ParticlesCount,
-        depthTest
+        depthTest,
+        static_cast<int>(context.ORIENTATION),
+        flatRight,
+        flatUp,
+        context.FLUTTER_ANGLE,
+        context.FLUTTER_SPEED
     );
 }
 
@@ -774,6 +794,9 @@ void ParticleEmitter::DrawGPU()
 
     auto* shaders = Components::get()->Render()->getShaders();
 
+    glm::vec3 flatRight, flatUp;
+    FlatBasis(context, getRotation(), flatRight, flatUp);
+
     shaders->shaderGPUParticles->render(
         particles_state_buffer,
         billboard_vertex_buffer,
@@ -784,7 +807,12 @@ void ParticleEmitter::DrawGPU()
         context.SIZE_END,
         NUM_GPU_PARTICLES,
         static_cast<int>(sizeof(OCParticle)),
-        depthTest
+        depthTest,
+        static_cast<int>(context.ORIENTATION),
+        flatRight,
+        flatUp,
+        context.FLUTTER_ANGLE,
+        context.FLUTTER_SPEED
     );
 }
 

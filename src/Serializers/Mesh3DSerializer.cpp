@@ -26,6 +26,10 @@ cJSON* Mesh3DSerializer::JsonByObject(Object3D *o)
     cJSON_AddBoolToObject(root, "enableLights", mesh->isEnableLights());
     cJSON_AddBoolToObject(root, "renderDefaultPipeline", mesh->isRenderPipelineDefault());
     cJSON_AddBoolToObject(root, "frustumCullSubmeshes", mesh->isFrustumCullSubmeshes());
+    if (!mesh->getInstancesFile().empty()) {   // opcional: solo los Mesh3D con lista de instancias (MeshInstances)
+        cJSON_AddStringToObject(root, "instancesFile", mesh->getInstancesFile().c_str());
+        cJSON_AddNumberToObject(root, "instanceMaxDistance", mesh->getInstanceMaxDistance());
+    }
     cJSON_AddBoolToObject(root, "emissionEnabled", mesh->isEmissionEnabled());
     cJSON_AddBoolToObject(root, "mipmaps", mesh->isMipmaps());
     cJSON_AddNumberToObject(root, "emissionIntensity", mesh->getEmissionIntensity());
@@ -68,6 +72,12 @@ void Mesh3DSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
     if (renderDefaultItem) mesh->setRenderPipelineDefault(renderDefaultItem->valueint);
     auto *frustumCullItem = cJSON_GetObjectItemCaseSensitive(json, "frustumCullSubmeshes");
     if (frustumCullItem) mesh->setFrustumCullSubmeshes(frustumCullItem->valueint);
+    // Opcionales: solo los Mesh3D con lista de instancias. La distancia va ANTES del fichero (no hace falta, pero asi no se
+    // recalcula la caja de culling con un valor a medias)
+    auto *instMaxDistItem = cJSON_GetObjectItemCaseSensitive(json, "instanceMaxDistance");
+    if (cJSON_IsNumber(instMaxDistItem)) mesh->setInstanceMaxDistance((float) instMaxDistItem->valuedouble);
+    auto *instFileItem = cJSON_GetObjectItemCaseSensitive(json, "instancesFile");
+    if (cJSON_IsString(instFileItem) && instFileItem->valuestring != nullptr) mesh->setInstancesFile(instFileItem->valuestring);
     auto *mipmapsItem = cJSON_GetObjectItemCaseSensitive(json, "mipmaps");      // opcional: escenas antiguas = false
     if (mipmapsItem) mesh->setMipmaps(cJSON_IsTrue(mipmapsItem));
     // Opcionales: escenas anteriores a la emisión no los tienen -> se quedan los defaults (false / 1.0)
@@ -239,6 +249,8 @@ Mesh3D* Mesh3DSerializer::CloneMesh3D(Mesh3D* src)
     dst->setEnableLights(src->isEnableLights());
     dst->setRenderPipelineDefault(src->isRenderPipelineDefault());
     dst->setFrustumCullSubmeshes(src->isFrustumCullSubmeshes());
+    dst->setInstanceMaxDistance(src->getInstanceMaxDistance());
+    if (!src->getInstancesFile().empty()) dst->setInstancesFile(src->getInstancesFile());
     dst->setEmissionEnabled(src->isEmissionEnabled());
     dst->setEmissionIntensity(src->getEmissionIntensity());
     for (int idx : src->getEmissiveMaterials()) dst->setMaterialEmissive(idx, true);

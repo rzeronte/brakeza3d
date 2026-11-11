@@ -85,7 +85,10 @@ void LUAIntegrationShaders(sol::state &lua)
         "Image3D",            &ObjectFactory::CreateImage3D,
         "Image3DAnimation",   &ObjectFactory::CreateImage3DAnimation,
         "Image3DAnimation360",&ObjectFactory::CreateImage3DAnimation360,
-        "Mesh3D",             &ObjectFactory::CreateMesh3D,
+        // ObjectFactory.Mesh3D(file, pos [, mipmaps]): el tercer argumento (opcional, por defecto false) activa mipmaps+trilineal+anisotropico
+        "Mesh3D",             sol::overload(
+                                  [](const std::string &f, const Vertex3D &p) { return ObjectFactory::CreateMesh3D(f, p, false); },
+                                  [](const std::string &f, const Vertex3D &p, bool mip) { return ObjectFactory::CreateMesh3D(f, p, mip); }),
         "Mesh3DAnimation",    &ObjectFactory::CreateMesh3DAnimation,
         "LightPoint",         &ObjectFactory::CreateLightPoint,
         "LightSpot",          &ObjectFactory::CreateLightSpot,
