@@ -6,7 +6,7 @@ const downloads = [
         icon: '/img/logo_windows.png',
         title: 'Windows 10/11',
         arch: 'amd64',
-        size: '68.9 MB',
+        size: '220.7 MB',
         url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.10/Brakeza3D-x64-86-Windows-installer.exe',
         label: 'Download .exe'
     },
@@ -14,7 +14,7 @@ const downloads = [
         icon: '/img/logo_linux.png',
         title: 'Ubuntu/Debian',
         arch: 'amd64',
-        size: '33.3 MB',
+        size: '92.7 MB',
         url: 'https://github.com/rzeronte/brakeza3d/releases/download/0.26.10/Brakeza3D-x64_86-Linux-installer.deb',
         label: 'Download .deb'
     },
