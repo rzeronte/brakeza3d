@@ -273,6 +273,9 @@ void LUAIntegrationBasics(sol::state &lua)
         "setShapeMargin", &Object3D::setShapeMargin,
         "setFrustumCulling", [](Object3D* o, bool v) { o->getRenderSettings().frustumCulling = v; },
         "setShadowMap",      [](Object3D* o, bool v) { o->getRenderSettings().shadowMap = v; },
+        "setBlendFunc",      [](Object3D* o, int src, int dst) { auto &rs = o->getRenderSettings(); rs.mode_src = static_cast<GLenum>(src); rs.mode_dst = static_cast<GLenum>(dst); },
+        "setWriteDepth",     [](Object3D* o, bool v) { o->getRenderSettings().writeDepth = v; },
+        "setCulling",        [](Object3D* o, bool v) { o->getRenderSettings().culling = v; },
         "isVisibleInFrustum", &Object3D::isVisibleInFrustum,
         "setScene", [](Object3D* o, const std::string& sceneName) {
             auto* scene = Components::get()->Scripting()->getSceneByName(sceneName);

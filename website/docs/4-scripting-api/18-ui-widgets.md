@@ -144,7 +144,8 @@ Draw widgets from `postUpdate()`, after the 3D scene. Call `flushTooltip(dt)` on
 | `getHoveredWidgetCursor()` | Name of the cursor requested by the widget/button under the mouse, or `""`. |
 | `isUIScrollHovered()` | `true` while the mouse is over a scroll area. Ignore the mouse wheel in your camera code then. |
 | `flushTooltip(dt)` | Draws the pending tooltip (0.35 s delay, 0.15 s fade-in). |
-| `invalidateWidget(name)` | Forces a cacheable widget to re-render its cached image on the next draw (returns `false` if not found). |
+| `drawWidgetInstances(name, instances, fb, scale)` | Draws many copies of one widget in a single call and a single UI batch. `instances` = `{ {x=, y=, alpha=, data={...}}, ... }` (`alpha` optional). Returns `clickedIdx, clickedId, rightClickedIdx, rightClickedId, hoveredIdx, hoveredId` (1-based, `0` = none; `hoveredIdx` is the topmost copy under the mouse). Best with `"cache": "variants"`, see [Caching](#caching). |
+| `invalidateWidget(name)` | Forces a cached widget to re-render on the next draw (`single`: its image; `variants`: wipes every variant). Returns `false` if not found. |
 | `invalidateAllWidgets()` | Same for every widget, e.g. after a context change after which the old cached image would be shown. |
 | `setUIDesignResolution(w, h)` | Resolution the UI was designed for: at top level, widget text scales with the window from it (`0, 0` = off, fixed text size). Widgets with `refHeight` keep their own factor. |
 
@@ -167,7 +168,7 @@ render:drawWidgetAtPos("inventory", (sw - sw * wFrac) / 2, (sh - sh * hFrac) / 2
   "bgImage": "../assets/images/ui/FRAME.png",
   "bgSlice": [64, 64, 64, 64],
   "font": "../assets/fonts/MyFont.ttf",
-  "cacheable": false,
+  "cache": "none",
   "elements": [
     { "id": "title", "type": "text", "x": 0.05, "y": 0.04, "fontScale": 0.8,
       "text": "INVENTORY", "textColor": { "r": 1, "g": 0.85, "b": 0.3, "a": 1 } },
@@ -197,9 +198,38 @@ render:drawWidgetAtPos("inventory", (sw - sw * wFrac) / 2, (sh - sh * hFrac) / 2
 | `font` | `.ttf`/`.otf` for all text in this widget. Nested widgets inherit it unless they set their own |
 | `refHeight` | Design render height in pixels. When set, text scales with the current render height. Inherited by nested widgets |
 | `cursor` | Cursor name requested while the mouse is over the widget |
-| `cacheable` | `true` (default) renders the widget to an FBO and redraws it only when its data changes. Set `false` for interactive widgets (hover/pressed states) |
+| `cache` | `"single"` (default), `"none"` or `"variants"`. See [Caching](#caching). The old `"cacheable": true/false` still works (= `single`/`none`) |
+| `maxVariants` | With `"cache": "variants"`: how many cached images to keep before wiping them all (default `64`) |
 | `elements` | Ordered list of elements (drawn in this order) |
 | `data` | Default data per element id, same fields as the Lua data table |
+
+### Caching
+
+Drawing a widget element by element every frame costs CPU. A cached widget is drawn once into an image and then copied. Two settings control it.
+
+**Per element: fixed or `live`.** Elements are fixed by default: they go into the cached image and are only redrawn when their data changes. An element with `"live": true` is never cached. It is drawn on every call, on top of the cached image. Use `live` for things that change often (health bar, counter, timer) or need hover feedback (buttons).
+
+**Per widget: the `cache` mode.**
+
+| Mode | What it keeps | Use it for |
+|------|---------------|------------|
+| `none` | Nothing. The whole widget is drawn on every call | Widgets with hover/press feedback everywhere. Always used when the widget contains a `scroll` |
+| `single` | One image: the last fixed data drawn | One-off panels (bottom bar, minimap frame…) |
+| `variants` | One image per distinct fixed data, in an atlas (up to `maxVariants`) | Many copies of the same widget: unit avatars, labels, map markers |
+
+With `variants`, only the data of fixed elements counts. 200 unit avatars with 6 different portraits and a `live` health bar are 6 cached images, and each copy costs one textured quad plus its health bar.
+
+`variants` is not free: each copy has to work out which cached image it needs. It only pays off when the fixed part is expensive to draw (several texts, 9-slice frames, nested widgets). If the fixed part is a single image, `none` is faster. Whatever the mode, drawing many copies with `drawWidgetInstances` puts them all in one batch, which is the biggest saving.
+
+Limitations of `single` and `variants` (the UI editor lists the problems it detects):
+
+1. **`live` is always on top.** A live element can't be under a fixed one.
+2. **Fixed elements are baked in their normal state.** A fixed button still receives clicks, but shows no hover/pressed colors, plays no sound and shows no tooltip. A fixed image shows no tooltip. Make them `live`, or use `none`.
+3. **Changing data on a fixed element creates a new variant for every value.** When `maxVariants` is reached or the atlas is full, every variant is wiped and the log warns. That element should be `live`. A different `scale` also counts as a new variant.
+4. **Everything is rebuilt** when the window or the target layer changes size, when the JSON is reloaded, and on `invalidateWidget`. Always draw a `variants` widget on the same layer.
+5. **Per copy, only position, opacity and the live elements change.** No rotation or deformation.
+6. **Only top-level widgets are cached.** Nested widgets are baked inside their parent. A `live` element inside a nested widget counts as live for the parent.
+7. **In `drawWidgetInstances`, translucent rects use the image blend** so they don't split the batch. The color is the same, but the alpha left in the layer can differ very slightly from `drawWidgetAtPos`.
 
 ### 9-slice backgrounds
 
@@ -209,7 +239,7 @@ The image's transparency is respected. Anything you draw under it (`bgColor`, `b
 
 ### Element types
 
-Common fields: `id`, `type`, `x`, `y`, `w`, `h`, `enabled` (`false` skips the element), `paddingLeft`, `paddingTop`, `paddingBottom`, and `yAuto` (see [Auto layout](#auto-layout)).
+Common fields: `id`, `type`, `x`, `y`, `w`, `h`, `enabled` (`false` skips the element), `live` (`true` = never cached, see [Caching](#caching)), `paddingLeft`, `paddingTop`, `paddingBottom`, and `yAuto` (see [Auto layout](#auto-layout)).
 
 | Type | What it draws | Main fields |
 |------|---------------|-------------|
@@ -273,13 +303,14 @@ A nested widget with no data at all is skipped. You can switch between several n
 
 ### Arrays (lists)
 
-An `array` element repeats the widget `widgetRef`, vertically or horizontally.
+An `array` element repeats the widget `widgetRef`, vertically, horizontally or as a grid of N columns.
 
 | Field | Description |
 |-------|-------------|
 | `widgetRef` | Row/item widget |
 | `arrayCount` | Default number of items (override with `count` in data) |
-| `arrayAlign` | `"vertical"` (default) or `"horizontal"` |
+| `arrayAlign` | `"vertical"` (default), `"horizontal"` or `"grid"` |
+| `arrayColumns` | With `"grid"`: items per row (default 4). Items fill left to right, then the next row; `arrayOffset` is the gap in both directions |
 | `arrayOffset` | Extra space between items (fraction of the parent height) |
 | `arrayDistribute` | `true` spreads the items across the whole window width/height |
 | `arrayPrefix` | Prefix for item data keys (default: none) |

@@ -396,6 +396,34 @@ void Mesh3D::updateSubmeshFrustumVisibility()
     }
 }
 
+void Mesh3D::setInstancesFile(const std::string &path)
+{
+    std::unique_ptr<MeshInstances> loaded;
+    if (!path.empty()) {
+        loaded = std::make_unique<MeshInstances>();
+        if (!loaded->loadFromFile(path)) loaded.reset();
+    }
+
+    {
+        std::lock_guard<std::mutex> lock(instancesMtx);
+        instances = std::move(loaded);
+        instancesFile = path;
+        hasInstancesFlag = (instances != nullptr);
+    }
+    UpdateBoundingBox();
+}
+
+const std::vector<glm::mat4> &Mesh3D::getVisibleInstances() const
+{
+    static const std::vector<glm::mat4> none;
+    return instances ? instances->getVisible() : none;
+}
+
+size_t Mesh3D::getInstanceCount() const               { std::lock_guard<std::mutex> lock(instancesMtx); return instances ? instances->getTotalCount() : 0; }
+size_t Mesh3D::getVisibleInstanceCount() const        { std::lock_guard<std::mutex> lock(instancesMtx); return instances ? instances->getVisible().size() : 0; }
+size_t Mesh3D::getInstanceChunkCount() const          { std::lock_guard<std::mutex> lock(instancesMtx); return instances ? instances->getChunkCount() : 0; }
+size_t Mesh3D::getVisibleInstanceChunkCount() const   { std::lock_guard<std::mutex> lock(instancesMtx); return instances ? instances->getVisibleChunkCount() : 0; }
+
 void Mesh3D::onUpdate()
 {
     Object3D::onUpdate();
@@ -433,7 +461,15 @@ void Mesh3D::onUpdate()
         render->InvalidateRenderStateCache();
     }
 
-    if (frustumCullSubmeshes) updateSubmeshFrustumVisibility();
+    // Instancing: se deciden aqui (frustum por chunk + distancia) las instancias que se dibujan este frame. Las submeshes se
+    // dibujan siempre: el culling lo hacen los chunks, no el de submeshes (que mira solo la caja del modelo base).
+    const bool instanced = hasInstances();
+    if (instanced) {
+        std::lock_guard<std::mutex> lock(instancesMtx);
+        if (instances) instances->cull(getModelMatrix(), Components::get()->Camera()->getCamera()->getPosition(), instanceMaxDistance);
+    } else if (frustumCullSubmeshes) {
+        updateSubmeshFrustumVisibility();
+    }
 
     GLuint fbo = Config::get()->ENABLE_LIGHTS ? window->getGBuffer().FBO : sceneFramebuffer;
 
@@ -481,7 +517,7 @@ void Mesh3D::onUpdate()
         Drawable::drawGrid3D(grid);
     }
 
-    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
+    if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D && !instanced) {   // con instancias no hay picking (el draw de picking es de una sola copia)
         // Fase 4b: encolado igual que el G-Buffer (EnqueueOpaque más arriba) -- se dibuja todo
         // junto en FlushPickingQueue(), agrupando instancias del mismo modelo en una sola
         // llamada instanciada en vez de un draw por objeto cada frame.
@@ -508,13 +544,36 @@ void Mesh3D::postUpdate()
     }
 }
 
+bool Mesh3D::emissionViaObjectShader() const
+{
+    return emissionEnabled && emissionIntensity > 0.0f && !customShaders.empty()
+        && dynamic_cast<ShaderNodesMesh3D*>(customShaders.back()) != nullptr;
+}
+
 void Mesh3D::RunObjectShaders() const
 {
     if (customShaders.empty() || !shaderChain) return;
     if (!isVisibleInFrustum()) return;
 
     auto window = Components::get()->Window();
-    shaderChain->ProcessChain(this, customShaders, window->getGBuffer().FBO);
+    const GLuint gbufferFBO = window->getGBuffer().FBO;
+
+    // glDrawBuffers es estado DEL FBO: 4 draw buffers (con gEmission) solo mientras se dibuja un mesh emisivo cuyo shader de nodos escribe
+    // la emision; el resto de custom shaders (WaterRTS, de codigo...) no escriben location 3 y la dejarian indefinida.
+    const bool withEmission = emissionViaObjectShader();
+    static const GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+    if (withEmission) {
+        glBindFramebuffer(GL_FRAMEBUFFER, gbufferFBO);
+        glDrawBuffers(4, buffers);
+    }
+
+    shaderChain->ProcessChain(this, customShaders, gbufferFBO);
+
+    if (withEmission) {
+        glBindFramebuffer(GL_FRAMEBUFFER, gbufferFBO);
+        glDrawBuffers(3, buffers);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
     // ShaderOGLCustomCodeMesh3D::renderMesh() toca GL_DEPTH_TEST/GL_BLEND/GL_CULL_FACE directo,
     // fuera de la caché de Fase 1.1.1 -- invalidar para que el próximo Apply* (FlushOpaqueQueue)
     // no se fíe de un valor obsoleto, igual que ya hacen Outline/Wireframe/Shading/Color.
@@ -923,6 +982,34 @@ void Mesh3D::ShadowMappingPass()
 void Mesh3D::UpdateBoundingBox()
 {
     glm::mat4 mvpMatrix = getModelMatrix();
+
+    // Con instancias, la caja (y la esfera de culling del objeto) cubre TODAS las instancias, no solo la copia base
+    if (hasInstances()) {
+        std::lock_guard<std::mutex> lock(instancesMtx);
+        if (instances && !instances->empty()) {
+            const Vertex3D &mn = instances->getLocalMin();
+            const Vertex3D &mx = instances->getLocalMax();
+            float iMaxX = -FLT_MAX, iMinX = FLT_MAX, iMaxY = -FLT_MAX, iMinY = FLT_MAX, iMaxZ = -FLT_MAX, iMinZ = FLT_MAX;
+            for (int i = 0; i < 8; i++) {
+                const glm::vec4 p = mvpMatrix * glm::vec4((i & 1) ? mx.x : mn.x, (i & 2) ? mx.y : mn.y, (i & 4) ? mx.z : mn.z, 1.0f);
+                iMaxX = std::max(iMaxX, p.x / p.w); iMinX = std::min(iMinX, p.x / p.w);
+                iMaxY = std::max(iMaxY, p.y / p.w); iMinY = std::min(iMinY, p.y / p.w);
+                iMaxZ = std::max(iMaxZ, p.z / p.w); iMinZ = std::min(iMinZ, p.z / p.w);
+            }
+            aabb.max = Vertex3D(iMaxX, iMaxY, iMaxZ);
+            aabb.min = Vertex3D(iMinX, iMinY, iMinZ);
+            aabb.updateVertices();
+
+            const Vertex3D &pos = getPosition();
+            float r2 = 0.f;
+            for (const auto &v : aabb.vertices) {
+                const float dx = v.x - pos.x, dy = v.y - pos.y, dz = v.z - pos.z;
+                r2 = std::max(r2, dx * dx + dy * dy + dz * dz);
+            }
+            boundingRadius = sqrtf(r2);
+            return;
+        }
+    }
 
     float maxX = -FLT_MAX, minX = FLT_MAX, maxY = -FLT_MAX, minY = FLT_MAX, maxZ = -FLT_MAX, minZ = FLT_MAX;
 

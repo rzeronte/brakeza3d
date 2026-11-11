@@ -32,6 +32,12 @@ void ShaderOGLGPUParticles::LoadUniforms()
     uColorTo        = glGetUniformLocation(programID, "colorTo");
     uSizeStart      = glGetUniformLocation(programID, "sizeStart");
     uSizeEnd        = glGetUniformLocation(programID, "sizeEnd");
+    uOrientation    = glGetUniformLocation(programID, "orientation");
+    uFlatRight      = glGetUniformLocation(programID, "flatRight");
+    uFlatUp         = glGetUniformLocation(programID, "flatUp");
+    uCameraPos      = glGetUniformLocation(programID, "cameraPos");
+    uFlutterAngle   = glGetUniformLocation(programID, "flutterAngle");
+    uFlutterSpeed   = glGetUniformLocation(programID, "flutterSpeed");
 }
 
 void ShaderOGLGPUParticles::render(
@@ -44,7 +50,12 @@ void ShaderOGLGPUParticles::render(
     float sizeEnd,
     int numParticles,
     int stride,
-    bool depthTest
+    bool depthTest,
+    int orientation,
+    const glm::vec3 &flatRight,
+    const glm::vec3 &flatUp,
+    float flutterAngle,
+    float flutterSpeed
 )
 {
     if (programID == 0) {
@@ -88,6 +99,17 @@ void ShaderOGLGPUParticles::render(
     glUniform4f(uColorTo,   colorTo.r,   colorTo.g,   colorTo.b,   colorTo.a);
     glUniform1f(uSizeStart, sizeStart);
     glUniform1f(uSizeEnd,   sizeEnd);
+    glUniform1i(uOrientation, orientation);
+    glUniform3f(uFlatRight, flatRight.x, flatRight.y, flatRight.z);
+    glUniform3f(uFlatUp,    flatUp.x,    flatUp.y,    flatUp.z);
+    const glm::vec3 cameraPos = -glm::transpose(glm::mat3(view)) * glm::vec3(view[3]);
+    glUniform3f(uCameraPos, cameraPos.x, cameraPos.y, cameraPos.z);
+    glUniform1f(uFlutterAngle, flutterAngle);
+    glUniform1f(uFlutterSpeed, flutterSpeed);
+
+    // Quad plano (no billboard): se ve por las dos caras; con culling desaparecería. Solo en ese modo se toca el estado
+    const bool restoreCulling = orientation != 0 && glIsEnabled(GL_CULL_FACE) == GL_TRUE;
+    if (orientation != 0) glDisable(GL_CULL_FACE);
 
     const int OCPARTICLE_STRIDE = stride;
 
@@ -135,6 +157,7 @@ void ShaderOGLGPUParticles::render(
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    if (restoreCulling) glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);

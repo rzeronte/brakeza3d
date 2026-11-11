@@ -239,6 +239,10 @@ void LUAIntegrationComponents(sol::state &lua)
         "invalidateAllWidgets", [](ComponentRender& r) {
             if (r.getUIManager()) r.getUIManager()->invalidateAllWidgets();
         },
+        // UI theme: SLOTS images are read from UI/SLOTS_THEMES/<theme>/ ("" = default SLOTS folder). Live.
+        "setUITheme", [](ComponentRender& r, const std::string& theme) {
+            if (r.getUIManager()) r.getUIManager()->setUITheme(theme);
+        },
         // UI design resolution: widget texts scale with the window from it (0, 0 = off)
         "setUIDesignResolution", [](ComponentRender& r, float w, float h) {
             if (r.getUIManager()) r.getUIManager()->setDesignResolution(w, h);

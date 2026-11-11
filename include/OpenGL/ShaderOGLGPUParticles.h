@@ -14,6 +14,12 @@ class ShaderOGLGPUParticles : public ShaderBaseOpenGL {
     GLuint uColorTo                  = 0;
     GLuint uSizeStart                = 0;
     GLuint uSizeEnd                  = 0;
+    GLuint uOrientation              = 0;
+    GLuint uFlatRight                = 0;
+    GLuint uFlatUp                   = 0;
+    GLuint uCameraPos                = 0;
+    GLuint uFlutterAngle             = 0;
+    GLuint uFlutterSpeed             = 0;
 public:
     ShaderOGLGPUParticles();
     void PrepareMainThread() override;
@@ -28,7 +34,12 @@ public:
         float sizeEnd,
         int numParticles,
         int stride,
-        bool depthTest = false
+        bool depthTest = false,
+        int orientation = 0,                                 // ParticleOrientation (0 = billboard, original)
+        const glm::vec3 &flatRight = glm::vec3(1, 0, 0),     // ejes del quad cuando no es billboard
+        const glm::vec3 &flatUp = glm::vec3(0, 0, -1),
+        float flutterAngle = 0.0f,                           // balanceo en grados (0 = sin balanceo, original)
+        float flutterSpeed = 0.5f
     );
     void Destroy() override;
 };

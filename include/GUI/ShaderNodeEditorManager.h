@@ -61,6 +61,7 @@ enum class MeshTextureType {
 class ShaderNodeEditorManager : public NodeEditorManager {
 private:
     GLuint m_ShaderProgram;
+    float m_Emission = 0.0f;   // u_Emission del shader de objeto (gEmission.a): lo fija Mesh3DShaderChain por submesh antes de RenderMesh
     GLuint m_VAO;
     GLuint m_VBO;
     bool m_NeedsRecompile;
@@ -165,6 +166,8 @@ public:
     void UpdateInternalTextures(GLuint colorTexture, GLuint depthTexture);
 
     void UpdateMeshTextures(GLuint diffuseTexture, GLuint specularTexture);
+
+    void SetEmission(float value) { m_Emission = value; }
 
     void RenderMesh(
         GLuint fb,

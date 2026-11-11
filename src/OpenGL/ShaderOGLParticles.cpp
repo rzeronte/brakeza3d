@@ -29,6 +29,12 @@ void ShaderOGLParticles::LoadUniforms()
     ViewProjMatrixID = glGetUniformLocation(programID, "VP");
 
     textureIDuniform = glGetUniformLocation(programID, "myTextureSampler");
+    orientationID = glGetUniformLocation(programID, "orientation");
+    flatRightID = glGetUniformLocation(programID, "flatRight");
+    flatUpID = glGetUniformLocation(programID, "flatUp");
+    cameraPosID = glGetUniformLocation(programID, "cameraPos");
+    flutterAngleID = glGetUniformLocation(programID, "flutterAngle");
+    flutterSpeedID = glGetUniformLocation(programID, "flutterSpeed");
 }
 
 void ShaderOGLParticles::render(
@@ -38,7 +44,12 @@ void ShaderOGLParticles::render(
     GLuint particles_rotation_buffer,
     GLuint textureID,
     int particlesCount,
-    bool depthTest
+    bool depthTest,
+    int orientation,
+    const glm::vec3 &flatRight,
+    const glm::vec3 &flatUp,
+    float flutterAngle,
+    float flutterSpeed
 )
 {
     // depthTest: el sceneFBO comparte el depth del G-Buffer, así la geometría opaca oculta las partículas.
@@ -70,6 +81,18 @@ void ShaderOGLParticles::render(
     glUniform3f(CameraRight_worldspace_ID, ViewMatrix[0][0], ViewMatrix[1][0], ViewMatrix[2][0]);
     glUniform3f(CameraUp_worldspace_ID   , ViewMatrix[0][1], ViewMatrix[1][1], ViewMatrix[2][1]);
     glUniformMatrix4fv(ViewProjMatrixID, 1, GL_FALSE, &ViewProjectionMatrix[0][0]);
+    glUniform1i(orientationID, orientation);
+    glUniform3f(flatRightID, flatRight.x, flatRight.y, flatRight.z);
+    glUniform3f(flatUpID, flatUp.x, flatUp.y, flatUp.z);
+    const glm::vec3 cameraPos = -glm::transpose(glm::mat3(ViewMatrix)) * glm::vec3(ViewMatrix[3]);
+    glUniform3f(cameraPosID, cameraPos.x, cameraPos.y, cameraPos.z);
+    glUniform1f(flutterAngleID, flutterAngle);
+    glUniform1f(flutterSpeedID, flutterSpeed);
+
+    // Quad plano (no billboard): se ve por las dos caras según desde donde se mire; con culling desaparecería. Solo en ese modo
+    // se toca el estado y se devuelve tal como estaba
+    const bool restoreCulling = orientation != 0 && glIsEnabled(GL_CULL_FACE) == GL_TRUE;
+    if (orientation != 0) glDisable(GL_CULL_FACE);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, billboard_vertex_buffer);
@@ -124,6 +147,7 @@ void ShaderOGLParticles::render(
     glDisableVertexAttribArray(2);
     glDisableVertexAttribArray(3);
 
+    if (restoreCulling) glEnable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     if (depthTest) glDepthMask(GL_TRUE);
 

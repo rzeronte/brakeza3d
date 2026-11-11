@@ -760,6 +760,7 @@ void ShaderNodeEditorManager::LoadImageForNode(int nodeId, const std::string& fi
 
     try {
         m_NodeTextures[nodeId].image = new Image(filepath);
+        m_NodeTextures[nodeId].image->setMipmaps(true);     // texturas de nodos Image sobre geometria (carteles): sin mipmaps se ven con aliasing
         m_NodeTextures[nodeId].filepath = filepath;
     } catch (const std::exception& e) {
         LOG_ERROR("Exception loading texture: %s", e.what());
@@ -801,6 +802,10 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
         code << "layout (location = 0) out vec3 gPosition;\n";
         code << "layout (location = 1) out vec3 gNormal;\n";
         code << "layout (location = 2) out vec4 gAlbedoSpec;\n";
+        // Emision (G-Buffer COLOR_ATTACHMENT3: rgb = color que emite, a = intensidad). Solo se escribe si Mesh3D::RunObjectShaders activa el 4o
+        // draw buffer (mesh emisivo); con 3 draw buffers la salida se descarta.
+        code << "layout (location = 3) out vec4 gEmission;\n";
+        code << "uniform float u_Emission;\n";
     }
     code << "uniform float u_Time;\n";
 
@@ -834,6 +839,7 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
             code << "    gPosition = v_FragPos;\n";
             code << "    gNormal = normalize(v_Normal);\n";
             code << "    gAlbedoSpec = vec4(1.0, 0.0, 1.0, 1.0);\n";
+            code << "    gEmission = vec4(0.0);\n";
         } else {
             code << "    FragColor = vec4(1.0, 0.0, 1.0, 1.0);\n";
         }
@@ -866,6 +872,7 @@ std::string ShaderNodeEditorManager::GenerateShaderCode()
         } else {
             code << "    gAlbedoSpec = vec4(" << finalColor << ", 1.0);\n";
         }
+        code << "    gEmission = vec4(gAlbedoSpec.rgb, u_Emission);\n";
     } else {
         if (finalColor.empty()) {
             code << "    FragColor = vec4(0.0, 1.0, 1.0, 1.0);\n";
@@ -1269,6 +1276,9 @@ void ShaderNodeEditorManager::RenderMesh(
     float time = Brakeza::get()->getExecutionTime();
     GLint timeLoc = glGetUniformLocation(m_ShaderProgram, "u_Time");
     if (timeLoc != -1) glUniform1f(timeLoc, time);
+
+    GLint emissionLoc = glGetUniformLocation(m_ShaderProgram, "u_Emission");
+    if (emissionLoc != -1) glUniform1f(emissionLoc, m_Emission);
 
     GLint screenSizeLoc = glGetUniformLocation(m_ShaderProgram, "u_ScreenSize");
     if (screenSizeLoc != -1) {

@@ -38,6 +38,9 @@ cJSON * ParticleEmmitterSerializer::JsonByObject(Object3D *o)
     cJSON_AddNumberToObject(contextParticles, "ROTATION_SPEED_MIN", light->getContextPointer().ROTATION_SPEED_MIN);
     cJSON_AddNumberToObject(contextParticles, "ROTATION_SPEED_MAX", light->getContextPointer().ROTATION_SPEED_MAX);
     cJSON_AddBoolToObject(contextParticles, "ROTATION_RANDOM_DIR", light->getContextPointer().ROTATION_RANDOM_DIR);
+    cJSON_AddNumberToObject(contextParticles, "ORIENTATION", static_cast<int>(light->getContextPointer().ORIENTATION));
+    cJSON_AddNumberToObject(contextParticles, "FLUTTER_ANGLE", light->getContextPointer().FLUTTER_ANGLE);
+    cJSON_AddNumberToObject(contextParticles, "FLUTTER_SPEED", light->getContextPointer().FLUTTER_SPEED);
     cJSON_AddNumberToObject(contextParticles, "SWIRL_SPEED", light->getContextPointer().SWIRL_SPEED);
     cJSON_AddNumberToObject(contextParticles, "SWIRL_PULL", light->getContextPointer().SWIRL_PULL);
     cJSON_AddNumberToObject(contextParticles, "SPIRAL_RADIAL_SPEED", light->getContextPointer().SPIRAL_RADIAL_SPEED);
@@ -155,6 +158,10 @@ void ParticleEmmitterSerializer::ApplyJsonToObject(cJSON *json, Object3D *o)
         auto *item = cJSON_GetObjectItemCaseSensitive(contextJSON, key);
         return item ? item->valuedouble : def;
     };
+    // Escenas antiguas no la tienen: BILLBOARD, comportamiento original
+    context.ORIENTATION         = static_cast<ParticleOrientation>(static_cast<int>(numOr("ORIENTATION", 0.0)));
+    context.FLUTTER_ANGLE       = static_cast<float>(numOr("FLUTTER_ANGLE", 0.0));
+    context.FLUTTER_SPEED       = static_cast<float>(numOr("FLUTTER_SPEED", 0.5));
     context.SWIRL_SPEED         = static_cast<float>(numOr("SWIRL_SPEED", 0.0));
     context.SWIRL_PULL          = static_cast<float>(numOr("SWIRL_PULL", 0.0));
     context.SPIRAL_RADIAL_SPEED = static_cast<float>(numOr("SPIRAL_RADIAL_SPEED", 0.0));

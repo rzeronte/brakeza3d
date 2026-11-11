@@ -80,9 +80,20 @@ h1 {
   color: var(--ifm-font-color-base);
 }
 
+.videoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .videoGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .videoWrapper {
   width: 100%;
-  max-width: 800px;
   margin: 0 auto;
   aspect-ratio: 16 / 9;
   overflow: hidden;

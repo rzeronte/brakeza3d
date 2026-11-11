@@ -14,6 +14,14 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
             if (GUIFields::BeginSection("RENDER")) {
                 GUIFields::Check("Default pipeline", &o->renderDefaultPipeline, "Render through the deferred pipeline. Off = only the object shaders draw it.");
                 GUIFields::Check("Frustum cull submeshes", &o->frustumCullSubmeshes, "Skip submeshes outside the camera view.");
+                if (o->hasInstances()) {
+                    GUIFields::Text("Instances file", "%s", o->getInstancesFile().c_str());
+                    GUIFields::Text("Instances", "%zu  (drawn %zu)", o->getInstanceCount(), o->getVisibleInstanceCount());
+                    GUIFields::Text("Chunks", "%zu  (visible %zu)", o->getInstanceChunkCount(), o->getVisibleInstanceChunkCount());
+                    float maxDist = o->getInstanceMaxDistance();
+                    if (GUIFields::Float("Max distance", &maxDist, 1.0f, 0.0f, 100000.0f, "%.0f", "Chunks farther than this from the camera are not drawn. 0 = no limit."))
+                        o->setInstanceMaxDistance(maxDist);
+                }
                 bool mip = o->isMipmaps();
                 if (GUIFields::Check("Mipmaps", &mip, "Mipmaps + trilinear + anisotropic filtering on this model's textures: removes the grainy look at a distance. Textures are shared by path, so it also affects other meshes using them.")) o->setMipmaps(mip);
                 GUIFields::Check("Emission", &o->emissionEnabled);

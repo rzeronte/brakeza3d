@@ -13,6 +13,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include "Vertex3D.h"
+#include "MeshInstances.h"
 #include "../Render/Triangle3D.h"
 #include "../Misc/Tools.h"
 #include "../Misc/FilePaths.h"
@@ -102,6 +103,14 @@ protected:
     bool renderDefaultPipeline = true;
     bool frustumCullSubmeshes = false;
 
+    // Instancing: lista opcional de instancias (ver MeshInstances). Con lista, el Mesh3D se dibuja una vez por instancia visible
+    // (un draw instanciado por submesh) en vez de una sola vez; no es seleccionable por picking ni proyecta sombras.
+    std::unique_ptr<MeshInstances> instances;
+    std::string instancesFile;
+    float instanceMaxDistance = 0.0f;     // 0 = sin limite
+    std::atomic<bool> hasInstancesFlag = false;
+    mutable std::mutex instancesMtx;
+
     // Emisión sobre el diffuse (desactivada por defecto): el objeto se ve con el color de su
     // textura sin depender de las luces. intensity 0..1 = mezcla entre iluminado y diffuse puro.
     // Mipmaps + trilineal + anisotropico en las texturas de este modelo (quita el granulado a distancia).
@@ -128,6 +137,9 @@ public:
     void UnregisterSubmeshPicking();
     void onUpdate() override;
     void RunObjectShaders() const;
+    // true si la emision de este mesh la escribe su ultimo shader de objeto de nodos (gEmission desde el propio shader) en vez de la cola emisiva
+    // (que dibujaria la difusa estatica por encima del resultado del shader). Ver ComponentRender::EnqueueOpaque / BeginEmission.
+    [[nodiscard]] bool emissionViaObjectShader() const;
     void postUpdate() override;
     void BuildOctree(int depth);
     void DrawPropertiesGUI() override;
@@ -190,6 +202,19 @@ public:
     [[nodiscard]] bool isRenderPipelineDefault() const                            { return renderDefaultPipeline; }
     [[nodiscard]] bool isFrustumCullSubmeshes() const                             { return frustumCullSubmeshes; }
     void setFrustumCullSubmeshes(bool value)                                      { frustumCullSubmeshes = value; }
+
+    // Instancing (ver MeshInstances). Carga la lista desde un fichero BZIN ("" = quitarla). Acepta llamarse desde cualquier hilo.
+    void setInstancesFile(const std::string &path);
+    [[nodiscard]] const std::string &getInstancesFile() const                     { return instancesFile; }
+    [[nodiscard]] bool hasInstances() const                                       { return hasInstancesFlag.load(); }
+    [[nodiscard]] float getInstanceMaxDistance() const                            { return instanceMaxDistance; }
+    void setInstanceMaxDistance(float value)                                      { instanceMaxDistance = std::max(0.0f, value); }
+    // Matrices de mundo de las instancias visibles este frame (rellenadas en onUpdate, antes de encolar). Hilo principal.
+    [[nodiscard]] const std::vector<glm::mat4> &getVisibleInstances() const;
+    [[nodiscard]] size_t getInstanceCount() const;
+    [[nodiscard]] size_t getVisibleInstanceCount() const;
+    [[nodiscard]] size_t getInstanceChunkCount() const;
+    [[nodiscard]] size_t getVisibleInstanceChunkCount() const;
     [[nodiscard]] const std::string &getModelFile() const                         { return sourceFile.str(); }
     [[nodiscard]] bool isMipmaps() const                                          { return mipmaps; }
     void setMipmaps(bool value);

@@ -120,6 +120,7 @@ class ComponentRender : public Component
     // cercano -- nadie puede taparlos después dejando emisión obsoleta en ese píxel.
     std::vector<RenderQueueEntry> emissiveQueue;
     bool emissionUsedThisFrame = false;   // lo lee LightPass() para saltarse la lectura de gEmission
+    bool objectShaderEmissionThisFrame = false;   // algun mesh en objectShaderQueue escribe gEmission desde su shader de nodos
 
     // Fase 4b: misma idea que opaqueQueue pero para el pase de picking (ShaderOGLColor). Mismo
     // ciclo de vida -- vive solo dentro de un frame.
@@ -262,7 +263,9 @@ public:
     static GLuint resolveEffectiveFBO(const std::string& fb);
     void DrawImage2D(const std::string &path, int x, int y, int w, int h);
     void DrawImage2DToFB(const std::string &path, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f);
-    void DrawImage2DFromImageToFB(Image *img, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f);
+    // flipX: espeja la imagen en horizontal; tintR/G/B: multiplican la textura (1 = sin tinte). Solo en el camino por lotes (batchUIQuads).
+    void DrawImage2DFromImageToFB(Image *img, int x, int y, int w, int h, const std::string &fb, float alpha = 1.0f,
+                                  bool flipX = false, float tintR = 1.0f, float tintG = 1.0f, float tintB = 1.0f);
     // 9-slice: corners keep their size, edges stretch along one axis, center stretches both.
     // (x,y,w,h) in window px; slice L/T/R/B in IMAGE px; sliceScale = screen (window) px per image px.
     void DrawImage2DNineSliceToFB(Image *img, float x, float y, float w, float h,
@@ -304,6 +307,7 @@ public:
     void RestoreDefaultRenderState();
     void EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);
     void FlushOpaqueQueue();
+    void BeginEmission();   // antes de FlushObjectShaderQueue: limpia gEmission si algo va a escribirla (cola emisiva o shaders de objeto)
     void FlushEmissiveQueue();
     void DrawRenderQueue(std::vector<RenderQueueEntry> &queue);
     void EnqueuePicking(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo);

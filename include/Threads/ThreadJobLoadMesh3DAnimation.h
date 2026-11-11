@@ -54,6 +54,7 @@ public:
         }
 
         mesh->FillOGLBuffers();
+        mesh->applyMipmapsToTextures();          // hilo principal, con las texturas ya subidas (igual que ThreadJobLoadMesh3D)
         mesh->FillAnimationBoneDataOGLBuffers();
         mesh->UpdateBonesFinalTransformations(0);
         Mesh3DSerializer::ApplyCustomShadersMainThread(mesh);

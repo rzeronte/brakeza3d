@@ -493,6 +493,7 @@ void ComponentRender::onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects)
     // una sola vez al final para TODOS los objetos -- repintaría encima el material sin animar de
     // cualquier objeto procesado antes que el último de sceneObjects (visible como una "capa"
     // blanca estática y sin desplazar por encima del agua animada).
+    Components::get()->Render()->BeginEmission();
     Components::get()->Render()->FlushObjectShaderQueue();
     // Emisivos SIEMPRE los últimos en escribir el G-Buffer -- ver comentario de FlushEmissiveQueue.
     Components::get()->Render()->FlushEmissiveQueue();
@@ -1116,7 +1117,8 @@ void ComponentRender::DrawImage2DNineSliceToFB(Image *img, float x, float y, flo
     }
 }
 
-void ComponentRender::DrawImage2DFromImageToFB(Image* img, int x, int y, int w, int h, const std::string &fb, float alpha)
+void ComponentRender::DrawImage2DFromImageToFB(Image* img, int x, int y, int w, int h, const std::string &fb, float alpha,
+                                               bool flipX, float tintR, float tintG, float tintB)
 {
     const bool batched = batchUIQuads();
     if (!batched) flushUIBatch();
@@ -1135,9 +1137,10 @@ void ComponentRender::DrawImage2DFromImageToFB(Image* img, int x, int y, int w, 
         key.blend   = ShaderOGLUIBatch::Blend::Image;
         shaders.shaderUIBatch->appendQuad(key, (float)(int)(x * rx), (float)(int)(y * ry),
                                           (float)(int)(w * rx), (float)(int)(h * ry),
-                                          0.f, 0.f, 1.f, 1.f, Color(1.0f, 1.0f, 1.0f, alpha));
+                                          flipX ? 1.f : 0.f, 0.f, flipX ? 0.f : 1.f, 1.f, Color(tintR, tintG, tintB, alpha));
         return;
     }
+    // Camino sin lotes: sin flipX ni tinte (solo lo usan los elementos de imagen de los widgets, que van por lotes)
     ScopedTargetViewport vp(rw, rh);
     shaders.shaderOGLImage->renderTexture(
         img->getOGLTextureID(),
@@ -1422,10 +1425,15 @@ void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fb
     // sigue existiendo y sigue usándose sin cambios para picking/shadow/modos debug.
     auto* anim = useFeedbackBuffer ? dynamic_cast<Mesh3DAnimation*>(o) : nullptr;
 
+    // Mesh3D con lista de instancias: sin ninguna visible este frame no hay nada que dibujar
+    const bool instanced = o->hasInstances();
+    if (instanced && o->getVisibleInstances().empty()) return;
+
     // Emisión desactivada por defecto: solo los Mesh3D que la activen explícitamente van a la cola
     // emisiva (ver FlushEmissiveQueue); el resto sigue exactamente el camino de siempre.
     // Si el mesh marca materiales emisivos, solo esas submeshes van a la cola emisiva (por-submesh mas abajo).
-    const bool emissive = o->isEmissionEnabled() && o->getEmissionIntensity() > 0.0f;
+    // Si el emisivo lo escribe su propio shader de objeto de nodos, aqui va como opaco normal (la cola emisiva dibujaria la difusa estatica encima).
+    const bool emissive = o->isEmissionEnabled() && o->getEmissionIntensity() > 0.0f && !o->emissionViaObjectShader();
 
     const auto& textures = o->getModelTextures();
     const auto& specTextures = o->getModelSpecularTextures();
@@ -1454,6 +1462,7 @@ void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fb
         entry.fbo = fbo;
         entry.indexBuffer = anim ? 0 : m.indexBuffer;
         entry.indexCount = anim ? 0 : m.indexCount;
+        if (instanced) entry.instances = &o->getVisibleInstances();
         if (anim) {
             const auto& boneCache = anim->getBoneTransformCache(meshIdx);
             // Un submesh sin huesos (adjunto estático a un esqueleto animado) no necesita
@@ -1488,6 +1497,7 @@ void ComponentRender::DrawRenderQueue(std::vector<RenderQueueEntry> &queue)
     // en la comparación -- agrupar animación exige además mismo esqueleto (implícito por
     // vertexBuffer igual, pero se verifica explícito por seguridad).
     auto sameBatch = [](const RenderQueueEntry &a, const RenderQueueEntry &b) {
+        if (a.instances != nullptr || b.instances != nullptr) return false;   // las entradas con lista de instancias van solas
         return a.vertexBuffer == b.vertexBuffer && a.uvBuffer == b.uvBuffer &&
                a.normalBuffer == b.normalBuffer && a.texId == b.texId &&
                a.specTexId == b.specTexId && a.indexBuffer == b.indexBuffer &&
@@ -1504,7 +1514,13 @@ void ComponentRender::DrawRenderQueue(std::vector<RenderQueueEntry> &queue)
         while (j < queue.size() && sameBatch(queue[i], queue[j])) ++j;
 
         const auto &first = queue[i];
-        if (first.isSkinned) {
+        if (first.instances != nullptr) {
+            deferred->renderInstanced(
+                first.texId, first.specTexId, first.vertexBuffer, first.uvBuffer, first.normalBuffer,
+                first.size, first.alpha, first.o->getDrawOffset(), first.fbo, first.indexBuffer, first.indexCount,
+                *first.instances, first.emission
+            );
+        } else if (first.isSkinned) {
             // Las entradas skinned van SIEMPRE por el camino instanciado, incluso un run de
             // tamaño 1 -- el feedbackBuffer horneado por-instancia ya no se usa aquí, así que no
             // hay un "render() sin skinning" válido para esta rama (ver ComponentRender::
@@ -1553,13 +1569,16 @@ void ComponentRender::FlushOpaqueQueue()
 // emisivos no hace nada: el G-Buffer se queda con sus 3 draw buffers de siempre y LightPass()
 // no lee gEmission -- coste cero. Con emisivos: activa el 4º draw buffer, lo limpia a 0 (el
 // resto de la escena queda sin emisión), dibuja solo los emisivos y restaura los 3 de siempre.
-void ComponentRender::FlushEmissiveQueue()
+// Va ANTES de FlushObjectShaderQueue: los shaders de objeto de nodos escriben gEmission (location 3) y el clear tiene que ocurrir antes que ellos.
+// FlushEmissiveQueue ya no limpia: deja lo que escribieron los shaders de objeto.
+void ComponentRender::BeginEmission()
 {
-    emissionUsedThisFrame = !emissiveQueue.empty();
-    if (!emissionUsedThisFrame) return;
+    objectShaderEmissionThisFrame = false;
+    for (auto* o : objectShaderQueue) {
+        if (o->emissionViaObjectShader()) { objectShaderEmissionThisFrame = true; break; }
+    }
+    if (emissiveQueue.empty() && !objectShaderEmissionThisFrame) return;
 
-    // Bind explícito, no ChangeOpenGLFramebuffer(): glDrawBuffers es estado DEL FBO enlazado y la
-    // caché de lastFrameBufferUsed puede estar desfasada tras los custom shaders de objeto.
     const auto &gBuffer = Components::get()->Window()->getGBuffer();
     glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
     setLastFrameBufferUsed(gBuffer.FBO);
@@ -1570,6 +1589,25 @@ void ComponentRender::FlushEmissiveQueue()
     glDrawBuffers(4, withEmission);
     static const GLfloat zero[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
     glClearBufferfv(GL_COLOR, 3, zero);   // índice 3 = 4º draw buffer = gBuffer.emission
+    glDrawBuffers(3, withEmission);       // los shaders de objeto que no escriben emisión siguen con 3
+}
+
+void ComponentRender::FlushEmissiveQueue()
+{
+    emissionUsedThisFrame = !emissiveQueue.empty() || objectShaderEmissionThisFrame;
+    objectShaderEmissionThisFrame = false;
+    if (emissiveQueue.empty()) return;
+
+    // Bind explícito, no ChangeOpenGLFramebuffer(): glDrawBuffers es estado DEL FBO enlazado y la
+    // caché de lastFrameBufferUsed puede estar desfasada tras los custom shaders de objeto.
+    const auto &gBuffer = Components::get()->Window()->getGBuffer();
+    glBindFramebuffer(GL_FRAMEBUFFER, gBuffer.FBO);
+    setLastFrameBufferUsed(gBuffer.FBO);
+
+    static const GLenum withEmission[4] = {
+        GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3
+    };
+    glDrawBuffers(4, withEmission);       // gEmission ya la limpió BeginEmission() y los shaders de objeto escribieron la suya
 
     DrawRenderQueue(emissiveQueue);
 
@@ -1972,6 +2010,7 @@ void ComponentRender::RunShadowPass() const
             continue;
         }
         if (auto* mesh = dynamic_cast<Mesh3D*>(obj)) {
+            if (mesh->hasInstances()) continue;   // con lista de instancias no proyecta sombra (v1)
             if (mesh->isEnableLights() && mesh->getRenderSettings().shadowMap)
                 casters.push_back(mesh);
         }
