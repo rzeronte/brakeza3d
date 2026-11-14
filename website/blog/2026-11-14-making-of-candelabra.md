@@ -14,6 +14,16 @@ This post is a tour of how the project came together, with screenshots from the 
 
 <!-- truncate -->
 
+<div style={{position: "relative", paddingBottom: "56.25%", height: 0, margin: "1.5rem 0"}}>
+  <iframe
+    src="https://www.youtube.com/embed/_719nP1fJsY"
+    title="CANDELABRA - Preview"
+    style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: 0, borderRadius: "8px"}}
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+  ></iframe>
+</div>
+
 ![Candelabra - the whole city at night](/img/candelabra/global_picture.png)
 
 ## The idea
