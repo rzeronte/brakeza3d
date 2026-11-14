@@ -19,6 +19,7 @@ dark, rain-soaked city carved up between street gangs. It is also the hardest st
 has ever had. Every time the game asked for something the engine could not do, the engine grew a new
 feature.</p>
 <p>This post is a tour of how the project came together, with screenshots from the current build.</p>
+<div style="position:relative;padding-bottom:56.25%;height:0;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/_719nP1fJsY" title="CANDELABRA - Preview" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 <p><img decoding="async" loading="lazy" alt="Candelabra - the whole city at night" src="https://brakeza.com/assets/images/global_picture-86760bed91684a188f5ab2305e7c78cd.png" width="1024" height="550" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-idea">The idea<a href="https://brakeza.com/blog/making-of-candelabra#the-idea" class="hash-link" aria-label="Direct link to The idea" title="Direct link to The idea" translate="no">​</a></h2>
 <p>Candelabra is a <strong>city-sized RTS</strong>: you start with a handful of units, take over buildings, put workers
