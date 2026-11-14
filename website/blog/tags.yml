@@ -17,3 +17,39 @@ hola:
   label: Hola
   permalink: /hola
   description: Hola tag description
+
+
+brakeza3d:
+  label: Brakeza3D
+  permalink: /brakeza3d
+  description: News and releases of the Brakeza3D engine
+
+release:
+  label: Release
+  permalink: /release
+  description: Engine release announcements
+
+community:
+  label: Community
+  permalink: /community
+  description: Community, thanks and news
+
+roadmap:
+  label: Roadmap
+  permalink: /roadmap
+  description: Where the project is heading
+
+candelabra:
+  label: Candelabra
+  permalink: /candelabra
+  description: Status reports and making-of of Candelabra, the RTS built with Brakeza3D
+
+rts:
+  label: RTS
+  permalink: /rts
+  description: Real-time strategy systems built on Brakeza3D
+
+gamedev:
+  label: Gamedev
+  permalink: /gamedev
+  description: Game development notes and lessons
