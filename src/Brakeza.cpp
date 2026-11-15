@@ -21,8 +21,7 @@ Brakeza *Brakeza::instance = nullptr;
 
 namespace {
     // Workers del pool de cómputo (carga de modelos/animaciones con Assimp). Antes fijo a 4 en una
-    // CPU de 12 hilos: la carga de la partida esperaba en cola con núcleos libres (ver
-    // .claude/memory/loading-profile-report.md). Se dejan 2 hilos al principal/driver, y tope 8:
+    // CPU de 12 hilos: la carga de la partida esperaba en cola con núcleos libres. Se dejan 2 hilos al principal/driver, y tope 8:
     // cada parseo de un FBX de personaje (~32 MB) ocupa bastante memoria mientras dura.
     size_t computeWorkerCount()
     {

@@ -27,7 +27,7 @@ class ShaderOGLRenderDeferred : public ShaderBaseOpenGL
     // Instancing de unidades animadas (Fase 1): matrices de huesos de TODAS las instancias del
     // batch empaquetadas en un buffer plano (4 texels vec4 por matriz), leído en el vertex shader
     // vía samplerBuffer+texelFetch (GL 3.3 core no tiene SSBO, y un array de atributos no escala a
-    // ~100 huesos/instancia -- ver .claude/memory/ tras esta sesión). boneMatrixBuffer/Texture se
+    // ~100 huesos/instancia). boneMatrixBuffer/Texture se
     // crean una vez en PrepareMainThread(), igual que instanceModelBuffer.
     GLuint boneMatrixBuffer = 0;
     GLuint boneMatrixTexture = 0;

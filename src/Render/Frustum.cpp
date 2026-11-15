@@ -41,7 +41,7 @@ bool Frustum::isAABBVisibleInVP(AABB3D *aabb, const glm::mat4 &vp)
     // Extraccion de los 6 planos del frustum en espacio de mundo directamente de la matriz VP
     // (metodo Gribb-Hartmann), en vez de comparar clip-space contra +-w: esa comparacion directa
     // es incorrecta en perspectiva cuando w se vuelve negativo (geometria cerca de, o detras de,
-    // el origen de la camara/luz) -- ver .claude/memory/lessons.md.
+    // el origen de la camara/luz).
     glm::vec4 row0(vp[0][0], vp[1][0], vp[2][0], vp[3][0]);
     glm::vec4 row1(vp[0][1], vp[1][1], vp[2][1], vp[3][1]);
     glm::vec4 row2(vp[0][2], vp[1][2], vp[2][2], vp[3][2]);

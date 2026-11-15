@@ -1,5 +1,5 @@
 //
-// Created by Claude on 02/02/2026.
+// Created by Eduardo on 02/02/2026.
 //
 
 #ifndef BRAKEZA3D_FILEPATHS_H

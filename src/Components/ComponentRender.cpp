@@ -1411,14 +1411,12 @@ void ComponentRender::RestoreDefaultRenderState()
 
 // Fase 3 (Etapa 1 estático + Etapa 2 animado): un RenderQueueEntry por submesh visible, en vez
 // de dibujar al instante como hacía ShaderOGLRenderDeferred::renderMesh(). useFeedbackBuffer=true
-// (Mesh3DAnimation) ya NO usa feedbackBuffer aquí (Fase 1 de instancing con skinning, ver
-// .claude/plans) -- ver el comentario dentro de la función. indexBuffer/indexCount se fuerzan a 0
+// (Mesh3DAnimation) ya NO usa feedbackBuffer aquí (Fase 1 de instancing con skinning) -- ver el comentario dentro de la función. indexBuffer/indexCount se fuerzan a 0
 // para unidades animadas porque su geometría quedó fuera del EBO deduplicado en Fase 2.2.
 void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
 {
     // useFeedbackBuffer==true solo lo pasa Mesh3DAnimation::onUpdate() -- se reutiliza como señal
-    // de "esto es una unidad animada" para el camino de instancing con skinning (Fase 1, ver
-    // .claude/plans): en vez del feedbackBuffer horneado por-instancia (que bloqueaba el batching
+    // de "esto es una unidad animada" para el camino de instancing con skinning (Fase 1): en vez del feedbackBuffer horneado por-instancia (que bloqueaba el batching
     // porque nunca coincide entre instancias), se encola el vertexBuffer COMPARTIDO (bind-pose,
     // Fase 2.1) más las matrices de huesos de este frame, ya calculadas por UpdateOpenGLBones()
     // (que corre antes en Mesh3DAnimation::onUpdate(), sin coste CPU nuevo aquí). feedbackBuffer

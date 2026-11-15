@@ -103,7 +103,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
-        // Fase 2 (instancing con skinning, ver .claude/plans): encolado igual que Mesh3D::onUpdate()
+        // Fase 2 (instancing con skinning): encolado igual que Mesh3D::onUpdate()
         // -- se dibuja junto en ComponentRender::FlushPickingQueue(), que ya invalida la caché de
         // estado una sola vez al final si la cola no estaba vacía (no hace falta aquí).
         render->EnqueuePicking(this, true, window->getPickingColorFramebuffer().FBO);
@@ -259,8 +259,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     // get()-miss -> parse -> store() no es atómico: sin este lock, N unidades que piden el mismo
     // modelo a la vez (roster inicial, 125 civiles...) ven todas MISS y parsean el FBX (~32 MB,
-    // 4-6 s) N veces en paralelo -- medido hasta x5 por fichero en la carga (ver
-    // .claude/memory/loading-profile-report.md). Lock POR FICHERO: los demás esperan al primero y
+    // 4-6 s) N veces en paralelo -- medido hasta x5 por fichero en la carga. Lock POR FICHERO: los demás esperan al primero y
     // entran por la rama HIT; ficheros distintos siguen cargándose en paralelo.
     auto keyLoadMutex = animationDataCache.getKeyLoadMutex(filename);
     std::unique_lock<std::mutex> cacheLoadLock(*keyLoadMutex);

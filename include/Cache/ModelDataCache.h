@@ -22,8 +22,7 @@ public:
     ModelCacheStats getStats() const;
     // La secuencia get()-miss->parse->store() de Mesh3D::AssimpLoadGeometryFromFile se protege con
     // ResourceCacheBase::getKeyLoadMutex(fichero). Antes era un mutex GLOBAL que serializaba TODAS
-    // las mallas estáticas (CITY_TREES_Q1..Q4 en cadena: ~12.5 s en la carga, ver
-    // .claude/memory/loading-profile-report.md).
+    // las mallas estáticas (CITY_TREES_Q1..Q4 en cadena: ~12.5 s en la carga).
 };
 
 extern ModelDataCache modelDataCache;

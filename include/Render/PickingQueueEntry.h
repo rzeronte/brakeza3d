@@ -29,7 +29,7 @@ struct PickingQueueEntry {
     GLuint indexBuffer = 0;
     GLsizei indexCount = 0;
 
-    // Instancing con skinning (Fase 2, ver .claude/plans). boneMatrices apunta a
+    // Instancing con skinning (Fase 2). boneMatrices apunta a
     // Mesh3DAnimation::boneTransformCachePerMesh[meshIdx], ya calculado este mismo frame -- solo
     // válido durante este frame, nunca se guarda entre frames.
     bool isSkinned = false;
