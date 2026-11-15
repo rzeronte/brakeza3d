@@ -1,3 +1,12 @@
+--[[
+ Brakeza3D - 3D/2D game engine
+ Author:  Eduardo Rodríguez Álvarez
+ GitHub:  https://github.com/rzeronte/brakeza3d
+ Web:     https://brakeza.com
+ Started: 2018-09-30
+ Copyright (C) 2018-2026 Eduardo Rodríguez Álvarez
+ License: GNU General Public License v3.0 (see LICENSE)
+--]]
 -- VideoPlayerDemo.lua
 -- Demo de reproducción de vídeo en dos formatos: a PANTALLA COMPLETA y en un PLANO (una ventana de vídeo con marco que
 -- ocupa solo una parte de la pantalla, con la escena visible alrededor). Se puede pasar de uno a otro mientras suena.

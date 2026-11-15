@@ -1,3 +1,12 @@
+--[[
+ Brakeza3D - 3D/2D game engine
+ Author:  Eduardo Rodríguez Álvarez
+ GitHub:  https://github.com/rzeronte/brakeza3d
+ Web:     https://brakeza.com
+ Started: 2018-09-30
+ Copyright (C) 2018-2026 Eduardo Rodríguez Álvarez
+ License: GNU General Public License v3.0 (see LICENSE)
+--]]
 -- DemoBrowser.lua (global script of TutorialsProject)
 -- On-screen browser for the demo scenes of the project: a bottom bar to go to the previous/next demo,
 -- a list with every demo and an info panel (what the demo shows, its controls, what to look at in the

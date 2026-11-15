@@ -1,3 +1,12 @@
+--[[
+ Brakeza3D - 3D/2D game engine
+ Author:  Eduardo Rodríguez Álvarez
+ GitHub:  https://github.com/rzeronte/brakeza3d
+ Web:     https://brakeza.com
+ Started: 2018-09-30
+ Copyright (C) 2018-2026 Eduardo Rodríguez Álvarez
+ License: GNU General Public License v3.0 (see LICENSE)
+--]]
 -- Sound3DTest.lua
 -- Demo de sonido posicional (Sound3D): fuentes fijas y una que orbita alrededor del centro. El volumen sube al acercar
 -- la cámara (la "oyente") y, con el paneo activado, el sonido se desplaza al canal izquierdo o derecho según
