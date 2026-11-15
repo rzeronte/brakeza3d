@@ -211,9 +211,18 @@ void UIManagerGUI::DrawWinUIManager()
         s_pendingSelectWidget.clear();
     }
 
-    // ── Col 1 (split: top = list, bottom = widget setup) ─────────────────
-    float colH = ImGui::GetContentRegionAvail().y;
-    ImGui::BeginChild("##col1", ImVec2(360.0f, colH), false);
+    // ── Layout: cabecera (arriba) + cuerpo (abajo), cada uno en dos columnas ─────
+    //   cabecera izq: filtro + desplegable de widgets + New/Unload/Delete/Clear all
+    //   cabecera der: nombre del widget seleccionado + Save/Preview/Debug
+    //   cuerpo izq:   Setup del widget (Layout, Background, ...)
+    //   cuerpo der:   lista de elementos + pestañas del editor de elemento
+    const float availW = ImGui::GetContentRegionAvail().x;
+    const float leftW  = std::max(360.0f, std::min(560.0f, availW * 0.27f));
+    const float headH  = ImGui::GetFrameHeightWithSpacing() * 3.0f + 2.0f;   // 3 filas: filtro, desplegable, botones
+    bool hasSel = selectedWidget >= 0 && selectedWidget < (int)names.size();
+
+    bool savedWidget = false;
+    static bool openPreviewPopup = false;
 
     // ── helper: relative label from file path ─────────────────────────────
     auto makeLabel = [&](int i) -> std::string {
@@ -233,12 +242,10 @@ void UIManagerGUI::DrawWinUIManager()
         return label;
     };
 
-    // ── top sub-panel: list ───────────────────────────────────────────────
-    const float SETUP_H = 215.0f;
-    float listPanelH = colH - SETUP_H - ImGui::GetStyle().ItemSpacing.y * 3.0f - ImGui::GetStyle().SeparatorTextBorderSize;
-    ImGui::BeginChild("##col1_list", ImVec2(-1.0f, listPanelH), false);
+    const ImVec2 headMin = ImGui::GetCursorScreenPos();
 
-    ImGui::SeparatorText("Loaded widgets");
+    // ── cabecera izquierda: selección de widget ───────────────────────────
+    ImGui::BeginChild("##col1_head", ImVec2(leftW, headH), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
     static char widgetFilter[128] = "";
     ImGui::SetNextItemWidth(-1.0f);
@@ -256,31 +263,32 @@ void UIManagerGUI::DrawWinUIManager()
         if (lbl.find(filterLow) != std::string::npos) filtered.push_back(i);
     }
 
-    float listH = ImGui::GetContentRegionAvail().y - ImGui::GetFrameHeightWithSpacing() - 4.0f;
-    ImGui::BeginChild("##wlist", ImVec2(-1.0f, listH), true);
     static int prevSelectedWidget = -1;
-    for (int fi = 0; fi < (int)filtered.size(); fi++) {
-        int i   = filtered[fi];
-        bool sel = (i == selectedWidget);
-        char entry[512];
-        snprintf(entry, sizeof(entry), "%2d  %s##wsel%d", i + 1, makeLabel(i).c_str(), i);
-        if (ImGui::Selectable(entry, sel)) {
-            selectedWidget  = i;
-            selectedElement = -1;
-        }
-        if (sel && s_scrollToSelectedWidget) {
-            ImGui::SetScrollHereY(0.5f);
-            s_scrollToSelectedWidget = false;
+    {
+        const std::string curLabel = hasSel ? makeLabel(selectedWidget) : std::string("(select a widget)");
+        ImGui::SetNextItemWidth(-1.0f);
+        if (ImGui::BeginCombo("##wcombo", curLabel.c_str(), ImGuiComboFlags_HeightLarge)) {
+            for (int fi = 0; fi < (int)filtered.size(); fi++) {
+                int i = filtered[fi];
+                bool sel = (i == selectedWidget);
+                char entry[512];
+                snprintf(entry, sizeof(entry), "%2d  %s##wsel%d", i + 1, makeLabel(i).c_str(), i);
+                if (ImGui::Selectable(entry, sel)) {
+                    selectedWidget  = i;
+                    selectedElement = -1;
+                }
+                if (sel) ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
         }
     }
-    s_scrollToSelectedWidget = false;   // si el filtro lo oculta, no insistir en frames siguientes
+    s_scrollToSelectedWidget = false;   // el desplegable ya abre en el widget seleccionado
     if (selectedWidget != prevSelectedWidget) {
         prevSelectedWidget = selectedWidget;
         previewData.clear();
         if (selectedWidget >= 0 && selectedWidget < (int)names.size())
             previewData = widgets[names[selectedWidget]].defaultData;
     }
-    ImGui::EndChild();
 
     GUI::ImageButtonSmall(IconGUI::CREATE_FILE, "New", [&]{
         std::string newName = "newWidget";
@@ -315,20 +323,18 @@ void UIManagerGUI::DrawWinUIManager()
         ui->clearWidgets(); selectedWidget = -1; selectedElement = -1;
     });
 
-    ImGui::EndChild(); // ##col1_list
+    ImGui::EndChild(); // ##col1_head
+    // Unload / Delete / Clear all pueden haber vaciado la selección en este mismo frame
+    hasSel = selectedWidget >= 0 && selectedWidget < (int)names.size();
 
-    // ── bottom sub-panel: widget general setup ────────────────────────────
-    ImGui::Separator();
-    ImGui::BeginChild("##col1_setup", ImVec2(-1.0f, -1.0f), false);
-
-    bool savedWidget = false;
-    static bool openPreviewPopup = false;
-
-    if (selectedWidget >= 0 && selectedWidget < (int)names.size()) {
+    // ── cabecera derecha: widget seleccionado + Save / Preview / Debug ────
+    ImGui::SameLine();
+    ImGui::BeginChild("##col2_head", ImVec2(-1.0f, headH), false, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    if (hasSel) {
         const std::string& wName = names[selectedWidget];
         UIWidget& w = widgets[wName];
 
-        ImGui::SeparatorText(("Setup for " + wName).c_str());
+        ImGui::SeparatorText(wName.c_str());
 
         if (GUI::ImageButtonSmall(IconGUI::SAVE, "Save widget", []{})) {
             SaveWidget(ui, wName, w);
@@ -347,6 +353,21 @@ void UIManagerGUI::DrawWinUIManager()
             if (ImGui::IsItemHovered())
                 ImGui::SetTooltip("Highlight this widget wherever it renders in the scene\n(includes nested renders via widgetRef / array).");
         }
+    } else {
+        ImGui::TextDisabled("No widget selected");
+    }
+    ImGui::EndChild(); // ##col2_head
+
+    ImGui::Separator();
+
+    // ── cuerpo izquierdo: Setup del widget ────────────────────────────────
+    ImGui::BeginChild("##col1_setup", ImVec2(leftW, -1.0f), false);
+
+    if (hasSel) {
+        const std::string& wName = names[selectedWidget];
+        UIWidget& w = widgets[wName];
+
+        ImGui::SeparatorText("Setup");
 
         if (!savedWidget) {
             // Collapsible section with a grey one-line summary drawn at the right edge of its header
@@ -671,29 +692,28 @@ void UIManagerGUI::DrawWinUIManager()
     }
 
     ImGui::EndChild(); // ##col1_setup
-    ImGui::EndChild(); // ##col1
+    {   // separador vertical entre las dos columnas
+        const ImVec2 mx = ImGui::GetItemRectMax();
+        const float  x  = mx.x + ImGui::GetStyle().ItemSpacing.x * 0.5f;
+        ImGui::GetWindowDrawList()->AddLine(ImVec2(x, headMin.y), ImVec2(x, mx.y), ImGui::GetColorU32(ImGuiCol_Separator));
+    }
 
-    if (savedWidget || names.empty() || selectedWidget < 0 || selectedWidget >= (int)names.size())
+    if (savedWidget || names.empty() || !hasSel)
         return;
 
-    // ── Col 2: elements + editor ──────────────────────────────────────────
+    // ── cuerpo derecho: elementos + editor ────────────────────────────────
     ImGui::SameLine();
 
     const std::string& wName = names[selectedWidget];
     UIWidget& w = widgets[wName];
-    float col2W = ImGui::GetContentRegionAvail().x - 10.0f;
 
-    ImGui::BeginChild("##col2", ImVec2(col2W, colH), false);
-    ImGui::SeparatorText(("Elements for " + wName).c_str());
+    ImGui::BeginChild("##col2", ImVec2(-1.0f, -1.0f), false);
     DrawElementList(w);
     ImGui::Spacing();
 
     if (selectedElement >= 0 && selectedElement < (int)w.elements.size()) {
         UIElement& el = w.elements[selectedElement];
         DrawElementEditor(el, w, ui, wName);
-        if (el.type != "text" && el.type != "rect" && el.type != "button" && el.type != "image" && el.type != "array" && el.type != "scroll"
-            && ImGui::CollapsingHeader("Preview Data", ImGuiTreeNodeFlags_None))
-            DrawElementPreviewFields(el);
     }
 
     ImGui::EndChild(); // ##col2
@@ -734,6 +754,11 @@ void UIManagerGUI::DrawElementList(UIWidget& w)
     if (hasSelection) {
         int i = selectedElement;
 
+        // Elemento seleccionado: nombre a la izquierda, mover/borrar a continuación y Add a la derecha
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("[%s] %s", w.elements[i].type.c_str(), w.elements[i].id.c_str());
+        ImGui::SameLine();
+
         ImGui::BeginDisabled(i == 0);
         GUI::DrawButton("Move up", IconGUI::ARROW_UP, ImVec2(12, 12), false, [&]{
             std::swap(w.elements[i], w.elements[i-1]); selectedElement = i-1;
@@ -756,7 +781,9 @@ void UIManagerGUI::DrawElementList(UIWidget& w)
 
         ImGui::SameLine(rowMaxX);
     } else {
-        ImGui::SetCursorPosX(rowMaxX);
+        ImGui::AlignTextToFramePadding();
+        ImGui::TextDisabled("No item selected");
+        ImGui::SameLine(rowMaxX);
     }
 
     GUI::ImageButtonSmall(IconGUI::CREATE_FILE, "Add", [&]{
@@ -803,8 +830,12 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         ImGui::SameLine();
     };
 
-    // ── Section 1: Identity & Type ────────────────────────────────────────
-    if (ImGui::CollapsingHeader("Identity & Type", ImGuiTreeNodeFlags_None)) {
+    // Las secciones del editor de elemento son pestañas (antes CollapsingHeader): ID and type,
+    // Layout, propiedades del tipo y Preview Data.
+    if (!ImGui::BeginTabBar("##eltabs")) return;
+
+    // ── Tab 1: ID and type ────────────────────────────────────────────────
+    if (ImGui::BeginTabItem("ID and type")) {
         GUIFields::Section identity("IDENTITY");
         if (identity) {
             GUIFields::Check("Enabled", &el.enabled);
@@ -823,10 +854,11 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 el.kind = uiElementKindFromName(el.type);
             }
         }
+        ImGui::EndTabItem();
     }
 
-    // ── Section 2: Layout ─────────────────────────────────────────────────
-    if (ImGui::CollapsingHeader("Layout", ImGuiTreeNodeFlags_None)) {
+    // ── Tab 2: Layout ─────────────────────────────────────────────────────
+    if (ImGui::BeginTabItem("Layout")) {
         GUIFields::Section layout("LAYOUT");
         if (layout) {
             const std::string yAutoHelp = std::string(el.type == "array"
@@ -878,13 +910,14 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 "Top: pre-element space (yAuto) / adds to y (fixed).\n"
                 "Bottom: post-element space (yAuto) / adds to effective height (fixed).");
         }
+        ImGui::EndTabItem();
     }
 
-    // ── Section 3: Type-specific properties ───────────────────────────────
+    // ── Tab 3: Type-specific properties ───────────────────────────────────
     // Trailing "##typespec" keeps the ID stable across type changes, so the
-    // header's open/closed state persists when the user swaps the type combo.
+    // tab stays selected when the user swaps the type combo.
     std::string typeHdr = (el.type.empty() ? std::string("Type") : el.type) + " properties##typespec";
-    if (!ImGui::CollapsingHeader(typeHdr.c_str(), ImGuiTreeNodeFlags_None)) return;
+    const bool typeTab = ImGui::BeginTabItem(typeHdr.c_str());
 
     // Fila de texto con botón "reset" delante (vacía el campo)
     auto rowResetString = [&](const char* label, const char* uid, std::string& str, int bufSize, const char* help) {
@@ -906,7 +939,10 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
         GUIFields::EndRow();
     };
 
-    if (el.type == "text") {
+    if (!typeTab) {
+        // pestaña no visible: no se dibuja nada
+    }
+    else if (el.type == "text") {
         GUIFields::Section text("TEXT");
         if (text) {
             GUIFields::Float("Font scale", &el.fontScale, 0.01f, 0.0f, 10.0f, "%.2f");
@@ -1246,6 +1282,16 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
             "  ...");
     }
 
+    if (typeTab) ImGui::EndTabItem();
+
+    // ── Tab 4: Preview Data (solo tipos con datos de preview) ─────────────
+    if (el.type != "text" && el.type != "rect" && el.type != "button" && el.type != "image" && el.type != "array" && el.type != "scroll"
+        && ImGui::BeginTabItem("Preview Data")) {
+        DrawElementPreviewFields(el);
+        ImGui::EndTabItem();
+    }
+
+    ImGui::EndTabBar();
 }
 
 // ---------------------------------------------------------------------------
