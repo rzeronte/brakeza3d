@@ -16,6 +16,7 @@
 #include <assimp/cimport.h>
 #include <glm/ext/matrix_float4x4.hpp>
 #include "../../include/3D/Mesh3D.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Drawable.h"
@@ -178,7 +179,7 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
 
     Assimp::Importer assimpImporter;
     const aiScene *scene = assimpImporter.ReadFile(
-        fileName,
+        AssetPaths::Resolve(fileName),
         aiProcess_Triangulate |
         aiProcess_SortByPType |
         aiProcess_FlipUVs |
@@ -235,6 +236,17 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
     loaded = true;
 }
 
+// Los FBX exportados guardan la textura con la ruta ABSOLUTA (o relativa) del equipo donde se exportaron ("C:\...\brakeza3d\assets\textures\X.png").
+// Si los assets se mueven a la carpeta de un proyecto, esa ruta ya no existe: se reinterpreta lo que sigue a la última "assets/" bajo la raíz de
+// assets del motor ("../assets/textures/X.png"), que AssetPaths resuelve proyecto primero y core de respaldo. Vacío si no contiene "assets/".
+static std::string RebaseOntoAssets(const std::string &p)
+{
+    static const std::string marker = "assets/";
+    const size_t pos = p.rfind(marker);
+    if (pos == std::string::npos) return "";
+    return Config::get()->ASSETS_FOLDER + p.substr(pos + marker.size());
+}
+
 void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntryData>* outMaterialEntries)
 {
     LOG_MESSAGE("[Mesh3D] Prepare to load %d materials", pScene->mNumMaterials);
@@ -279,6 +291,8 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntr
             if (isAbsolute && !(candidate = tryPng(p)).empty()) {
                 FullPath = candidate;
             } else if (!(candidate = tryPng(relativePath)).empty()) {
+                FullPath = candidate;
+            } else if (!(candidate = tryPng(RebaseOntoAssets(p))).empty()) {
                 FullPath = candidate;
             } else if (!(candidate = tryPng(textureSubPath)).empty()) {
                 FullPath = candidate;

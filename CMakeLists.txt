@@ -199,6 +199,7 @@ add_executable(Brakeza3D
         src/Misc/TexturePackage.cpp include/Misc/TexturePackage.h
         src/Misc/TileManager.cpp include/Misc/TileManager.h
         src/Misc/Timer.cpp include/Misc/Timer.h
+        src/Misc/AssetPaths.cpp include/Misc/AssetPaths.h
         src/Misc/Tools.cpp include/Misc/Tools.h
         src/Misc/ToolsJSON.cpp include/Misc/ToolsJSON.h
         include/Misc/PathFinding.h

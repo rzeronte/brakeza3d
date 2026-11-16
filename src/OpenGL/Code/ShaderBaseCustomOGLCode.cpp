@@ -395,7 +395,10 @@ bool ShaderBaseCustomOGLCode::existDataType(const char *name, const char *type) 
 
 void ShaderBaseCustomOGLCode::ParseTypesFromFileAttributes()
 {
-    auto contentFile = Tools::ReadFile(Config::get()->SHADERS_FOLDER + fileTypes);
+    // fileTypes puede ser relativo a la carpeta GLSL ("Bloom.json") o ya una ruta de assets ("../assets/shaders/X.json"). Con "../GLSL/" delante esta última
+    // ya no empieza por "../assets/" y AssetPaths no podría redirigirla a la carpeta de assets del proyecto.
+    const std::string typesPath = fileTypes.rfind("../", 0) == 0 ? fileTypes : Config::get()->SHADERS_FOLDER + fileTypes;
+    auto contentFile = Tools::ReadFile(typesPath);
     LOG_MESSAGE("[ShaderBaseCustomOGLCode] Parsing attributes from: '%s'", fileTypes.c_str());
 
     setDataTypesFromJSON(cJSON_GetObjectItemCaseSensitive(cJSON_Parse(contentFile), "types"));

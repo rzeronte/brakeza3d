@@ -68,6 +68,7 @@ public:
     void setGlobalScriptVar(const std::string& scriptName, const char *varName, sol::object value);
     void callGlobalScriptFunction(const std::string& scriptName, const char *funcName, sol::variadic_args args);
 
+    void UpdateScriptSearchPath();   // package.path: scripts del proyecto (AssetPaths) antes que los del core
     sol::state &getLua()                                                    { return lua; }
     std::vector<ScriptLUA*> &getSceneScripts()                              { return sceneScripts; }
     std::vector<std::string> &getProjectScenes()                            { return projectScenes; }

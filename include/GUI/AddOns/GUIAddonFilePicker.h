@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include "../../Misc/AssetPaths.h"
 #include "../Windows/FileSystemGUI.h"
 #include "../GUI.h"
 #include "../Widgets/GUIHelpers.h"
@@ -102,26 +103,45 @@ private:
     void drawFolder(const char* popupId, const std::string& folder)
     {
         namespace fs = std::filesystem;
-        if (!fs::exists(folder)) { ImGui::TextDisabled("Not found: %s", folder.c_str()); return; }
+        // Con un proyecto con assets propios (AssetPaths) se muestran juntas las carpetas del core y del proyecto; la ruta que se devuelve de un
+        // fichero del proyecto es relativa a la raíz equivalente del proyecto (el motor la resuelve igual con "../assets/...").
+        const auto folders = AssetPaths::ResolveDirs(folder);
+        const auto bases   = AssetPaths::ResolveDirs(_baseFolder);
+        const std::string projRoot = AssetPaths::GetProjectRoot();
+        bool anyExists = false;
+        for (auto& f : folders) if (fs::exists(f)) anyExists = true;
+        if (!anyExists) { ImGui::TextDisabled("Not found: %s", folder.c_str()); return; }
 
-        std::vector<fs::path> dirs, files;
-        for (auto& entry : fs::directory_iterator(folder)) {
-            if (entry.is_directory())            dirs.push_back(entry.path());
-            else if (matchExt(entry.path()))     files.push_back(entry.path());
+        std::vector<fs::path> dirs;                              // nombres de subcarpeta (sin duplicados)
+        std::vector<std::pair<fs::path, std::string>> files;     // fichero y la carpeta base contra la que se calcula su ruta relativa
+        for (auto& f : folders) {
+            if (!fs::exists(f)) continue;
+            std::string base = _baseFolder;
+            if (!projRoot.empty() && f.rfind(projRoot, 0) == 0) {
+                for (auto& b : bases) if (b.rfind(projRoot, 0) == 0) base = b;
+            }
+            for (auto& entry : fs::directory_iterator(f)) {
+                if (entry.is_directory()) {
+                    const fs::path name = entry.path().filename();
+                    if (std::find(dirs.begin(), dirs.end(), name) == dirs.end()) dirs.push_back(name);
+                } else if (matchExt(entry.path())) {
+                    files.emplace_back(entry.path(), base);
+                }
+            }
         }
         auto byName = [](const fs::path& a, const fs::path& b) { return lowerName(a) < lowerName(b); };
-        std::sort(dirs.begin(),  dirs.end(),  byName);
-        std::sort(files.begin(), files.end(), byName);
+        std::sort(dirs.begin(), dirs.end(), byName);
+        std::sort(files.begin(), files.end(), [&](const auto& a, const auto& b) { return byName(a.first, b.first); });
 
         for (auto& dir : dirs) {
-            if (ImGui::BeginMenu(dir.filename().string().c_str())) {
-                drawFolder(popupId, dir.string());
+            if (ImGui::BeginMenu(dir.string().c_str())) {
+                drawFolder(popupId, (fs::path(folder) / dir).generic_string());   // en forma "core": se vuelven a unir core y proyecto
                 ImGui::EndMenu();
             }
         }
         if (!dirs.empty() && !files.empty()) ImGui::Separator();
-        for (auto& file : files) {
-            std::string rel = _relPrefix + file.lexically_relative(fs::path(_baseFolder)).string();
+        for (auto& [file, base] : files) {
+            std::string rel = _relPrefix + file.lexically_relative(fs::path(base)).string();
             std::replace(rel.begin(), rel.end(), '\\', '/');
             if (ImGui::MenuItem(file.filename().string().c_str())) {
                 result   = rel;

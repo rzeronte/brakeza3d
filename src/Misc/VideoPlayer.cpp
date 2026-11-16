@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <vector>
 #include "../../include/Misc/VideoPlayer.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Config.h"
@@ -25,7 +26,7 @@ extern "C" {
 
 VideoPlayer::VideoPlayer(const std::string &filename)
 {
-    if (avformat_open_input(&formatCtx, filename.c_str(), nullptr, nullptr) < 0) {
+    if (avformat_open_input(&formatCtx, AssetPaths::Resolve(filename).c_str(), nullptr, nullptr) < 0) {
         LOG_ERROR("VideoPlayer: cannot open '%s'", filename.c_str());
         return;
     }

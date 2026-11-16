@@ -10,6 +10,7 @@
 
 #include <cassert>
 #include "../../include/Misc/SoundPackage.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Misc/Logging.h"
 
 // 44100Hz / stereo fijo para todo el catalogo -- igual que el Mix_OpenAudio(44100, ...,
@@ -43,7 +44,7 @@ void SoundPackage::addItem(const std::string &srcSound, std::string label, Sound
     ma_uint64 frameCount  = 0;
     void*     pData       = nullptr;
 
-    ma_result result = ma_decode_file(srcSound.c_str(), &cfg, &frameCount, &pData);
+    ma_result result = ma_decode_file(AssetPaths::Resolve(srcSound).c_str(), &cfg, &frameCount, &pData);
     if (result != MA_SUCCESS) {
         LOG_ERROR("[SoundPackage] ma_decode_file failed for '%s' (label='%s'): result=%d",
                    srcSound.c_str(), item->label.c_str(), (int)result);

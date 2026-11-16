@@ -12,6 +12,7 @@
 //
 
 #include "../../include/LUA/ObjectFactory.h"
+#include "../../include/Misc/AssetPaths.h"
 
 #include "../../include/3D/Projectile.h"
 #include "../../include/2D/Image2D.h"
@@ -232,7 +233,7 @@ TextWriter* ObjectFactory::CreateTextWriter(const std::string& fontFile)
 
     return new TextWriter(
         Components::get()->Window()->getRenderer(),
-        TTF_OpenFont(fontFile.c_str(), 35)
+        TTF_OpenFont(AssetPaths::Resolve(fontFile).c_str(), 35)
     );
 }
 

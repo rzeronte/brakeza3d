@@ -61,7 +61,7 @@ make
 - **Shadow mapping** with configurable quality
 - **ADS lighting system** (Ambient, Diffuse, Specular)
 - **Extensible GLSL shaders** + visual node-based editor
-- Modern **OpenGL** rendering
+- Modern **OpenGL 4.3** (Core profile) rendering
 
 ### 🛠️ Development Tools
 - **Dockable GUI** with intuitive drag & drop
@@ -78,7 +78,7 @@ make
 - **Assimp library** for 3D model loading
 
 ### 🎮 Scripting & Input
-- **Lua 5.2 scripting** with full engine API access
+- **LuaJIT scripting** (Lua 5.2 compatible) with full engine API access
 - **Gamepad support** (Xbox / PlayStation controllers)
 - Component-based architecture for easy extensibility
 
@@ -93,7 +93,7 @@ make
 | [OpenGL](https://www.opengl.org) | Graphics rendering |
 | [Bullet Physics](https://pybullet.org) | Physics simulation |
 | [Assimp](https://www.assimp.org) | 3D model importing |
-| [Lua 5.2](https://www.lua.org) | Scripting |
+| [LuaJIT](https://luajit.org) | Scripting |
 | [ImGui](https://github.com/ocornut/imgui) | Editor interface |
 | [GLM](https://github.com/g-truc/glm) | Mathematics library |
 

@@ -17,6 +17,7 @@
 #include <fstream>
 #include "../../include/Misc/Tools.h"
 #include "../../include/Misc/Logging.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/3D/Mesh3DAnimation.h"
@@ -27,6 +28,7 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <mutex>
+#include <set>
 
 std::vector<std::string> Tools::split(const std::string &text, char sep)
 {
@@ -70,7 +72,9 @@ float Tools::getYTextureFromUV(const SDL_Surface *surface, float v)
 
 bool Tools::FileExists(const char *name)
 {
-    if (FILE *file = fopen(name, "r")) {
+    // Con un proyecto que tenga assets propios, la ruta del core se resuelve primero contra la carpeta del proyecto (AssetPaths)
+    const std::string resolved = AssetPaths::Resolve(name);
+    if (FILE *file = fopen(resolved.c_str(), "r")) {
         fclose(file);
         return true;
     }
@@ -78,8 +82,9 @@ bool Tools::FileExists(const char *name)
     return false;
 }
 
-char *Tools::ReadFile(const std::string &name)
+char *Tools::ReadFile(const std::string &nameRequested)
 {
+    const std::string name = AssetPaths::Resolve(nameRequested);   // proyecto primero, core de respaldo (idéntico a antes sin proyecto)
     LOG_MESSAGE("[Tools] Reading file: %s", name.c_str());
 
     FILE *fp;
@@ -127,7 +132,7 @@ SDL_Surface* Tools::SafeIMGLoad(const std::string &path)
 {
     static std::mutex imgLoadMutex;
     std::lock_guard<std::mutex> lock(imgLoadMutex);
-    return IMG_Load(path.c_str());
+    return IMG_Load(AssetPaths::Resolve(path).c_str());
 }
 
 bool Tools::getBit(unsigned char byte, int position) // position in range 0-7
@@ -402,50 +407,53 @@ std::vector<std::string> Tools::getFolderFiles(std::string& path, std::string ex
 {
     LOG_MESSAGE("[Tools] Read folder files for '%s', ext: '%s'", path.c_str(), extension.c_str());
 
-    std::vector<std::string> result;
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir (path.c_str())) != nullptr) {
-        while ((ent = readdir (dir)) != nullptr) {
-            auto fileName = ent->d_name;
+    // Con un proyecto con assets propios (AssetPaths) se listan juntas la carpeta del core y la del proyecto (unión sin duplicados, ordenada)
+    std::set<std::string> names;
+    for (const auto &folder : AssetPaths::ResolveDirs(path)) {
+        DIR *dir;
+        struct dirent *ent;
+        if ((dir = opendir (folder.c_str())) != nullptr) {
+            while ((ent = readdir (dir)) != nullptr) {
+                auto fileName = ent->d_name;
 
-            if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
-            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+                if (Tools::getExtensionFromFilename(ent->d_name) != extension) continue;
+                if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
 
-            result.emplace_back(ent->d_name);
+                names.insert(ent->d_name);
+            }
+            closedir (dir);
         }
-        std::sort( result.begin(), result.end() );
-        closedir (dir);
     }
 
-    return result;
+    return std::vector<std::string>(names.begin(), names.end());
 }
 
 std::vector<std::string> Tools::getFolderFolders(std::string path)
 {
-    std::vector<std::string> result;
-    DIR *dir;
-    struct dirent *ent;
-    if ((dir = opendir (path.c_str())) != nullptr) {
-        while ((ent = readdir (dir)) != nullptr) {
-            auto fileName = ent->d_name;
+    // igual que getFolderFiles: unión de las subcarpetas del core y del proyecto (AssetPaths)
+    std::set<std::string> names;
+    for (const auto &folder : AssetPaths::ResolveDirs(path)) {
+        DIR *dir;
+        struct dirent *ent;
+        if ((dir = opendir (folder.c_str())) != nullptr) {
+            while ((ent = readdir (dir)) != nullptr) {
+                auto fileName = ent->d_name;
 
-            if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
-            std::string fullPath = path + "/" + fileName;
+                if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0) continue;
+                std::string fullPath = folder + "/" + fileName;
 
-            struct stat fileStat;
-            if (stat(fullPath.c_str(), &fileStat) == 0) {
-                if (S_ISDIR(fileStat.st_mode)) {
-                    result.emplace_back(fileName);
+                struct stat fileStat;
+                if (stat(fullPath.c_str(), &fileStat) == 0) {
+                    if (S_ISDIR(fileStat.st_mode)) {
+                        names.insert(fileName);
+                    }
                 }
             }
+            closedir (dir);
         }
-        std::sort( result.begin(), result.end() );
-
-        closedir (dir);
     }
 
-    return result;
+    return std::vector<std::string>(names.begin(), names.end());
 }
 
 std::string Tools::GoBackFromFolder(const std::string& folder)

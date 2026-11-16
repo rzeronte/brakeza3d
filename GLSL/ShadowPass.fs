@@ -7,7 +7,7 @@
  * Copyright (C) 2018-2026 Eduardo Rodríguez Álvarez
  * License: GNU General Public License v3.0 (see LICENSE)
  */
-#version 450 core
+#version 430 core
 
 void main()
 {

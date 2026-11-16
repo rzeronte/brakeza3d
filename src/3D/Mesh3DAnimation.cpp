@@ -17,6 +17,7 @@
 #include "../../include/GUI/Inspectors/Mesh3DAnimationGUI.h"
 #include "../../include/Cache/AnimationDataCache.h"
 #include "../../include/Cache/SceneCache.h"
+#include "../../include/Misc/AssetPaths.h"
 
 Mesh3DAnimation::Mesh3DAnimation()
 {
@@ -282,7 +283,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
             // SceneCache expirado (todas las instancias previas destruidas): recargar
             sharedImporter = std::make_shared<Assimp::Importer>();
             sharedImporter->ReadFile(
-                filename,
+                AssetPaths::Resolve(filename),
                 aiProcess_Triangulate |
                 aiProcess_SortByPType |
                 aiProcess_GenSmoothNormals |
@@ -341,7 +342,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     sharedImporter = std::make_shared<Assimp::Importer>();
     scene = sharedImporter->ReadFile(
-        filename,
+        AssetPaths::Resolve(filename),   // proyecto primero, core de respaldo (la clave de caché sigue siendo filename)
         aiProcess_Triangulate |
         aiProcess_SortByPType |
         aiProcess_GenSmoothNormals |

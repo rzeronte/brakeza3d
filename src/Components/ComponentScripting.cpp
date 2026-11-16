@@ -12,6 +12,7 @@
 //
 
 #include "../../include/Render/UndoManager.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Components/ComponentScripting.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Brakeza.h"
@@ -343,6 +344,17 @@ void ComponentScripting::RunPostUpdateScripts() const
     }
 }
 
+// require(): con un proyecto que tenga assets propios, sus scripts se buscan antes que los del core ("../assets/scripts/")
+void ComponentScripting::UpdateScriptSearchPath()
+{
+    std::string path = "../assets/scripts/?.lua;../assets/scripts/?/init.lua";
+    const std::string root = AssetPaths::GetProjectRoot();
+    if (!root.empty()) {
+        path = root + "scripts/?.lua;" + root + "scripts/?/init.lua;" + path;
+    }
+    lua["package"]["path"] = path;
+}
+
 void ComponentScripting::InitLUATypes()
 {
     LOG_MESSAGE("[Scripting] Init LUA Global types");
@@ -356,7 +368,16 @@ void ComponentScripting::InitLUATypes()
     // y el frame baja de ~46 a ~40 ms (2026-10-14).
     lua.script("jit.opt.start('maxtrace=4000', 'maxrecord=8000', 'maxmcode=8192', 'sizemcode=128', 'maxside=400', 'maxsnap=2000')");
 #endif
-    lua["package"]["path"] = "../assets/scripts/?.lua;../assets/scripts/?/init.lua";
+    UpdateScriptSearchPath();
+
+    // Assets de proyecto (AssetPaths): io.open resuelve la ruta (la carpeta de assets del proyecto primero, el core de respaldo) y los scripts
+    // tienen Assets.resolve(ruta) / Assets.projectRoot(). Sin proyecto con assets propios todo se comporta como siempre.
+    {
+        auto assets = lua.create_named_table("Assets");
+        assets.set_function("resolve", [](const std::string &p) { return AssetPaths::Resolve(p); });
+        assets.set_function("projectRoot", []() { return AssetPaths::GetProjectRoot(); });
+        lua.script("do local open, resolve = io.open, Assets.resolve; io.open = function(path, mode) return open(resolve(path), mode) end end");
+    }
 
     LUAIntegration(lua);
 

@@ -8,6 +8,7 @@
  * License: GNU General Public License v3.0 (see LICENSE)
  */
 #include "../../include/3D/MeshInstances.h"
+#include "../../include/Misc/AssetPaths.h"
 
 #include <algorithm>
 #include <cfloat>
@@ -28,7 +29,7 @@ namespace {
 
 bool MeshInstances::loadFromFile(const std::string &path)
 {
-    std::ifstream in(path, std::ios::binary);
+    std::ifstream in(AssetPaths::Resolve(path), std::ios::binary);
     if (!in) {
         LOG_ERROR("[MeshInstances] cannot open '%s'", path.c_str());
         return false;

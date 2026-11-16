@@ -8,6 +8,7 @@
  * License: GNU General Public License v3.0 (see LICENSE)
  */
 #include "../../include/Loaders/FBXLightLoader.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/3D/LightPoint.h"
 #include "../../include/3D/LightSpot.h"
 #include "../../include/3D/Vertex3D.h"
@@ -42,7 +43,7 @@ static std::vector<glm::vec3> ExtractFBXLightColors(const std::string& path)
 {
     std::vector<glm::vec3> colors;
 
-    std::ifstream f(path, std::ios::binary | std::ios::ate);
+    std::ifstream f(AssetPaths::Resolve(path), std::ios::binary | std::ios::ate);
     if (!f) return colors;
     const auto sz = static_cast<size_t>(f.tellg());
     f.seekg(0);
@@ -134,7 +135,7 @@ std::vector<Object3D*> FBXLightLoader::LoadLightsFromFile(
     }
 
     Assimp::Importer importer;
-    const aiScene *scene = importer.ReadFile(fileName, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene *scene = importer.ReadFile(AssetPaths::Resolve(fileName), aiProcess_Triangulate | aiProcess_FlipUVs);
 
     if (!scene) {
         LOG_ERROR("[FBXLightLoader] Failed to load '%s': %s", fileName.c_str(), importer.GetErrorString());

@@ -8,6 +8,7 @@
  * License: GNU General Public License v3.0 (see LICENSE)
  */
 #include "../../../include/OpenGL/Base/ShaderBaseCompute.h"
+#include "../../../include/Misc/AssetPaths.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Render/Profiler.h"
 #include "../../../include/Components/Components.h"
@@ -24,7 +25,7 @@ ShaderBaseCompute::ShaderBaseCompute(const FilePath::ComputeShaderFile& computeF
 
 void ShaderBaseCompute::PrepareBackground()
 {
-    std::ifstream file(computeFilePath.path);
+    std::ifstream file(AssetPaths::Resolve(computeFilePath.path));
     if (!file.is_open()) {
         LOG_ERROR("[ShaderBaseCompute] Cannot open compute shader: %s", computeFilePath.c_str());
         return;

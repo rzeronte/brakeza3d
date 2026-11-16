@@ -26,7 +26,7 @@ class Tools {
 public:
     static std::vector<std::string> split(const std::string &, char);
     static int random(int min, int max);
-    static char *ReadFile(const std::string &name);
+    static char *ReadFile(const std::string &name);   // resuelve la ruta con AssetPaths (proyecto primero, core de respaldo)
     static float getXTextureFromUV(const SDL_Surface *surface, float u);
     static float getYTextureFromUV(const SDL_Surface *surface, float v);
     static bool FileExists(const char *name);

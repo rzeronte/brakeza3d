@@ -14,6 +14,7 @@
 #include "../../include/Loaders/ProjectLoader.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Misc/Tools.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Misc/Logging.h"
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Windows/FileSystemGUI.h"
@@ -67,6 +68,18 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
     Components::get()->Scripting()->setCurrentScene(nullptr);
 
     LOG_MESSAGE("[ProjectLoader] Loading project file '%s'...", filename.c_str());
+
+    // Assets propios del proyecto: "assetsFolder" (p. ej. "../projects/MyGame/assets/"). Con ella, toda ruta "../assets/<tipo>/<fichero>" se busca
+    // primero en esa carpeta y, si no está, en la del core (ver AssetPaths). Sin la clave, todo funciona como siempre. Se fija ANTES de cargar
+    // scripts y escenas del proyecto.
+    AssetPaths::SetCorePrefix(Config::get()->ASSETS_FOLDER);
+    if (auto *assets = cJSON_GetObjectItemCaseSensitive(contentJSON, "assetsFolder"); cJSON_IsString(assets) && assets->valuestring != nullptr) {
+        AssetPaths::SetProjectRoot(assets->valuestring);
+        LOG_MESSAGE("[ProjectLoader] Project assets folder: '%s'", assets->valuestring);
+    } else {
+        AssetPaths::SetProjectRoot("");
+    }
+    scripting->UpdateScriptSearchPath();   // require(): scripts del proyecto antes que los del core
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
@@ -233,6 +246,9 @@ void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
 
     cJSON_AddStringToObject(root, "name", projectName.c_str());
     cJSON_AddStringToObject(root, "description", projectDesc.c_str());
+    if (AssetPaths::IsActive()) {
+        cJSON_AddStringToObject(root, "assetsFolder", AssetPaths::GetProjectRoot().c_str());   // se conserva al guardar
+    }
     cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 
     // scripts

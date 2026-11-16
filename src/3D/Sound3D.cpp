@@ -12,6 +12,7 @@
 //
 
 #include "../../include/3D/Sound3D.h"
+#include "../../include/Misc/AssetPaths.h"
 #include <algorithm>
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Inspectors/Sound3DGUI.h"
@@ -26,7 +27,7 @@ bool Sound3D::DecodeFile(const std::string& srcFile, ma_audio_buffer& outBuffer,
     ma_uint64 frameCount  = 0;
     void*     pData       = nullptr;
 
-    ma_result result = ma_decode_file(srcFile.c_str(), &cfg, &frameCount, &pData);
+    ma_result result = ma_decode_file(AssetPaths::Resolve(srcFile).c_str(), &cfg, &frameCount, &pData);
     if (result != MA_SUCCESS) {
         LOG_ERROR("[Sound3D] ma_decode_file failed for '%s': result=%d", srcFile.c_str(), (int)result);
         return false;

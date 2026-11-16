@@ -13,6 +13,7 @@
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include "../../../include/OpenGL/Base/ShaderBaseOpenGL.h"
+#include "../../../include/Misc/AssetPaths.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Misc/Tools.h"
 #include "../../../include/OpenGL/ShaderPreProcessor.h"
@@ -51,7 +52,7 @@ ShaderBaseOpenGL::ShaderBaseOpenGL(const FilePath::VertexShaderFile &vertexFilen
     GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 
     std::string VertexShaderCode;
-    std::ifstream VertexShaderStream(vertexFilename, std::ios::in);
+    std::ifstream VertexShaderStream(AssetPaths::Resolve(vertexFilename.path), std::ios::in);
     if (VertexShaderStream.is_open()){
         std::stringstream sstr;
         sstr << VertexShaderStream.rdbuf();

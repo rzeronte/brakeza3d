@@ -17,6 +17,7 @@
 #include <GL/glew.h>
 #include <SDL_image.h>
 #include "imgui_internal.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../imgui/backends/imgui_impl_opengl3.h"
 #include "../imgui/backends/imgui_impl_sdl2.h"
 #include "../../include/Components/ComponentWindow.h"
@@ -232,7 +233,7 @@ void ComponentWindow::InitFontsTTF()
     std::string pathFont = SETUP->FONTS_FOLDER + "TroubleFont.ttf";
     LOG_MESSAGE("[Window] Loading default TTF: %s", pathFont.c_str());
 
-    fontDefault = TTF_OpenFont(pathFont.c_str(), 35);
+    fontDefault = TTF_OpenFont(AssetPaths::Resolve(pathFont).c_str(), 35);
 
     if (!fontDefault) {
         LOG_MESSAGE(TTF_GetError());

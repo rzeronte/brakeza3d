@@ -18,6 +18,7 @@
 #include <SDL2/SDL.h>
 
 #include "../../../include/Render/UI/UIManager.h"
+#include "../../../include/Misc/AssetPaths.h"
 #include "../../../include/Misc/Logging.h"
 #include "../../../include/Render/Image.h"
 #include "../../../include/Render/Profiler.h"
@@ -51,7 +52,8 @@ TextWriter* UIManager::writerForFont(const std::string& fontPath)
     if (it != fontWriters.end()) return it->second ? it->second : defaultTw;
 
     TextWriter* writer = nullptr;
-    TTF_Font* font = std::filesystem::exists(fontPath) ? TTF_OpenFont(fontPath.c_str(), 35) : nullptr;
+    const std::string fontResolved = AssetPaths::Resolve(fontPath);
+    TTF_Font* font = std::filesystem::exists(fontResolved) ? TTF_OpenFont(fontResolved.c_str(), 35) : nullptr;
     if (font) {
         writer = new TextWriter(Components::get()->Window()->getRenderer(), font);
         writer->buildGlyphAtlas(512);
@@ -109,7 +111,13 @@ void UIManager::clearWidgets()
 
 void UIManager::loadWidgetsFromDir(const std::string& dir)
 {
-    if (!std::filesystem::exists(dir)) {
+    // Con un proyecto con assets propios (AssetPaths) se cargan los widgets de la carpeta del core y de la del proyecto: el core primero y el
+    // proyecto después, así un widget del proyecto sustituye al del core con el mismo nombre.
+    std::vector<std::string> roots;
+    for (const auto& d : AssetPaths::ResolveDirs(dir)) {
+        if (std::filesystem::exists(d)) roots.push_back(d);
+    }
+    if (roots.empty()) {
         printf("[UIManager] WARN: directory not found: %s\n", dir.c_str());
         return;
     }
@@ -118,15 +126,17 @@ void UIManager::loadWidgetsFromDir(const std::string& dir)
         if (std::find(loadedDirs.begin(), loadedDirs.end(), d) == loadedDirs.end())
             loadedDirs.push_back(d);
     };
-    addDir(dir);
 
     // Collect all .json paths recursively, registering subdirs along the way.
     std::vector<std::string> paths;
-    for (auto& entry : std::filesystem::recursive_directory_iterator(dir)) {
-        if (entry.is_directory()) {
-            addDir(entry.path().string() + "/");
-        } else if (entry.path().extension() == ".json") {
-            paths.push_back(entry.path().string());
+    for (const auto& root : roots) {
+        addDir(root);
+        for (auto& entry : std::filesystem::recursive_directory_iterator(root)) {
+            if (entry.is_directory()) {
+                addDir(entry.path().string() + "/");
+            } else if (entry.path().extension() == ".json") {
+                paths.push_back(entry.path().string());
+            }
         }
     }
 
@@ -195,7 +205,7 @@ void UIManager::setUITheme(const std::string& theme)
 // Used by the two-pass bulk loader (loadWidgetsFromDir).
 void UIManager::parseWidgetJSON(const std::string& filePath)
 {
-    FILE* f = fopen(filePath.c_str(), "rb");
+    FILE* f = fopen(AssetPaths::Resolve(filePath).c_str(), "rb");
     if (!f) {
         printf("[UIManager] WARN: cannot open %s\n", filePath.c_str());
         return;

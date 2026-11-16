@@ -12,6 +12,7 @@
 //
 
 #include "../../include/Render/AssimpAnimationService.h"
+#include "../../include/Misc/AssetPaths.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Brakeza.h"
 #include "../../include/Render/Transforms.h"
@@ -90,7 +91,7 @@ bool AssimpAnimationService::AssimpLoadAnimation(const std::string &filename, st
     }
 
     scene = importer.ReadFile(
-        filename,
+        AssetPaths::Resolve(filename),
         aiProcess_Triangulate |
         aiProcess_SortByPType |
         aiProcess_GenNormals |

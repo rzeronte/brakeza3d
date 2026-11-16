@@ -8,6 +8,7 @@
  * License: GNU General Public License v3.0 (see LICENSE)
  */
 #include "../../include/LUA/BrakezaLuaBridge.h"
+#include "../../include/Misc/AssetPaths.h"
 
 void LUAIntegrationMeshes(sol::state &lua)
 {
@@ -183,7 +184,7 @@ void LUAIntegrationMeshes(sol::state &lua)
             auto *scene = Components::get()->Scripting()->getSceneByName(name);
             if (!scene) return;
             const std::string &path = scene->getFilePath();
-            FILE *f = fopen(path.c_str(), "rb");
+            FILE *f = fopen(AssetPaths::Resolve(path).c_str(), "rb");
             if (!f) return;
             fseek(f, 0, SEEK_END);
             long sz = ftell(f);
