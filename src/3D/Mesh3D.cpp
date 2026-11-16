@@ -236,6 +236,46 @@ void Mesh3D::AssimpLoadGeometryFromFile(const FilePath::ModelFile &fileName)
     loaded = true;
 }
 
+// Busca la textura por SUFIJO de ruta bajo la carpeta de texturas. Los FBX guardan la ruta de sus texturas tal como estaba al exportar
+// ("..\..\textures\pack\CARS\x.png"); si la carpeta intermedia se mueve o se quita (p. ej. un proyecto que aplana "pack/"), esa ruta deja de
+// existir aunque el fichero siga en la carpeta de texturas. Se prueban los sufijos de la ruta, del mas largo al mas corto, DESPUES del ultimo
+// componente "textures" (o de toda la ruta si no lo tiene): "pack/CARS/x.png", "CARS/x.png", "x.png". Vacio si ninguno existe.
+static std::string FindTextureBySuffix(const std::string &p)
+{
+    std::vector<std::string> comps;
+    std::string cur;
+    for (char ch : p + "/") {
+        if (ch == '/') {
+            if (!cur.empty() && cur != "." && cur != "..") comps.push_back(cur);
+            cur.clear();
+        } else {
+            cur += ch;
+        }
+    }
+
+    size_t start = 0;
+    for (size_t i = 0; i < comps.size(); i++) {
+        std::string lower = comps[i];
+        std::transform(lower.begin(), lower.end(), lower.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        if (lower == "textures") start = i + 1;
+    }
+
+    for (size_t k = start; k < comps.size(); k++) {
+        std::string tail;
+        for (size_t i = k; i < comps.size(); i++) tail += (i > k ? "/" : "") + comps[i];
+        const std::string cand = Config::get()->TEXTURES_FOLDER + tail;
+        if (Tools::FileExists(cand.c_str())) return cand;
+
+        const auto dot = cand.find_last_of('.');
+        if (dot != std::string::npos) {
+            const std::string png = cand.substr(0, dot) + ".png";
+            if (Tools::FileExists(png.c_str())) return png;
+        }
+    }
+
+    return "";
+}
+
 // Los FBX exportados guardan la textura con la ruta ABSOLUTA (o relativa) del equipo donde se exportaron ("C:\...\brakeza3d\assets\textures\X.png").
 // Si los assets se mueven a la carpeta de un proyecto, esa ruta ya no existe: se reinterpreta lo que sigue a la última "assets/" bajo la raíz de
 // assets del motor ("../assets/textures/X.png"), que AssetPaths resuelve proyecto primero y core de respaldo. Vacío si no contiene "assets/".
@@ -295,6 +335,8 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntr
             } else if (!(candidate = tryPng(RebaseOntoAssets(p))).empty()) {
                 FullPath = candidate;
             } else if (!(candidate = tryPng(textureSubPath)).empty()) {
+                FullPath = candidate;
+            } else if (!(candidate = FindTextureBySuffix(p)).empty()) {
                 FullPath = candidate;
             } else if (!(candidate = tryPng(baseSubPath)).empty()) {
                 FullPath = candidate;
