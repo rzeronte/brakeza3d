@@ -19,3 +19,4 @@ website/.idea/
 
 # Local tooling (not part of the repository)
 /tools/
+/installer/
