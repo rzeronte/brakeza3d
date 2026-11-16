@@ -376,6 +376,27 @@ When autoloading a project (`-p`), Brakeza3D also mirrors its log output to stdo
 ImGui console to look at in that mode — useful when piping output to a file for later inspection.
 :::
 
+## Project assets from Lua
+---
+
+When a project declares its own [assets folder](../3-engine-concepts/4-assets-folder.md), your scripts do not
+need to change. The usual `../assets/...` paths keep working and are looked up in the project folder first and
+in the core folder second.
+
+- `io.open(path, mode)` resolves the path the same way before opening the file.
+- `require` looks first in the `scripts/` folder of the project assets and then in the core scripts folder.
+- `Assets.resolve(path)` returns the real path the engine would open for a given `../assets/...` path.
+- `Assets.projectRoot()` returns the project assets folder, or an empty string if the project has none.
+
+```lua
+local real = Assets.resolve("../assets/sounds/alarm.wav")
+print(real)                      -- ../projects/MyGame/assets/sounds/alarm.wav, if the file exists there
+print(Assets.projectRoot())      -- ../projects/MyGame/assets/
+```
+
+`io.open` resolves the path whatever the mode. If a file with that name exists in the project folder, that is the
+file that gets opened, even for writing. If it does not exist there, the path is used exactly as you wrote it.
+
 
 
 ## Components

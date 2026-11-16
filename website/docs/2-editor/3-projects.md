@@ -23,6 +23,26 @@ A `Project` contains the following configuration:
 | **Volume**           | Master volume and individual volume controls (music, SFX, ambient) that persist across scene changes.                                                                |
 | **Shared Resources** | Common assets (textures, models, audio files) that are preloaded and shared across all scenes in the project, improving performance and reducing memory duplication. |
 | **Scenes List**      | Registry of all available scenes in the project with their paths. Defines the start scene and allows easy navigation between scenes.                                 |
+| **Assets folder**    | Optional (`assetsFolder`). A folder with the project's own assets, used before the engine's core `assets/` folder. See [Project assets folder](#project-assets-folder). |
+
+### Project assets folder
+
+By default a project uses the assets that ship with the engine (`assets/`). If your game has its own models,
+scenes, scripts or sounds, you can keep them in a separate folder and declare it in the project file:
+
+```json
+{
+  "name": "MyGame",
+  "assetsFolder": "../projects/MyGame/assets/"
+}
+```
+
+From then on, any `../assets/...` path used by your scenes and scripts is looked up in your folder first and in
+the core `assets/` folder second. You do not need to rewrite any path, and you can override a core resource just
+by placing a file with the same name in your folder. The project file itself stays in `assets/projects/`.
+
+The editor takes this into account: the File Browser and the widget lists show the files of both folders. See
+[Assets folder](../3-engine-concepts/4-assets-folder.md) for the full details.
 
 ### Scripts and Shaders
 
