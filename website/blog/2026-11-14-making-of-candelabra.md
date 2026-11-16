@@ -44,7 +44,7 @@ also write.
 
 ## Why Lua, and how much of the game is Lua
 
-The engine is C++17 and OpenGL 3.3, but almost the entire game lives in **Lua scripts** on top of the
+The engine is C++17 and OpenGL 4.3, but almost the entire game lives in **Lua scripts** on top of the
 Brakeza3D bridge: the unit state machines, the enemy AI, the building and production queues, the
 economy, the quest and dialogue system, the police, the traffic, the HUD.
 
