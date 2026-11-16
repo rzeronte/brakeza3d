@@ -27,7 +27,7 @@ The game reads dozens of JSON files: quests, NPCs and their dialogue trees, unit
 
 ## The solution: one HTML file, no server, no install
 
-The editor is **a single page** (`tools/rts-editor.html`, about 12,000 lines) that opens in Chrome or Edge. It uses the *File System Access API*: you press "Open Project Folder", pick the project root, and the editor reads and writes the JSON files directly. No backend, no build step, no dependencies.
+The editor is **a single page** (about 12,000 lines) that opens in Chrome or Edge. It uses the *File System Access API*: you press "Open Project Folder", pick the project root, and the editor reads and writes the JSON files directly. No backend, no build step, no dependencies.
 
 That has a benefit that is not obvious at first: **what the editor edits is exactly the files in the repository.** There is no intermediate database and no export step. A change in the editor is a change in `git diff`, reviewed and reverted like any other.
 
@@ -112,8 +112,8 @@ It is a copy on purpose: the story writers work against a snapshot, and I merge 
 An editor that lets more people touch the data needs more ways to catch mistakes:
 
 - The editor's own **validator** runs before saving and lists missing quests, unknown effects, unreachable dialogue nodes and the new SMS and call checks above. It warns; it never blocks.
-- A standalone **lore checker** (`tools/lore_check.py`) walks the whole story: broken links between quests, NPCs and phone messages, flags nobody sets, quests nobody offers or finishes, cycles, and whether there is an ending.
-- A **quest simulator** (`tools/test_quest_system.js`) runs the quest logic against a fake engine, so a change that breaks the main chain can fail a test instead of a playthrough.
+- A standalone **lore checker** walks the whole story: broken links between quests, NPCs and phone messages, flags nobody sets, quests nobody offers or finishes, cycles, and whether there is an ending.
+- A **quest simulator** runs the quest logic against a fake engine, so a change that breaks the main chain can fail a test instead of a playthrough.
 
 ## What I learned
 

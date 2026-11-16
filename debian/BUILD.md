@@ -24,13 +24,7 @@
 
 1. Añadir una entrada en `debian/changelog` con la versión de la release (la misma que `ENGINE_VERSION`).
 2. Compilar en CLion con el toolchain **WSL** (Release, carpeta `cmake-build-release-wsl`) con `master` activa.
-3. Desde la raíz del repo, en PowerShell:
-
-   ```powershell
-   .\tools\package_linux.ps1
-   ```
-
-   Comprueba versión y fecha del binario, prepara un árbol limpio en WSL con `git archive master` (solo
+3. Ejecuta el script de empaquetado de Linux (no se distribuye en el repositorio). Comprueba versión y fecha del binario, prepara un árbol limpio en WSL con `git archive master` (solo
    ficheros con seguimiento, finales de línea LF), lanza `dpkg-buildpackage -us -uc -b` y deja
    `..\Brakeza3D-x64_86-Linux-installer.deb` (el nombre al que enlaza la web).
 

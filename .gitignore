@@ -16,3 +16,6 @@ website/.docusaurus
 website/build
 website/.idea/
 .claude/
+
+# Local tooling (not part of the repository)
+/tools/

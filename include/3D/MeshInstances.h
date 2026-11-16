@@ -24,7 +24,7 @@
 // (frustum) y estan dentro de la distancia maxima. Las matrices del fichero son LOCALES al objeto: la matriz de dibujo es
 // modelMatrix del Mesh3D * matriz de la instancia.
 //
-// Formato del fichero (little-endian), lo escribe tools/export_scatter.py:
+// Formato del fichero (little-endian), lo escribe el exportador de instancias:
 //   char magic[4] = "BZIN"; uint32 version = 1; uint32 chunkCount; uint32 instanceCount;
 //   por chunk (32 B):     float min[3]; float max[3]; uint32 first; uint32 count;      // caja local, ya con el tamano del modelo
 //   por instancia (40 B): float pos[3]; float quat[4] (x,y,z,w); float scale[3];       // ordenadas por chunk

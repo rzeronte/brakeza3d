@@ -12,7 +12,7 @@
 -- one. A Lua error in any demo stops the scripts, so a run that does not reach "[DemoTour] DONE"
 -- points at the failing demo. At the end it opens the demo list.
 --
--- The engine screenshot does not include the UI, so tools/run_demo_browser_tour.ps1 captures the
+-- The engine screenshot does not include the UI, so an external recorder captures the
 -- window from Windows every time this script prints "[DemoTour] ready <NN>".
 
 local scripting
@@ -28,7 +28,7 @@ local pos     = 1
 -- "tour" of demos.json (ShowRoom, Particles, Lights, PostProcessing, ShaderShowcase, Swarm, RainCubes, Projectile,
 -- ThirdPerson, TwinStick) as positions in the full catalog
 local TOUR_ORDER = { 17, 21, 18, 19, 20, 22, 23, 24, 13, 15, 25, 26, 27, 33, 34, 29, 30, 31, 32, 35, 28 }
-local record  = false    -- --set demoTourRecord=true: tools/record_demo_tour.ps1 drives the pace (see readAck)
+local record  = false    -- --set demoTourRecord=true: an external recorder drives the pace (see readAck)
 
 -- In record mode the recorder presses the keys of each demo and writes the number of the demo it has
 -- finished in logs/demo_tour_ack.txt; the tour only moves on when it sees it (or after RECORD_TIMEOUT).

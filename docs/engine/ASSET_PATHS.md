@@ -48,13 +48,3 @@ Resueltos también (2026-11-16, tras mover los assets de un proyecto a su propia
 **Texturas con ruta absoluta en el FBX.** Los FBX exportados pueden guardar la textura como ruta absoluta del equipo de exportación (`C:/.../assets/textures/X.png`, con barras invertidas en Windows). `Mesh3D::AssimpInitMaterials` añade un candidato: lo que sigue a la última `assets/` se busca bajo `Config::ASSETS_FOLDER` (proyecto primero, core de respaldo). Es una red de seguridad; lo correcto es exportar con rutas relativas.
 
 Escrituras (`fopen(..., "w")` de los editores, `ofstream`) NO se resuelven: se escribe donde diga la ruta.
-
-## Pruebas
-
-`tools/asset_paths_test.cpp` (solo librería estándar, sin CMake):
-
-```
-g++ -std=c++17 -I. tools/asset_paths_test.cpp src/Misc/AssetPaths.cpp -o asset_paths_test && ./asset_paths_test
-```
-
-Valida prioridad del proyecto, respaldo en el core, `//`, prefijos parecidos, caché, barras invertidas y concurrencia (8 hilos).

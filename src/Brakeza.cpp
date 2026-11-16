@@ -366,7 +366,7 @@ void Brakeza::AutoLoadProjectOrContinue() const
         // Autoload runs have no ImGui/in-app console to look at, so mirror LOG_MESSAGE/Lua
         // print() (routed through Logging::Message) to stdout instead of the default
         // interactive-mode behaviour (silent after startup, GUI console only) -- otherwise a
-        // headless/CI run (see tools/run_scenario.ps1) produces no visible output at all.
+        // headless/CI run (scenario runs) produces no visible output at all.
         Config::get()->ENABLE_LOGGING_STD = true;
         printf("[Brakeza] PlayLUAScripts START\n"); fflush(stdout);
         componentsManager->Scripting()->PlayLUAScripts();
