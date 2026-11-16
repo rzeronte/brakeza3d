@@ -27,7 +27,7 @@
 <li class=""><strong>Size.</strong> With 298 building assignments or 869 strings, searching and comparing by hand is a guaranteed source of mistakes.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-solution-one-html-file-no-server-no-install">The solution: one HTML file, no server, no install<a href="https://brakeza.com/blog/rts-editor-tooling#the-solution-one-html-file-no-server-no-install" class="hash-link" aria-label="Direct link to The solution: one HTML file, no server, no install" title="Direct link to The solution: one HTML file, no server, no install" translate="no">​</a></h2>
-<p>The editor is <strong>a single page</strong> (<code>tools/rts-editor.html</code>, about 12,000 lines) that opens in Chrome or Edge. It uses the <em>File System Access API</em>: you press "Open Project Folder", pick the project root, and the editor reads and writes the JSON files directly. No backend, no build step, no dependencies.</p>
+<p>The editor is <strong>a single page</strong> (about 12,000 lines) that opens in Chrome or Edge. It uses the <em>File System Access API</em>: you press "Open Project Folder", pick the project root, and the editor reads and writes the JSON files directly. No backend, no build step, no dependencies.</p>
 <p>That has a benefit that is not obvious at first: <strong>what the editor edits is exactly the files in the repository.</strong> There is no intermediate database and no export step. A change in the editor is a change in <code>git diff</code>, reviewed and reverted like any other.</p>
 <p>It also writes files with exactly the formatting the existing ones have, so saving a file you did not touch produces no diff at all. I checked that round-tripping the existing files is byte-identical, because a tool that adds noise to every commit gets abandoned.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="a-tour-of-the-useful-parts">A tour of the useful parts<a href="https://brakeza.com/blog/rts-editor-tooling#a-tour-of-the-useful-parts" class="hash-link" aria-label="Direct link to A tour of the useful parts" title="Direct link to A tour of the useful parts" translate="no">​</a></h2>
@@ -74,8 +74,8 @@
 <p>An editor that lets more people touch the data needs more ways to catch mistakes:</p>
 <ul>
 <li class="">The editor's own <strong>validator</strong> runs before saving and lists missing quests, unknown effects, unreachable dialogue nodes and the new SMS and call checks above. It warns; it never blocks.</li>
-<li class="">A standalone <strong>lore checker</strong> (<code>tools/lore_check.py</code>) walks the whole story: broken links between quests, NPCs and phone messages, flags nobody sets, quests nobody offers or finishes, cycles, and whether there is an ending.</li>
-<li class="">A <strong>quest simulator</strong> (<code>tools/test_quest_system.js</code>) runs the quest logic against a fake engine, so a change that breaks the main chain can fail a test instead of a playthrough.</li>
+<li class="">A standalone <strong>lore checker</strong> walks the whole story: broken links between quests, NPCs and phone messages, flags nobody sets, quests nobody offers or finishes, cycles, and whether there is an ending.</li>
+<li class="">A <strong>quest simulator</strong> runs the quest logic against a fake engine, so a change that breaks the main chain can fail a test instead of a playthrough.</li>
 </ul>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-i-learned">What I learned<a href="https://brakeza.com/blog/rts-editor-tooling#what-i-learned" class="hash-link" aria-label="Direct link to What I learned" title="Direct link to What I learned" translate="no">​</a></h2>
 <ol>
