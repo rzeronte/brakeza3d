@@ -98,6 +98,41 @@ class Mesh3DAnimation : public Mesh3D
     const aiScene *scene = nullptr;
     std::shared_ptr<Assimp::Importer> sharedImporter;
 
+    // Biblioteca de animaciones compartida (ver sharedAnimationsFiles). Si el modelo no trae
+    // animaciones propias, los clips salen de animScene en vez de scene. animImporter mantiene
+    // viva esa escena (solo lectura, compartida entre todas las instancias via sceneCache).
+    const aiScene *animScene = nullptr;
+    std::shared_ptr<Assimp::Importer> animImporter;
+
+    // Retargeting de las animaciones compartidas. Los modelos tienen huesos de distinta longitud y
+    // T-poses distintas (brazos mas o menos levantados), asi que de la biblioteca solo se toma el
+    // MOVIMIENTO de cada hueso, no su pose absoluta:
+    //   - rotacion: giro en el MUNDO respecto al reposo de la biblioteca, aplicado sobre el reposo
+    //     del modelo (Wt = Wl(t) * Wl_reposo^-1 * Wt_reposo); la local sale de dividir por el padre.
+    //   - posicion y escala de cada hueso: las del modelo. Solo el hueso raiz (cadera) usa el
+    //     desplazamiento animado respecto al reposo de la biblioteca, escalado por rootScale
+    //     (proporcion de alturas), sumado al reposo propio del modelo.
+    struct RetargetBone {
+        int         idx       = -1;          // posicion en retargetWl/retargetWt
+        int         parentIdx = -1;          // hueso padre (-1 = hueso raiz)
+        bool        inLib     = false;       // el hueso existe en la biblioteca
+        bool        isRoot    = false;
+        float       rootScale = 1.0f;
+        aiVector3D  pos;                     // posicion local de reposo del modelo
+        aiVector3D  scale{1.0f, 1.0f, 1.0f};
+        aiVector3D  libRestPos;              // posicion de reposo en la biblioteca (solo el raiz)
+        aiMatrix3x3 modelRestLocal;          // rotacion local de reposo del modelo
+        aiMatrix3x3 modelRestWorld;          // ... en el mundo (incluye ancestros)
+        aiMatrix3x3 modelParentWorld;        // mundo de los ancestros del hueso raiz (modelo)
+        aiMatrix3x3 libRestWorldInv;         // inversa de la rotacion mundo de reposo en la biblioteca
+        aiMatrix3x3 libParentWorld;          // mundo de los ancestros del hueso raiz (biblioteca)
+    };
+    bool animCopyLocal = false;              // modo de la biblioteca en uso (SharedAnimationLibrary::copyLocalRotations)
+    std::unordered_map<const aiNode*, RetargetBone> retargetBones;
+    std::vector<aiMatrix3x3> retargetWl;     // rotacion mundo animada en la biblioteca (por frame)
+    std::vector<aiMatrix3x3> retargetWt;     // rotacion mundo resultante en el modelo (por frame)
+    void AttachSharedAnimations();
+
     // Mantiene vivo el AnimationData cacheado (y sus buffers de GPU compartidos de pose de
     // reposo, ver AnimationMeshEntry) mientras esta instancia exista -- mismo mecanismo que
     // Mesh3D::sharedModel, ver Mesh3D::sharedStaticGeometry.
@@ -119,6 +154,28 @@ class Mesh3DAnimation : public Mesh3D
     std::vector<std::vector<aiMatrix4x4>> meshBoneFinalTransforms;
     std::vector<std::vector<glm::mat4>> boneTransformCachePerMesh;
 public:
+    // Ficheros con TODAS las animaciones de cada familia de esqueleto. Un modelo sin animaciones
+    // propias usa la primera biblioteca cuyo esqueleto coincide con el suyo (nombres de hueso).
+    // Los declara el proyecto (clave "sharedAnimationsFiles" de su JSON). Vacio o inexistentes =
+    // desactivado (comportamiento anterior: cada FBX lleva las suyas).
+    struct SharedAnimationLibrary {
+        std::string file;
+        // false (por defecto): las animaciones de la biblioteca se adaptaron a la T-pose de cada
+        //   personaje (giro en el mundo respecto al reposo, ver RetargetBone).
+        // true: las rotaciones locales de la biblioteca se aplican tal cual (animaciones copiadas
+        //   entre armatures con el mismo esqueleto, sin adaptar). Ver "mode" en el JSON del proyecto.
+        bool copyLocalRotations = false;
+    };
+    static std::vector<SharedAnimationLibrary> sharedAnimationsFiles;
+
+    // Parsea en segundo plano (pool de computo) todas las bibliotecas declaradas, para que esten listas cuando
+    // empiece la carga de personajes en lugar de parsearse (~segundos cada una) en el momento en que
+    // el primer personaje las pide, con el resto de trabajadores bloqueados esperando. Se llama al cargar el proyecto.
+    static void PreloadSharedAnimations();
+
+    // Escena de la que salen las animaciones: la biblioteca compartida o la del propio modelo.
+    [[nodiscard]] const aiScene* animationsScene() const { return animScene ? animScene : scene; }
+
     Mesh3DAnimation();
     ~Mesh3DAnimation() override;
 
@@ -171,8 +228,8 @@ public:
     void restartAnimation();
     // Duración real en segundos del clip actual, ya dividida por la velocidad de animación
     [[nodiscard]] float getAnimationDuration() const;
-    [[nodiscard]] int getNumAnimations() const              { return scene ? static_cast<int>(scene->mNumAnimations) : 0; }
-    [[nodiscard]] std::string getAnimationName(int i) const { return (scene && i >= 0 && i < static_cast<int>(scene->mNumAnimations)) ? scene->mAnimations[i]->mName.C_Str() : ""; }
+    [[nodiscard]] int getNumAnimations() const              { auto* a = animationsScene(); return a ? static_cast<int>(a->mNumAnimations) : 0; }
+    [[nodiscard]] std::string getAnimationName(int i) const { auto* a = animationsScene(); return (a && i >= 0 && i < static_cast<int>(a->mNumAnimations)) ? a->mAnimations[i]->mName.C_Str() : ""; }
     [[nodiscard]] float getCurrentAnimationMaxTime() const;
     [[nodiscard]] const std::vector<BonesMappingColliders> *getBoneMappingColliders() const;
 

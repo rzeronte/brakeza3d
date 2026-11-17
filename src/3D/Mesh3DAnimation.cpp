@@ -10,6 +10,7 @@
 #include <assimp/postprocess.h>
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Brakeza.h"
+#include "../../include/Threads/ThreadJobBase.h"
 #include "../../include/Components/Components.h"
 #include "../../include/Misc/ToolsJSON.h"
 #include "../../include/Render/Transforms.h"
@@ -17,10 +18,196 @@
 #include "../../include/GUI/Inspectors/Mesh3DAnimationGUI.h"
 #include "../../include/Cache/AnimationDataCache.h"
 #include "../../include/Cache/SceneCache.h"
+#include <functional>
+#include <assimp/config.h>
 #include "../../include/Misc/AssetPaths.h"
+
+std::vector<Mesh3DAnimation::SharedAnimationLibrary> Mesh3DAnimation::sharedAnimationsFiles;   // vacio = desactivado; lo fija el proyecto ("sharedAnimationsFiles" en su JSON, ver ProjectLoader)
+
+namespace {
+constexpr unsigned int kModelImportFlags =
+    aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_GenSmoothNormals | aiProcess_FlipUVs;
+
+bool LibraryExists(const std::string& path)
+{
+    return !path.empty() && Tools::FileExists(AssetPaths::Resolve(path).c_str());
+}
+
+bool SharedAnimationsAvailable()
+{
+    for (const auto& lib : Mesh3DAnimation::sharedAnimationsFiles) {
+        if (LibraryExists(lib.file)) return true;
+    }
+    return false;
+}
+
+// Importa el modelo. Si NO trae animaciones y existe la biblioteca compartida, se reimporta sin
+// conservar los pivotes del FBX: asi cada hueso es UN nodo y sus canales se enlazan por nombre
+// con los de la biblioteca (que se importa igual). Con pivotes, Assimp parte cada transformacion
+// en nodos auxiliares (X_$AssimpFbx$_Rotation...) que un modelo sin animar puede no tener.
+// Los modelos con animaciones propias se importan como siempre.
+std::shared_ptr<Assimp::Importer> ImportModelScene(const std::string& filename)
+{
+    const std::string resolved = AssetPaths::Resolve(filename);   // proyecto primero, core de respaldo (la clave de cache sigue siendo filename)
+
+    auto imp = std::make_shared<Assimp::Importer>();
+    const aiScene* s = imp->ReadFile(resolved, kModelImportFlags);
+
+    if (s && s->mNumAnimations == 0 && SharedAnimationsAvailable()) {
+        auto imp2 = std::make_shared<Assimp::Importer>();
+        imp2->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+        if (imp2->ReadFile(resolved, kModelImportFlags)) {
+            return imp2;
+        }
+    }
+    return imp;
+}
+
+// Las bibliotecas se mantienen cargadas mientras dure la sesion (SceneCache solo guarda referencias debiles): asi no se
+// vuelven a parsear aunque se destruyan todas las instancias, y la precarga no se pierde antes de usarse.
+std::mutex g_libKeepAliveMutex;
+std::unordered_map<std::string, std::shared_ptr<Assimp::Importer>> g_libKeepAlive;
+
+std::shared_ptr<Assimp::Importer> LoadSharedAnimationLibrary(const std::string& path)
+{
+    // Un solo parseo aunque muchas unidades la pidan a la vez (mismo patron que los modelos).
+    auto keyMutex = animationDataCache.getKeyLoadMutex(path);
+    std::lock_guard<std::mutex> lock(*keyMutex);
+
+    auto imp = sceneCache.get(path);
+    if (imp && imp->GetScene()) return imp;
+
+    imp = std::make_shared<Assimp::Importer>();
+    imp->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+    if (!imp->ReadFile(AssetPaths::Resolve(path), 0)) {
+        LOG_ERROR("[Mesh3DAnimation] No se pudo cargar la biblioteca de animaciones '%s': %s", path.c_str(), imp->GetErrorString());
+        return nullptr;
+    }
+    sceneCache.store(path, imp);
+    {
+        std::lock_guard<std::mutex> keep(g_libKeepAliveMutex);
+        g_libKeepAlive[path] = imp;
+    }
+    LOG_MESSAGE("[Mesh3DAnimation] Biblioteca de animaciones '%s' cargada (%u animaciones)", path.c_str(), imp->GetScene()->mNumAnimations);
+    return imp;
+}
+
+}
 
 Mesh3DAnimation::Mesh3DAnimation()
 {
+}
+
+void Mesh3DAnimation::PreloadSharedAnimations()
+{
+    for (const auto& lib : sharedAnimationsFiles) {
+        if (!LibraryExists(lib.file)) continue;
+        const std::string path = lib.file;
+        // Un trabajo por biblioteca: se parsean en paralelo entre si y con el resto de la carga.
+        Brakeza::get()->PoolCompute().enqueue(std::make_shared<ThreadJobBase>(
+            [path]() { LoadSharedAnimationLibrary(path); },
+            []() {}
+        ));
+    }
+}
+
+void Mesh3DAnimation::AttachSharedAnimations()
+{
+    animScene = nullptr;
+    animImporter.reset();
+    animCopyLocal = false;
+    retargetBones.clear();
+
+    if (!scene || scene->mNumAnimations > 0) return;
+
+    // Primera biblioteca cuyo esqueleto coincide con el del modelo (cada familia de esqueleto
+    // tiene la suya). Cada una se parsea una sola vez (sceneCache) aunque se pruebe en cada modelo.
+    for (const auto& libCfg : Mesh3DAnimation::sharedAnimationsFiles) {
+        const std::string& libPath = libCfg.file;
+        if (!LibraryExists(libPath)) continue;
+
+        auto lib = LoadSharedAnimationLibrary(libPath);
+        if (!lib || !lib->GetScene() || lib->GetScene()->mNumAnimations == 0) continue;
+
+        retargetBones.clear();
+        animImporter  = lib;
+        animScene     = lib->GetScene();
+        animCopyLocal = libCfg.copyLocalRotations;
+
+        // Nodos de la biblioteca por nombre, con su rotacion de reposo en el mundo (una pasada).
+        struct LibNode { const aiNode* node; aiMatrix3x3 world; aiMatrix3x3 parentWorld; };
+        std::unordered_map<std::string, LibNode> libNodes;
+        std::function<void(const aiNode*, const aiMatrix3x3&)> indexLib = [&](const aiNode* n, const aiMatrix3x3& Wp) {
+            aiVector3D sc, ps; aiQuaternion q;
+            n->mTransformation.Decompose(sc, q, ps);
+            const aiMatrix3x3 W = Wp * q.GetMatrix();
+            libNodes[n->mName.C_Str()] = LibNode{n, W, Wp};
+            for (unsigned int i = 0; i < n->mNumChildren; i++) indexLib(n->mChildren[i], W);
+        };
+        indexLib(animScene->mRootNode, aiMatrix3x3());
+
+        // Reposo propio de cada hueso (local y en el mundo) y su equivalente en la biblioteca.
+        int totalBones = 0, matchedBones = 0;
+        std::function<void(const aiNode*, const aiMatrix3x3&, int)> walk = [&](const aiNode* node, const aiMatrix3x3& Wp, int parentBone) {
+            const std::string name = node->mName.C_Str();
+
+            RetargetBone rb;
+            aiQuaternion rot;
+            node->mTransformation.Decompose(rb.scale, rot, rb.pos);
+            const aiMatrix3x3 R = rot.GetMatrix();
+            const aiMatrix3x3 W = Wp * R;
+
+            int childParentBone = parentBone;
+            if (boneMapping.find(name) != boneMapping.end()) {
+                rb.idx              = totalBones++;
+                rb.parentIdx        = parentBone;
+                rb.isRoot           = parentBone < 0;
+                rb.modelRestLocal   = R;
+                rb.modelRestWorld   = W;
+                rb.modelParentWorld = Wp;
+
+                auto lib = libNodes.find(name);
+                if (lib != libNodes.end()) {
+                    matchedBones++;
+                    rb.inLib = true;
+                    aiVector3D lp, ls; aiQuaternion lr;
+                    lib->second.node->mTransformation.Decompose(ls, lr, lp);
+                    rb.libRestPos     = lp;
+                    rb.libParentWorld = lib->second.parentWorld;
+                    rb.libRestWorldInv = lib->second.world;
+                    rb.libRestWorldInv.Transpose();           // rotacion ortonormal: inversa = traspuesta
+                    if (rb.isRoot) {
+                        const float lenLib = lp.Length();
+                        if (lenLib > 1e-6f) rb.rootScale = rb.pos.Length() / lenLib;
+                    }
+                }
+                retargetBones[node] = rb;
+                childParentBone = rb.idx;
+            }
+            for (unsigned int i = 0; i < node->mNumChildren; i++) walk(node->mChildren[i], W, childParentBone);
+        };
+        walk(scene->mRootNode, aiMatrix3x3(), -1);
+        retargetWl.assign(totalBones, aiMatrix3x3());
+        retargetWt.assign(totalBones, aiMatrix3x3());
+
+        // Solo si el esqueleto del modelo es (en su mayoria) el de la biblioteca: un modelo sin
+        // animaciones que no sea un personaje Mixamo no debe heredar clips que no le sirven.
+        if (totalBones == 0 || matchedBones * 2 < totalBones) {
+            LOG_MESSAGE("[Mesh3DAnimation] '%s': esqueleto distinto al de la biblioteca (%d de %d huesos coinciden), no se usa",
+                getName().c_str(), matchedBones, totalBones);
+            animScene = nullptr;
+            animImporter.reset();
+            animCopyLocal = false;
+            retargetBones.clear();
+            retargetWl.clear();
+            retargetWt.clear();
+            continue;       // probar la siguiente biblioteca
+        }
+
+        LOG_MESSAGE("[Mesh3DAnimation] '%s' usa la biblioteca compartida '%s' (%zu huesos, %u animaciones)",
+            getName().c_str(), libPath.c_str(), retargetBones.size(), animScene->mNumAnimations);
+        return;
+    }
 }
 
 void Mesh3DAnimation::onUpdate()
@@ -194,7 +381,8 @@ void Mesh3DAnimation::onUpdateCulled()
 // marcado para eliminar (no hay que seguir actualizándolo este frame).
 bool Mesh3DAnimation::AdvanceAnimationClock()
 {
-    if (!scene || !scene->HasAnimations()) return false;
+    const aiScene* as = animationsScene();
+    if (!scene || !as || !as->HasAnimations()) return false;
 
     CheckIfEndAnimation();
 
@@ -248,9 +436,10 @@ float Mesh3DAnimation::getAnimationDuration() const
 
 float Mesh3DAnimation::getCurrentAnimationMaxTime() const
 {
-    if (!scene || scene->mNumAnimations == 0) return 1.0f;
+    const aiScene* as = animationsScene();
+    if (!as || as->mNumAnimations == 0 || indexCurrentAnimation >= static_cast<int>(as->mNumAnimations)) return 1.0f;
     return static_cast<float>(
-        scene->mAnimations[indexCurrentAnimation]->mDuration / scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond
+        as->mAnimations[indexCurrentAnimation]->mDuration / as->mAnimations[indexCurrentAnimation]->mTicksPerSecond
     );
 }
 
@@ -281,14 +470,7 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
         sharedImporter = sceneCache.get(filename);
         if (!sharedImporter) {
             // SceneCache expirado (todas las instancias previas destruidas): recargar
-            sharedImporter = std::make_shared<Assimp::Importer>();
-            sharedImporter->ReadFile(
-                AssetPaths::Resolve(filename),
-                aiProcess_Triangulate |
-                aiProcess_SortByPType |
-                aiProcess_GenSmoothNormals |
-                aiProcess_FlipUVs
-            );
+            sharedImporter = ImportModelScene(filename);
             sceneCache.store(filename, sharedImporter);
         }
         // Escena ya disponible (cacheada o recargada bajo el lock): el trabajo por instancia de
@@ -334,20 +516,16 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
             }
         }
 
+        AttachSharedAnimations();
+
         loaded = true;
         return true;
     }
 
     LOG_MESSAGE("[AssimpLoadAnimation] Cache MISS, loading '%s'...", filename.c_str());
 
-    sharedImporter = std::make_shared<Assimp::Importer>();
-    scene = sharedImporter->ReadFile(
-        AssetPaths::Resolve(filename),   // proyecto primero, core de respaldo (la clave de caché sigue siendo filename)
-        aiProcess_Triangulate |
-        aiProcess_SortByPType |
-        aiProcess_GenSmoothNormals |
-        aiProcess_FlipUVs
-    );
+    sharedImporter = ImportModelScene(filename);
+    scene = sharedImporter->GetScene();
 
     if (!scene) {
         LOG_MESSAGE("[AssimpLoadAnimation] ERROR loading '%s': %s", filename.c_str(), sharedImporter->GetErrorString());
@@ -392,6 +570,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     LOG_MESSAGE("[AssimpLoadAnimation] Stored in AnimationDataCache (%zu meshes, %zu materials)",
         animData->meshes.size(), animData->materials.size());
+
+    AttachSharedAnimations();
 
     loaded = true;
     return true;
@@ -547,15 +727,16 @@ void Mesh3DAnimation::LoadMeshVertex(int meshId, aiMesh *mesh, std::vector<Verte
 
 void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
 {
-    if (!scene || !scene->HasAnimations() || indexCurrentAnimation >= scene->mNumAnimations) return;
+    const aiScene* as = animationsScene();
+    if (!scene || !as || !as->HasAnimations() || indexCurrentAnimation >= static_cast<int>(as->mNumAnimations)) return;
 
     aiMatrix4x4 Identity = aiMatrix4x4();
 
     auto TicksPerSecond = static_cast<float>(
-        scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0 ? scene->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f
+        as->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0 ? as->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f
     );
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
-    auto AnimationTime = static_cast<float>(fmod(TimeInTicks, scene->mAnimations[indexCurrentAnimation]->mDuration));
+    auto AnimationTime = static_cast<float>(fmod(TimeInTicks, as->mAnimations[indexCurrentAnimation]->mDuration));
 
     ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
     ComputeMeshBoneFinalTransforms();
@@ -564,14 +745,83 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
 void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)
 {
     const std::string& NodeName = pNode->mName.data;
-    const aiAnimation *pAnimation = scene->mAnimations[indexCurrentAnimation];
+    const aiAnimation *pAnimation = animationsScene()->mAnimations[indexCurrentAnimation];
 
     aiMatrix4x4 NodeTransformation;
     NodeTransformation = pNode->mTransformation;
 
     const aiNodeAnim *pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
-    if (pNodeAnim != nullptr) {
+    if (animScene) {
+        // Animaciones compartidas (ver RetargetBone): movimiento de la biblioteca sobre el reposo
+        // del modelo. Los nodos que no son huesos del modelo conservan su transformacion.
+        auto it = retargetBones.find(pNode);
+        if (it != retargetBones.end()) {
+            const RetargetBone& rb = it->second;
+
+            const aiMatrix3x3 WlParent = rb.isRoot ? rb.libParentWorld   : retargetWl[rb.parentIdx];
+            const aiMatrix3x3 WtParent = rb.isRoot ? rb.modelParentWorld : retargetWt[rb.parentIdx];
+
+            if (pNodeAnim != nullptr && rb.inLib && pNodeAnim->mNumRotationKeys > 0) {
+                aiQuaternion RotationQ;
+                CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
+
+                aiMatrix3x3 Local;
+                if (animCopyLocal) {
+                    // Biblioteca de animaciones copiadas entre armatures: rotacion local tal cual.
+                    Local = RotationQ.GetMatrix();
+                } else {
+                    // Giro en el mundo respecto al reposo de la biblioteca, aplicado al reposo del modelo.
+                    const aiMatrix3x3 Wl = WlParent * RotationQ.GetMatrix();
+                    const aiMatrix3x3 Wt = (Wl * rb.libRestWorldInv) * rb.modelRestWorld;
+                    retargetWl[rb.idx] = Wl;
+                    retargetWt[rb.idx] = Wt;
+
+                    aiMatrix3x3 WtParentInv = WtParent;
+                    WtParentInv.Transpose();
+                    Local = WtParentInv * Wt;
+                }
+
+                aiVector3D Translation = rb.pos;
+                // Modo copy: la animacion se copio entre armatures con las posiciones de TODOS los huesos
+                // animados (no solo la cadera), asi que se aplica el desplazamiento de cada hueso.
+                if ((rb.isRoot || animCopyLocal) && pNodeAnim->mNumPositionKeys > 0) {
+                    // Desplazamiento respecto al reposo de la biblioteca, escalado, sobre el reposo del
+                    // modelo: asi se conserva el desfase propio de la cadera de cada personaje.
+                    aiVector3D Animated;
+                    CalcInterpolatedPosition(Animated, AnimationTime, pNodeAnim);
+                    Translation = rb.pos + (Animated - rb.libRestPos) * (animCopyLocal ? 1.0f : rb.rootScale);
+                }
+
+                aiMatrix4x4 ScalingM;
+                aiMatrix4x4::Scaling(rb.scale, ScalingM);
+                aiMatrix4x4 TranslationM;
+                aiMatrix4x4::Translation(Translation, TranslationM);
+                NodeTransformation = TranslationM * aiMatrix4x4(Local) * ScalingM;
+            } else {
+                // Sin movimiento en la biblioteca (hueso que no tiene): se queda en su reposo.
+                retargetWl[rb.idx] = WlParent * rb.modelRestLocal;
+                retargetWt[rb.idx] = WtParent * rb.modelRestLocal;
+            }
+        } else if (animCopyLocal && pNodeAnim != nullptr) {
+            // Nodo que no es hueso (p. ej. el armature "RTS") con animacion propia en la biblioteca: en una
+            // familia copiada entre armatures ese movimiento a nivel de objeto es parte de la animacion.
+            aiVector3D Scaling;
+            CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
+            aiMatrix4x4 ScalingM;
+            aiMatrix4x4::Scaling(Scaling, ScalingM);
+
+            aiQuaternion RotationQ;
+            CalcInterpolatedRotation(RotationQ, AnimationTime, pNodeAnim);
+
+            aiVector3D Translation;
+            CalcInterpolatedPosition(Translation, AnimationTime, pNodeAnim);
+            aiMatrix4x4 TranslationM;
+            aiMatrix4x4::Translation(Translation, TranslationM);
+
+            NodeTransformation = TranslationM * aiMatrix4x4(RotationQ.GetMatrix()) * ScalingM;
+        }
+    } else if (pNodeAnim != nullptr) {
         // Interpolate scaling and generate scaling transformation matrix
         aiVector3D Scaling;
         CalcInterpolatedScaling(Scaling, AnimationTime, pNodeAnim);
@@ -995,9 +1245,10 @@ void Mesh3DAnimation::UpdateBoundingBox()
 
 void Mesh3DAnimation::setAnimationByName(const std::string& name)
 {
-    if (!scene) return;
-    for (int i = 0; i < static_cast<int>(scene->mNumAnimations); i++) {
-        if (name == scene->mAnimations[i]->mName.C_Str()) {
+    const aiScene* as = animationsScene();
+    if (!as) return;
+    for (int i = 0; i < static_cast<int>(as->mNumAnimations); i++) {
+        if (name == as->mAnimations[i]->mName.C_Str()) {
             setIndexCurrentAnimation(i);
             return;
         }
@@ -1010,9 +1261,9 @@ void Mesh3DAnimation::setAnimationByName(const std::string& name)
     // punetazos") porque el nombre pedido desde Lua no hace match exacto contra
     // scene->mAnimations[i]->mName tal y como lo parsea Assimp para ese fichero en concreto.
     LOG_MESSAGE("[Mesh3DAnimation] setAnimationByName: NO MATCH para '%s' (mesh '%s', %u animaciones disponibles)",
-        name.c_str(), this->getName().c_str(), scene->mNumAnimations);
-    for (unsigned int i = 0; i < scene->mNumAnimations; i++) {
-        LOG_MESSAGE("[Mesh3DAnimation]   disponible[%u]: '%s'", i, scene->mAnimations[i]->mName.C_Str());
+        name.c_str(), this->getName().c_str(), as->mNumAnimations);
+    for (unsigned int i = 0; i < as->mNumAnimations; i++) {
+        LOG_MESSAGE("[Mesh3DAnimation]   disponible[%u]: '%s'", i, as->mAnimations[i]->mName.C_Str());
     }
 }
 

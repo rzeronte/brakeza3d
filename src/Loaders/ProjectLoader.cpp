@@ -19,6 +19,7 @@
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Windows/FileSystemGUI.h"
 #include "../../include/Misc/ToolsJSON.h"
+#include "../../include/3D/Mesh3DAnimation.h"
 #include <set>
 
 std::vector<ProjectLoader::SkippedProjectScript> ProjectLoader::skippedProjectScripts;
@@ -80,6 +81,29 @@ void ProjectLoader::LoadProject(const FilePath::ProjectFile &filename)
         AssetPaths::SetProjectRoot("");
     }
     scripting->UpdateScriptSearchPath();   // require(): scripts del proyecto antes que los del core
+
+    // Bibliotecas de animaciones compartidas del proyecto (opcional, una por familia de esqueleto): los personajes exportados sin animaciones
+    // propias toman las de la primera cuyo esqueleto coincide. Sin la clave quedan desactivadas y cada FBX usa las suyas. Se fijan antes de
+    // cargar escenas.
+    Mesh3DAnimation::sharedAnimationsFiles.clear();
+    if (auto *shared = cJSON_GetObjectItemCaseSensitive(contentJSON, "sharedAnimationsFiles"); cJSON_IsArray(shared)) {
+        cJSON *item = nullptr;
+        cJSON_ArrayForEach(item, shared) {
+            Mesh3DAnimation::SharedAnimationLibrary lib;
+            if (cJSON_IsString(item) && item->valuestring != nullptr) {
+                lib.file = item->valuestring;                                  // "fichero.fbx": modo por defecto (giro en el mundo)
+            } else if (cJSON_IsObject(item)) {                                 // {"file": "...", "mode": "world" | "copy"}
+                auto *f = cJSON_GetObjectItemCaseSensitive(item, "file");
+                auto *m = cJSON_GetObjectItemCaseSensitive(item, "mode");
+                if (cJSON_IsString(f) && f->valuestring != nullptr) lib.file = f->valuestring;
+                lib.copyLocalRotations = cJSON_IsString(m) && m->valuestring != nullptr && std::string(m->valuestring) == "copy";
+            }
+            if (lib.file.empty()) continue;
+            LOG_MESSAGE("[ProjectLoader] Shared animations file: '%s' (%s)", lib.file.c_str(), lib.copyLocalRotations ? "copy" : "world");
+            Mesh3DAnimation::sharedAnimationsFiles.push_back(lib);
+        }
+    }
+    Mesh3DAnimation::PreloadSharedAnimations();   // parseo en segundo plano: listas cuando los personajes las pidan
 
     if (cJSON_GetObjectItemCaseSensitive(contentJSON, "name") != nullptr) {
         auto sceneName = cJSON_GetObjectItemCaseSensitive(contentJSON, "name")->valuestring;
@@ -248,6 +272,16 @@ void ProjectLoader::SaveProject(const FilePath::ProjectFile &filename)
     cJSON_AddStringToObject(root, "description", projectDesc.c_str());
     if (AssetPaths::IsActive()) {
         cJSON_AddStringToObject(root, "assetsFolder", AssetPaths::GetProjectRoot().c_str());   // se conserva al guardar
+    }
+    if (!Mesh3DAnimation::sharedAnimationsFiles.empty()) {
+        cJSON *shared = cJSON_AddArrayToObject(root, "sharedAnimationsFiles");   // se conservan al guardar
+        for (const auto &lib : Mesh3DAnimation::sharedAnimationsFiles) {
+            if (!lib.copyLocalRotations) { cJSON_AddItemToArray(shared, cJSON_CreateString(lib.file.c_str())); continue; }
+            cJSON *o = cJSON_CreateObject();
+            cJSON_AddStringToObject(o, "file", lib.file.c_str());
+            cJSON_AddStringToObject(o, "mode", "copy");
+            cJSON_AddItemToArray(shared, o);
+        }
     }
     cJSON_AddItemToObject(root, "gravity", ToolsJSON::Vertex3DToJSON(Config::get()->gravity));
 

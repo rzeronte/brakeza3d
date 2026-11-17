@@ -38,8 +38,8 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
         std::transform(filterStr.begin(), filterStr.end(), filterStr.begin(), ::tolower);
 
         std::vector<int> filtered;
-        for (unsigned int i = 0; i < o->scene->mNumAnimations; i++) {
-            std::string name = o->scene->mAnimations[i]->mName.C_Str();
+        for (unsigned int i = 0; i < o->animationsScene()->mNumAnimations; i++) {
+            std::string name = o->animationsScene()->mAnimations[i]->mName.C_Str();
             std::transform(name.begin(), name.end(), name.begin(), ::tolower);
             if (filterStr.empty() || name.find(filterStr) != std::string::npos)
                 filtered.push_back((int)i);
@@ -48,7 +48,7 @@ void Mesh3DAnimationDrawerGUI::DrawPropertiesGUI(Mesh3DAnimation *o)
         std::vector<const char*> filteredNames;
         int selectedInFiltered = -1;
         for (int fi = 0; fi < (int)filtered.size(); fi++) {
-            filteredNames.push_back(o->scene->mAnimations[filtered[fi]]->mName.C_Str());
+            filteredNames.push_back(o->animationsScene()->mAnimations[filtered[fi]]->mName.C_Str());
             if (filtered[fi] == o->indexCurrentAnimation) selectedInFiltered = fi;
         }
 
