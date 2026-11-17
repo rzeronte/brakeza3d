@@ -159,10 +159,10 @@ function ProjectShowcase() {
         {image: 'img/gallery/03.png', title: 'Show case 3'},
         {image: 'img/gallery/04.png', title: 'Show case 4'},
         {image: 'img/gallery/05.png', title: 'Show case 5'},
-        {image: 'img/gallery/06.png', title: 'Show case 6'},
-        {image: 'img/gallery/07.png', title: 'Show case 7'},
-        {image: 'img/gallery/08.png', title: 'Show case 8'},
-        {image: 'img/gallery/09.png', title: 'Show case 9'},
+        {image: 'img/gallery/14.png', title: 'Show case 6'},
+        {image: 'img/gallery/15.png', title: 'Show case 7'},
+        {image: 'img/gallery/16.png', title: 'Show case 8'},
+        {image: 'img/gallery/17.png', title: 'Show case 9'},
     ];
 
     return (

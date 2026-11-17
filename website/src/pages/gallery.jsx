@@ -63,6 +63,26 @@ const galleryItems = [
     description: 'HUD elements showcase',
     image: '/img/gallery/12.png',
   },
+  {
+    title: 'Screenshot #14',
+    description: 'Candelabra city seen from above, with the profiler and post-processing chain in the editor',
+    image: '/img/gallery/14.png',
+  },
+  {
+    title: 'Screenshot #15',
+    description: 'Candelabra main menu over the night crane scene',
+    image: '/img/gallery/15.png',
+  },
+  {
+    title: 'Screenshot #16',
+    description: 'Interior scene with the RTS HUD, minimap and animation inspector',
+    image: '/img/gallery/16.png',
+  },
+  {
+    title: 'Screenshot #17',
+    description: 'City streets in the RTS view, running inside the Brakeza3D editor',
+    image: '/img/gallery/17.png',
+  },
 ];
 
 function GalleryItem({title, description, image}) {
