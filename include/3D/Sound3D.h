@@ -17,6 +17,7 @@
 #include "Object3D.h"
 #include "miniaudio.h"
 #include <string>
+#include <memory>
 
 class Sound3D : public Object3D
 {
@@ -29,11 +30,24 @@ public:
 
     std::string sourceFile;
 
-    // PCM decodificado una vez (buffer/pDecodedData) + voz propia (ref/voice), fuera del
+    // PCM decodificado una vez (buffer/pcm) + voz propia (ref/voice), fuera del
     // pool de 32 canales de ComponentSound -- este objeto vive toda la escena y su volumen
     // se recalcula cada frame segun distancia a camara (ver onUpdate()).
+    // El PCM (pcm) es compartido entre todos los Sound3D que usan el mismo fichero: se decodifica
+    // una sola vez (ver DecodeShared) y se libera cuando el ultimo lo suelta. 'buffer' es solo un
+    // envoltorio por instancia sobre esos datos (ma_audio_buffer_init no copia).
+    struct Pcm
+    {
+        void*        data       = nullptr;
+        ma_uint64    frames     = 0;
+        ma_format    format     = ma_format_f32;
+        ma_uint32    channels   = 2;
+        ma_uint32    sampleRate = 44100;
+        ~Pcm() { if (data) ma_free(data, nullptr); }
+    };
+
     ma_audio_buffer      buffer{};
-    void*                pDecodedData     = nullptr;
+    std::shared_ptr<Pcm> pcm;
     bool                 bufferLoaded     = false;
     ma_audio_buffer_ref  ref{};
     bool                 refInitialized   = false;
@@ -50,11 +64,17 @@ public:
     Sound3D();
     ~Sound3D() override;
 
-    // Decodifica srcFile a PCM en memoria y lo envuelve en outBuffer (44100Hz estereo,
-    // misma referencia que SoundPackage). outData debe liberarse con ma_free() por el
-    // caller cuando outBuffer deje de usarse (ma_audio_buffer_init no copia los datos).
-    // Devuelve false si el decode falla (outBuffer/outData quedan sin tocar).
-    static bool DecodeFile(const std::string& srcFile, ma_audio_buffer& outBuffer, void*& outData);
+    // Decodifica srcFile a PCM (44100Hz estereo f32, misma referencia que SoundPackage). Seguro
+    // desde cualquier hilo: hay un bloqueo por fichero, asi que si varios Sound3D piden el mismo
+    // fichero a la vez solo uno lo decodifica y los demas reutilizan el resultado.
+    // Devuelve nullptr si el decode falla.
+    static std::shared_ptr<Pcm> DecodeShared(const std::string& srcFile);
+
+    // Engancha el PCM a esta instancia (barato; hilo principal). Libera el anterior si lo habia.
+    bool AttachPcm(const std::shared_ptr<Pcm>& p);
+
+    // Suelta el buffer y la referencia al PCM (la memoria se libera si nadie mas la usa).
+    void ReleaseBuffer();
 
     void onUpdate()           override;
     void DrawPropertiesGUI()  override;

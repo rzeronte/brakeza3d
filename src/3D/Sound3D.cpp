@@ -14,6 +14,8 @@
 #include "../../include/3D/Sound3D.h"
 #include "../../include/Misc/AssetPaths.h"
 #include <algorithm>
+#include <mutex>
+#include <unordered_map>
 #include "../../include/Components/Components.h"
 #include "../../include/GUI/Inspectors/Sound3DGUI.h"
 #include "../../include/Misc/Logging.h"
@@ -21,29 +23,77 @@
 float Sound3D::ambienceVolumeScale = 1.0f;
 bool  Sound3D::panningEnabled = false;   // apagado por defecto: el RTS y los proyectos existentes suenan como siempre
 
-bool Sound3D::DecodeFile(const std::string& srcFile, ma_audio_buffer& outBuffer, void*& outData)
+namespace {
+struct PcmCacheEntry
 {
+    std::mutex                    loadMutex;   // serializa la decodificacion de ESTE fichero
+    std::weak_ptr<Sound3D::Pcm>   pcm;         // no retiene: el PCM muere con su ultimo Sound3D
+};
+std::mutex                                                     g_pcmMapMutex;
+std::unordered_map<std::string, std::shared_ptr<PcmCacheEntry>> g_pcmMap;
+}
+
+std::shared_ptr<Sound3D::Pcm> Sound3D::DecodeShared(const std::string& srcFile)
+{
+    const std::string path = AssetPaths::Resolve(srcFile);
+
+    std::shared_ptr<PcmCacheEntry> entry;
+    {
+        std::lock_guard<std::mutex> lk(g_pcmMapMutex);
+        auto& slot = g_pcmMap[path];
+        if (!slot) slot = std::make_shared<PcmCacheEntry>();
+        entry = slot;
+    }
+
+    std::lock_guard<std::mutex> lk(entry->loadMutex);
+    if (auto cached = entry->pcm.lock()) return cached;
+
     ma_decoder_config cfg = ma_decoder_config_init(ma_format_f32, 2, 44100);
     ma_uint64 frameCount  = 0;
     void*     pData       = nullptr;
 
-    ma_result result = ma_decode_file(AssetPaths::Resolve(srcFile).c_str(), &cfg, &frameCount, &pData);
+    ma_result result = ma_decode_file(path.c_str(), &cfg, &frameCount, &pData);
     if (result != MA_SUCCESS) {
         LOG_ERROR("[Sound3D] ma_decode_file failed for '%s': result=%d", srcFile.c_str(), (int)result);
+        return nullptr;
+    }
+
+    auto out        = std::make_shared<Pcm>();
+    out->data       = pData;
+    out->frames     = frameCount;
+    out->format     = cfg.format;
+    out->channels   = cfg.channels;
+    out->sampleRate = cfg.sampleRate;
+    entry->pcm      = out;
+    return out;
+}
+
+bool Sound3D::AttachPcm(const std::shared_ptr<Pcm>& p)
+{
+    ReleaseBuffer();
+    if (!p) return false;
+
+    ma_audio_buffer_config bufferConfig = ma_audio_buffer_config_init(p->format, p->channels, p->frames, p->data, nullptr);
+    bufferConfig.sampleRate = p->sampleRate;
+
+    if (ma_audio_buffer_init(&bufferConfig, &buffer) != MA_SUCCESS) {
+        LOG_ERROR("[Sound3D] ma_audio_buffer_init failed for '%s'", sourceFile.c_str());
         return false;
     }
 
-    ma_audio_buffer_config bufferConfig = ma_audio_buffer_config_init(cfg.format, cfg.channels, frameCount, pData, nullptr);
-    bufferConfig.sampleRate = cfg.sampleRate;
-
-    if (ma_audio_buffer_init(&bufferConfig, &outBuffer) != MA_SUCCESS) {
-        LOG_ERROR("[Sound3D] ma_audio_buffer_init failed for '%s'", srcFile.c_str());
-        ma_free(pData, nullptr);
-        return false;
-    }
-
-    outData = pData;
+    pcm          = p;
+    bufferLoaded = true;
     return true;
+}
+
+void Sound3D::ReleaseBuffer()
+{
+    stopVoice();
+    if (bufferLoaded) {
+        ma_audio_buffer_uninit(&buffer);
+        bufferLoaded = false;
+    }
+    pcm.reset();
 }
 
 Sound3D::Sound3D()
@@ -53,15 +103,7 @@ Sound3D::Sound3D()
 
 Sound3D::~Sound3D()
 {
-    stopVoice();
-    if (bufferLoaded) {
-        ma_audio_buffer_uninit(&buffer);
-        bufferLoaded = false;
-    }
-    if (pDecodedData) {
-        ma_free(pDecodedData, nullptr);
-        pDecodedData = nullptr;
-    }
+    ReleaseBuffer();
 }
 
 void Sound3D::onUpdate()

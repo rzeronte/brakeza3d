@@ -23,6 +23,7 @@ class ThreadJobLoadSound3D : public ThreadJobBase
 {
     Sound3D* sound = nullptr;
     cJSON*   json  = nullptr;
+    std::shared_ptr<Sound3D::Pcm> pcm;   // lo rellena fnProcess (worker), lo engancha fnCallback
 public:
     ThreadJobLoadSound3D(Sound3D* s, cJSON* j)
     :
@@ -35,13 +36,19 @@ public:
 
     void fnProcess()
     {
+        // Decodificar es lo caro (lectura de disco + conversion a f32 estereo): va en el worker.
+        // DecodeShared tiene bloqueo por fichero y reutiliza el PCM si otro Sound3D ya lo cargo.
+        if (!sound->sourceFile.empty()) {
+            pcm = Sound3D::DecodeShared(sound->sourceFile);
+        }
         LOG_MESSAGE("[ThreadJobLoadSound3D] Process END");
     }
 
     void fnCallback()
     {
-        if (!sound->sourceFile.empty()) {
-            sound->bufferLoaded = Sound3D::DecodeFile(sound->sourceFile, sound->buffer, sound->pDecodedData);
+        if (pcm) {
+            sound->AttachPcm(pcm);
+            pcm.reset();
         }
 
         Brakeza::get()->AddObject3D(sound, sound->getName());

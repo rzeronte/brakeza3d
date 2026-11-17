@@ -85,12 +85,10 @@ public:
 private:
     static void reloadChunk(Sound3D* o)
     {
-        o->stopVoice();
-        if (o->bufferLoaded) { ma_audio_buffer_uninit(&o->buffer); o->bufferLoaded = false; }
-        if (o->pDecodedData) { ma_free(o->pDecodedData, nullptr); o->pDecodedData = nullptr; }
+        o->ReleaseBuffer();
 
         if (!o->sourceFile.empty()) {
-            o->bufferLoaded = Sound3D::DecodeFile(o->sourceFile, o->buffer, o->pDecodedData);
+            o->AttachPcm(Sound3D::DecodeShared(o->sourceFile));
         }
     }
 };
