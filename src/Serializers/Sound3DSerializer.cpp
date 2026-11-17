@@ -71,7 +71,7 @@ void Sound3DSerializer::MenuLoad(const std::string& model)
     auto* o = new Sound3D();
     o->setName(Brakeza::UniqueObjectLabel("Sound3D"));
     o->setPosition(Components::get()->Camera()->getCamera()->getPosition());
-    o->sourceFile = model.empty() ? "../assets/sounds/radio_beep.wav" : model;
+    o->sourceFile = model.empty() ? Config::get()->SOUNDS_FOLDER + "radio_beep.wav" : model;   // sonido por defecto del core (carpeta de Config)
 
     auto* json = Sound3DSerializer::JsonByObject(o);
     Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(std::make_shared<ThreadJobLoadSound3D>(o, json));
