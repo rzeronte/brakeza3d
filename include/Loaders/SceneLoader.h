@@ -69,6 +69,19 @@ public:
     static void ReloadScene(const std::string& name);
 
     static void SaveScene(const FilePath::SceneFile& filename);
+    // Capas principales del JSON de una escena que puede escribir el "guardado especial"
+    struct SaveParts {
+        bool objects  = true;    // "objects"
+        bool folders  = true;    // "folders"
+        bool lighting = false;   // "ads" + "lightsFile" + "lightsAttenuation"
+        bool camera   = false;   // "camera"
+        bool shaders  = false;   // "shaders"
+        bool scripts  = false;   // "scripts"
+    };
+    // Guarda SOLO las capas elegidas sobre el JSON existente; el resto de campos del fichero (screenshot incluida) se conserva tal cual
+    static void SaveSceneParts(const FilePath::SceneFile& filename, const SaveParts &parts);
+    // Atajo: solo "objects" y "folders"
+    static void SaveSceneObjectsOnly(const FilePath::SceneFile& filename);
     static void CreateScene(const FilePath::SceneFile& filename);
     static void RemoveScene(const FilePath::SceneFile& filename);
     static void ClearWorld();

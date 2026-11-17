@@ -400,6 +400,7 @@ namespace GUIType
     X(SOLO_WINDOW_OFF, 0, 0) \
     X(DRAGGABLE_UI_ITEM, 0, 0) \
     X(FOLDER_ADD, 0, 0) \
+    X(SCENE_SAVE_OBJECTS, 0, 0) \
 
 // IconObject is declared in GUITypes.h (no ImGui dependency)
 

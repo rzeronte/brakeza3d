@@ -445,23 +445,33 @@ void GUIAddonMenu::MenuIllumination()
             MenuFieldIcon(IconGUI::ILLUMINATION_SUN_DIRECTION);
             GUIFields::Float3("Sun direction", &dirLight.direction[0], 0.01f, -1.0f, 1.0f, "%.3f");
 
-            // Tres selectores de color en una misma fila (solo el swatch; la etiqueta va a su derecha)
+            // Tres selectores de color compactos en una fila: solo el swatch (sin etiqueta); el nombre sale en el tooltip
             MenuFieldIcon(IconGUI::ILLUMINATION_COLORS);
-            GUIFields::Row("Colors");
+            GUIFields::Row("Amb / Spec / Diff");
+            const ImGuiColorEditFlags colorFlags = ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel | ImGuiColorEditFlags_NoAlpha;
+            ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4.0f, ImGui::GetStyle().ItemSpacing.y));
+
             ImVec4 colorAmbient = {dirLight.ambient.x, dirLight.ambient.y, dirLight.ambient.z, 1};
-            if (ImGui::ColorEdit4("Ambient##", reinterpret_cast<float *>(&colorAmbient), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+            if (ImGui::ColorEdit4("##sunAmbient", reinterpret_cast<float *>(&colorAmbient), colorFlags)) {
                 dirLight.ambient = {colorAmbient.x, colorAmbient.y, colorAmbient.z};
             }
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Ambient");
+
             ImGui::SameLine();
             ImVec4 colorSpecular = {dirLight.specular.x, dirLight.specular.y, dirLight.specular.z, 1};
-            if (ImGui::ColorEdit4("Specular##", reinterpret_cast<float *>(&colorSpecular), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+            if (ImGui::ColorEdit4("##sunSpecular", reinterpret_cast<float *>(&colorSpecular), colorFlags)) {
                 dirLight.specular = {colorSpecular.x, colorSpecular.y, colorSpecular.z};
             }
-            ImVec4 colorDiffuse = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Specular");
+
             ImGui::SameLine();
-            if (ImGui::ColorEdit4("Diffuse##", reinterpret_cast<float *>(&colorDiffuse), ImGuiColorEditFlags_None | ImGuiColorEditFlags_NoInputs)) {
+            ImVec4 colorDiffuse = {dirLight.diffuse.x, dirLight.diffuse.y, dirLight.diffuse.z, 1};
+            if (ImGui::ColorEdit4("##sunDiffuse", reinterpret_cast<float *>(&colorDiffuse), colorFlags)) {
                 dirLight.diffuse = {colorDiffuse.x, colorDiffuse.y, colorDiffuse.z};
             }
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Diffuse");
+
+            ImGui::PopStyleVar();
         }
     }
     if (setup->ENABLE_SHADOW_MAPPING) {

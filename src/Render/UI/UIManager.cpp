@@ -350,6 +350,7 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
             cJSON* staticImg = cJSON_GetObjectItem(item, "imagePath"); if (staticImg && staticImg->valuestring) el.staticImagePath = staticImg->valuestring;
             cJSON* staticImgOff = cJSON_GetObjectItem(item, "imagePathOff"); if (staticImgOff && staticImgOff->valuestring) el.staticImagePathOff = staticImgOff->valuestring;
             cJSON* btnBg  = cJSON_GetObjectItem(item, "btnBg");      if (btnBg)  el.btnBg      = ToolsJSON::getColorByJSON(btnBg);
+            cJSON* btnBgDis = cJSON_GetObjectItem(item, "btnBgDisabled"); if (btnBgDis) el.btnBgDisabled = ToolsJSON::getColorByJSON(btnBgDis);
             cJSON* btnHov = cJSON_GetObjectItem(item, "btnHover");   if (btnHov) el.btnHover   = ToolsJSON::getColorByJSON(btnHov);
             cJSON* btnPrs = cJSON_GetObjectItem(item, "btnPressed"); if (btnPrs) el.btnPressed = ToolsJSON::getColorByJSON(btnPrs);
             cJSON* skN = cJSON_GetObjectItem(item, "btnSkin");         if (skN && skN->valuestring) el.btnSkin         = skN->valuestring;
@@ -2237,7 +2238,8 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
                 drawImageCached(*skin, (int)bx, (int)by, (int)bw, (int)bh, globalAlpha);
             }
         } else {
-            Color bg = applyGA(pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg);
+            Color bg = !data.enabled ? applyGA(el.btnBgDisabled)
+                                     : applyGA(pressed ? el.btnPressed : hovered ? el.btnHover : el.btnBg);
             render->DrawFilledRectToFB((int)bx, (int)by, (int)bw, (int)bh, bg, currentFB);
         }
 

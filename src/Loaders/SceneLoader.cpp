@@ -292,6 +292,127 @@ void SceneLoader::UnloadScene(const std::string& name)
     LOG_MESSAGE("[SceneLoader] UnloadScene: '%s' unloaded", name.c_str());
 }
 
+void SceneLoader::SaveSceneObjectsOnly(const FilePath::SceneFile &filename)
+{
+    SaveParts parts;   // objects + folders
+    SaveSceneParts(filename, parts);
+}
+
+void SceneLoader::SaveSceneParts(const FilePath::SceneFile &filename, const SaveParts &parts)
+{
+    // Parte del JSON ya guardado y solo sustituye las capas elegidas por el estado actual del editor
+    char *existing = Tools::ReadFile(filename.str());
+    cJSON *root = existing ? cJSON_Parse(existing) : nullptr;
+    free(existing);
+    if (root == nullptr) {
+        LOG_ERROR("[SceneLoader] SaveSceneParts: '%s' no existe o no es JSON valido; no se guarda nada", filename.c_str());
+        return;
+    }
+
+    std::string saved;
+    auto mark = [&](const char *name) { saved += (saved.empty() ? "" : ", "); saved += name; };
+
+    // Reemplaza un campo del JSON (lo quita antes si ya estaba)
+    auto replace = [&](const char *key, cJSON *value) {
+        cJSON_DeleteItemFromObject(root, key);
+        cJSON_AddItemToObject(root, key, value);
+    };
+
+    if (parts.objects) {
+        cJSON *objectsArray = cJSON_CreateArray();
+        for (auto &object : Brakeza::get()->copySceneObjects()) {
+            if (auto *lp = dynamic_cast<LightPoint*>(object)) {
+                if (lp->isImportedFromLightsFile()) continue;
+            }
+            auto objectJson = JSONSerializerRegistry::instance().serialize(object);
+            cJSON_AddNumberToObject(objectJson, "type", (int) object->getTypeObject());
+            cJSON_AddItemToArray(objectsArray, objectJson);
+        }
+        replace("objects", objectsArray);
+        mark("objects");
+    }
+
+    if (parts.folders) {
+        Scene *folderScene = nullptr;
+        for (auto *s : Components::get()->Scripting()->getLoadedScenes()) {
+            if (folderScene == nullptr) folderScene = s;
+            if (std::filesystem::path(s->getFilePath()).filename() == std::filesystem::path(filename.str()).filename()) {
+                folderScene = s;
+                break;
+            }
+        }
+        cJSON_DeleteItemFromObject(root, "folders");
+        if (folderScene != nullptr && !folderScene->getFolders().empty()) {
+            cJSON *foldersArray = cJSON_CreateArray();
+            for (const auto &f : folderScene->getFolders()) {
+                cJSON *fj = cJSON_CreateObject();
+                cJSON_AddNumberToObject(fj, "id", f.id);
+                cJSON_AddStringToObject(fj, "name", f.name.c_str());
+                cJSON_AddNumberToObject(fj, "parent", f.parent);
+                cJSON_AddItemToArray(foldersArray, fj);
+            }
+            cJSON_AddItemToObject(root, "folders", foldersArray);
+        }
+        mark("folders");
+    }
+
+    if (parts.lighting) {
+        auto render = Components::get()->Render()->getShaders()->shaderOGLRender;
+        cJSON *adsJSON = cJSON_CreateObject();
+        cJSON_AddItemToObject(adsJSON, "direction", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().direction)));
+        cJSON_AddItemToObject(adsJSON, "diffuse", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().diffuse)));
+        cJSON_AddItemToObject(adsJSON, "specular", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().specular)));
+        cJSON_AddItemToObject(adsJSON, "ambient", ToolsJSON::Vertex3DToJSON(Vertex3D::fromGLM(render->getDirectionalLight().ambient)));
+        replace("ads", adsJSON);
+
+        replace("lightsFile", cJSON_CreateString(currentLightsFile.c_str()));
+        cJSON_DeleteItemFromObject(root, "lightsAttenuation");
+        if (hasLightsAttenuation && !currentLightsFile.empty()) {
+            cJSON *attJSON = cJSON_CreateObject();
+            cJSON_AddNumberToObject(attJSON, "constant", lightsAttenuation[0]);
+            cJSON_AddNumberToObject(attJSON, "linear", lightsAttenuation[1]);
+            cJSON_AddNumberToObject(attJSON, "quadratic", lightsAttenuation[2]);
+            cJSON_AddItemToObject(root, "lightsAttenuation", attJSON);
+        }
+        mark("lighting");
+    }
+
+    if (parts.camera) {
+        auto camera = Components::get()->Camera()->getCamera();
+        cJSON *cameraJSON = cJSON_CreateObject();
+        cJSON_AddItemToObject(cameraJSON, "position", ToolsJSON::Vertex3DToJSON(camera->getPosition()));
+        cJSON_AddItemToObject(cameraJSON, "rotation", ToolsJSON::Vertex3DToJSON(Vertex3D(camera->getPitch(), camera->getYaw(), camera->getRoll())));
+        replace("camera", cameraJSON);
+        mark("camera");
+    }
+
+    if (parts.shaders) {
+        cJSON *shadersArrayJSON = cJSON_CreateArray();
+        for (auto &shader : Components::get()->Render()->getSceneShaders()) {
+            auto shaderJson = shader->getTypesJSON();
+            cJSON_AddBoolToObject(shaderJson, "enabled", shader->isEnabled());
+            cJSON_AddItemToArray(shadersArrayJSON, shaderJson);
+        }
+        replace("shaders", shadersArrayJSON);
+        mark("shaders");
+    }
+
+    if (parts.scripts) {
+        cJSON *sceneScriptsArray = cJSON_CreateArray();
+        for (auto &script : Components::get()->Scripting()->getSceneScripts()) {
+            cJSON_AddItemToArray(sceneScriptsArray, script->getTypesJSON());
+        }
+        replace("scripts", sceneScriptsArray);
+        mark("scripts");
+    }
+
+    char *printed = cJSON_Print(root);
+    Tools::WriteToFile(filename, printed);
+    free(printed);
+    cJSON_Delete(root);
+    LOG_MESSAGE("[SceneLoader] Special save in '%s': %s", filename.c_str(), saved.empty() ? "(nothing selected)" : saved.c_str());
+}
+
 void SceneLoader::SaveScene(const FilePath::SceneFile &filename)
 {
     cJSON *root = cJSON_CreateObject();

@@ -10,6 +10,7 @@
 #pragma once
 
 #include <string>
+#include "../../Loaders/SceneLoader.h"
 
 class GUIAddonProjectSetup {
 public:
@@ -17,6 +18,7 @@ public:
     static char projectScriptsFilter[128];
     static char sceneScriptsFilter[128];
     static char sceneShadersFilter[128];
+    static char projectAssetsFilter[128];
     static void DrawFilterBar(const char *id, char *buffer, size_t size);
     static bool MatchesFilter(const std::string &text, const char *filter);
 
@@ -25,6 +27,9 @@ public:
     static void DrawProjectSettingsNode();
     static void DrawProjectScriptsNode();
     static void DrawProjectScenesNode();
+    // File browser over the project's own assets folder (AssetPaths::GetProjectRoot()): scenes, scripts, shaders, widgets
+    static void DrawProjectAssetsNode();
+    static void DrawProjectAssetsFiles(const std::string &root);
     static void DrawSceneScriptsNode();
     static void DrawSceneShadersNode();
     static void DrawProjectSettings();
@@ -36,6 +41,11 @@ public:
     // Project edit popup
     static void DrawProjectEditPopup();
     static bool openPopupEditProject;
+
+    // Special save popup: choose which parts of a scene file are overwritten
+    static void DrawSpecialSavePopup();
+    static bool openPopupSpecialSave;
+    static SceneLoader::SaveParts specialSaveParts;
 
     // Additive scene load popup
     static void DrawAdditiveScenePopup();

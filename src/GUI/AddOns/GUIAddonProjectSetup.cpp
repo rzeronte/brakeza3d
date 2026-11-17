@@ -13,7 +13,12 @@
 
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
 #include "../include/Brakeza.h"
+#include "../../../include/Misc/AssetPaths.h"
+#include "../../../include/Misc/Tools.h"
+#include "../../../include/Loaders/SceneLoader.h"
+#include "../../../include/GUI/Windows/UIManagerGUI.h"
 #include "../../../include/Components/Components.h"
 #include "../../../include/GUI/AddOns/GUIAddonProjectSetup.h"
 #include "../../../include/GUI/AddOns/CustomTreeNode.h"
@@ -32,9 +37,13 @@ bool GUIAddonProjectSetup::additiveLoadShaders = false;
 bool GUIAddonProjectSetup::additiveLoadCamera = false;
 bool GUIAddonProjectSetup::additiveLoadRenderSettings = false;
 static std::string s_additiveScenePath;
+bool GUIAddonProjectSetup::openPopupSpecialSave = false;
+SceneLoader::SaveParts GUIAddonProjectSetup::specialSaveParts;
+static std::string s_specialSavePath;
 char GUIAddonProjectSetup::projectScriptsFilter[128] = "";
 char GUIAddonProjectSetup::sceneScriptsFilter[128] = "";
 char GUIAddonProjectSetup::sceneShadersFilter[128] = "";
+char GUIAddonProjectSetup::projectAssetsFilter[128] = "";
 
 void GUIAddonProjectSetup::DrawFilterBar(const char *id, char *buffer, size_t size)
 {
@@ -150,6 +159,8 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
                 DrawProjectScriptsNode();
                 ImGui::Spacing();
                 DrawProjectScenesNode();
+                ImGui::Spacing();
+                DrawProjectAssetsNode();
             } else {
                 Drawable::WarningMessage("No project loaded");
             }
@@ -201,6 +212,14 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
             },
             "Save Scene",
             "This will overwrite the saved scene file. Are you sure?"
+        );
+        sceneConfig.actionItems.emplace_back(
+            FileSystemGUI::Icon(IconGUI::SCENE_SAVE_OBJECTS),
+            "Special save (choose which parts of the scene file to overwrite)",
+            [loadedScene]() {
+                s_specialSavePath = loadedScene->getFilePath();
+                openPopupSpecialSave = true;
+            }
         );
         sceneConfig.actionItems.emplace_back(
             FileSystemGUI::Icon(IconGUI::SCENE_LOAD),
@@ -257,6 +276,7 @@ void GUIAddonProjectSetup::DrawWinProjectSettings()
     // Draw edit popup if open
     DrawProjectEditPopup();
     DrawAdditiveScenePopup();
+    DrawSpecialSavePopup();
 }
 
 // ============================================
@@ -333,6 +353,203 @@ void GUIAddonProjectSetup::DrawProjectScriptsNode()
             DrawProjectScripts();
         }
         CustomImGui::CustomTreePop();
+    }
+}
+
+// ============================================
+// PROJECT ASSETS BROWSER
+// ============================================
+
+namespace {
+    GUIType::BrowserCache projectAssetsBrowser;
+    std::string projectAssetsBrowserRoot;          // root the cache was built for (rebuilt when the project changes)
+
+    // First folder under the project root ("scenes", "scripts", "shaders", "ui"...) decides what a file is
+    std::string TopFolder(const std::string &root, const std::string &currentFolder)
+    {
+        if (currentFolder.size() <= root.size()) return "";
+        const std::string rel = currentFolder.substr(root.size());
+        return rel.substr(0, rel.find('/'));
+    }
+
+    // Only these project folders are browsable: scenes, scripts, shaders and widgets (all of them .json files)
+    bool IsBrowsableTopFolder(const std::string &name)
+    {
+        return name == "scenes" || name == "scripts" || name == "shaders" || name == "ui";
+    }
+
+    void RefreshProjectAssetsBrowser()
+    {
+        auto &cache = projectAssetsBrowser;
+        cache.folderFolders.clear();
+        cache.folderFiles.clear();
+
+        const std::string top = TopFolder(projectAssetsBrowserRoot, cache.currentFolder);
+        const bool atRoot = cache.currentFolder.size() <= projectAssetsBrowserRoot.size();
+
+        std::error_code ec;
+        for (const auto &entry : std::filesystem::directory_iterator(cache.currentFolder, ec)) {
+            const std::string name = entry.path().filename().string();
+            if (entry.is_directory(ec)) {
+                if (!atRoot || IsBrowsableTopFolder(name)) cache.folderFolders.push_back(name);
+            } else if (entry.is_regular_file(ec)) {
+                if (IsBrowsableTopFolder(top) && Tools::getExtensionFromFilename(name) == "json") {
+                    cache.folderFiles.push_back(name);
+                }
+            }
+        }
+        std::sort(cache.folderFolders.begin(), cache.folderFolders.end());
+        std::sort(cache.folderFiles.begin(), cache.folderFiles.end());
+    }
+}
+
+void GUIAddonProjectSetup::DrawProjectAssetsNode()
+{
+    const std::string root = AssetPaths::GetProjectRoot();
+
+    CustomImGui::CustomTreeNodeConfig config("Project assets");
+    config.iconSize = ImVec2(18, 18);
+    config.leftIcon = FileSystemGUI::Icon(IconGUI::FOLDER);
+    config.bulletOpen = FileSystemGUI::Icon(IconGUI::TREE_BULLET_ON);
+    config.bulletClosed = FileSystemGUI::Icon(IconGUI::TREE_BULLET_OFF);
+    config.defaultOpen = false;
+
+    if (CustomImGui::CustomTreeNode(config, nullptr)) {
+        if (root.empty()) {
+            ImGui::Spacing();
+            Drawable::WarningMessage("This project has no own assets folder (\"assetsFolder\")");
+        } else {
+            DrawProjectAssetsFiles(root);
+        }
+        CustomImGui::CustomTreePop();
+    }
+}
+
+void GUIAddonProjectSetup::DrawProjectAssetsFiles(const std::string &root)
+{
+    auto &browser = projectAssetsBrowser;
+
+    // (Re)build when the project root changes
+    if (projectAssetsBrowserRoot != root) {
+        projectAssetsBrowserRoot = root;
+        browser = GUI::CreateBrowserCache(root, "", RefreshProjectAssetsBrowser);
+        RefreshProjectAssetsBrowser();
+    }
+
+    // The listing is refreshed on demand (folder change or this button), not every frame
+    ImGui::Spacing();
+    GUI::ImageButtonNormal(IconGUI::SCENE_LOAD, "Refresh", [] { RefreshProjectAssetsBrowser(); });
+
+    FileSystemGUI::DrawBrowserFolders(root, browser);
+    ImGui::Separator();
+
+    if (browser.folderFiles.empty()) {
+        ImGui::Spacing();
+        Drawable::WarningMessage("No scenes, scripts, shaders or widgets in this folder");
+        return;
+    }
+
+    DrawFilterBar("projectAssets", projectAssetsFilter, sizeof(projectAssetsFilter));
+
+    const std::string top = TopFolder(root, browser.currentFolder);
+
+    for (int i = 0; i < (int) browser.folderFiles.size(); i++) {
+        const std::string &file = browser.folderFiles[i];
+        if (!MatchesFilter(file, projectAssetsFilter)) continue;
+
+        const std::string fullPath = browser.currentFolder + file;
+        const bool isJson = Tools::getExtensionFromFilename(file.c_str()) == "json";
+
+        ImGui::PushID(i);
+
+        CustomImGui::CustomTreeNodeConfig fileConfig(file.c_str());
+        fileConfig.iconSize = GUIType::Sizes::ICONS_BROWSERS;
+        fileConfig.isLeaf = true;
+        fileConfig.itemPadding = 1.5f;
+        fileConfig.itemMargin = 6.0f;
+        fileConfig.leftIcon = FileSystemGUI::Icon(IconGUI::FOLDER_CURRENT);
+
+        const char *dragType = nullptr;
+
+        if (isJson && top == "scenes") {
+            fileConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCENE_FILE);
+            dragType = GUIType::DragDropTarget::SCENE_ITEM;
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCENE_INFO), "Scene information",
+                [fullPath]() { Brakeza::get()->GUI()->getSceneChecker().LoadSceneInfoDialog(fullPath); }
+            );
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCENE_LOAD), "Load Scene file",
+                [fullPath]() {
+                    SceneLoader::ClearWorld();
+                    SceneLoader::LoadScene(fullPath);
+                }
+            );
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCENE_SAVE_OBJECTS),
+                "Special save (choose which parts of the scene file to overwrite)",
+                [fullPath]() {
+                    s_specialSavePath = fullPath;
+                    openPopupSpecialSave = true;
+                }
+            );
+        } else if (isJson && top == "scripts") {
+            fileConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SCRIPT_FILE);
+            dragType = GUIType::DragDropTarget::SCRIPT_ITEM;
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCRIPT_LOAD), "Attach script to current scene",
+                [fullPath]() {
+                    auto meta = ScriptLuaGUI::ExtractScriptMetainfo(fullPath);
+                    auto script = new ScriptLUA(meta.name, meta.codeFile, meta.typesFile);
+                    if (script->getType() != SCRIPT_GLOBAL) {
+                        LOG_ERROR("[Scene] Error: Cannot attach Object script to Scene. Only Global scripts are allowed.");
+                        delete script;
+                        return;
+                    }
+                    Components::get()->Scripting()->AddSceneLUAScript(script);
+                    FileSystemGUI::autoExpandScene = true;
+                }
+            );
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SCRIPT_EDIT), "Edit script",
+                [fullPath]() { ScriptLuaGUI::LoadScriptDialog(fullPath); }
+            );
+        } else if (isJson && top == "shaders") {
+            fileConfig.leftIcon = FileSystemGUI::Icon(IconGUI::SHADER_FILE);
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SHADER_LOAD), "Attach shader to current scene",
+                [fullPath]() {
+                    Components::get()->Render()->LoadShaderIntoScene(fullPath);
+                    FileSystemGUI::autoExpandScene = true;
+                }
+            );
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SHADER_EDIT), "Edit Shader",
+                [fullPath]() { ShadersGUI::LoadDialogShader(fullPath); }
+            );
+        } else if (isJson && top == "ui") {
+            fileConfig.leftIcon = FileSystemGUI::Icon(IconGUI::WIN_UI_MANAGER);
+            const std::string widgetName = Tools::getFilenameWithoutExtension(file);
+            fileConfig.actionItems.emplace_back(
+                FileSystemGUI::Icon(IconGUI::SHADER_EDIT), "Edit Widget",
+                [widgetName, fullPath]() {
+                    auto *ui = Components::get()->Render()->getUIManager();
+                    if (ui && !ui->getWidgets().count(widgetName)) ui->loadWidgetFromFile(fullPath);
+                    Brakeza::get()->GUI()->getWindowStatus(GUIType::UI_MANAGER)->isOpen = true;
+                    UIManagerGUI::setSelectedWidget(widgetName);
+                }
+            );
+        }
+
+        CustomImGui::CustomTreeNode(fileConfig, nullptr);
+
+        if (dragType != nullptr && ImGui::BeginDragDropSource(ImGuiDragDropFlags_None)) {
+            ImGui::SetDragDropPayload(dragType, fullPath.c_str(), fullPath.size() + 1);
+            ImGui::Text("%s", fullPath.c_str());
+            ImGui::EndDragDropSource();
+        }
+
+        ImGui::PopID();
     }
 }
 
@@ -935,6 +1152,60 @@ void GUIAddonProjectSetup::DrawProjectEditPopup()
             ImGui::CloseCurrentPopup();
         }
 
+        ImGui::EndPopup();
+    }
+}
+
+void GUIAddonProjectSetup::DrawSpecialSavePopup()
+{
+    if (openPopupSpecialSave) {
+        ImGui::OpenPopup("Special Save Scene");
+        openPopupSpecialSave = false;
+    }
+
+    GUIHelpers::CenterNextWindow();
+    ImGui::SetNextWindowSize(ImVec2(300, 0), ImGuiCond_Always);
+
+    if (ImGui::BeginPopupModal("Special Save Scene", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Spacing();
+        ImGui::TextWrapped("Select what to overwrite in:");
+        ImGui::TextDisabled("%s", s_specialSavePath.c_str());
+        ImGui::TextWrapped("Everything not selected stays as it is in the file.");
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        {
+            GUIFields::Section saveOptions("SAVE", 150.0f, 40.0f);
+            if (saveOptions) {
+                GUIFields::Check("Objects",          &specialSaveParts.objects);
+                GUIFields::Check("Folders",          &specialSaveParts.folders);
+                GUIFields::Check("Lighting (sun, lights file)", &specialSaveParts.lighting);
+                GUIFields::Check("Camera",           &specialSaveParts.camera);
+                GUIFields::Check("Shaders",          &specialSaveParts.shaders);
+                GUIFields::Check("Scripts",          &specialSaveParts.scripts);
+            }
+        }
+
+        ImGui::Spacing();
+        ImGui::Separator();
+        ImGui::Spacing();
+
+        const bool anySelected = specialSaveParts.objects || specialSaveParts.folders || specialSaveParts.lighting
+            || specialSaveParts.camera || specialSaveParts.shaders || specialSaveParts.scripts;
+
+        ImGui::BeginDisabled(!anySelected);
+        if (ImGui::Button("Save", ImVec2(120, 0))) {
+            SceneLoader::SaveSceneParts(FilePath::SceneFile(s_specialSavePath), specialSaveParts);
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+        if (GUIHelpers::CancelButton()) {
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::Spacing();
         ImGui::EndPopup();
     }
 }

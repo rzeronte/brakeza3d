@@ -291,83 +291,89 @@ void Mesh3D::AssimpInitMaterials(const aiScene *pScene, std::vector<MaterialEntr
 {
     LOG_MESSAGE("[Mesh3D] Prepare to load %d materials", pScene->mNumMaterials);
 
+    // Returns path with .png extension if the original doesn't exist but the .png variant does
+    auto tryPng = [](const std::string& path) -> std::string {
+        if (Tools::FileExists(path.c_str())) return path;
+        auto dot = path.find_last_of('.');
+        if (dot != std::string::npos) {
+            std::string png = path.substr(0, dot) + ".png";
+            if (Tools::FileExists(png.c_str())) return png;
+        }
+        return "";
+    };
+
+    // Resuelve la ruta de una textura del material (la misma busqueda para difusa y especular). Devuelve "" si no se encuentra el fichero.
+    auto resolveTexturePath = [&](const aiString &Path) -> std::string {
+        std::string p(Path.data);
+        LOG_MESSAGE("[Mesh3D] Material texture path: '%s'", p.c_str());
+
+        std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
+
+        std::replace(p.begin(), p.end(), '\\', '/');
+        if (p.substr(0, 2) == "./") p = p.substr(2);
+
+        std::string fbxDir = std::string(sourceFile.c_str());
+        fbxDir = fbxDir.substr(0, fbxDir.find_last_of("/\\") + 1);
+        std::string relativePath = fbxDir + p;
+
+        std::string textureSubPath = Config::get()->TEXTURES_FOLDER + p;
+        std::string baseSubPath    = Config::get()->TEXTURES_FOLDER + base_filename;
+
+        std::string candidate;
+        bool isAbsolute = p.size() >= 2 && p[1] == ':';
+        if (isAbsolute && !(candidate = tryPng(p)).empty()) return candidate;
+        if (!(candidate = tryPng(relativePath)).empty()) return candidate;
+        if (!(candidate = tryPng(RebaseOntoAssets(p))).empty()) return candidate;
+        if (!(candidate = tryPng(textureSubPath)).empty()) return candidate;
+        if (!(candidate = FindTextureBySuffix(p)).empty()) return candidate;
+        if (!(candidate = tryPng(baseSubPath)).empty()) return candidate;
+        return "";
+    };
+
+    const std::string chessPath = Config::get()->TEXTURES_FOLDER + "chessboard.png";
+
     for (unsigned int i = 0; i < pScene->mNumMaterials; i++) {
 
         aiMaterial *pMaterial = pScene->mMaterials[i];
         LOG_MESSAGE("[Mesh3D] Loading material: %s", pMaterial->GetName().C_Str());
 
+        // ---- Difusa ----
+        std::string diffusePath;
         aiString Path;
-        if (pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS) {
-            std::string p(Path.data);
-            LOG_MESSAGE("[Mesh3D] Material texture path: '%s'", p.c_str());
-
-            std::string base_filename = p.substr(p.find_last_of("/\\") + 1);
-
-            std::replace(p.begin(), p.end(), '\\', '/');
-            if (p.substr(0, 2) == "./") p = p.substr(2);
-
-            std::string fbxDir = std::string(sourceFile.c_str());
-            fbxDir = fbxDir.substr(0, fbxDir.find_last_of("/\\") + 1);
-            std::string relativePath = fbxDir + p;
-
-            // Returns path with .png extension if the original doesn't exist but the .png variant does
-            auto tryPng = [](const std::string& path) -> std::string {
-                if (Tools::FileExists(path.c_str())) return path;
-                auto dot = path.find_last_of('.');
-                if (dot != std::string::npos) {
-                    std::string png = path.substr(0, dot) + ".png";
-                    if (Tools::FileExists(png.c_str())) return png;
-                }
-                return "";
-            };
-
-            std::string textureSubPath = Config::get()->TEXTURES_FOLDER + p;
-            std::string baseSubPath    = Config::get()->TEXTURES_FOLDER + base_filename;
-            const std::string chessPath = Config::get()->TEXTURES_FOLDER + "chessboard.png";
-
-            std::string FullPath;
-            std::string candidate;
-            bool isAbsolute = p.size() >= 2 && p[1] == ':';
-            if (isAbsolute && !(candidate = tryPng(p)).empty()) {
-                FullPath = candidate;
-            } else if (!(candidate = tryPng(relativePath)).empty()) {
-                FullPath = candidate;
-            } else if (!(candidate = tryPng(RebaseOntoAssets(p))).empty()) {
-                FullPath = candidate;
-            } else if (!(candidate = tryPng(textureSubPath)).empty()) {
-                FullPath = candidate;
-            } else if (!(candidate = FindTextureBySuffix(p)).empty()) {
-                FullPath = candidate;
-            } else if (!(candidate = tryPng(baseSubPath)).empty()) {
-                FullPath = candidate;
-            } else {
-                LOG_MESSAGE("[Mesh3D] Material[%d] texture not found '%s', using chessboard", i, base_filename.c_str());
-                if (outMaterialEntries) outMaterialEntries->push_back({false, "", false, ""});
-                auto *fallback = imageCache.getOrLoad(chessPath);
-                modelTextures.push_back(fallback);
-                modelSpecularTextures.push_back(fallback);
-                continue;
+        const bool hasDiffuseSlot = pMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &Path, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS;
+        if (hasDiffuseSlot) {
+            diffusePath = resolveTexturePath(Path);
+            if (diffusePath.empty()) {
+                std::string p(Path.data);
+                LOG_MESSAGE("[Mesh3D] Material[%d] texture not found '%s', using chessboard", i, p.substr(p.find_last_of("/\\") + 1).c_str());
             }
-
-            LOG_MESSAGE("[Mesh3D] Loading '%s' as texture for mesh: %s", FullPath.c_str(), getName().c_str());
-
-            if (outMaterialEntries) {
-                outMaterialEntries->push_back({true, FullPath, true, FullPath});
-            }
-
-            modelTextures.push_back(imageCache.getOrLoad(FullPath));
-            modelSpecularTextures.push_back(imageCache.getOrLoad(FullPath));
         } else {
-            const std::string chessPath = Config::get()->TEXTURES_FOLDER + "chessboard.png";
             LOG_MESSAGE("[Mesh3D] Material[%d] has no diffuse texture, using chessboard", i);
-            if (outMaterialEntries) {
-                outMaterialEntries->push_back({false, "", false, ""});
-            }
-
-            auto *fallback = imageCache.getOrLoad(chessPath);
-            modelTextures.push_back(fallback);
-            modelSpecularTextures.push_back(fallback);
         }
+
+        // ---- Especular: solo si el material la declara y el fichero existe; si no, se ignora (marcador chessboard, sin textura real) ----
+        std::string specularPath;
+        aiString SpecPath;
+        if (pMaterial->GetTexture(aiTextureType_SPECULAR, 0, &SpecPath, nullptr, nullptr, nullptr, nullptr, nullptr) == AI_SUCCESS) {
+            specularPath = resolveTexturePath(SpecPath);
+            if (specularPath.empty()) {
+                LOG_MESSAGE("[Mesh3D] Material[%d] specular texture '%s' not found, ignoring", i, SpecPath.C_Str());
+            } else {
+                LOG_MESSAGE("[Mesh3D] Material[%d] specular texture: '%s'", i, specularPath.c_str());
+            }
+        }
+
+        const bool hasDiffuse  = !diffusePath.empty();
+        const bool hasSpecular = !specularPath.empty();
+
+        if (outMaterialEntries) {
+            outMaterialEntries->push_back({hasDiffuse, hasDiffuse ? diffusePath : "", hasSpecular, hasSpecular ? specularPath : ""});
+        }
+
+        if (hasDiffuse) LOG_MESSAGE("[Mesh3D] Loading '%s' as texture for mesh: %s", diffusePath.c_str(), getName().c_str());
+
+        modelTextures.push_back(imageCache.getOrLoad(hasDiffuse ? diffusePath : chessPath));
+        modelSpecularTextures.push_back(imageCache.getOrLoad(hasSpecular ? specularPath : chessPath));
     }
 
     sharedTextures = true;

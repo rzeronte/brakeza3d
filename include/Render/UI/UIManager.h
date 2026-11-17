@@ -182,6 +182,7 @@ struct UIElement {
     Color btnBg        {0.12f, 0.20f, 0.32f, 0.92f};
     Color btnHover     {0.22f, 0.38f, 0.58f, 0.96f};
     Color btnPressed   {0.08f, 0.13f, 0.22f, 1.00f};
+    Color btnBgDisabled{0.10f, 0.12f, 0.15f, 0.80f};   // flat bg when data.enabled == false (no hover/pressed feedback)
     // Skins: image per state stretched over the whole button (replaces the flat color rect of that state).
     // Empty hover/pressed fall back to the normal skin; empty disabled falls back to normal (see UIElementData::enabled).
     std::string btnSkin, btnSkinHover, btnSkinPressed, btnSkinDisabled;

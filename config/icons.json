@@ -919,6 +919,10 @@
 			"name":	"FOLDER_ADD",
 			"x":	6,
 			"y":	17
+		}, {
+			"name":	"SCENE_SAVE_OBJECTS",
+			"x":	9,
+			"y":	0
 		}],
 	"object_icons":	[{
 			"name":	"OBJECT_3D",

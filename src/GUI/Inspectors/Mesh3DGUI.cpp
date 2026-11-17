@@ -141,10 +141,25 @@ void Mesh3DGUI::DrawPropertiesGUI(Mesh3D *o)
                             ImGui::TableNextColumn();
                             ImGui::Text("#%d", m.materialIndex);
 
+                            // Checkbox editable: marca/desmarca el MATERIAL de la submesh (emiten todas las submeshes que lo comparten)
                             ImGui::TableNextColumn();
-                            if (!o->emissionEnabled)                         ImGui::TextDisabled("--");
-                            else if (o->isMaterialEmissive(m.materialIndex)) ImGui::TextColored(ImVec4(1.0f, 0.8f, 0.2f, 1.0f), "YES");
-                            else                                             ImGui::TextDisabled("no");
+                            {
+                                bool em = o->isMaterialEmissive(m.materialIndex);
+                                ImGui::PushID(i);
+                                if (ImGui::Checkbox("##subEmits", &em)) {
+                                    // Con la lista vacia emite TODO el mesh: antes de desmarcar una, se marcan explicitamente todas las demas
+                                    if (o->emissiveMaterials.empty()) {
+                                        for (const auto &sm : o->meshes) o->setMaterialEmissive(sm.materialIndex, true);
+                                    }
+                                    o->setMaterialEmissive(m.materialIndex, em);
+                                }
+                                if (ImGui::IsItemHovered()) {
+                                    ImGui::SetTooltip(o->emissionEnabled
+                                        ? "Emissive (affects every submesh sharing material #%d)"
+                                        : "Emissive (affects every submesh sharing material #%d)\nEmission is off: enable it in RENDER", m.materialIndex);
+                                }
+                                ImGui::PopID();
+                            }
                         }
                     }
                     ImGui::EndTable();

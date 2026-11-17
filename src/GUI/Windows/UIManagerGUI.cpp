@@ -1125,6 +1125,8 @@ void UIManagerGUI::DrawElementEditor(UIElement& el, UIWidget& w, UIManager* ui, 
                 Color4Field("Normal##cbtn",  el.btnBg);      ImGui::SameLine();
                 Color4Field("Hover##cbtnhv", el.btnHover);   ImGui::SameLine();
                 Color4Field("Press##cbtnpr", el.btnPressed);
+                ImGui::SameLine();
+                Color4Field("Off##cbtndis", el.btnBgDisabled);
                 GUIFields::EndRow();
             }
         }
@@ -1574,6 +1576,7 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
             addCol("btnBg",      el.btnBg);
             addCol("btnHover",   el.btnHover);
             addCol("btnPressed", el.btnPressed);
+            addCol("btnBgDisabled", el.btnBgDisabled);
             const Color& tc = el.staticTextColor;
             if (tc.r < 0.999f || tc.g < 0.999f || tc.b < 0.999f || tc.a < 0.999f)
                 addCol("textColor", tc);
