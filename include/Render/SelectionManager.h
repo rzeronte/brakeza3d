@@ -34,8 +34,11 @@ class SelectionManager {
     bool pendingLeftClick        = false;
     bool pendingClickCtrl        = false;
     Object3D* pendingClickObject = nullptr;  // copia interna, no afectada por clearLeftClickedObject
+    bool rectSelectionDone       = false;    // se acaba de resolver una seleccion por recuadro (la consume el juego para filtrarla)
 
 public:
+    // true una sola vez tras cada seleccion por recuadro
+    bool consumeRectSelectionDone()     { const bool v = rectSelectionDone; rectSelectionDone = false; return v; }
     void setSelectedObject(Object3D *o);
     void addToSelection(Object3D *o);
     void removeFromSelection(const Object3D *o);

@@ -7,6 +7,11 @@
  * Copyright (C) 2018-2026 Eduardo Rodríguez Álvarez
  * License: GNU General Public License v3.0 (see LICENSE)
  */
+#include <algorithm>
+#include <cstdlib>
+#include <cmath>
+#include <atomic>
+#include "../../include/Render/ProfilerZones.h"
 #include <assimp/postprocess.h>
 #include "../../include/3D/Mesh3DAnimation.h"
 #include "../../include/Brakeza.h"
@@ -24,6 +29,43 @@
 #include "../../include/Render/Profiler.h"
 #include <chrono>
 #include <cstdio>
+#if defined(__SSE2__)
+#include <emmintrin.h>
+#endif
+
+// Producto A * B de matrices de Assimp (4x4, por filas) y volcado a glm (por columnas = la transpuesta). Con SSE2 cada fila del
+// resultado es a1*B0 + a2*B1 + a3*B2 + a4*B3 sumado en ESE orden, igual que el producto de Assimp: el resultado es idéntico bit a bit
+// (se comprobó contra el producto de Assimp sobre 270000 poses). Sin SSE2 se usa el producto de Assimp.
+static inline void MulAi(const aiMatrix4x4 &A, const aiMatrix4x4 &B, aiMatrix4x4 &Out)
+{
+#if defined(__SSE2__)
+    const float *a = &A.a1, *b = &B.a1;
+    float *o = &Out.a1;
+    const __m128 b0 = _mm_loadu_ps(b), b1 = _mm_loadu_ps(b + 4), b2 = _mm_loadu_ps(b + 8), b3 = _mm_loadu_ps(b + 12);
+    for (int i = 0; i < 4; i++) {
+        __m128 r = _mm_mul_ps(_mm_set1_ps(a[i * 4 + 0]), b0);
+        r = _mm_add_ps(r, _mm_mul_ps(_mm_set1_ps(a[i * 4 + 1]), b1));
+        r = _mm_add_ps(r, _mm_mul_ps(_mm_set1_ps(a[i * 4 + 2]), b2));
+        r = _mm_add_ps(r, _mm_mul_ps(_mm_set1_ps(a[i * 4 + 3]), b3));
+        _mm_storeu_ps(o + i * 4, r);
+    }
+#else
+    Out = A * B;
+#endif
+}
+
+static inline void AiToGlm(const aiMatrix4x4 &M, glm::mat4 &Out)
+{
+#if defined(__SSE2__)
+    const float *m = &M.a1;
+    __m128 r0 = _mm_loadu_ps(m), r1 = _mm_loadu_ps(m + 4), r2 = _mm_loadu_ps(m + 8), r3 = _mm_loadu_ps(m + 12);
+    _MM_TRANSPOSE4_PS(r0, r1, r2, r3);
+    float *o = &Out[0][0];
+    _mm_storeu_ps(o, r0); _mm_storeu_ps(o + 4, r1); _mm_storeu_ps(o + 8, r2); _mm_storeu_ps(o + 12, r3);
+#else
+    Out = Tools::aiMat4toGLMMat4(M);
+#endif
+}
 
 // Cronometros de la animacion (solo con el detalle de scripts del profiler activo, p.ej. RenderPerfProbe):
 // suman por categoria y vuelcan la media por consola cada ~2 s. Sin el flag cuestan una comprobacion.
@@ -328,6 +370,7 @@ void Mesh3DAnimation::onUpdate()
         return;
     }
 
+    BZ_ZONE_N("Anim: onUpdate");
     const bool ap = animPerf::on();
     const auto apT0 = animPerf::now(ap);
     UpdateFrameTransformations();
@@ -454,6 +497,7 @@ bool Mesh3DAnimation::NeedsBakedPose() const
 void Mesh3DAnimation::UpdateOpenGLBones(bool bake)
 {
     if (!scene) return;
+    BZ_ZONE_N("Anim: UpdateOpenGLBones (glm cache + bake)");
 
     boneTransformCachePerMesh.resize(meshes.size());
 
@@ -471,7 +515,7 @@ void Mesh3DAnimation::UpdateOpenGLBones(bool bake)
             glmCache.resize(meshTransforms.size(), glm::mat4(1.0f));
         }
         for (size_t b = 0; b < meshTransforms.size(); b++) {
-            glmCache[b] = Tools::aiMat4toGLMMat4(meshTransforms[b]);
+            AiToGlm(meshTransforms[b], glmCache[b]);
         }
 
         if (bake) shaderBones->render(m, glmCache, fbo);
@@ -483,6 +527,7 @@ void Mesh3DAnimation::onUpdateCulled()
     Object3D::onUpdateCulled();
 
     if (!isEnabled() || isRemoved()) return;
+    BZ_ZONE_N("Anim: onUpdateCulled");
 
     // Fuera de cámara no se calculan huesos ni se dibuja, pero el reloj de la animación tiene que
     // seguir corriendo: si se congela, una unidad que muere fuera de pantalla deja su animación de
@@ -845,8 +890,7 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
     const aiScene* as = animationsScene();
     if (!scene || !as || !as->HasAnimations() || indexCurrentAnimation >= static_cast<int>(as->mNumAnimations)) return;
 
-    aiMatrix4x4 Identity = aiMatrix4x4();
-
+    BZ_ZONE_N("Anim: UpdateBonesFinalTransformations");
     auto TicksPerSecond = static_cast<float>(
         as->mAnimations[indexCurrentAnimation]->mTicksPerSecond != 0 ? as->mAnimations[indexCurrentAnimation]->mTicksPerSecond : 0.25f
     );
@@ -855,31 +899,35 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
 
     const bool ap = animPerf::on();
     const auto t0 = animPerf::now(ap);
-    ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
+    {
+        BZ_ZONE_N("Anim: ReadNodeHierarchy");
+        ReadNodeHierarchyCached(AnimationTime);
+    }
     const auto t1 = animPerf::now(ap);
-    ComputeMeshBoneFinalTransforms();
+    {
+        BZ_ZONE_N("Anim: ComputeMeshBoneFinalTransforms");
+        ComputeMeshBoneFinalTransforms();
+    }
     if (ap) {
         animPerf::acc.hierarchyMs += std::chrono::duration<double, std::milli>(t1 - t0).count();
         animPerf::acc.finalMs     += animPerf::since(ap, t1);
     }
 }
 
-void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)
+// Transformación local de un nodo en el instante AnimationTime: la del propio nodo, o la animada (propia o retargeteada
+// desde la biblioteca compartida). pNodeAnim = canal del nodo en la animación actual (nullptr = sin canal) y rbPtr = su
+// reposo retargeteado (nullptr = no es hueso de una animación compartida). Lo comparten el recorrido recursivo y el
+// recorrido con el esqueleto precalculado, para que ambos den exactamente lo mismo.
+aiMatrix4x4 Mesh3DAnimation::NodeLocalTransform(float AnimationTime, const aiNode *pNode, const aiNodeAnim *pNodeAnim, const RetargetBone *rbPtr)
 {
-    const std::string& NodeName = pNode->mName.data;
-    const aiAnimation *pAnimation = animationsScene()->mAnimations[indexCurrentAnimation];
-
     aiMatrix4x4 NodeTransformation;
     NodeTransformation = pNode->mTransformation;
-
-    const aiNodeAnim *pNodeAnim = FindNodeAnim(pAnimation, NodeName);
 
     if (animScene) {
         // Animaciones compartidas (ver RetargetBone): movimiento de la biblioteca sobre el reposo
         // del modelo. Los nodos que no son huesos del modelo conservan su transformacion.
-        auto it = retargetBones.find(pNode);
-        if (it != retargetBones.end()) {
-            const RetargetBone& rb = it->second;
+        if (rbPtr != nullptr) {
+            const RetargetBone& rb = *rbPtr;
 
             const aiMatrix3x3 WlParent = rb.isRoot ? rb.libParentWorld   : retargetWl[rb.parentIdx];
             const aiMatrix3x3 WtParent = rb.isRoot ? rb.modelParentWorld : retargetWt[rb.parentIdx];
@@ -965,15 +1013,102 @@ void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode
         NodeTransformation = TranslationM * RotationM * ScalingM;
     }
 
-    aiMatrix4x4 GlobalTransformation = ParentTransform * NodeTransformation;
+    return NodeTransformation;
+}
 
-    if (boneMapping.find(NodeName) != boneMapping.end()) {
-        unsigned int BoneIndex = boneMapping[NodeName];
-        boneInfo[BoneIndex].WorldTransform = globalInverseTransform * GlobalTransformation;
+// ── Esqueleto precalculado ───────────────────────────────────────────────────────────────────────
+// El recorrido por nombre (recursivo) resolvía, en cada nodo y cada frame, el canal de animación, el reposo retargeteado
+// y el hueso del modelo (tres búsquedas en mapas de string). Aquí se resuelven una vez por animación y el recorrido por
+// frame es un bucle plano sobre un vector. Se invalida solo (SkeletonCacheValid) si cambia la animación o el esqueleto.
+bool Mesh3DAnimation::SkeletonCacheValid() const
+{
+    return skelValid
+        && skelKeyThis == this
+        && skelKeyScene == scene
+        && skelKeyAnimScene == animScene
+        && skelKeyAnim == indexCurrentAnimation
+        && skelKeyRetarget == retargetBones.size()
+        && skelKeyBones == boneInfo.size()
+        && skelKeyMeshes == meshes.size();
+}
+
+void Mesh3DAnimation::BuildSkeletonCache()
+{
+    skelNodes.clear();
+
+    const aiAnimation *pAnimation = animationsScene()->mAnimations[indexCurrentAnimation];
+
+    // Preorden con los hijos en su orden (lo que hacía la recursión): el padre siempre se evalúa antes que sus hijos,
+    // que es lo que necesitan tanto la transformación global como retargetWl/retargetWt.
+    struct Item { const aiNode *node; int parent; };
+    std::vector<Item> stack;
+    stack.push_back({scene->mRootNode, -1});
+    while (!stack.empty()) {
+        const Item item = stack.back();
+        stack.pop_back();
+
+        SkelNode sn;
+        sn.node   = item.node;
+        sn.parent = item.parent;
+        sn.anim   = FindNodeAnim(pAnimation, item.node->mName.data);
+        if (animScene) {
+            auto it = retargetBones.find(item.node);
+            if (it != retargetBones.end()) sn.rb = &it->second;
+        }
+        auto bit = boneMapping.find(item.node->mName.data);
+        if (bit != boneMapping.end()) sn.boneIndex = static_cast<int>(bit->second);
+
+        const int idx = static_cast<int>(skelNodes.size());
+        skelNodes.push_back(sn);
+        for (int c = static_cast<int>(item.node->mNumChildren) - 1; c >= 0; --c) {
+            stack.push_back({item.node->mChildren[c], idx});
+        }
     }
+    skelGlobal.assign(skelNodes.size(), aiMatrix4x4());
 
-    for (unsigned int i = 0; i < pNode->mNumChildren; i++) {
-        ReadNodeHierarchy(AnimationTime, pNode->mChildren[i], GlobalTransformation);
+    // Offset de bind por (mesh, hueso): lo que ComputeMeshBoneFinalTransforms buscaba en un mapa por cada hueso y frame.
+    // Se copian a un vector contiguo: los nodos del unordered_map están dispersos en memoria y recorrerlos por cada
+    // (mesh, hueso) y frame, de unas 200 unidades, era más lento que el propio producto de matrices.
+    skelOffsetStore.assign(meshes.size() * static_cast<size_t>(numBones), aiMatrix4x4());
+    skelMeshOffsets.assign(meshes.size(), std::vector<const aiMatrix4x4*>());
+    for (size_t m = 0; m < meshes.size(); m++) {
+        auto &offsets = skelMeshOffsets[m];
+        offsets.assign(numBones, nullptr);
+        for (int b = 0; b < numBones && b < static_cast<int>(boneInfo.size()); b++) {
+            auto it = boneInfo[b].BoneOffsetByMesh.find(static_cast<int>(m));
+            if (it == boneInfo[b].BoneOffsetByMesh.end()) continue;
+            aiMatrix4x4 &dst = skelOffsetStore[m * static_cast<size_t>(numBones) + static_cast<size_t>(b)];
+            dst = it->second;
+            offsets[b] = &dst;
+        }
+    }
+    meshBoneFinalTransforms.clear();   // se reasignan (a identidad) en ComputeMeshBoneFinalTransforms
+
+    skelKeyThis      = this;
+    skelKeyScene     = scene;
+    skelKeyAnimScene = animScene;
+    skelKeyAnim      = indexCurrentAnimation;
+    skelKeyRetarget  = retargetBones.size();
+    skelKeyBones     = boneInfo.size();
+    skelKeyMeshes    = meshes.size();
+    skelValid        = true;
+}
+
+void Mesh3DAnimation::ReadNodeHierarchyCached(float AnimationTime)
+{
+    if (!SkeletonCacheValid()) BuildSkeletonCache();
+
+    const aiMatrix4x4 Identity;
+    for (size_t i = 0; i < skelNodes.size(); i++) {
+        const SkelNode &sn = skelNodes[i];
+
+        const aiMatrix4x4 NodeTransformation = NodeLocalTransform(AnimationTime, sn.node, sn.anim, sn.rb);
+        const aiMatrix4x4 &Parent = sn.parent >= 0 ? skelGlobal[sn.parent] : Identity;
+        skelGlobal[i] = Parent * NodeTransformation;
+
+        if (sn.boneIndex >= 0) {
+            boneInfo[sn.boneIndex].WorldTransform = globalInverseTransform * skelGlobal[i];
+        }
     }
 }
 
@@ -983,17 +1118,20 @@ void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode
 // peso > 0 para ese hueso).
 void Mesh3DAnimation::ComputeMeshBoneFinalTransforms()
 {
+    if (!SkeletonCacheValid()) BuildSkeletonCache();
+
     size_t meshCount = meshes.size();
-    meshBoneFinalTransforms.resize(meshCount);
+    if (meshBoneFinalTransforms.size() != meshCount) meshBoneFinalTransforms.resize(meshCount);
 
     for (size_t meshId = 0; meshId < meshCount; meshId++) {
         auto &transforms = meshBoneFinalTransforms[meshId];
-        transforms.assign(numBones, aiMatrix4x4());
+        // Los huesos que este mesh no usa se quedan en identidad: solo se reasigna si cambió el nº de huesos.
+        if (transforms.size() != static_cast<size_t>(numBones)) transforms.assign(numBones, aiMatrix4x4());
 
+        const auto &offsets = skelMeshOffsets[meshId];
         for (int b = 0; b < numBones; b++) {
-            auto it = boneInfo[b].BoneOffsetByMesh.find(static_cast<int>(meshId));
-            if (it != boneInfo[b].BoneOffsetByMesh.end()) {
-                transforms[b] = boneInfo[b].WorldTransform * it->second;
+            if (offsets[b] != nullptr) {
+                MulAi(boneInfo[b].WorldTransform, *offsets[b], transforms[b]);
             }
         }
     }

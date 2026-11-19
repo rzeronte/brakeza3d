@@ -17,6 +17,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec2.hpp>
 #include <variant>
+#include <vector>
+#include <glm/vec4.hpp>
 #include "../../Render/Image.h"
 
 // uniforms mapping structs
@@ -118,7 +120,8 @@ enum class ShaderOpenGLCustomDataType {
     EXECUTION_TIME,
     SCENE,
     DEPTH,
-    GPOSITION
+    GPOSITION,
+    VEC4_ARRAY      // uniform vec4 name[N]: lista de vec4 rellenada desde Lua (setDataTypeArray); N lo fija el GLSL
 };
 
 struct ShaderTypeInfo {
@@ -126,7 +129,7 @@ struct ShaderTypeInfo {
     std::string label;
 };
 
-typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*> ShaderOpenGLCustomDataValue;
+typedef std::variant<int, float, glm::vec2, glm::vec3, glm::vec4, Image*, std::vector<glm::vec4>> ShaderOpenGLCustomDataValue;
 
 struct ShaderOGLCustomType
 {

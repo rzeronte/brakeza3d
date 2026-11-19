@@ -501,6 +501,7 @@ void Mesh3D::onUpdate()
     Object3D::onUpdate();
 
     if (isRemoved()) return;
+    BZ_ZONE_N("Mesh3D: onUpdate");
 
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();

@@ -76,6 +76,8 @@ public:
     void setDataTypeValue(const std::string &name, glm::vec2 newValue);
     void setDataTypeValue(const std::string &name, glm::vec3 newValue);
     void setDataTypeValue(const std::string &name, glm::vec4 newValue);
+    // vec4_array: `flat` = x,y,z,w,x,y,z,w... (nFloats / 4 elementos). Reutiliza el vector: sin reservas por frame.
+    void setDataTypeArray(const std::string &name, const float *flat, int nFloats);
     void ResetNumberTextures();
     void IncreaseNumberTextures();
     [[nodiscard]] std::string getFolder() const;

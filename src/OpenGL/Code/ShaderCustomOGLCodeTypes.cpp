@@ -19,6 +19,7 @@ std::map<std::string, ShaderTypeInfo> GLSLTypeMapping = {
     {"vec2", {ShaderOpenGLCustomDataType::VEC2, "Vec2" }},
     {"vec3", {ShaderOpenGLCustomDataType::VEC3, "Vec3" }},
     {"vec4", {ShaderOpenGLCustomDataType::VEC4, "Vec4" }},
+    {"vec4_array", {ShaderOpenGLCustomDataType::VEC4_ARRAY, "Vec4 array" }},
     {"texture", {ShaderOpenGLCustomDataType::TEXTURE2D, "Texture"}},
     {"diffuse", {ShaderOpenGLCustomDataType::DIFFUSE, "Diffuse Mesh3D texture (internal)" }},
     {"specular", {ShaderOpenGLCustomDataType::SPECULAR, "Specular Mesh3D texture (internal)" }},

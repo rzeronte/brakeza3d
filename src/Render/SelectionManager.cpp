@@ -232,6 +232,7 @@ void SelectionManager::update()
                 selectedObjects.push_back(o);
             }
         }
+        rectSelectionDone = true;
         LOG_MESSAGE("[Selection] Rect selection: %zu objects", selectedObjects.size());
         return;
     }

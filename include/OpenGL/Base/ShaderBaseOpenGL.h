@@ -61,6 +61,8 @@ public:
     void setVec3(const std::string &name, float x, float y, float z) const;
     static void setVec3Uniform(GLuint uniform, float x, float y, float z);
     void setVec4(const std::string &name, const glm::vec4 &value) const;
+    // uniform vec4 name[N]: sube `count` elementos de una sola vez (count <= N declarado en el GLSL)
+    void setVec4Array(const std::string &name, const glm::vec4 *values, int count) const;
     static void setVec4Uniform(GLuint uniform, const glm::vec4 &value);
     void setVec4(const std::string &name, float x, float y, float z, float w) const;
     static void setVec4Uniform(GLuint uniform, float x, float y, float z, float w);

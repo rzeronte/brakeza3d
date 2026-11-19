@@ -91,6 +91,14 @@ void LUAIntegrationTables(sol::state &lua)
     lua["ProfilerLua"]["now"] = []() -> double {
         return std::chrono::duration<double>(std::chrono::steady_clock::now().time_since_epoch()).count();
     };
+    // Zonas con nombre en la línea de tiempo de Tracy (build con BRAKEZA_TRACY y visor conectado; si no, no hacen nada).
+    //   ProfilerLua.zoneBegin("HUD.avatars") ... ProfilerLua.zoneEnd("HUD.avatars")
+    lua["ProfilerLua"]["zoneBegin"] = [](const std::string &name) { Profiler::ZoneBegin(name); };
+    lua["ProfilerLua"]["zoneEnd"]   = [](const std::string &name) { Profiler::ZoneEnd(name); };
+    // Para SectionTimer.lua: tracyConnected() para saber si hay visor; zoneBeginAnon() abre la zona y zoneEndNamed(name) la nombra y cierra
+    lua["ProfilerLua"]["tracyConnected"] = []() -> bool { return Profiler::TracyConnected(); };
+    lua["ProfilerLua"]["zoneBeginAnon"]  = []() { Profiler::ZoneBeginAnon(); };
+    lua["ProfilerLua"]["zoneEndNamed"]   = [](const std::string &name) { Profiler::ZoneEndNamed(name); };
     lua["ProfilerLua"]["snapshot"] = [](sol::this_state st) -> sol::table {
         sol::state_view lua(st);
         sol::table out = lua.create_table();

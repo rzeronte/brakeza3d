@@ -131,6 +131,29 @@ class Mesh3DAnimation : public Mesh3D
     std::unordered_map<const aiNode*, RetargetBone> retargetBones;
     std::vector<aiMatrix3x3> retargetWl;     // rotacion mundo animada en la biblioteca (por frame)
     std::vector<aiMatrix3x3> retargetWt;     // rotacion mundo resultante en el modelo (por frame)
+
+    // Esqueleto precalculado (ver BuildSkeletonCache): recorrido plano sin búsquedas por nombre en cada frame.
+    struct SkelNode {
+        const aiNode*       node      = nullptr;
+        int                 parent    = -1;       // índice en skelNodes (-1 = raíz); siempre anterior al del hijo
+        const aiNodeAnim*   anim      = nullptr;  // canal de este nodo en la animación actual (nullptr = sin canal)
+        const RetargetBone* rb        = nullptr;  // reposo retargeteado (solo animaciones de biblioteca compartida)
+        int                 boneIndex = -1;       // hueso del modelo que es este nodo (-1 = no es hueso)
+    };
+    std::vector<SkelNode> skelNodes;
+    std::vector<aiMatrix4x4> skelGlobal;                          // transformación global de cada nodo en este frame
+    std::vector<aiMatrix4x4> skelOffsetStore;                     // offsets de bind copiados en contiguo ([mesh * numBones + hueso]); skelMeshOffsets apunta aquí
+    std::vector<std::vector<const aiMatrix4x4*>> skelMeshOffsets; // [mesh][hueso] -> offset de bind (nullptr si el mesh no lo usa)
+    const Mesh3DAnimation *skelKeyThis = nullptr;   // la caché guarda punteros a miembros de ESTA instancia
+    const aiScene *skelKeyScene = nullptr;
+    const aiScene *skelKeyAnimScene = nullptr;
+    int skelKeyAnim = -1;
+    size_t skelKeyRetarget = 0, skelKeyBones = 0, skelKeyMeshes = 0;
+    bool skelValid = false;
+    [[nodiscard]] bool SkeletonCacheValid() const;
+    void BuildSkeletonCache();
+    void ReadNodeHierarchyCached(float AnimationTime);
+    aiMatrix4x4 NodeLocalTransform(float AnimationTime, const aiNode *pNode, const aiNodeAnim *pNodeAnim, const RetargetBone *rbPtr);
     void AttachSharedAnimations();
 
     // Mantiene vivo el AnimationData cacheado (y sus buffers de GPU compartidos de pose de
@@ -189,7 +212,6 @@ public:
     void ProcessMeshAnimation(int i, aiMesh *mesh);
     void ReadNodesFromRoot();
     void UpdateBonesFinalTransformations(float TimeInSeconds);
-    void ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform);
     void ComputeMeshBoneFinalTransforms();
     void UpdateForBone(Vertex3D &dest, int meshID, int vertexID);
     void LoadMeshBones(int meshId, aiMesh *mesh, std::vector<VertexBoneData> &meshVertexBoneData, bool skipWeights = false);

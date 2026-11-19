@@ -143,6 +143,14 @@ public:
     static void StartMeasure(MeasuresMap &map, const std::string& name);
     static void EndMeasure(MeasuresMap &map, const std::string& name);
     static void CountTick(MeasuresMap &map, const std::string& name, int configuredTps, bool ticked);
+    // Zonas sueltas para Tracy (Lua: ProfilerLua.zoneBegin/zoneEnd). Sin Tracy o sin visor conectado no hacen nada.
+    // Deben anidarse como las zonas normales: End(name) cierra también las abiertas por encima de name.
+    static void ZoneBegin(const std::string& name);
+    static void ZoneEnd(const std::string& name);
+    // Zona abierta sin nombre y nombrada al cerrar (SectionTimer.lua: el nombre solo se conoce en stop()). ZoneEndNamed cierra la de arriba.
+    static void ZoneBeginAnon();
+    static void ZoneEndNamed(const std::string& name);
+    [[nodiscard]] static bool TracyConnected();   // hay un visor Tracy conectado (siempre false sin BRAKEZA_TRACY)
     void StartGpuMeasure(const std::string& name);
     void EndGpuMeasure(const std::string& name);
     static void DrawBreakDownComponent(Measure &pre, Measure &update, Measure &post, double total, float height);

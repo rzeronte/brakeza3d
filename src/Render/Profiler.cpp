@@ -113,6 +113,24 @@ namespace {
         tracyZoneStack.push_back({name, ___tracy_emit_zone_begin_alloc(loc, 1)});
     }
 
+    // Zona "anonima": se abre sin nombre y se nombra al cerrarla (SectionTimer.lua solo conoce el nombre en stop()).
+    void TracyBeginAnonZone()
+    {
+        if (!TracyCIsConnected) return;
+        const uint64_t loc = ___tracy_alloc_srcloc_name(__LINE__, __FILE__, sizeof(__FILE__) - 1,
+                                                        "SectionTimer", 12, "", 0, 0);
+        tracyZoneStack.push_back({std::string(), ___tracy_emit_zone_begin_alloc(loc, 1)});
+    }
+
+    // Cierra la zona de arriba de la pila (las secciones de SectionTimer se anidan en orden) poniéndole nombre.
+    void TracyEndAnonZone(const std::string &name)
+    {
+        if (tracyZoneStack.empty()) return;
+        ___tracy_emit_zone_name(tracyZoneStack.back().ctx, name.c_str(), name.size());
+        ___tracy_emit_zone_end(tracyZoneStack.back().ctx);
+        tracyZoneStack.pop_back();
+    }
+
     void TracyEndZone(const std::string &name)
     {
         for (size_t i = tracyZoneStack.size(); i-- > 0;) {
@@ -145,12 +163,16 @@ namespace {
         tracyGpuScopes.erase(name);
     }
 }
+#define TRACY_BEGIN_ANON_ZONE() TracyBeginAnonZone()
+#define TRACY_END_ANON_ZONE(n)  TracyEndAnonZone(n)
 #define TRACY_BEGIN_ZONE(n)     TracyBeginZone(n)
 #define TRACY_END_ZONE(n)       TracyEndZone(n)
 #define TRACY_FLUSH_ZONES()     TracyFlushZones()
 #define TRACY_BEGIN_GPU_ZONE(n) TracyBeginGpuZone(n)
 #define TRACY_END_GPU_ZONE(n)   TracyEndGpuZone(n)
 #else
+#define TRACY_BEGIN_ANON_ZONE()
+#define TRACY_END_ANON_ZONE(n)
 #define TRACY_BEGIN_ZONE(n)
 #define TRACY_END_ZONE(n)
 #define TRACY_FLUSH_ZONES()
@@ -2315,6 +2337,35 @@ void Profiler::EndMeasure(MeasuresMap &map, const std::string &name)
     map[name].endTime = Ticks();
     map[name].diffTime = map[name].endTime - map[name].startTime;
     TRACY_END_ZONE(name);
+}
+
+void Profiler::ZoneBegin(const std::string &name)
+{
+    TRACY_BEGIN_ZONE(name);
+}
+
+void Profiler::ZoneEnd(const std::string &name)
+{
+    TRACY_END_ZONE(name);
+}
+
+void Profiler::ZoneBeginAnon()
+{
+    TRACY_BEGIN_ANON_ZONE();
+}
+
+void Profiler::ZoneEndNamed(const std::string &name)
+{
+    TRACY_END_ANON_ZONE(name);
+}
+
+bool Profiler::TracyConnected()
+{
+#ifdef BZ_TRACY
+    return TracyCIsConnected;
+#else
+    return false;
+#endif
 }
 
 // Ritmo real de un script: cuenta los frames en que su onUpdate se ejecutó y lo promedia en

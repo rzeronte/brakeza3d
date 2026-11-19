@@ -462,7 +462,7 @@ void ComponentRender::onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects)
         sortFrameTime -= Config::get()->SORT_OBJECTS_INTERVAL_MS;
     }
 
-    updateFrustum();
+    { BZ_ZONE_N("Render: sort + updateFrustum"); updateFrustum(); }
 
     // Pasada 1: scripts en TODOS los objetos activos, independientemente del frustum
     Profiler::StartMeasure(Profiler::get()->getComponentMeasures(), "Scripts");
@@ -485,6 +485,8 @@ void ComponentRender::onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects)
     // no estáticos de ComponentRender desde aquí.
     Components::get()->Render()->InvalidateRenderStateCache();
     int visible = 0, culled = 0;
+    {
+    BZ_ZONE_N("GBuffer: object loop (frustum + onUpdate + enqueue)");
     for (const auto &o: sceneObjects) {
         if (!o->isEnabled()) continue;
         // renderHidden (niebla de guerra): igual que fuera de cámara -- scripts ya corrieron arriba
@@ -494,27 +496,28 @@ void ComponentRender::onUpdateSceneObjects(std::vector<Object3D*> &sceneObjects)
         ++visible;
         o->onUpdate();
     }
+    }
     // Fase 3 (Etapa 1): los Mesh3D estáticos/Deferred se encolaron durante el bucle de arriba
     // (Mesh3D::onUpdate() -> EnqueueOpaque) en vez de dibujarse al instante -- se dibujan todos
     // aquí, ordenados. RestoreDefaultRenderState() se mueve a DESPUÉS del flush a propósito: es
     // el flush quien hace ahora el último draw antes de RunShadowPass()/LightPass(), no el
     // último objeto del bucle.
-    Components::get()->Render()->FlushOpaqueQueue();
+    { BZ_ZONE_N("GBuffer: FlushOpaqueQueue"); Components::get()->Render()->FlushOpaqueQueue(); }
     // Los custom shaders de objeto (WaterRTS, etc.) van DESPUES del flush opaco a propósito: si
     // corrieran entrelazados por objeto (como antes de Fase 3), el flush opaco -- que se ejecuta
     // una sola vez al final para TODOS los objetos -- repintaría encima el material sin animar de
     // cualquier objeto procesado antes que el último de sceneObjects (visible como una "capa"
     // blanca estática y sin desplazar por encima del agua animada).
     Components::get()->Render()->BeginEmission();
-    Components::get()->Render()->FlushObjectShaderQueue();
+    { BZ_ZONE_N("GBuffer: FlushObjectShaderQueue"); Components::get()->Render()->FlushObjectShaderQueue(); }
     // Emisivos SIEMPRE los últimos en escribir el G-Buffer -- ver comentario de FlushEmissiveQueue.
-    Components::get()->Render()->FlushEmissiveQueue();
+    { BZ_ZONE_N("GBuffer: FlushEmissiveQueue"); Components::get()->Render()->FlushEmissiveQueue(); }
     Components::get()->Render()->RestoreDefaultRenderState();
     // Fase 4b: picking (MOUSE_CLICK_SELECT_OBJECT3D) se encoló igual que el G-Buffer -- se dibuja
     // aquí, agrupado. Va después de RestoreDefaultRenderState() a propósito: escribe en su propio
     // FBO (picking, no el GBuffer) fijando su propio estado GL de forma incondicional en cada
     // draw, así que el orden respecto al resto de este bloque no cambia el resultado.
-    Components::get()->Render()->FlushPickingQueue();
+    { BZ_ZONE_N("GBuffer: FlushPickingQueue"); Components::get()->Render()->FlushPickingQueue(); }
     lastFrameVisible = visible;
     lastFrameCulled  = culled;
     Profiler::get()->EndGpuMeasure("GBuffer");

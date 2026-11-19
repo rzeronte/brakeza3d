@@ -108,6 +108,10 @@ void ShaderBaseCustomOGLCode::DrawTypeImGuiControl(ShaderOGLCustomType &type, bo
             }
             break;
         }
+        case ShaderOpenGLCustomDataType::VEC4_ARRAY: {
+            ImGui::TextDisabled("%d x vec4 (set from Lua)", static_cast<int>(std::get<std::vector<glm::vec4>>(type.value).size()));
+            break;
+        }
         default:
             break;
     }
@@ -527,6 +531,10 @@ void ShaderBaseCustomOGLCode::addDataType(const char *name, const char *type, cJ
             );
             break;
         }
+        case ShaderOpenGLCustomDataType::VEC4_ARRAY: {
+            LUAValue = std::vector<glm::vec4>();   // el contenido lo pone Lua cada frame; el JSON no lo guarda
+            break;
+        }
         case ShaderOpenGLCustomDataType::TEXTURE2D: {
             LUAValue = nullptr;
             if (value != nullptr) {
@@ -584,7 +592,7 @@ void ShaderBaseCustomOGLCode::postUpdate(GLuint outputFBO, GLuint inputTexture)
 
 void ShaderBaseCustomOGLCode::setDataTypesUniforms()
 {
-    for (auto type: dataTypes) {
+    for (const auto &type: dataTypes) {
         switch (GetGLSLTypeInfo(type.type).type) {
             case ShaderOpenGLCustomDataType::INT: {
                 const int value = std::get<int>(type.value);
@@ -609,6 +617,11 @@ void ShaderBaseCustomOGLCode::setDataTypesUniforms()
             case ShaderOpenGLCustomDataType::VEC4: {
                 auto value = std::get<glm::vec4>(type.value);
                 setVec4(type.name, value);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::VEC4_ARRAY: {
+                const auto &arr = std::get<std::vector<glm::vec4>>(type.value);
+                setVec4Array(type.name, arr.data(), static_cast<int>(arr.size()));
                 break;
             }
             case ShaderOpenGLCustomDataType::TEXTURE2D: {
@@ -696,6 +709,11 @@ void ShaderBaseCustomOGLCode::AddDataTypeEmpty(const char *name, const char *typ
         case ShaderOpenGLCustomDataType::VEC4: {
             LOG_MESSAGE("[ShaderBaseCustomOGLCode] Added VEC4 type: %s => %s", name, type);
             typeValue = glm::vec4(0);
+            break;
+        }
+        case ShaderOpenGLCustomDataType::VEC4_ARRAY: {
+            LOG_MESSAGE("[ShaderBaseCustomOGLCode] Added VEC4_ARRAY type: %s => %s", name, type);
+            typeValue = std::vector<glm::vec4>();
             break;
         }
         case ShaderOpenGLCustomDataType::TEXTURE2D: {
@@ -786,6 +804,23 @@ void ShaderBaseCustomOGLCode::setDataTypeValue(const std::string& name, glm::vec
     setDataTypeValue(name, ShaderOpenGLCustomDataValue(newValue));
 }
 
+void ShaderBaseCustomOGLCode::setDataTypeArray(const std::string &name, const float *flat, int nFloats)
+{
+    for (auto &dataType : dataTypes) {
+        if (dataType.name != name) continue;
+        auto *arr = std::get_if<std::vector<glm::vec4>>(&dataType.value);
+        if (arr == nullptr) {
+            std::cerr << "Error: '" << name << "' no es un vec4_array\n";
+            return;
+        }
+        const int n = nFloats > 0 ? nFloats / 4 : 0;
+        arr->resize(static_cast<size_t>(n));
+        for (int i = 0; i < n; i++) (*arr)[static_cast<size_t>(i)] = glm::vec4(flat[i * 4], flat[i * 4 + 1], flat[i * 4 + 2], flat[i * 4 + 3]);
+        return;
+    }
+    std::cerr << "Error: '" << name << "' no encontrado en dataTypes\n";
+}
+
 void ShaderBaseCustomOGLCode::ResetNumberTextures()
 {
     numTextures = 0;
@@ -854,6 +889,10 @@ cJSON *ShaderBaseCustomOGLCode::getTypesJSON() const
                 cJSON_AddNumberToObject(vertexJSON, "z", value.z);
                 cJSON_AddNumberToObject(vertexJSON, "w", value.w);
                 cJSON_AddItemToObject(typeJSON, "value", vertexJSON);
+                break;
+            }
+            case ShaderOpenGLCustomDataType::VEC4_ARRAY: {
+                cJSON_AddItemToObject(typeJSON, "value", cJSON_CreateArray());   // se rellena desde Lua cada frame: no se guarda
                 break;
             }
             case ShaderOpenGLCustomDataType::TEXTURE2D: {

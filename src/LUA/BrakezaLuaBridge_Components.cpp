@@ -160,6 +160,7 @@ void LUAIntegrationComponents(sol::state &lua)
         },
         "clearSelection", &ComponentRender::clearSelection,
         "setDragSelectEnabled", [](ComponentRender* cr, bool v) { cr->getSelectionManager().setRectSelectEnabled(v); },
+        "consumeRectSelectionDone", [](ComponentRender* cr) -> bool { return cr->getSelectionManager().consumeRectSelectionDone(); },
         "setSelectedObject", &ComponentRender::setSelectedObject,
         "hasMultipleSelected", &ComponentRender::hasMultipleSelected,
         "isObjectInSelection", [](ComponentRender* cr, Object3D* o) -> bool {

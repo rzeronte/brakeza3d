@@ -311,6 +311,11 @@ void ShaderBaseOpenGL::setVec4(const std::string &name, const glm::vec4 &value) 
 {
     glUniform4fv(getUniformLocation(name), 1, &value[0]);
 }
+void ShaderBaseOpenGL::setVec4Array(const std::string &name, const glm::vec4 *values, int count) const
+{
+    if (count <= 0 || values == nullptr) return;
+    glUniform4fv(getUniformLocation(name), count, &values[0][0]);
+}
 void ShaderBaseOpenGL::setVec4Uniform(GLuint uniform, const glm::vec4 &value)
 {
     glUniform4fv(uniform, 1, &value[0]);

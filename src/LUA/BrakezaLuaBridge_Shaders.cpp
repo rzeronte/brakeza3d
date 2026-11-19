@@ -36,6 +36,17 @@ void LUAIntegrationShaders(sol::state &lua)
                 static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec3)>(&ShaderBaseCustomOGLCode::setDataTypeValue),
                 static_cast<void (ShaderBaseCustomOGLCode::*)(const std::string&, glm::vec4)>(&ShaderBaseCustomOGLCode::setDataTypeValue)
             ),
+            // vec4_array: tabla plana {x,y,z,w, x,y,z,w, ...}; n = cuantos numeros leer (por defecto, todos). Un buffer estatico: sin reservas por llamada.
+            "setDataTypeArray", [](ShaderBaseCustomOGLCode& s, const std::string& name, const sol::table& t, sol::optional<int> n) {
+                static std::vector<float> flat;
+                const int total = n.value_or(static_cast<int>(t.size()));
+                flat.resize(static_cast<size_t>(total > 0 ? total : 0));
+                for (int i = 0; i < total; i++) {
+                    const sol::optional<float> v = t[i + 1];
+                    flat[static_cast<size_t>(i)] = v.value_or(0.0f);
+                }
+                s.setDataTypeArray(name, flat.data(), total);
+            },
             "setTextureValue", [](ShaderBaseCustomOGLCode& s, const std::string& name, Image* img) {
                 s.setDataTypeValue(name, ShaderOpenGLCustomDataValue(img));
             },
