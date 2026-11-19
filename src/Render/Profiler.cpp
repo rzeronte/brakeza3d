@@ -12,7 +12,9 @@
 //
 
 #include "../../include/Render/Profiler.h"
+#include "../../include/Render/ProfilerZones.h"
 #include <algorithm>
+#include <memory>
 #include <cstdint>
 #include <string>
 #include <fstream>
@@ -91,6 +93,70 @@ namespace {
     };
     constexpr int PIPELINE_STEP_COUNT = sizeof(pipelineSteps) / sizeof(pipelineSteps[0]);
 }
+
+
+#ifdef BZ_TRACY
+// Puente hacia Tracy: cada StartMeasure/EndMeasure (y Start/EndGpuMeasure) emite también una zona con
+// el mismo nombre, así todas las mediciones del panel interno aparecen en la línea de tiempo de Tracy.
+// Las zonas de Tracy deben anidarse (LIFO) por hilo: se llevan en una pila y End cierra también las
+// que quedaran abiertas por encima. Solo se emiten si hay un visor conectado.
+namespace {
+    struct TracyOpenZone { std::string name; TracyCZoneCtx ctx; };
+    thread_local std::vector<TracyOpenZone> tracyZoneStack;
+    std::unordered_map<std::string, std::unique_ptr<tracy::GpuCtxScope>> tracyGpuScopes;
+
+    void TracyBeginZone(const std::string &name)
+    {
+        if (!TracyCIsConnected) return;
+        const uint64_t loc = ___tracy_alloc_srcloc_name(__LINE__, __FILE__, sizeof(__FILE__) - 1,
+                                                        "Profiler", 8, name.c_str(), name.size(), 0);
+        tracyZoneStack.push_back({name, ___tracy_emit_zone_begin_alloc(loc, 1)});
+    }
+
+    void TracyEndZone(const std::string &name)
+    {
+        for (size_t i = tracyZoneStack.size(); i-- > 0;) {
+            if (tracyZoneStack[i].name != name) continue;
+            while (tracyZoneStack.size() > i) {
+                ___tracy_emit_zone_end(tracyZoneStack.back().ctx);
+                tracyZoneStack.pop_back();
+            }
+            return;
+        }
+    }
+
+    void TracyFlushZones()
+    {
+        while (!tracyZoneStack.empty()) {
+            ___tracy_emit_zone_end(tracyZoneStack.back().ctx);
+            tracyZoneStack.pop_back();
+        }
+    }
+
+    void TracyBeginGpuZone(const std::string &name)
+    {
+        if (!TracyCIsConnected || !tracy::GetGpuCtx().ptr) return;
+        tracyGpuScopes[name] = std::make_unique<tracy::GpuCtxScope>(
+            __LINE__, __FILE__, sizeof(__FILE__) - 1, "Profiler", 8, name.c_str(), name.size(), true);
+    }
+
+    void TracyEndGpuZone(const std::string &name)
+    {
+        tracyGpuScopes.erase(name);
+    }
+}
+#define TRACY_BEGIN_ZONE(n)     TracyBeginZone(n)
+#define TRACY_END_ZONE(n)       TracyEndZone(n)
+#define TRACY_FLUSH_ZONES()     TracyFlushZones()
+#define TRACY_BEGIN_GPU_ZONE(n) TracyBeginGpuZone(n)
+#define TRACY_END_GPU_ZONE(n)   TracyEndGpuZone(n)
+#else
+#define TRACY_BEGIN_ZONE(n)
+#define TRACY_END_ZONE(n)
+#define TRACY_FLUSH_ZONES()
+#define TRACY_BEGIN_GPU_ZONE(n)
+#define TRACY_END_GPU_ZONE(n)
+#endif
 
 Profiler *Profiler::instance = nullptr;
 
@@ -1028,6 +1094,7 @@ void Profiler::DrawOpenGLStatus()
             if (ptr == shaders->shaderOGLOutline   ||
                 ptr == shaders->shaderOGLLine3D     ||
                 ptr == shaders->shaderGroundCircle  ||
+                ptr == shaders->shaderGroundCircles ||
                 ptr == shaders->shaderGroundDecal   ||
                 ptr == shaders->shaderAxisQuad      ||
                 ptr == shaders->shaderOGLParticles  ||
@@ -1074,6 +1141,7 @@ void Profiler::DrawOpenGLStatus()
         R("ShadowDebug",     shaders->shaderShadowPassDebugLight);
         R("Grid",            shaders->shaderOGLGrid);
         R("GroundCircle",    shaders->shaderGroundCircle);
+        R("GroundCircles",   shaders->shaderGroundCircles);
         R("GroundDecal",     shaders->shaderGroundDecal);
         R("AxisQuad",        shaders->shaderAxisQuad);
 
@@ -2032,6 +2100,7 @@ void Profiler::InitMeasure(MeasuresMap &map, const std::string &label)
 
 void Profiler::ResetTotalFrameTime()
 {
+    TRACY_FLUSH_ZONES();   // cierra zonas de Tracy que hubieran quedado abiertas (Start sin End)
     if (measuring) measureFrameTime.startTime = Ticks();
     measureFrameTime.endTime = 0;
     // diffTime keeps the previous frame's value so the GUI (drawn early in the frame)
@@ -2124,6 +2193,7 @@ void Profiler::setGpuTimingEnabled(bool v)
 void Profiler::StartGpuMeasure(const std::string &name)
 {
     if (countDrawCalls) drawScopeStep = name;   // etapa del desglose de draw calls
+    TRACY_BEGIN_GPU_ZONE(name);
     if (!gpuTimingEnabled) return;
 
     GpuMeasure &m = gpuMeasures[name];
@@ -2155,6 +2225,7 @@ void Profiler::StartGpuMeasure(const std::string &name)
 void Profiler::EndGpuMeasure(const std::string &name)
 {
     if (countDrawCalls && drawScopeStep == name) drawScopeStep.clear();
+    TRACY_END_GPU_ZONE(name);
     if (!gpuTimingEnabled) return;
 
     auto it = gpuMeasures.find(name);
@@ -2234,6 +2305,7 @@ std::string Profiler::ExportFrameStatsCSV() const
 void Profiler::StartMeasure(MeasuresMap &map, const std::string &name)
 {
     if (!measuring) return;
+    TRACY_BEGIN_ZONE(name);
     map[name].startTime = Ticks();
 }
 
@@ -2242,7 +2314,7 @@ void Profiler::EndMeasure(MeasuresMap &map, const std::string &name)
     if (!measuring) return;
     map[name].endTime = Ticks();
     map[name].diffTime = map[name].endTime - map[name].startTime;
-
+    TRACY_END_ZONE(name);
 }
 
 // Ritmo real de un script: cuenta los frames en que su onUpdate se ejecutó y lo promedia en

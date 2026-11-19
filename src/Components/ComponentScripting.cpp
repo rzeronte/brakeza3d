@@ -506,14 +506,18 @@ static cJSON* luaTableToJSON(const sol::table& t) {
 }
 
 void ComponentScripting::saveJSON(const std::string& path, sol::table data) {
+    // loadJSON lee con Tools::ReadFile, que resuelve la ruta (assets del proyecto primero, core de respaldo); el guardado tiene que
+    // escribir en ESE mismo fichero. Con la ruta literal, un fichero que existe en la carpeta del proyecto (config_data.json...) se leia
+    // de alli pero se guardaba en la copia del core, y los cambios guardados no volvian a verse al reiniciar.
+    const std::string target = AssetPaths::Resolve(path);
     cJSON* root = luaTableToJSON(data);
     char* str = cJSON_Print(root);
     if (str) {
-        Tools::WriteToFile(path, str);
+        Tools::WriteToFile(target, str);
         free(str);
     }
     cJSON_Delete(root);
-    LOG_MESSAGE("[ComponentScripting] saveJSON: wrote %s", path.c_str());
+    LOG_MESSAGE("[ComponentScripting] saveJSON: wrote %s", target.c_str());
 }
 
 sol::table ComponentScripting::loadJSON(const std::string &path)

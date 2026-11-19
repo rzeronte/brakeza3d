@@ -619,12 +619,20 @@ void UIManagerGUI::DrawWinUIManager()
             // ── Behavior ───────────────────────────────────────────────────────
             {
                 std::string sum = hasScroll ? "no cache (scroll)" : std::string("cache ") + UIManager::cacheModeName(w.cacheMode);
+                if (w.dynamicSize) sum += ", dynamic size";
                 if (!w.cursor.empty()) sum += ", cursor";
                 if (sectionHeader("Behavior##wsecBehavior", sum, false)) {
                     {
                         GUIFields::Section behavior("BEHAVIOR");
                         if (behavior) {
                             RowString("Cursor", w.cursor, 64, "Cursor name shown while the mouse is anywhere over this widget (empty = none)");
+                            if (GUIFields::Check("Dynamic size", &w.dynamicSize,
+                                    "AUTOMATIC size: every copy drawn with drawWidgetInstances may bring its own w/h (window fractions).\n"
+                                    "Frame and background take that box; x/w of the elements follow its width, y/h stay relative to the declared height.\n"
+                                    "Never cached. Without it, w/h of the instances are ignored.")) {
+                                if (w.dynamicSize) w.cacheMode = UICacheMode::None;
+                                w.cacheDirty = true;
+                            }
                             if (hasScroll) {
                                 GUIFields::Text("Cache", "none (contains a scroll: never cached)");
                             } else {
@@ -1436,6 +1444,7 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
         cJSON_AddItemToObject(root, "borderColor", bc);
         cJSON_AddNumberToObject(root, "borderWidth", w.borderWidth);
     }
+    if (w.dynamicSize) cJSON_AddBoolToObject(root, "dynamicSize", true);
     if (w.cacheMode != UICacheMode::Single) cJSON_AddStringToObject(root, "cache", UIManager::cacheModeName(w.cacheMode));
     if (w.cacheMode == UICacheMode::Variants && w.maxVariants != 64) cJSON_AddNumberToObject(root, "maxVariants", w.maxVariants);
     if (!w.cursor.empty()) cJSON_AddStringToObject(root, "cursor", w.cursor.c_str());
@@ -1547,7 +1556,9 @@ void UIManagerGUI::SaveWidget(UIManager* ui, const std::string& widgetName, UIWi
                 cJSON_AddStringToObject(item, "imagePath", el.staticImagePath.c_str());
             if (!el.staticImagePathOff.empty())
                 cJSON_AddStringToObject(item, "imagePathOff", el.staticImagePathOff.c_str());
-            if (el.iconSize > 0)
+            // 0 = "ajustar al alto del boton" (UIManager::drawButton); el cargador usa 16 si falta la clave,
+            // asi que solo se omite cuando coincide con ese valor por defecto (si no, 0 se perdia al guardar)
+            if (el.iconSize != 16.0f)
                 cJSON_AddNumberToObject(item, "size", el.iconSize);
             if (el.btnImgOffsetX != 0.0f)
                 cJSON_AddNumberToObject(item, "btnImgOffsetX", el.btnImgOffsetX);

@@ -21,6 +21,110 @@
 #include <functional>
 #include <assimp/config.h>
 #include "../../include/Misc/AssetPaths.h"
+#include "../../include/Render/Profiler.h"
+#include <chrono>
+#include <cstdio>
+
+// Cronometros de la animacion (solo con el detalle de scripts del profiler activo, p.ej. RenderPerfProbe):
+// suman por categoria y vuelcan la media por consola cada ~2 s. Sin el flag cuestan una comprobacion.
+namespace animPerf {
+    using Clock = std::chrono::steady_clock;
+    struct Acc {
+        double hierarchyMs = 0, finalMs = 0, collidersMs = 0, bakeMs = 0, totalMs = 0;
+        long calls = 0;
+        Clock::time_point last = Clock::now();
+    };
+    inline Acc acc;
+    inline bool on() { return Profiler::get()->isScriptDetailEnabled(); }
+    inline Clock::time_point now(bool enabled) { return enabled ? Clock::now() : Clock::time_point(); }
+    inline double since(bool enabled, Clock::time_point t0) {
+        return enabled ? std::chrono::duration<double, std::milli>(Clock::now() - t0).count() : 0.0;
+    }
+    inline void flush(bool enabled) {
+        if (!enabled) return;
+        const double secs = std::chrono::duration<double>(Clock::now() - acc.last).count();
+        if (secs < 2.0 || acc.calls == 0) return;
+        std::printf("[AnimPerf] %.0f unidades/s | por unidad (us): total=%.1f jerarquia=%.1f finales=%.1f colliders=%.1f bake=%.1f | ms por segundo: total=%.1f jerarquia=%.1f finales=%.1f bake=%.1f\n",
+            acc.calls / secs,
+            acc.totalMs * 1000.0 / acc.calls, acc.hierarchyMs * 1000.0 / acc.calls, acc.finalMs * 1000.0 / acc.calls,
+            acc.collidersMs * 1000.0 / acc.calls, acc.bakeMs * 1000.0 / acc.calls,
+            acc.totalMs / secs, acc.hierarchyMs / secs, acc.finalMs / secs, acc.bakeMs / secs);
+        std::fflush(stdout);
+        acc = Acc();
+    }
+}
+
+std::vector<Mesh3DAnimation::SharedAnimationLibrary> Mesh3DAnimation::sharedAnimationsFiles;   // vacio = desactivado; lo fija el proyecto ("sharedAnimationsFiles" en su JSON, ver ProjectLoader)
+
+namespace {
+constexpr unsigned int kModelImportFlags =
+    aiProcess_Triangulate | aiProcess_SortByPType | aiProcess_GenSmoothNormals | aiProcess_FlipUVs;
+
+bool LibraryExists(const std::string& path)
+{
+    return !path.empty() && Tools::FileExists(AssetPaths::Resolve(path).c_str());
+}
+
+bool SharedAnimationsAvailable()
+{
+    for (const auto& lib : Mesh3DAnimation::sharedAnimationsFiles) {
+        if (LibraryExists(lib.file)) return true;
+    }
+    return false;
+}
+
+// Importa el modelo. Si NO trae animaciones y existe la biblioteca compartida, se reimporta sin
+// conservar los pivotes del FBX: asi cada hueso es UN nodo y sus canales se enlazan por nombre
+// con los de la biblioteca (que se importa igual). Con pivotes, Assimp parte cada transformacion
+// en nodos auxiliares (X_$AssimpFbx$_Rotation...) que un modelo sin animar puede no tener.
+// Los modelos con animaciones propias se importan como siempre.
+std::shared_ptr<Assimp::Importer> ImportModelScene(const std::string& filename)
+{
+    const std::string resolved = AssetPaths::Resolve(filename);   // proyecto primero, core de respaldo (la clave de cache sigue siendo filename)
+
+    auto imp = std::make_shared<Assimp::Importer>();
+    const aiScene* s = imp->ReadFile(resolved, kModelImportFlags);
+
+    if (s && s->mNumAnimations == 0 && SharedAnimationsAvailable()) {
+        auto imp2 = std::make_shared<Assimp::Importer>();
+        imp2->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+        if (imp2->ReadFile(resolved, kModelImportFlags)) {
+            return imp2;
+        }
+    }
+    return imp;
+}
+
+// Las bibliotecas se mantienen cargadas mientras dure la sesion (SceneCache solo guarda referencias debiles): asi no se
+// vuelven a parsear aunque se destruyan todas las instancias, y la precarga no se pierde antes de usarse.
+std::mutex g_libKeepAliveMutex;
+std::unordered_map<std::string, std::shared_ptr<Assimp::Importer>> g_libKeepAlive;
+
+std::shared_ptr<Assimp::Importer> LoadSharedAnimationLibrary(const std::string& path)
+{
+    // Un solo parseo aunque muchas unidades la pidan a la vez (mismo patron que los modelos).
+    auto keyMutex = animationDataCache.getKeyLoadMutex(path);
+    std::lock_guard<std::mutex> lock(*keyMutex);
+
+    auto imp = sceneCache.get(path);
+    if (imp && imp->GetScene()) return imp;
+
+    imp = std::make_shared<Assimp::Importer>();
+    imp->SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
+    if (!imp->ReadFile(AssetPaths::Resolve(path), 0)) {
+        LOG_ERROR("[Mesh3DAnimation] No se pudo cargar la biblioteca de animaciones '%s': %s", path.c_str(), imp->GetErrorString());
+        return nullptr;
+    }
+    sceneCache.store(path, imp);
+    {
+        std::lock_guard<std::mutex> keep(g_libKeepAliveMutex);
+        g_libKeepAlive[path] = imp;
+    }
+    LOG_MESSAGE("[Mesh3DAnimation] Biblioteca de animaciones '%s' cargada (%u animaciones)", path.c_str(), imp->GetScene()->mNumAnimations);
+    return imp;
+}
+
+}
 
 std::vector<Mesh3DAnimation::SharedAnimationLibrary> Mesh3DAnimation::sharedAnimationsFiles;   // vacio = desactivado; lo fija el proyecto ("sharedAnimationsFiles" en su JSON, ver ProjectLoader)
 
@@ -224,16 +328,26 @@ void Mesh3DAnimation::onUpdate()
         return;
     }
 
+    const bool ap = animPerf::on();
+    const auto apT0 = animPerf::now(ap);
     UpdateFrameTransformations();
+    animPerf::acc.totalMs += animPerf::since(ap, apT0);
 
     // La pose horneada (transform feedback, una llamada por submesh) solo si este frame la va a
     // leer alguien -- el G-Buffer, el picking y las sombras ya hacen el skinning en su shader con
     // las matrices de huesos (TBO). Ver NeedsBakedPose.
-    UpdateOpenGLBones(NeedsBakedPose());
+    {
+        const auto t = animPerf::now(ap);
+        UpdateOpenGLBones(NeedsBakedPose());
+        animPerf::acc.bakeMs += animPerf::since(ap, t);
+    }
 
     if (boneColliderEnabled) {
+        const auto t = animPerf::now(ap);
         UpdateBoneColliders();
+        animPerf::acc.collidersMs += animPerf::since(ap, t);
     }
+    if (ap) { animPerf::acc.calls++; animPerf::flush(ap); }
 
     auto render = Components::get()->Render();
     auto window = Components::get()->Window();
@@ -300,7 +414,7 @@ void Mesh3DAnimation::onUpdate()
     }
 
     if (Config::get()->MOUSE_CLICK_SELECT_OBJECT3D) {
-        // Fase 2 (instancing con skinning): encolado igual que Mesh3D::onUpdate()
+        // Instancing con skinning: encolado igual que Mesh3D::onUpdate()
         // -- se dibuja junto en ComponentRender::FlushPickingQueue(), que ya invalida la caché de
         // estado una sola vez al final si la cola no estaba vacía (no hace falta aquí).
         render->EnqueuePicking(this, true, window->getPickingColorFramebuffer().FBO);
@@ -458,7 +572,8 @@ bool Mesh3DAnimation::AssimpLoadAnimation(const std::string &filename)
 
     // get()-miss -> parse -> store() no es atómico: sin este lock, N unidades que piden el mismo
     // modelo a la vez (roster inicial, 125 civiles...) ven todas MISS y parsean el FBX (~32 MB,
-    // 4-6 s) N veces en paralelo -- medido hasta x5 por fichero en la carga. Lock POR FICHERO: los demás esperan al primero y
+    // 4-6 s) N veces en paralelo -- medido hasta x5 por fichero en la carga.
+    // Lock POR FICHERO: los demás esperan al primero y
     // entran por la rama HIT; ficheros distintos siguen cargándose en paralelo.
     auto keyLoadMutex = animationDataCache.getKeyLoadMutex(filename);
     std::unique_lock<std::mutex> cacheLoadLock(*keyLoadMutex);
@@ -738,8 +853,15 @@ void Mesh3DAnimation::UpdateBonesFinalTransformations(float TimeInSeconds)
     float TimeInTicks = TimeInSeconds * TicksPerSecond;
     auto AnimationTime = static_cast<float>(fmod(TimeInTicks, as->mAnimations[indexCurrentAnimation]->mDuration));
 
+    const bool ap = animPerf::on();
+    const auto t0 = animPerf::now(ap);
     ReadNodeHierarchy(AnimationTime, scene->mRootNode, Identity);
+    const auto t1 = animPerf::now(ap);
     ComputeMeshBoneFinalTransforms();
+    if (ap) {
+        animPerf::acc.hierarchyMs += std::chrono::duration<double, std::milli>(t1 - t0).count();
+        animPerf::acc.finalMs     += animPerf::since(ap, t1);
+    }
 }
 
 void Mesh3DAnimation::ReadNodeHierarchy(float AnimationTime, const aiNode *pNode, const aiMatrix4x4 &ParentTransform)

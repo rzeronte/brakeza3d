@@ -176,6 +176,15 @@ void LUAIntegrationComponents(sol::state &lua)
             static_cast<void(ComponentRender::*)(Object3D*,float,float,float,float,float,float)const>(&ComponentRender::drawGroundCircle),
             &ComponentRender::drawGroundCircleToFB
         ),
+        // render:drawGroundCircles(list, fb, filled): list = tabla plana {x,y,z,radio,r,g,b,a,grosor, x,y,z,...} (9 numeros por circulo);
+        // filled=true pinta discos blob (sombras). Una sola llamada de dibujo para toda la tanda.
+        "drawGroundCircles", [](const ComponentRender& cr, sol::table list, const std::string& fb, sol::optional<bool> filled) {
+            const size_t n = list.size() / ShaderOGLGroundCircles::STRIDE * ShaderOGLGroundCircles::STRIDE;
+            if (n == 0) return;
+            std::vector<float> data(n);
+            for (size_t i = 0; i < n; i++) data[i] = list.get<float>(i + 1);
+            cr.drawGroundCircles(data.data(), n / ShaderOGLGroundCircles::STRIDE, fb, filled.value_or(false));
+        },
         "drawGroundBlob",    sol::overload(&ComponentRender::drawGroundBlob,    &ComponentRender::drawGroundBlobToFB),
         "drawGroundDecal",   sol::overload(&ComponentRender::drawGroundDecal,   &ComponentRender::drawGroundDecalToFB),
         "drawOutlineSubmesh",      &ComponentRender::drawOutlineSubmesh,
@@ -194,13 +203,25 @@ void LUAIntegrationComponents(sol::state &lua)
             if (!Brakeza::get()->isValidObjectPointer(obj)) return Vertex3D::zero();
             return self.getSubmeshCenter(obj, submeshName);
         },
-        "getSubmeshTop", [](ComponentRender& self, Object3D* obj, const std::string& submeshName) -> Vertex3D {
+        // getSubmeshTop(obj, submesh [, minHeightFraction = 0.5 [, minUpFacing = 0.5]]): highest point of the
+        // submesh, over its upper surface (see ComponentRender::getSubmeshTop)
+        "getSubmeshTop", [](ComponentRender& self, Object3D* obj, const std::string& submeshName,
+                            sol::optional<float> minHeightFraction, sol::optional<float> minUpFacing) -> Vertex3D {
             if (!Brakeza::get()->isValidObjectPointer(obj)) return Vertex3D::zero();
-            return self.getSubmeshTop(obj, submeshName);
+            return self.getSubmeshTop(obj, submeshName, minHeightFraction.value_or(0.5f), minUpFacing.value_or(0.5f));
         },
         "DrawCircle3D", &ComponentRender::DrawCircle3D,
         "drawAxisQuad",    &ComponentRender::drawAxisQuad,
         "getTextWriter",   &ComponentRender::getTextWriter,
+        // Idioma: tabla clave -> texto del idioma activo para los textos "@clave" de los widgets (ver UIManager::translate)
+        "setUITranslations", [](ComponentRender& r, sol::table t) {
+            if (!r.getUIManager()) return;
+            std::unordered_map<std::string, std::string> m;
+            t.for_each([&m](sol::object k, sol::object v) {
+                if (k.is<std::string>() && v.is<std::string>()) m[k.as<std::string>()] = v.as<std::string>();
+            });
+            r.getUIManager()->setTranslations(m);
+        },
         "drawWidget", [](ComponentRender& r, const std::string& name, sol::table data, sol::object fbArg, sol::object scaleArg) -> std::tuple<float, std::string, std::string, std::string> {
             if (!r.getUIManager()) return {0.0f, "", "", ""};
             std::string fb = (fbArg.valid() && fbArg.get_type() == sol::type::string)
@@ -230,6 +251,14 @@ void LUAIntegrationComponents(sol::state &lua)
                              ? scaleArg.as<float>() : 0.0f;
             return r.getUIManager()->drawWidgetInstancesLua(name, instances, fb, scaleOverride);
         },
+        // Mide un texto como lo dibujaría un elemento de texto de un widget (su fuente, escala, wrap y maxLines):
+        // measureWidgetText(widget, elementId, texto, anchoUtilPx) -> anchoLineaMasLargaPx, lineas, altoLineaPx.
+        // Sirve para dar w/h a copias de widgets con "dynamicSize" (drawWidgetInstances).
+        "measureWidgetText", [](ComponentRender& r, const std::string& widget, const std::string& element,
+                                const std::string& text, float maxW) -> std::tuple<float, int, float> {
+            if (!r.getUIManager()) return {0.0f, 0, 0.0f};
+            return r.getUIManager()->measureElementText(widget, element, text, maxW);
+        },
         // Tamaño declarado de un widget (fracciones de ventana, 0 si no existe): para colocarlo
         // desde Lua (p.ej. centrarlo) respetando lo que se edite en el UI Manager.
         "getWidgetSize", [](ComponentRender& r, const std::string& name) -> std::tuple<float, float> {
@@ -238,6 +267,15 @@ void LUAIntegrationComponents(sol::state &lua)
             auto it = ws.find(name);
             if (it == ws.end()) return {0.0f, 0.0f};
             return {it->second.width, it->second.height};
+        },
+        // Posicion declarada de un widget (fracciones de ventana, 0,0 si no existe): para anclar
+        // desde Lua bloques apilados a lo que se edite en el UI Manager.
+        "getWidgetPos", [](ComponentRender& r, const std::string& name) -> std::tuple<float, float> {
+            if (!r.getUIManager()) return {0.0f, 0.0f};
+            auto& ws = r.getUIManager()->getWidgets();
+            auto it = ws.find(name);
+            if (it == ws.end()) return {0.0f, 0.0f};
+            return {it->second.posX, it->second.posY};
         },
         // Forzar el re-render de la caché FBO de un widget (o de todos) en el siguiente draw: para
         // cambios de contexto (p.ej. entrar/salir del modo adquisición) tras los que se vería la

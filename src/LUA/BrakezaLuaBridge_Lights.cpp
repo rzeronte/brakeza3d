@@ -94,6 +94,9 @@ void LUAIntegrationLights(sol::state &lua)
         "getTexture", &ParticleEmitter::getTexture,
         "setGPUMode", &ParticleEmitter::setGPUMode,
         "isGPUMode", &ParticleEmitter::isGPUMode,
+        // true = se dibuja en el framebuffer de escena con depth (como los emisores de escena); false = capa de primer plano
+        "setDepthTest", &ParticleEmitter::setDepthTest,
+        "isDepthTest", &ParticleEmitter::isDepthTest,
         "createAttachedLight", &ParticleEmitter::createAttachedLight,
         "removeAttachedLight", &ParticleEmitter::removeAttachedLight,
         "getAttachedLight", &ParticleEmitter::getAttachedLight,

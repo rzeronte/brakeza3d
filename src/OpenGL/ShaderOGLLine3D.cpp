@@ -59,6 +59,17 @@ void ShaderOGLLine3D::renderLines(const std::vector<Vector3D>& lines, GLuint fbo
     Components::get()->Render()->ChangeOpenGLFramebuffer(fbo);
     Components::get()->Render()->ChangeOpenGLProgram(programID);
 
+    // Viewport del DESTINO: el framebuffer de UI tiene el tamano de la VENTANA y el resto el de render. Con
+    // resolucion de render bloqueada (RTS: 1600x900) distinta de la ventana, sin esto las lineas (debug de
+    // fisicas, grids...) se dibujaban con el viewport de render pegadas a la esquina inferior izquierda y
+    // no coincidian con la escena, que se estira a la ventana. Mismo criterio que Image y TextWriter.
+    auto* window = Components::get()->Window();
+    const bool toUI = (fbo == window->getUIFramebuffer());
+    ComponentRender::ScopedTargetViewport viewport(
+        toUI ? window->getWidth()  : window->getWidthRender(),
+        toUI ? window->getHeight() : window->getHeightRender()
+    );
+
     auto camera = Components::get()->Camera();
     glm::mat4 ViewMatrix = camera->getGLMMat4ViewMatrix();
     glm::mat4 ProjectionMatrix = camera->getGLMMat4ProjectionMatrix();

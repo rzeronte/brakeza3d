@@ -9,6 +9,7 @@
  */
 #define GL_GLEXT_PROTOTYPES
 
+#include "../../include/Render/ProfilerZones.h"
 #include <vector>
 #include <mutex>
 #include <cfloat>
@@ -625,6 +626,7 @@ void Mesh3D::RunObjectShaders() const
 {
     if (customShaders.empty() || !shaderChain) return;
     if (!isVisibleInFrustum()) return;
+    BZ_ZONE_N("Mesh3D::RunObjectShaders");
 
     auto window = Components::get()->Window();
     const GLuint gbufferFBO = window->getGBuffer().FBO;

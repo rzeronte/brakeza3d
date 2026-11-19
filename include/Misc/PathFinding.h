@@ -90,10 +90,14 @@ public:
         std::priority_queue<PathfindingNode*, std::vector<PathfindingNode*>, CompareNodes> openSet;
         std::unordered_map<int, PathfindingNode*> allNodes;
         std::unordered_map<int, bool> closedSet;
+        // Propietario de TODOS los nodos creados: allNodes[idx] se sobreescribe al mejorar un coste y el nodo
+        // anterior seguia vivo en openSet (puntero colgante si se liberaba), asi que se libera todo al salir.
+        std::vector<std::unique_ptr<PathfindingNode>> pool;
 
         auto getIndex = [&](int x, int y, int z) { return x * width * depth + y * depth + z; };
 
-        PathfindingNode* start = new PathfindingNode(x1, y1, z1, 0, heuristic(x1, y1, z1, x2, y2, z2), nullptr);
+        pool.emplace_back(new PathfindingNode(x1, y1, z1, 0, heuristic(x1, y1, z1, x2, y2, z2), nullptr));
+        PathfindingNode* start = pool.back().get();
         openSet.push(start);
         allNodes[getIndex(x1, y1, z1)] = start;
 
@@ -113,8 +117,6 @@ public:
                 }
                 std::reverse(path.begin(), path.end());
 
-                // Liberar memoria
-                for (auto& pair : allNodes) delete pair.second;
                 return path;
             }
 
@@ -124,6 +126,12 @@ public:
                 int nz = current->z + dz;
 
                 if (nx >= 0 && ny >= 0 && nz >= 0 && nx < width && ny < height && nz < depth && !isObstacle(nx, ny, nz)) {
+                    // No cortar esquinas: un paso diagonal exige libres las celdas de cada eje que lo componen.
+                    if ((dx != 0) + (dy != 0) + (dz != 0) > 1) {
+                        if (dx != 0 && isObstacle(current->x + dx, current->y, current->z)) continue;
+                        if (dy != 0 && isObstacle(current->x, current->y + dy, current->z)) continue;
+                        if (dz != 0 && isObstacle(current->x, current->y, current->z + dz)) continue;
+                    }
                     int neighborIndex = getIndex(nx, ny, nz);
                     if (closedSet[neighborIndex]) continue;
 
@@ -139,7 +147,8 @@ public:
                     float hNew = heuristic(nx, ny, nz, x2, y2, z2);
 
                     if (allNodes.find(neighborIndex) == allNodes.end() || gNew < allNodes[neighborIndex]->g) {
-                        PathfindingNode* neighbor = new PathfindingNode(nx, ny, nz, gNew, hNew, current);
+                        pool.emplace_back(new PathfindingNode(nx, ny, nz, gNew, hNew, current));
+                        PathfindingNode* neighbor = pool.back().get();
                         openSet.push(neighbor);
                         allNodes[neighborIndex] = neighbor;
                     }
@@ -147,8 +156,6 @@ public:
             }
         }
 
-        // Liberar memoria si no se encontró un camino
-        for (auto& pair : allNodes) delete pair.second;
         return {};
     }
 

@@ -52,15 +52,20 @@ public:
     void LoadPathFindingBlocksFromGrid();
     void setTravel(int x1, int y1, int z1, int x2, int y2, int z2);
     std::vector<CubeGrid3D> MakeTravelCubesGrid();
-    std::vector<CubeGrid3D> computePath(int gx1, int gz1, int gx2, int gz2);
+    // ignoreCosts=true: A* sin mapa de costes (calzada, proximidad a muros) -- rutas de combate.
+    std::vector<CubeGrid3D> computePath(int gx1, int gz1, int gx2, int gz2, bool ignoreCosts = false);
     void fillGrid3DFromImage(const std::string& imagePath, int threshold = 128, bool flipZ = false, bool flipX = false);
     void fillCostFromImage(const std::string& imagePath, int threshold, float cost, bool flipZ = false, bool flipX = false);
+    void addWallProximityCost(float cost);
     void setCellsCost(const std::vector<std::pair<int,int>> &cells, float cost);
     [[nodiscard]] float getCellCost(int x, int z) const;
     void drawDebug(Color color = Color::green());
     CubeGrid3D *getCubeFromPosition(int x, int y, int z);
     bool isCellWalkable(int x, int z) const;
     std::tuple<int,int> snapToWalkable(int gx, int gz, int maxRadius) const;
+    // Como snapToWalkable, pero entre las celdas libres de los primeros anillos elige la mas cercana a (fromX, fromZ)
+    // (el origen del que camina): el destino cae en la cara del edificio que mira al obrero, no en la opuesta.
+    std::tuple<int,int> snapToWalkableToward(int gx, int gz, int maxRadius, int fromX, int fromZ) const;
     Vertex3D getClosestPoint(Vertex3D v, std::vector<Vertex3D> path, int &indexVertex);
     PathFinding getPathFinding();
     cJSON *getJSON();

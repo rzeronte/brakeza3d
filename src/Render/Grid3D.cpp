@@ -287,6 +287,30 @@ std::tuple<int,int> Grid3D::snapToWalkable(int gx, int gz, int maxRadius) const
     return {gx, gz};
 }
 
+std::tuple<int,int> Grid3D::snapToWalkableToward(int gx, int gz, int maxRadius, int fromX, int fromZ) const
+{
+    if (isCellWalkable(gx, gz)) return {gx, gz};
+    const int EXTRA_RINGS = 3;
+    int bestX = gx, bestZ = gz;
+    long long bestD = -1;
+    int firstHit = -1;
+    for (int r = 1; r <= maxRadius; r++) {
+        if (firstHit >= 0 && r > firstHit + EXTRA_RINGS) break;
+        for (int dx = -r; dx <= r; dx++) {
+            for (int dz = -r; dz <= r; dz++) {
+                if (std::abs(dx) != r && std::abs(dz) != r) continue;
+                int nx = gx + dx, nz = gz + dz;
+                if (nx < 0 || nx >= numberCubesX || nz < 0 || nz >= numberCubesZ) continue;
+                if (!isCellWalkable(nx, nz)) continue;
+                if (firstHit < 0) firstHit = r;
+                long long d = (long long)(nx - fromX) * (nx - fromX) + (long long)(nz - fromZ) * (nz - fromZ);
+                if (bestD < 0 || d < bestD) { bestD = d; bestX = nx; bestZ = nz; }
+            }
+        }
+    }
+    return {bestX, bestZ};
+}
+
 void Grid3D::setTravel(int x1, int y1, int z1, int x2, int y2, int z2)
 {
     pathFinding.setTravel(x1, y1, z1, x2, y2, z2);
@@ -337,10 +361,10 @@ void Grid3D::drawDebug(Color color)
     }
 }
 
-std::vector<CubeGrid3D> Grid3D::computePath(int gx1, int gz1, int gx2, int gz2)
+std::vector<CubeGrid3D> Grid3D::computePath(int gx1, int gz1, int gx2, int gz2, bool ignoreCosts)
 {
     PathFinding pf = pathFinding;  // copia local — boxes/obstáculos son read-only tras init
-    pf.setCellCost(std::atomic_load(&cellCosts));
+    pf.setCellCost(ignoreCosts ? std::shared_ptr<const std::vector<float>>() : std::atomic_load(&cellCosts));
     pf.setTravel(gx1, 0, gz1, gx2, 0, gz2);
     auto path = pf.makeTravelIndexes();
 
@@ -475,7 +499,8 @@ void Grid3D::fillCostFromImage(const std::string& imagePath, int threshold, floa
             bool drivable = !(p[0] < threshold && p[1] < threshold && p[2] < threshold);
             if (!drivable) continue;
             for (int y = 0; y < numberCubesY; y++) {
-                costs[(x * numberCubesY + y) * numberCubesZ + z] = cost;
+                float& c = costs[(x * numberCubesY + y) * numberCubesZ + z];
+                c = std::max(c, cost);   // no pisa el coste de proximidad a muros
             }
             marked++;
         }
@@ -485,6 +510,38 @@ void Grid3D::fillCostFromImage(const std::string& imagePath, int threshold, floa
 
     publishCellCosts(std::move(costs));
     printf("[Grid3D] fillCostFromImage: '%s' cost=%.2f cells=%d\n", imagePath.c_str(), cost, marked);
+}
+
+// Encarece las celdas transitables que tocan (8 vecinos) un obstaculo. El A* se separa de las paredes sin cerrar
+// callejones de una sola celda (no es un bloqueo). Llamar tras fillGrid3DFromImage.
+void Grid3D::addWallProximityCost(float cost)
+{
+    cost = std::max(cost, 1.0f);
+    if (cost <= 1.0f) return;
+    auto costs = copyCellCosts();
+    int marked = 0;
+    for (int x = 0; x < numberCubesX; x++) {
+        for (int z = 0; z < numberCubesZ; z++) {
+            if (pathFinding.isObstacle(x, 0, z)) continue;
+            bool nearWall = false;
+            for (int dx = -1; dx <= 1 && !nearWall; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    if (dx == 0 && dz == 0) continue;
+                    int nx = x + dx, nz = z + dz;
+                    if (nx < 0 || nz < 0 || nx >= numberCubesX || nz >= numberCubesZ) continue;
+                    if (pathFinding.isObstacle(nx, 0, nz)) { nearWall = true; break; }
+                }
+            }
+            if (!nearWall) continue;
+            for (int y = 0; y < numberCubesY; y++) {
+                float& c = costs[(x * numberCubesY + y) * numberCubesZ + z];
+                c = std::max(c, cost);
+            }
+            marked++;
+        }
+    }
+    publishCellCosts(std::move(costs));
+    printf("[Grid3D] addWallProximityCost: cost=%.2f cells=%d\n", cost, marked);
 }
 
 void Grid3D::setCellsCost(const std::vector<std::pair<int,int>> &cells, float cost)

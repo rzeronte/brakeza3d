@@ -178,11 +178,15 @@ void LUAIntegrationBrakeza(sol::state &lua)
         "getBoxes", &Grid3D::getBoxes,
         "setTravel", &Grid3D::setTravel,
         "MakeTravelCubesGrid", &Grid3D::MakeTravelCubesGrid,
-        "computePath", &Grid3D::computePath,
+        "computePath", sol::overload(
+            [](Grid3D& g, int x1, int z1, int x2, int z2)              { return g.computePath(x1, z1, x2, z2); },
+            [](Grid3D& g, int x1, int z1, int x2, int z2, bool ignore) { return g.computePath(x1, z1, x2, z2, ignore); }
+        ),
         "fillGrid3DFromImage", sol::overload(
             [](Grid3D& g, const std::string& path, int threshold)                   { g.fillGrid3DFromImage(path, threshold); },
             [](Grid3D& g, const std::string& path, int threshold, bool fz, bool fx) { g.fillGrid3DFromImage(path, threshold, fz, fx); }
         ),
+        "addWallProximityCost", &Grid3D::addWallProximityCost,
         "fillCostFromImage", sol::overload(
             [](Grid3D& g, const std::string& path, int threshold, float cost)                   { g.fillCostFromImage(path, threshold, cost); },
             [](Grid3D& g, const std::string& path, int threshold, float cost, bool fz, bool fx) { g.fillCostFromImage(path, threshold, cost, fz, fx); }
@@ -204,9 +208,11 @@ void LUAIntegrationBrakeza(sol::state &lua)
         ),
         "isCellWalkable", &Grid3D::isCellWalkable,
         "snapToWalkable", &Grid3D::snapToWalkable,
-        "requestPath", [](Grid3D& g, const std::string& unitName, int gx1, int gz1, int gx2, int gz2, int requestGen) {
+        "snapToWalkableToward", &Grid3D::snapToWalkableToward,
+        // 7º argumento opcional (ignoreCosts): A* sin costes de calzada/muros, para rutas de combate.
+        "requestPath", [](Grid3D& g, const std::string& unitName, int gx1, int gz1, int gx2, int gz2, int requestGen, sol::optional<bool> ignoreCosts) {
             Brakeza::get()->PoolCompute().enqueueWithMainThreadCallback(
-                std::make_shared<ThreadJobPathfinding>(&g, unitName, gx1, gz1, gx2, gz2, requestGen)
+                std::make_shared<ThreadJobPathfinding>(&g, unitName, gx1, gz1, gx2, gz2, requestGen, ignoreCosts.value_or(false))
             );
         }
     );

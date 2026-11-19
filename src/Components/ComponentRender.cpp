@@ -7,6 +7,7 @@
  * Copyright (C) 2018-2026 Eduardo Rodríguez Álvarez
  * License: GNU General Public License v3.0 (see LICENSE)
  */
+#include "../../include/Render/ProfilerZones.h"
 #include "imgui.h"
 #include <algorithm>
 #include <chrono>
@@ -124,6 +125,7 @@ void ComponentRender::RegisterShaders()
     shaders.shaderShadowPassDebugLight = new ShaderOGLShadowPassDebugLight();
     shaders.shaderOGLGrid = new ShaderOGLGrid();
     shaders.shaderGroundCircle = new ShaderOGLGroundCircle();
+    shaders.shaderGroundCircles = new ShaderOGLGroundCircles();
     shaders.shaderGroundDecal  = new ShaderOGLGroundDecal();
     shaders.shaderAxisQuad     = new ShaderOGLAxisQuad();
     shaders.shaderOGLRect      = new ShaderOGLRect();
@@ -151,6 +153,7 @@ void ComponentRender::RegisterShaders()
         allShaders.push_back(shaders.shaderShadowPassDebugLight);
         allShaders.push_back(shaders.shaderOGLGrid);
         allShaders.push_back(shaders.shaderGroundCircle);
+        allShaders.push_back(shaders.shaderGroundCircles);
         allShaders.push_back(shaders.shaderGroundDecal);
         allShaders.push_back(shaders.shaderAxisQuad);
         allShaders.push_back(shaders.shaderOGLRect);
@@ -1180,6 +1183,12 @@ void ComponentRender::drawGroundCircleToFB(Object3D* obj, float r, float g, floa
     shaders.shaderGroundCircle->draw(obj, Color(r, g, b, a), radius, resolveFB(fb));
 }
 
+void ComponentRender::drawGroundCircles(const float* data, size_t count, const std::string& fb, bool filled) const
+{
+    if (!data || count == 0) return;
+    shaders.shaderGroundCircles->draw(data, count, resolveFB(fb), filled);
+}
+
 void ComponentRender::drawGroundBlob(Object3D* obj, float r, float g, float b, float a, float radius) const
 {
     if (!obj) return;
@@ -1279,9 +1288,11 @@ Vertex3D ComponentRender::getSubmeshCenter(Object3D* obj, const std::string& sub
     return obj->getPosition();
 }
 
-// Centro XZ de la AABB en mundo de la submalla y su Y máxima (el techo de un edificio de la ciudad).
-// Las 8 esquinas de la AABB local se pasan a mundo: vale con rotación/escala en el objeto.
-Vertex3D ComponentRender::getSubmeshTop(Object3D* obj, const std::string& submeshName) const
+// Highest point of a submesh (world space) lying over its upper surface. See the declaration.
+// The 8 corners of the local AABB are taken to world space, so it works with rotation/scale on the object.
+// Cost: one pass over the submesh triangles per call (callers should not call it every frame).
+Vertex3D ComponentRender::getSubmeshTop(Object3D* obj, const std::string& submeshName,
+                                        float minHeightFraction, float minUpFacing) const
 {
     if (!obj) return Vertex3D::zero();
     auto* mesh = dynamic_cast<Mesh3D*>(obj);
@@ -1299,7 +1310,43 @@ Vertex3D ComponentRender::getSubmeshTop(Object3D* obj, const std::string& submes
             wMin = glm::min(wMin, w);
             wMax = glm::max(wMax, w);
         }
-        return Vertex3D((wMin.x + wMax.x) * 0.5f, wMax.y, (wMin.z + wMax.z) * 0.5f);
+        const float cx = (wMin.x + wMax.x) * 0.5f;
+        const float cz = (wMin.z + wMax.z) * 0.5f;
+        const Vertex3D aabbTop(cx, wMax.y, cz);
+
+        // Surface candidates: triangles facing up (|normal.y| >= minUpFacing) whose centroid lies in the upper
+        // part of the submesh (centroid Y >= minY + minHeightFraction * height).
+        const float yCut = wMin.y + (wMax.y - wMin.y) * minHeightFraction;
+        auto toWorld = [&](const Vertex3D& v) { return glm::vec3(model * glm::vec4(v.x, v.y, v.z, 1.0f)); };
+        // XZ distance from (cx,cz) to segment a-b
+        auto distSeg = [&](const glm::vec3& a, const glm::vec3& b) {
+            const float abx = b.x - a.x, abz = b.z - a.z;
+            const float len2 = abx * abx + abz * abz;
+            float t = len2 > 1e-9f ? ((cx - a.x) * abx + (cz - a.z) * abz) / len2 : 0.0f;
+            t = std::clamp(t, 0.0f, 1.0f);
+            const float dx = cx - (a.x + abx * t), dz = cz - (a.z + abz * t);
+            return std::sqrt(dx * dx + dz * dz);
+        };
+        auto inside = [&](const glm::vec3& a, const glm::vec3& b, const glm::vec3& c) {
+            auto side = [&](const glm::vec3& p, const glm::vec3& q) { return (q.x - p.x) * (cz - p.z) - (q.z - p.z) * (cx - p.x); };
+            const float s1 = side(a, b), s2 = side(b, c), s3 = side(c, a);
+            return !((s1 < 0 || s2 < 0 || s3 < 0) && (s1 > 0 || s2 > 0 || s3 > 0));
+        };
+
+        float best = std::numeric_limits<float>::max();
+        glm::vec2 bestC(cx, cz);
+        bool found = false;
+        for (const Triangle* t : md.modelTriangles) {
+            const glm::vec3 a = toWorld(t->A), b = toWorld(t->B), c = toWorld(t->C);
+            if ((a.y + b.y + c.y) / 3.0f < yCut) continue;
+            const glm::vec3 n = glm::cross(b - a, c - a);
+            const float nl = glm::length(n);
+            if (nl < 1e-9f || std::fabs(n.y) / nl < minUpFacing) continue;
+            if (inside(a, b, c)) return aabbTop;                  // the AABB centre is already over the surface
+            const float d = std::min({distSeg(a, b), distSeg(b, c), distSeg(c, a)});
+            if (d < best) { best = d; bestC = glm::vec2((a.x + b.x + c.x) / 3.0f, (a.z + b.z + c.z) / 3.0f); found = true; }
+        }
+        return found ? Vertex3D(bestC.x, wMax.y, bestC.y) : aabbTop;
     }
     return obj->getPosition();
 }
@@ -1420,12 +1467,12 @@ void ComponentRender::RestoreDefaultRenderState()
 
 // Fase 3 (Etapa 1 estático + Etapa 2 animado): un RenderQueueEntry por submesh visible, en vez
 // de dibujar al instante como hacía ShaderOGLRenderDeferred::renderMesh(). useFeedbackBuffer=true
-// (Mesh3DAnimation) ya NO usa feedbackBuffer aquí (Fase 1 de instancing con skinning) -- ver el comentario dentro de la función. indexBuffer/indexCount se fuerzan a 0
+// (Mesh3DAnimation) ya NO usa feedbackBuffer aquí (instancing con skinning) -- ver el comentario dentro de la función. indexBuffer/indexCount se fuerzan a 0
 // para unidades animadas porque su geometría quedó fuera del EBO deduplicado en Fase 2.2.
 void ComponentRender::EnqueueOpaque(Mesh3D *o, bool useFeedbackBuffer, GLuint fbo)
 {
     // useFeedbackBuffer==true solo lo pasa Mesh3DAnimation::onUpdate() -- se reutiliza como señal
-    // de "esto es una unidad animada" para el camino de instancing con skinning (Fase 1): en vez del feedbackBuffer horneado por-instancia (que bloqueaba el batching
+    // de "esto es una unidad animada" para el camino de instancing con skinning (instancing con skinning): en vez del feedbackBuffer horneado por-instancia (que bloqueaba el batching
     // porque nunca coincide entre instancias), se encola el vertexBuffer COMPARTIDO (bind-pose,
     // Fase 2.1) más las matrices de huesos de este frame, ya calculadas por UpdateOpenGLBones()
     // (que corre antes en Mesh3DAnimation::onUpdate(), sin coste CPU nuevo aquí). feedbackBuffer
@@ -1807,6 +1854,7 @@ void ComponentRender::resizeShadersFramebuffers() const
     shaders.shaderOGLGBuffer->Destroy();
     shaders.shaderOGLLightPass->Destroy();
     shaders.shaderGroundCircle->Destroy();
+    shaders.shaderGroundCircles->Destroy();
     shaders.shaderGroundDecal->Destroy();
     shaders.shaderAxisQuad->Destroy();
     // shaderComputeParticles and shaderGPUParticles own no size-dependent resources

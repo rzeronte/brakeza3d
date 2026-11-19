@@ -21,6 +21,7 @@
 #include "../include/Components/Components.h"
 #include "../include/GUI/Windows/FileSystemGUI.h"
 #include "../include/Render/Profiler.h"
+#include "../include/Render/ProfilerZones.h"
 #include "../include/Render/EngineObserver.h"
 #include "../include/Loaders/SceneLoader.h"
 #include "../include/SceneObjectTypes.h"
@@ -30,7 +31,8 @@ Brakeza *Brakeza::instance = nullptr;
 
 namespace {
     // Workers del pool de cómputo (carga de modelos/animaciones con Assimp). Antes fijo a 4 en una
-    // CPU de 12 hilos: la carga de la partida esperaba en cola con núcleos libres. Se dejan 2 hilos al principal/driver, y tope 8:
+    // CPU de 12 hilos: la carga de la partida esperaba en cola con núcleos libres.
+    // Se dejan 2 hilos al principal/driver, y tope 8:
     // cada parseo de un FBX de personaje (~32 MB) ocupa bastante memoria mientras dura.
     size_t computeWorkerCount()
     {
@@ -146,6 +148,7 @@ void Brakeza::MainLoop()
 
     GUI::ShowLoadTime("Time until main loop starts", timer);
 
+    BZ_THREAD_NAME("Main");
     while (!Config::get()->EXIT) {
         if (cliOptions.exitAfterSeconds > 0.0f && executionTime >= cliOptions.exitAfterSeconds) {
             LOG_MESSAGE("[Brakeza] --exit-after %.1fs reached, shutting down", cliOptions.exitAfterSeconds);
@@ -215,6 +218,8 @@ void Brakeza::MainLoop()
         Profiler::EndMeasure(loopMeasures, "Loop_FlipToWindow");
 
         if (Config::get()->OBSERVER_AI_ENABLED) EngineObserver::setPipelineStep("idle");
+
+        BZ_FRAME_MARK();                                                     // Tracy: fin de frame
 
         if (Config::get()->OBSERVER_AI_ENABLED && EngineObserver::frameCount % 60 == 0)
             DumpObserverState();

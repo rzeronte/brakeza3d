@@ -93,6 +93,7 @@ struct UIElementData {
     int         count     = 0;            // array count override (0 = use element's arrayCount)
     int         page      = -1;           // pagination: -1 = off, 0+ = show page N (N*count .. (N+1)*count-1)
     float       scrollTo  = -1.0f;        // "scroll" elements: >= 0 sets the scroll offset (px) this frame (Lua: { scrollTo = 0 })
+    float       scrollBy  = 0.0f;         // "scroll" elements: px added to the offset this frame, after scrollTo (Lua: { scrollBy = -60 }, scroll buttons)
     bool        hidden    = false;        // true: the element is neither drawn nor hit-tested this frame
     float       scale     = 1.0f;         // "image" elements: size multiplier around the element's center (Lua: { scale = 1.05 }, e.g. a pulsing logo)
     bool        flipX     = false;        // "image" elements: mirror horizontally (Lua: { flipX = true }); "color" (rgb) tints the image, e.g. { color = Color.new(0.4,0.4,0.4,1) } darkens it
@@ -102,7 +103,7 @@ struct UIElementData {
                enabled == o.enabled && key == o.key && text == o.text &&
                path == o.path && pathOff == o.pathOff && tooltip == o.tooltip &&
                value == o.value && maxValue == o.maxValue && w == o.w && h == o.h &&
-               count == o.count && page == o.page && scrollTo == o.scrollTo && iconList == o.iconList &&
+               count == o.count && page == o.page && scrollTo == o.scrollTo && scrollBy == o.scrollBy && iconList == o.iconList &&
                scale == o.scale && flipX == o.flipX &&
                (!colorProvided || (color.r == o.color.r && color.g == o.color.g &&
                                    color.b == o.color.b && color.a == o.color.a));
@@ -293,6 +294,11 @@ struct UIWidget {
     std::string cursor;    // cursor name to set when mouse is anywhere within widget bounds
     UICacheMode cacheMode{UICacheMode::Single};   // JSON "cache" (see top of file)
     int maxVariants{64};                          // "variants": max cached images before wiping them all
+    // JSON "dynamicSize": true -> each copy of drawWidgetInstances may bring its own box (instance w/h, fractions
+    // of the window like width/height). Frame/background take the instance box and horizontal fractions of the
+    // elements (x, w) follow its width; vertical ones (y, h, padding) stay relative to the DECLARED height, so the
+    // layout stays pinned to the top edge. Never cached (forced to cache none). Without the flag w/h are ignored.
+    bool dynamicSize{false};
 
     // Runtime cache — not persisted, filled lazily on first dirty render
     mutable GLuint cacheFBO     {0};
@@ -333,6 +339,7 @@ struct UIWidget {
 struct UIWidgetInstance {
     float x{0.0f}, y{0.0f};   // window px (like drawWidgetAtPos)
     float alpha{1.0f};        // × global alpha
+    float w{0.0f}, h{0.0f};   // box override (window fractions); only for widgets with "dynamicSize"; 0 = declared size
     UIWidgetRenderData data;
 };
 
@@ -357,6 +364,11 @@ public:
     // las variantes). Solo widgets de primer nivel: los anidados se hornean con su padre.
     bool invalidateWidget(const std::string& name);
     void invalidateAllWidgets();
+    // Language: a text that starts with '@' ("@ui.pause.title"), whether baked in a widget JSON or sent from Lua, is a key
+    // looked up here when drawn. Lua (RTS/Systems/I18N.lua) pushes the table of the active language; replacing it drops the
+    // wrap cache and rebakes the cacheable widgets, so a language change shows up live. A key with no entry is drawn as is.
+    void setTranslations(const std::unordered_map<std::string, std::string>& t);
+    const std::string& translate(const std::string& s) const;
     // UI theme: images whose path goes through ".../UI/SLOTS/" are loaded from ".../UI/SLOTS_THEMES/<theme>/" instead
     // (same file names in every theme folder). "" = no redirection. Live: drops the image pointers and rebakes the
     // cacheable widgets.
@@ -387,6 +399,13 @@ public:
                                           const std::string& fb = "foreground", float scaleOverride = 0.0f);
     // Lua: instances = { {x=, y=, alpha=?, data={...}}, ... }. Returns 1-based indexes (0 = none):
     // clickedIdx, clickedId, rightClickedIdx, rightClickedId, hoveredIdx, hoveredId
+    // Mide un texto como lo dibujaría el elemento de texto `elementId` de `widgetName` (su fuente, fontScale, escala
+    // de diseño, wrap y maxLines) para dimensionar copias de un widget "dynamicSize".
+    // Devuelve { ancho de la línea más larga (px), nº de líneas, alto de una línea con su lineSpacing (px) }.
+    // maxWidthPx = ancho útil de wrap (px de ventana); {0,0,0} si el widget o el elemento no existen.
+    std::tuple<float, int, float> measureElementText(const std::string& widgetName, const std::string& elementId,
+                                                     const std::string& text, float maxWidthPx);
+
     std::tuple<int, std::string, int, std::string, int, std::string> drawWidgetInstancesLua(
         const std::string& name, sol::table instances, const std::string& fb = "foreground", float scaleOverride = 0.0f);
 
@@ -455,6 +474,7 @@ private:
     // ── Text wrap ──────────────────────────────────────────────────────────
     // Wrapped lines cached per (writer, text, width, scale): wrapping measures every word.
     std::unordered_map<std::string, std::vector<std::string>> wrapCache;
+    std::unordered_map<std::string, std::string> translations;   // key (without '@') -> text of the active language
     std::vector<std::string> wrapText(const std::string& text, float maxW, float scale, int maxLines);
     float textLineHeight(float scale) const;   // one line of the current writer at this scale (window px)
 
@@ -516,6 +536,8 @@ private:
     // clears it on entry, so it only affects that direct child (pager, scroll, tooltip: whole).
     enum class NestedPass { Both, ImagesOnly, TextOnly };
     NestedPass pendingNestedPass{NestedPass::Both};
+    // Instance box for the NEXT renderWidgetAt (set by drawWidgetInstances, read and cleared on entry)
+    float pendingBoxW{0.0f}, pendingBoxH{0.0f};
 
     void renderElementFiltered(const UIElement& scaled, float baseX, float baseY, const UIElementData& data);
     void accumulateBounds(const UIElement& sc, float baseX, float drawY, const UIElementData& data, float hDyn);

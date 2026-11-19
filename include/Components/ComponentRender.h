@@ -44,6 +44,7 @@
 #include "../OpenGL/ShaderOGLBonesTransforms.h"
 #include "../OpenGL/Quad/ShaderOGLGrid.h"
 #include "../OpenGL/ShaderOGLGroundCircle.h"
+#include "../OpenGL/ShaderOGLGroundCircles.h"
 #include "../OpenGL/ShaderOGLGroundDecal.h"
 #include "../OpenGL/ShaderOGLAxisQuad.h"
 #include "../OpenGL/ShaderOGLRect.h"
@@ -79,6 +80,7 @@ struct Shaders {
     ShaderOGLShadowPassDebugLight *shaderShadowPassDebugLight = nullptr;
     ShaderOGLGrid *shaderOGLGrid = nullptr;
     ShaderOGLGroundCircle        *shaderGroundCircle      = nullptr;
+    ShaderOGLGroundCircles       *shaderGroundCircles     = nullptr;
     ShaderOGLGroundDecal         *shaderGroundDecal       = nullptr;
     ShaderOGLAxisQuad            *shaderAxisQuad          = nullptr;
     ShaderOGLRect                *shaderOGLRect           = nullptr;
@@ -285,6 +287,9 @@ public:
     void drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundCircle(Object3D* obj, float r, float g, float b, float a, float radius, float thickness) const;
     void drawGroundCircleToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
+    // Tanda de círculos de suelo (o discos blob si filled) en una sola llamada de dibujo, en el framebuffer fb ("scene", "ui"...).
+    // data = count * 9 floats consecutivos: x, y, z, radio, r, g, b, a, grosor (mismo resultado que drawGroundCircle/Blob uno a uno)
+    void drawGroundCircles(const float* data, size_t count, const std::string& fb, bool filled) const;
     void drawGroundBlob(Object3D* obj, float r, float g, float b, float a, float radius) const;
     void drawGroundBlobToFB(Object3D* obj, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawOutlineSubmesh(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
@@ -294,7 +299,15 @@ public:
     void drawOutlineSubmeshBatch(Object3D* obj, const std::string& submeshName, float r, float g, float b, float a, float thickness) const;
     void flushOutlines() const;
     [[nodiscard]] Vertex3D getSubmeshCenter(Object3D* obj, const std::string& submeshName) const;
-    [[nodiscard]] Vertex3D getSubmeshTop(Object3D* obj, const std::string& submeshName) const;
+    // Highest point of a submesh, in world space, lying over its upper surface.
+    // Y = top of the submesh's world AABB. XZ = the AABB centre when it is over the surface, otherwise (concave
+    // footprints: L, U, T...) the centroid of the nearest surface triangle.
+    // Surface = triangles facing up (|normal.y| >= minUpFacing) with their centroid in the upper part of the
+    // submesh (centroid Y >= minY + minHeightFraction * height).
+    // Falls back to the AABB top when no triangle qualifies (e.g. minHeightFraction > 1); returns the object
+    // position if the submesh is unknown.
+    [[nodiscard]] Vertex3D getSubmeshTop(Object3D* obj, const std::string& submeshName,
+                                         float minHeightFraction = 0.5f, float minUpFacing = 0.5f) const;
     void drawGroundDecal(Object3D* obj, const std::string& texturePath, float r, float g, float b, float a, float radius) const;
     void drawGroundDecalToFB(Object3D* obj, const std::string& texturePath, float r, float g, float b, float a, float radius, const std::string& fb) const;
     void drawAxisQuad(Object3D* obj, float r, float g, float b, float a, float halfSize, ShaderOGLAxisQuad::Axis axis = ShaderOGLAxisQuad::AXIS_Y) const;

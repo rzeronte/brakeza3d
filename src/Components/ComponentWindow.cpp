@@ -9,6 +9,7 @@
  */
 #define GL_GLEXT_PROTOTYPES
 
+#include "../../include/Render/ProfilerZones.h"
 #include <complex>
 #include <set>
 #include <vector>
@@ -195,6 +196,7 @@ void ComponentWindow::InitWindow()
 
     ResetOpenGLSettings();
     glewInit();
+    BZ_GPU_CONTEXT();
     // Antes forzaba vsync ON a fuego (SDL_GL_SetSwapInterval(1)) ignorando Config::V_SYNC -- si
     // un proyecto se guardaba con V_SYNC=false, al reabrirlo el estado REAL de OpenGL seguía en
     // vsync ON pese a que el checkbox del menú (GUIAddonMenu::MenuVideo) mostrara "desactivado",
@@ -409,11 +411,14 @@ void ComponentWindow::FlipGlobalToWindow()
 {
     glViewport(0,0, widthWindow, heightWindow);
 
-    if (Config::get()->ENABLE_IMGUI) {
-       ImGuiOnUpdate();
-    } else {
-        glViewport(0, 0, widthRender, heightRender);
-        Components::get()->Render()->DrawSelectionBox();
+    {
+        BZ_ZONE_N("Flip: ImGui render");
+        if (Config::get()->ENABLE_IMGUI) {
+           ImGuiOnUpdate();
+        } else {
+            glViewport(0, 0, widthRender, heightRender);
+            Components::get()->Render()->DrawSelectionBox();
+        }
     }
 
     // Restore window-space viewport explicitly — ImGui_ImplOpenGL3_RenderDrawData
@@ -426,16 +431,23 @@ void ComponentWindow::FlipGlobalToWindow()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    {
+    BZ_ZONE_N("Flip: layer composition");
     auto shaderOGLImage = Components::get()->Render()->getShaders()->shaderOGLImage;
 
     shaderOGLImage->renderTexture(openGLBuffers.backgroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.globalTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.foregroundTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
     shaderOGLImage->renderTexture(openGLBuffers.uiTexture, 0, 0, widthWindow, heightWindow, widthWindow, heightWindow, 1, true, 0);
+    }
 
     glEnable(GL_DEPTH_TEST);
 
-    SDL_GL_SwapWindow(window);
+    {
+        BZ_ZONE_N("Flip: SwapWindow (vsync/GPU wait)");
+        SDL_GL_SwapWindow(window);
+    }
+    BZ_GPU_COLLECT();
 }
 
 void ComponentWindow::ClearOGLFrameBuffers() const

@@ -21,16 +21,18 @@ class ThreadJobPathfinding : public ThreadJobBase
     std::string unitName;
     int gx1, gz1, gx2, gz2;
     int requestGen;
+    bool ignoreCosts;
 
     std::string encodedPath;
 
 public:
-    ThreadJobPathfinding(Grid3D* grid, const std::string& unitName, int gx1, int gz1, int gx2, int gz2, int requestGen)
+    ThreadJobPathfinding(Grid3D* grid, const std::string& unitName, int gx1, int gz1, int gx2, int gz2, int requestGen, bool ignoreCosts = false)
     :
         grid(grid),
         unitName(unitName),
         gx1(gx1), gz1(gz1), gx2(gx2), gz2(gz2),
-        requestGen(requestGen)
+        requestGen(requestGen),
+        ignoreCosts(ignoreCosts)
     {
         function = [this](){ fnProcess(); };
         callback = [this](){ fnCallback(); };
@@ -38,7 +40,7 @@ public:
 
     void fnProcess()
     {
-        auto cubes = grid->computePath(gx1, gz1, gx2, gz2);
+        auto cubes = grid->computePath(gx1, gz1, gx2, gz2, ignoreCosts);
 
         if (cubes.empty()) {
             encodedPath = "";

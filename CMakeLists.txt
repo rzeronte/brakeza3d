@@ -31,6 +31,9 @@ endif()
 # LuaJIT (rama luajit): estatica, compilada con LUAJIT_ENABLE_LUA52COMPAT; cabeceras y .a en third_party/luajit.
 # -DUSE_LUAJIT=OFF vuelve a Lua 5.2 del sistema.
 option(USE_LUAJIT "Use the bundled LuaJIT instead of system Lua 5.2" ON)
+
+# Zonas de profiling para Tracy (ver include/Render/ProfilerZones.h)
+option(BRAKEZA_TRACY "Enable Tracy profiler instrumentation" OFF)
 if(WIN32 AND USE_LUAJIT AND EXISTS "${CMAKE_SOURCE_DIR}/third_party/luajit/lib/libluajit.a")
     set(LUA_LIBRARY "${CMAKE_SOURCE_DIR}/third_party/luajit/lib/libluajit.a")
     set(LUAJIT_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/third_party/luajit/include")
@@ -237,6 +240,7 @@ add_executable(Brakeza3D
         src/OpenGL/ShaderOGLBonesTransforms.cpp include/OpenGL/ShaderOGLBonesTransforms.h
         src/OpenGL/ShaderOGLColor.cpp include/OpenGL/ShaderOGLColor.h
         src/OpenGL/ShaderOGLGroundCircle.cpp include/OpenGL/ShaderOGLGroundCircle.h
+        src/OpenGL/ShaderOGLGroundCircles.cpp include/OpenGL/ShaderOGLGroundCircles.h
         src/OpenGL/ShaderOGLGroundDecal.cpp include/OpenGL/ShaderOGLGroundDecal.h
         src/OpenGL/ShaderOGLAxisQuad.cpp include/OpenGL/ShaderOGLAxisQuad.h
         src/OpenGL/ShaderOGLRect.cpp include/OpenGL/ShaderOGLRect.h
@@ -469,6 +473,19 @@ target_link_libraries(Brakeza3D
         ${SWSCALE_LIBRARY}
         ${SWRESAMPLE_LIBRARY}
 )
+
+# Profiler externo Tracy (third_party/tracy). Cliente en modo "on demand": no mide ni abre red
+# hasta que la aplicación Tracy se conecta. Con la opción OFF las macros de ProfilerZones.h quedan vacías.
+if(BRAKEZA_TRACY)
+    target_sources(Brakeza3D PRIVATE third_party/tracy/TracyClient.cpp)
+    target_include_directories(Brakeza3D PRIVATE ${CMAKE_SOURCE_DIR}/third_party/tracy)
+    target_compile_definitions(Brakeza3D PRIVATE BZ_TRACY TRACY_ENABLE TRACY_ON_DEMAND)
+    if(WIN32)
+        target_compile_definitions(Brakeza3D PRIVATE _WIN32_WINNT=0x0A00 WINVER=0x0A00)
+        target_link_libraries(Brakeza3D ws2_32 wsock32 secur32)
+    endif()
+    message(STATUS "Tracy profiler: ON")
+endif()
 
 if(WIN32)
     target_link_libraries(Brakeza3D dbghelp)

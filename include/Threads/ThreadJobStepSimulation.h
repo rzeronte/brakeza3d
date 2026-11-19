@@ -16,6 +16,7 @@
 
 #include "ThreadJobBase.h"
 #include "../Components/Components.h"
+#include "../Render/ProfilerZones.h"
 
 class ThreadJobStepSimulation : public ThreadJobBase
 {
@@ -31,6 +32,7 @@ public:
 
     void fnProcess()
     {
+        BZ_ZONE_N("Physics StepSimulation");
         Components::get()->Collisions()->StepSimulation(dt);
     }
 

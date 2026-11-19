@@ -157,9 +157,12 @@ void UIManager::loadWidgetFromFile(const std::string& filePath)
 
 void UIManager::unloadWidget(const std::string& name)
 {
-    if (widgets.erase(name))
+    auto it = widgets.find(name);
+    if (it != widgets.end()) {
+        freeWidgetCache(it->second);   // FBO/texture/atlas: no destructor frees them
+        widgets.erase(it);
         printf("[UIManager] unloaded widget '%s'\n", name.c_str());
-    else
+    } else
         printf("[UIManager] WARN: widget '%s' not found for unload\n", name.c_str());
 }
 
@@ -190,6 +193,20 @@ float UIManager::getDesignTextScale() const
 void UIManager::invalidateAllWidgets()
 {
     for (auto& [_, w] : widgets) { w.cacheDirty = true; w.variantsDirty = true; }
+}
+
+void UIManager::setTranslations(const std::unordered_map<std::string, std::string>& t)
+{
+    translations = t;
+    wrapCache.clear();          // wrapped lines were measured with the old text
+    invalidateAllWidgets();     // cacheable widgets hold the old texts baked in their FBO
+}
+
+const std::string& UIManager::translate(const std::string& s) const
+{
+    if (s.size() < 2 || s[0] != '@') return s;
+    auto it = translations.find(s.substr(1));
+    return it != translations.end() ? it->second : s;
 }
 
 void UIManager::setUITheme(const std::string& theme)
@@ -311,6 +328,9 @@ void UIManager::parseWidgetJSON(const std::string& filePath)
     if (cacheItem && cJSON_IsString(cacheItem)) widget.cacheMode = cacheModeFromName(cacheItem->valuestring);
     else if (cacheableItem && cJSON_IsBool(cacheableItem))
         widget.cacheMode = cJSON_IsTrue(cacheableItem) ? UICacheMode::Single : UICacheMode::None;
+    cJSON* dynSizeItem = cJSON_GetObjectItem(root, "dynamicSize");
+    widget.dynamicSize = dynSizeItem && cJSON_IsTrue(dynSizeItem);
+    if (widget.dynamicSize) widget.cacheMode = UICacheMode::None;   // the box changes per copy: nothing to cache
     cJSON* maxVarItem = cJSON_GetObjectItem(root, "maxVariants");
     if (maxVarItem && cJSON_IsNumber(maxVarItem)) widget.maxVariants = std::max(1, maxVarItem->valueint);
 
@@ -553,6 +573,8 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
     // Pass requested by the parent for THIS call only (nested widget/array): see NestedPass
     const NestedPass onlyPass = pendingNestedPass;
     pendingNestedPass = NestedPass::Both;
+    const float instBoxW = pendingBoxW, instBoxH = pendingBoxH;   // only this call (not its nested widgets)
+    pendingBoxW = pendingBoxH = 0.0f;
     if (widgetRenderDepth == 0) {
         lastClickedId = ""; lastRightClickedId = ""; lastHoveredId = ""; hoveredCursorName = "";
         beginTopLevelDraw(data);
@@ -586,8 +608,10 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
 
     // x/y/w/h on elements are 0..1 fractions of the widget box (cw × ch in screen px)
     auto* winPtr = Components::get()->Window();
-    const float cw = (float)winPtr->getWidth()  * (w.width  > 0 ? w.width  : 1.0f);
-    const float ch = (float)winPtr->getHeight() * (w.height > 0 ? w.height : 1.0f);
+    const bool  useInstBox = w.dynamicSize && instBoxW > 0.0f && instBoxH > 0.0f;
+    const float cw = (float)winPtr->getWidth()  * (useInstBox ? instBoxW : (w.width  > 0 ? w.width  : 1.0f));
+    const float ch = (float)winPtr->getHeight() * (w.height > 0 ? w.height : 1.0f);   // layout: declared height
+    const float boxH = useInstBox ? (float)winPtr->getHeight() * instBoxH : ch;       // drawn box: frame, background, hit area
 
     // Text size: at top level, the design-resolution factor (1 = fixed size when no design
     // resolution is set; see setDesignResolution), inherited by nested widgets -- unless a widget
@@ -697,7 +721,7 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
         }
         // Wrapped text: as tall as its lines (the text comes from data, so it can't be static)
         if (sc.kind == UIElementKind::Text && sc.wrap && sc.w > 0.0f) {
-            const std::string& txt = elData.text.empty() ? sc.staticText : elData.text;
+            const std::string& txt = translate(elData.text.empty() ? sc.staticText : elData.text);
             if (txt.empty()) return 0.0f;
             auto lines = wrapText(txt, sc.w, sc.fontScale, sc.maxLines);
             return (float)lines.size() * textLineHeight(sc.fontScale) * sc.lineSpacing;
@@ -707,7 +731,7 @@ float UIManager::renderWidgetAt(UIWidget& w, float x, float y, const UIWidgetRen
 
     float contentBottom = y;   // lowest element edge seen in pass 1 → lastContentH (scroll viewports)
 
-    float dynamicH = ch * s;
+    float dynamicH = boxH * s;
     float dynamicW = cw * s;
     const bool topLevel = widgetRenderDepth == 1;
 
@@ -1149,7 +1173,7 @@ void UIManager::accumulateBounds(const UIElement& sc, float baseX, float drawY, 
     float x1 = x0, y1 = drawY + hDyn;
 
     if (t == UIElementKind::Text) {
-        const std::string& text = d.text.empty() ? sc.staticText : d.text;
+        const std::string& text = translate(d.text.empty() ? sc.staticText : d.text);
         if (text.empty()) return;
         TextWriter* wr = sc.font.empty() ? tw : writerForFont(sc.font);
         if (sc.wrap && sc.w > 0.0f) {
@@ -1473,7 +1497,9 @@ UIInstancesResult UIManager::drawWidgetInstances(const std::string& name, const 
         const float prevGA = globalAlpha;
         globalAlpha *= std::clamp(inst.alpha, 0.0f, 1.0f);
         lastDrawnValid = false;
+        pendingBoxW = inst.w; pendingBoxH = inst.h;
         renderWidgetAt(w, inst.x, inst.y, inst.data);
+        pendingBoxW = pendingBoxH = 0.0f;
         globalAlpha = prevGA;
         if (res.clicked < 0 && !lastClickedId.empty())           { res.clicked = (int)i;      res.clickedId = lastClickedId; }
         if (res.rightClicked < 0 && !lastRightClickedId.empty()) { res.rightClicked = (int)i; res.rightClickedId = lastRightClickedId; }
@@ -1692,6 +1718,7 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
             for (int i = 0; i < resolvedCount; i++) {
                 std::string prevId      = lastClickedId;
                 std::string prevHoverId = lastHoveredId;
+                std::string prevRightId = lastRightClickedId;
                 auto [ox, oy] = itemOffset(i, stepX, stepY);
                 float ix = baseX + el.x + ox;
                 float iy = baseY + el.y + topOff + oy;
@@ -1710,6 +1737,9 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
                     lastClickedId = std::to_string(pageOffset + i) + "_" + lastClickedId;
                 if (lastHoveredId != prevHoverId && !lastHoveredId.empty())
                     lastHoveredId = std::to_string(pageOffset + i) + "_" + lastHoveredId;
+                // Clic derecho: mismo prefijo de índice que el izquierdo (antes llegaba sin él y no se sabía de qué elemento)
+                if (lastRightClickedId != prevRightId && !lastRightClickedId.empty())
+                    lastRightClickedId = std::to_string(pageOffset + i) + "_" + lastRightClickedId;
             }
             // Pagination nav bar — rendered via arrayPager widget
             // (arrayPagerTop: above the items, which were moved down by topOff)
@@ -1758,7 +1788,7 @@ void UIManager::renderElement(const UIElement& el, float baseX, float baseY, con
 void UIManager::renderText(const UIElement& el, float x, float y, const UIElementData& data)
 {
     if (hitTestOnly) return;
-    const std::string& text = data.text.empty() ? el.staticText : data.text;
+    const std::string& text = translate(data.text.empty() ? el.staticText : data.text);
     if (text.empty()) return;
     // Element font ("font" on a text element) overrides the widget's for this text only; the
     // previous writer is restored on every return path.
@@ -1956,6 +1986,7 @@ void UIManager::renderScroll(const UIElement& el, float x, float y, const UIElem
     const float vx = x + el.x, vy = y, vw = el.w, vh = el.h;
     ScrollState& st = scrollStates[el.widgetRef + "#" + el.id];
     if (data.scrollTo >= 0.0f) st.offset = data.scrollTo;
+    if (data.scrollBy != 0.0f) st.offset += data.scrollBy * currentRenderScale;
 
     const int mx = input ? input->getRawMouseX() : -1;
     const int my = input ? input->getRawMouseY() : -1;
@@ -2050,7 +2081,7 @@ void UIManager::renderImage(const UIElement& el, float x, float y, const UIEleme
     if (!tt.empty() && input && !suppressInput) {
         int mx = input->getRawMouseX(), my = input->getRawMouseY();
         if (mx >= ix && mx <= ix+iw && my >= iy && my <= iy+ih && pointerInClip(mx, my))
-            pendingTooltip = { tt, mx, my, true, "", {}, currentFB };
+            pendingTooltip = { translate(tt), mx, my, true, "", {}, currentFB };
     }
 }
 
@@ -2156,7 +2187,11 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
             Components::get()->Sound()->PlaySound(el.sound, ComponentSound::CHANNEL_UI_HOVER, 0);
     }
     if (hovered && !el.cursor.empty()) hoveredCursorName = el.cursor;
-    if (!suppressInput) lastHoverState[hoverKey] = hovered;
+    if (!suppressInput) {
+        // Key includes the pixel position: bound it so moving buttons (scroll, resize) can't grow it forever
+        if (lastHoverState.size() > 4096) lastHoverState.clear();
+        lastHoverState[hoverKey] = hovered;
+    }
 
     // Resolve active option (by key, or options[0] as editor/fallback preview)
     const UIElementOption* activeOpt = nullptr;
@@ -2168,8 +2203,8 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
         if (!activeOpt) activeOpt = &el.options[0];
     }
 
-    const std::string& resolvedText = (activeOpt && !activeOpt->text.empty()) ? activeOpt->text
-        : (!data.provided || data.text.empty()) ? el.staticText : data.text;
+    const std::string& resolvedText = translate((activeOpt && !activeOpt->text.empty()) ? activeOpt->text
+        : (!data.provided || data.text.empty()) ? el.staticText : data.text);
     const std::string activeImage = activeOpt ? activeOpt->image : "";
     const std::string& resolvedPathOn  = !activeImage.empty() ? activeImage
         : (!data.provided || data.path.empty()) ? el.staticImagePath : data.path;
@@ -2292,7 +2327,7 @@ void UIManager::renderButton(const UIElement& el, float x, float y, const UIElem
                 if (!activeOpt->text.empty())    { UIElementData d; d.text = activeOpt->text;    d.provided = true; wdata["title"] = d; }
                 if (!activeOpt->tooltip.empty()) { UIElementData d; d.text = activeOpt->tooltip; d.provided = true; wdata["desc"]  = d; }
             }
-            pendingTooltip = { tt, mx, my, true, wname, wdata, currentFB };
+            pendingTooltip = { translate(tt), mx, my, true, wname, wdata, currentFB };
         }
     }
 }
@@ -2464,6 +2499,8 @@ UIElementData UIManager::solTableToElementData(sol::table t)
 
     sol::object scrollToObj = t["scrollTo"];
     if (scrollToObj.valid() && scrollToObj.get_type() == sol::type::number) d.scrollTo = scrollToObj.as<float>();
+    sol::object scrollByObj = t["scrollBy"];
+    if (scrollByObj.valid() && scrollByObj.get_type() == sol::type::number) d.scrollBy = scrollByObj.as<float>();
 
     sol::object keyObj = t["key"];
     if (keyObj.valid() && keyObj.get_type() == sol::type::string)
@@ -2510,6 +2547,30 @@ std::tuple<float, std::string, std::string, std::string> UIManager::drawWidgetAt
     return {nextY, lastClickedId, lastRightClickedId, lastHoveredId};
 }
 
+std::tuple<float, int, float> UIManager::measureElementText(const std::string& widgetName, const std::string& elementId,
+                                                            const std::string& text, float maxWidthPx)
+{
+    auto it = widgets.find(widgetName);
+    if (it == widgets.end()) return {0.0f, 0, 0.0f};
+    UIWidget& w = it->second;
+    const UIElement* el = nullptr;
+    for (const auto& e : w.elements) if (e.id == elementId) { el = &e; break; }
+    if (!el || text.empty()) return {0.0f, 0, 0.0f};
+
+    TextWriter* prevTw = tw;
+    if (!w.font.empty()) tw = writerForFont(w.font);
+    // Mismo tamaño que buildScaled: fontScale × escala del widget × escala de texto (nivel superior)
+    float ts = getDesignTextScale();
+    if (w.refHeight > 0.0f) ts = (float)Components::get()->Window()->getHeight() / w.refHeight;
+    const float fs = el->fontScale * (w.scale > 0 ? w.scale : 1.0f) * ts;
+    const auto lines = wrapText(translate(text), maxWidthPx, fs, el->maxLines);
+    float widest = 0.0f;
+    for (const auto& line : lines) widest = std::max(widest, (float)tw->measureTextWidthAtlas(line.c_str(), fs));
+    const float lineH = textLineHeight(fs) * el->lineSpacing;
+    tw = prevTw;
+    return {widest, (int)lines.size(), lineH};
+}
+
 std::tuple<int, std::string, int, std::string, int, std::string> UIManager::drawWidgetInstancesLua(
     const std::string& name, sol::table instances, const std::string& fb, float scaleOverride)
 {
@@ -2524,6 +2585,8 @@ std::tuple<int, std::string, int, std::string, int, std::string> UIManager::draw
         inst.x     = t.get_or("x", 0.0f);
         inst.y     = t.get_or("y", 0.0f);
         inst.alpha = t.get_or("alpha", 1.0f);
+        inst.w     = t.get_or("w", 0.0f);
+        inst.h     = t.get_or("h", 0.0f);
         sol::object d = t["data"];
         if (d.get_type() == sol::type::table) inst.data = solTableToRenderData(d.as<sol::table>());
         list.push_back(std::move(inst));

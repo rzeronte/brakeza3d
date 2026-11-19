@@ -8,6 +8,7 @@
  * License: GNU General Public License v3.0 (see LICENSE)
  */
 #include "../../include/Render/ThreadPool.h"
+#include "../../include/Render/ProfilerZones.h"
 #include <chrono>
 #include <iostream>
 
@@ -15,6 +16,7 @@ void ThreadPool::spawnWorkers(size_t n)
 {
     for (size_t i = 0; i < n; ++i) {
         workers.emplace_back([this] {
+            BZ_THREAD_NAME("ThreadPool worker");
             while (true) {
                 std::shared_ptr<ThreadJobBase> job;
 
@@ -39,6 +41,7 @@ void ThreadPool::spawnWorkers(size_t n)
                 activeTasks++;
 
                 try {
+                    BZ_ZONE_N("ThreadJob");
                     job->function();
                     job->callback();
                 } catch (const std::exception& e) {
@@ -145,18 +148,30 @@ std::shared_ptr<ThreadJobBase> ThreadPool::makeMainThreadCallbackWrapper(
                 if (*wasDeferred) return;             // reencolado, su callback llegará más tarde
                 if (jobEpoch != epoch.load()) return; // escena ya reiniciada, descartar
 
-                std::unique_lock<std::mutex> callbackLock(callbackMutex);
+                // Descartar el callback dejaria el objeto sin finalizar (subida a GPU, AddObject3D...)
+                // para siempre. Si la cola esta llena, este worker espera a que el hilo principal
+                // drene: asi la carga se frena sola en lugar de perder trabajo ya hecho.
+                bool warned = false;
+                for (;;) {
+                    if (stop.load() || jobEpoch != epoch.load()) return;
 
-                if (mainThreadCallbacks.size() >= maxEnqueuedCallbacks) {
-                    std::cerr << "[ThreadPool] Callback queue full (" << maxEnqueuedCallbacks
-                              << "), dropping callback" << std::endl;
-                    return;
+                    std::unique_lock<std::mutex> callbackLock(callbackMutex);
+                    if (mainThreadCallbacks.size() < maxEnqueuedCallbacks) {
+                        mainThreadCallbacks.push([this, job, jobEpoch]() {
+                            if (jobEpoch != epoch.load()) return; // comprobacion final justo antes de ejecutar
+                            job->callback();
+                        });
+                        return;
+                    }
+                    callbackLock.unlock();
+
+                    if (!warned) {
+                        warned = true;
+                        std::cerr << "[ThreadPool] Callback queue full (" << maxEnqueuedCallbacks
+                                  << "), worker waiting for the main thread to drain" << std::endl;
+                    }
+                    std::this_thread::sleep_for(std::chrono::milliseconds(2));
                 }
-
-                mainThreadCallbacks.push([this, job, jobEpoch]() {
-                    if (jobEpoch != epoch.load()) return; // comprobacion final justo antes de ejecutar
-                    job->callback();
-                });
             }
         );
 }
