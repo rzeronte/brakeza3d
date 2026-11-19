@@ -4,16 +4,56 @@
         <title>Brakeza3D Game Engine Blog</title>
         <link>https://brakeza.com/blog</link>
         <description>Brakeza3D Game Engine Blog</description>
-        <lastBuildDate>Sun, 15 Nov 2026 00:00:00 GMT</lastBuildDate>
+        <lastBuildDate>Thu, 19 Nov 2026 00:00:00 GMT</lastBuildDate>
         <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
         <generator>https://github.com/jpmonette/feed</generator>
         <language>en</language>
+        <item>
+            <title><![CDATA[What You Can Build with Brakeza3D, and Using It with AI Agents]]></title>
+            <link>https://brakeza.com/blog/ai-friendly-game-engine</link>
+            <guid>https://brakeza.com/blog/ai-friendly-game-engine</guid>
+            <pubDate>Thu, 19 Nov 2026 00:00:00 GMT</pubDate>
+            <description><![CDATA[What projects suit Brakeza3D, an open source C++ game engine with Lua, and why its text formats and command-line tests work well with AI coding agents.]]></description>
+            <content:encoded><![CDATA[<p>Two questions keep coming up in messages: <em>what is Brakeza3D good for?</em> and <em>can I use it with Claude, Copilot or other coding agents?</em> This post answers both, because the answers are connected.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-kind-of-projects-suit-brakeza3d">What kind of projects suit Brakeza3D<a href="https://brakeza.com/blog/ai-friendly-game-engine#what-kind-of-projects-suit-brakeza3d" class="hash-link" aria-label="Direct link to What kind of projects suit Brakeza3D" title="Direct link to What kind of projects suit Brakeza3D" translate="no">​</a></h2>
+<p>Brakeza3D is a free, open source engine written in C++ (OpenGL, deferred rendering, Bullet physics, Lua scripting, GLSL and node-based shaders, integrated editor). It is built for <strong>small and medium real-time projects</strong>, not for a studio shipping a 100-person AAA game. In practice, that covers:</p>
+<ul>
+<li class=""><strong>Prototypes and game jams.</strong> Open the editor, drop in a model, attach a Lua script, press play. No recompiling the engine to try an idea.</li>
+<li class=""><strong>Strategy and simulation games.</strong> <a class="" href="https://brakeza.com/blog/making-of-candelabra">Candelabra</a>, a city-sized RTS with hundreds of units, civilians, traffic, police and a day/night cycle, runs on it. It is also the hardest test the engine has had, and it keeps pushing the engine forward.</li>
+<li class=""><strong>3D action and exploration games</strong> with physics, lighting, particles and animated characters. The tutorial project in the engine shows each piece in isolation: physics, characters, particles and crowds, UI, audio and video, shaders.</li>
+<li class=""><strong>Visual experiments and shader work.</strong> The node-based shader editor and GLSL support make it a comfortable sandbox for graphics programming.</li>
+<li class=""><strong>Learning.</strong> The whole engine is readable C++ with a documented Lua API, so you can follow a feature from the script down to the renderer.</li>
+</ul>
+<p>What it is not: a drop-in replacement for the largest commercial engines, with their asset stores and console toolchains. If you want full control over the pipeline and a small, understandable codebase, it fits.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="why-it-works-well-with-ai-agents">Why it works well with AI agents<a href="https://brakeza.com/blog/ai-friendly-game-engine#why-it-works-well-with-ai-agents" class="hash-link" aria-label="Direct link to Why it works well with AI agents" title="Direct link to Why it works well with AI agents" translate="no">​</a></h2>
+<p>I did not design Brakeza3D around AI. But a lot of the choices that make an engine pleasant for a human who likes plain files turn out to be exactly what a coding agent needs.</p>
+<p><strong>1. Almost everything is text.</strong> Projects, scenes and game data are JSON. Gameplay is Lua. Shaders are GLSL. There is no opaque binary project format between the agent and your game: it reads a file, changes a file, and you can review the change in git like any other.</p>
+<p><strong>2. The scripting API is documented.</strong> The <a class="" href="https://brakeza.com/docs/scripting-api/index">Scripting API</a> covers objects, physics, sound, shaders, UI widgets and more, and the engine's own source tree has a project instruction file for agents (<code>CLAUDE.md</code>) describing the architecture, the frame loop order and the conventions to follow. An agent that reads it starts with the same map I use.</p>
+<p><strong>3. Lua means fast feedback.</strong> An agent can write a script, run the game and look at the result without a C++ build in the loop. When it does need to touch the engine, the code follows the conventions described in that instruction file.</p>
+<p><strong>4. Command-line parameters turn the game into a test.</strong> A project can declare parameters that you pass at launch with <code>--set name=value</code>. In Candelabra I use them for scenario tests: spawn 200 units against 200, run for a fixed time, exit, write a report to a log file. An agent can launch that, read the report and decide the next step, with no human clicking in the editor.</p>
+<p><strong>5. The engine can measure itself.</strong> There is a built-in profiler exposed to Lua, so a script can collect CPU and GPU time per phase, draw calls and per-script cost and write them as text. An agent that can read numbers can tell whether its change helped.</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="a-real-example">A real example<a href="https://brakeza.com/blog/ai-friendly-game-engine#a-real-example" class="hash-link" aria-label="Direct link to A real example" title="Direct link to A real example" translate="no">​</a></h3>
+<p>I used an AI agent on exactly that loop to optimize the 200 vs 200 battle in Candelabra. The agent profiled the scenario, found that every bullet created a physical object with a script, replaced straight bullets with a targeted-hit model, capped the visual effects, and lowered the update rate of systems that did not need one. In the steady scenario the frame went from about <strong>205 ms to about 117-124 ms</strong>, in measured steps, and every change was a reviewable commit. It also made mistakes along the way (a wrong guess about where time went, an optimization that gave no gain and was reverted), and the measurements are what caught them. That is the real point: the engine gives the agent a way to check its own work.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="getting-started-with-an-agent">Getting started with an agent<a href="https://brakeza.com/blog/ai-friendly-game-engine#getting-started-with-an-agent" class="hash-link" aria-label="Direct link to Getting started with an agent" title="Direct link to Getting started with an agent" translate="no">​</a></h2>
+<ol>
+<li class=""><a class="" href="https://brakeza.com/downloads">Download</a> the engine or clone the <a href="https://github.com/rzeronte/brakeza3d" target="_blank" rel="noopener noreferrer" class="">repository</a>.</li>
+<li class="">Open the repository in your agent of choice, and point it at <code>CLAUDE.md</code> and the <a class="" href="https://brakeza.com/docs/scripting-api/index">Scripting API documentation</a>.</li>
+<li class="">Start with a small task: a script that moves an object, a new shader, a UI widget.</li>
+<li class="">Ask it to run the project with a command-line parameter and to read the log, not just to write code.</li>
+</ol>
+<p>The pattern that has worked best for me: <strong>small tasks, a way to run the result, and a number or a log to check it against</strong>. Brakeza3D makes the second and third easy.</p>
+<p>If you build something with it, I would like to see it: the <a class="" href="https://brakeza.com/gallery">gallery</a> and the <a class="" href="https://brakeza.com/assets-hub">Assets Hub</a> are open to the community.</p>]]></content:encoded>
+            <category>Brakeza3D</category>
+            <category>AI</category>
+            <category>Gamedev</category>
+            <category>Candelabra</category>
+        </item>
         <item>
             <title><![CDATA[A strategy game is not made of code alone: the RTS Editor]]></title>
             <link>https://brakeza.com/blog/rts-editor-tooling</link>
             <guid>https://brakeza.com/blog/rts-editor-tooling</guid>
             <pubDate>Sun, 15 Nov 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[How a single HTML file became the tool that keeps a 27-quest RTS, 35 unit types and 869 translated strings standing, and how I ended up handing it to people who never touch code.]]></description>
+            <description><![CDATA[The RTS Editor: the HTML tool used to manage quests, NPCs, dialogue, units and translated strings of the Candelabra RTS built on the Brakeza3D engine.]]></description>
             <content:encoded><![CDATA[<p><em>How a single HTML file became the tool that keeps a 27-quest RTS, 35 unit types and 869 translated strings standing, and how I ended up handing it to people who never touch code.</em></p>
 <p>When people talk about making a game they talk about the engine, the shaders, the physics. Almost never about what takes the most hours: <strong>entering and maintaining data</strong>. In <a class="" href="https://brakeza.com/blog/making-of-candelabra">Candelabra</a>, the RTS I am building on Brakeza3D, every quest, every dialogue line, every building cost and every unit lives in a JSON file. Editing that by hand works for the first ten days. After that it stops working.</p>
 <p>This post is about the <strong>RTS Editor</strong>: why I built it, what it does today, and what I learned. The thesis is simple: <em>tools are not a luxury of big projects; they are what lets a project grow without falling apart.</em></p>
@@ -100,14 +140,14 @@
             <link>https://brakeza.com/blog/making-of-candelabra</link>
             <guid>https://brakeza.com/blog/making-of-candelabra</guid>
             <pubDate>Sat, 14 Nov 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[For a while now, most of my time has gone into Candelabra: a real-time strategy game set in a]]></description>
+            <description><![CDATA[How Candelabra, a city-scale RTS with civilians, traffic, police and a day/night cycle, was built on Brakeza3D, and which engine features it pushed into existence.]]></description>
             <content:encoded><![CDATA[<p>For a while now, most of my time has gone into <strong>Candelabra</strong>: a real-time strategy game set in a
 dark, rain-soaked city carved up between street gangs. It is also the hardest stress test Brakeza3D
 has ever had. Every time the game asked for something the engine could not do, the engine grew a new
 feature.</p>
 <p>This post is a tour of how the project came together, with screenshots from the current build.</p>
 <div style="position:relative;padding-bottom:56.25%;height:0;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/_719nP1fJsY" title="CANDELABRA - Preview" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;border-radius:8px" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
-<p><img decoding="async" loading="lazy" alt="Candelabra - the whole city at night" src="https://brakeza.com/assets/images/global_picture-86760bed91684a188f5ab2305e7c78cd.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Candelabra - the whole city at night" src="https://brakeza.com/assets/images/global_picture-1dc947b6fba82ce721dbcfe2a22b7e43.png" width="1024" height="550" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-idea">The idea<a href="https://brakeza.com/blog/making-of-candelabra#the-idea" class="hash-link" aria-label="Direct link to The idea" title="Direct link to The idea" translate="no">​</a></h2>
 <p>Candelabra is a <strong>city-sized RTS</strong>: you start with a handful of units, take over buildings, put workers
 to work, research upgrades and push into the districts held by the rival gangs. But the city is not a
@@ -121,7 +161,7 @@ more than that.</p>
 Everything in Candelabra is a scene, a model, a shader or a Lua script that any Brakeza3D user could
 also write.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="why-lua-and-how-much-of-the-game-is-lua">Why Lua, and how much of the game is Lua<a href="https://brakeza.com/blog/making-of-candelabra#why-lua-and-how-much-of-the-game-is-lua" class="hash-link" aria-label="Direct link to Why Lua, and how much of the game is Lua" title="Direct link to Why Lua, and how much of the game is Lua" translate="no">​</a></h2>
-<p>The engine is C++17 and OpenGL 3.3, but almost the entire game lives in <strong>Lua scripts</strong> on top of the
+<p>The engine is C++17 and OpenGL 4.3, but almost the entire game lives in <strong>Lua scripts</strong> on top of the
 Brakeza3D bridge: the unit state machines, the enemy AI, the building and production queues, the
 economy, the quest and dialogue system, the police, the traffic, the HUD.</p>
 <p>That is the reason the iteration speed has been good. Change a script, reload, and you are looking at
@@ -141,7 +181,7 @@ models repeated many times.</li>
 </ul>
 <p>The deferred renderer does the rest: G-Buffer, ADS lighting with up to 64 point and 64 spot lights, PCF
 shadows, and a scene post-processing chain for the grading, fog and rain.</p>
-<p><img decoding="async" loading="lazy" alt="The Profiler window running over a live game" src="https://brakeza.com/assets/images/profiler-646969399b2bcc2a31a80412f5403c50.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="The Profiler window running over a live game" src="https://brakeza.com/assets/images/profiler-bdef46ca6ee1569b21a7e43d0107a95a.png" width="1024" height="550" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="a-living-city">A living city<a href="https://brakeza.com/blog/making-of-candelabra#a-living-city" class="hash-link" aria-label="Direct link to A living city" title="Direct link to A living city" translate="no">​</a></h2>
 <p>The part that surprised me most is how much of the "game feel" comes from systems that are not strictly
 the game.</p>
@@ -158,19 +198,19 @@ response escalates too.</li>
 predictive separation and smooth their paths, which is a big part of why a group of soldiers looks
 like a group and not like a spreadsheet.</li>
 </ul>
-<p><img decoding="async" loading="lazy" alt="Selecting the starting squad, with fog of war and rain" src="https://brakeza.com/assets/images/start_units_selection-b82a1da49e3e8f058dd9f94aaab7fe0c.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Selecting the starting squad, with fog of war and rain" src="https://brakeza.com/assets/images/start_units_selection-b0924cd62c6d09fdea21e36e8bc5effb.png" width="1024" height="550" class="img_ev3q"></p>
 <p>The game starts here: ten units, a fog of war that only reveals what they see, and a city that keeps
 going whether you are watching or not.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="buildings-economy-and-the-tech-tree">Buildings, economy and the tech tree<a href="https://brakeza.com/blog/making-of-candelabra#buildings-economy-and-the-tech-tree" class="hash-link" aria-label="Direct link to Buildings, economy and the tech tree" title="Direct link to Buildings, economy and the tech tree" translate="no">​</a></h2>
 <p>Buildings are picked straight from the city geometry. Click one and you get its actions, production
 queue and rally point.</p>
-<p><img decoding="async" loading="lazy" alt="A selected building, highlighted in the city" src="https://brakeza.com/assets/images/building_selected-1698fdd216f578e14f0d0d936f3bc016.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="A selected building, highlighted in the city" src="https://brakeza.com/assets/images/building_selected-0d4e555619c98a918200f0be1e56de17.png" width="1024" height="550" class="img_ev3q"></p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="acquisition-mode">Acquisition mode<a href="https://brakeza.com/blog/making-of-candelabra#acquisition-mode" class="hash-link" aria-label="Direct link to Acquisition mode" title="Direct link to Acquisition mode" translate="no">​</a></h3>
 <p>For the bigger picture there is an <strong>acquisition mode</strong>: a management view of the whole city where
 buildings are coloured by faction. A panel lists everything you own with its health, another shows the
 details of the selected building, and a third lists the neutral buildings in sight. Every row has a
 button to jump the camera straight to that building.</p>
-<p><img decoding="async" loading="lazy" alt="Acquisition mode" src="https://brakeza.com/assets/images/acquisition_mode-6d4599c07a44c8557349623a40cbea03.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Acquisition mode" src="https://brakeza.com/assets/images/acquisition_mode-6bd8c00f7a39831bdd88d65fbe03c01b.png" width="1024" height="550" class="img_ev3q"></p>
 <h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="places-worth-a-visit">Places worth a visit<a href="https://brakeza.com/blog/making-of-candelabra#places-worth-a-visit" class="hash-link" aria-label="Direct link to Places worth a visit" title="Direct link to Places worth a visit" translate="no">​</a></h3>
 <p>Many buildings can be entered, and each one has its own personality: a casino, a nightclub, a Mexican
 restaurant, a strip club. Here are a few of them, seen from outside.</p>
@@ -179,12 +219,12 @@ restaurant, a strip club. Here are a few of them, seen from outside.</p>
 <p>Resources feed a <strong>tech tree</strong> with eight branches (economy, soldiers, snipers, workers, agitators, the
 hero, vehicles and streets). Upgrades chain together, and some unlock new abilities, like the Molotov
 cocktails of the agitators or their smoke bombs.</p>
-<p><img decoding="async" loading="lazy" alt="The tech tree" src="https://brakeza.com/assets/images/tree_talents-7e841ddb13cc9bbc4c1ba9526503a69a.png" width="1024" height="577" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="The tech tree" src="https://brakeza.com/assets/images/tree_talents-02302912de5964423c22a0261efd9035.png" width="1024" height="577" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="characters-dialogue-and-a-story-you-can-talk-to">Characters, dialogue and a story you can talk to<a href="https://brakeza.com/blog/making-of-candelabra#characters-dialogue-and-a-story-you-can-talk-to" class="hash-link" aria-label="Direct link to Characters, dialogue and a story you can talk to" title="Direct link to Characters, dialogue and a story you can talk to" translate="no">​</a></h2>
 <p>The city is full of people with something to say. Every NPC has a dialogue tree, quests are data files
 that the quest manager can chain, and phone messages arrive during the game to push the story forward.
 Dialogue scenes are staged with the character portraits and the camera, using the engine's UI widgets.</p>
-<p><img decoding="async" loading="lazy" alt="A conversation with Vicky" src="https://brakeza.com/assets/images/npc_chat-f2eebe5dac890f80f00ccb6632fe3fc1.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="A conversation with Vicky" src="https://brakeza.com/assets/images/npc_chat-52839a9a6304bc41a62dd144a89465fc.png" width="1024" height="550" class="img_ev3q"></p>
 <p>Everything here is <strong>data-driven</strong>: adding an NPC, a quest or a message means editing JSON, not
 touching code. That mattered a lot, because writing the lore turned out to be a job as big as the
 engineering.</p>
@@ -194,7 +234,7 @@ UI widgets, with the layout stored as JSON and edited inside Brakeza3D.</p>
 <p>Its look comes from an <strong>atlas of UI images</strong> that can be re-cut and swapped. I also wired <strong>live UI
 themes</strong> and <strong>city styles</strong> that change while the game runs, which is great for experimenting with a
 direction before committing to it.</p>
-<p><img decoding="async" loading="lazy" alt="The debug screen, with the live theme and city style selectors" src="https://brakeza.com/assets/images/debug_options-773caa205d122a782078c78b9cd6c3b3.png" width="1024" height="550" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="The debug screen, with the live theme and city style selectors" src="https://brakeza.com/assets/images/debug_options-197fc79eef7cf4b900852489a1fa97b9.png" width="1024" height="550" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="the-blender-pipeline">The Blender pipeline<a href="https://brakeza.com/blog/making-of-candelabra#the-blender-pipeline" class="hash-link" aria-label="Direct link to The Blender pipeline" title="Direct link to The Blender pipeline" translate="no">​</a></h2>
 <p>All the art goes through Blender: the city, the interiors, the vehicles and the characters (with
 animations from Mixamo). It used to be a pile of manual steps and every export was a chance to break
@@ -227,11 +267,11 @@ with Brakeza3D, I would love to see it.</p>
             <category>Community</category>
         </item>
         <item>
-            <title><![CDATA[Brakeza3D 0.26.10 released!]]></title>
+            <title><![CDATA[Brakeza3D 0.26.10: Instanced Rendering and Emissive Materials]]></title>
             <link>https://brakeza.com/blog/brakeza3d-0-26-10</link>
             <guid>https://brakeza.com/blog/brakeza3d-0-26-10</guid>
             <pubDate>Sun, 04 Oct 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[Brakeza3D 0.26.10 is here! This release is all about performance and polish: a reworked renderer]]></description>
+            <description><![CDATA[Brakeza3D 0.26.10 release notes: instanced deferred rendering, shared GPU geometry, emissive materials, new audio backend, faster async loading and UI upgrades.]]></description>
             <content:encoded><![CDATA[<p>Brakeza3D <strong>0.26.10</strong> is here! This release is all about <strong>performance and polish</strong>: a reworked renderer
 with instancing and shared GPU geometry, emissive materials, a brand-new audio backend, faster async
 loading, a much more capable UI system, path costs for pathfinding, and command-line parameters for
@@ -359,11 +399,11 @@ pagination, scroll areas, 9-slice backgrounds, text scaling and the UI Manager e
             <category>Community</category>
         </item>
         <item>
-            <title><![CDATA[Brakeza3D 0.26.8 released!]]></title>
+            <title><![CDATA[Brakeza3D 0.26.8: Positional Audio, Multi-Scene and Video]]></title>
             <link>https://brakeza.com/blog/brakeza3d-0-26-8</link>
             <guid>https://brakeza.com/blog/brakeza3d-0-26-8</guid>
             <pubDate>Fri, 31 Jul 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[Brakeza3D 0.26.8 is here! This release is packed with major new features: a full positional audio system, multi-scene support, video playback, a new Swarm entity, multi-selection across editor and scripting, and a large batch of rendering, physics, and editor improvements.]]></description>
+            <description><![CDATA[Brakeza3D 0.26.8 release notes: Sound3D positional audio, multi-scene support, video playback, the Swarm entity, multi-selection and editor improvements.]]></description>
             <content:encoded><![CDATA[<p>Brakeza3D <strong>0.26.8</strong> is here! This release is packed with major new features: a full positional audio system, multi-scene support, video playback, a new Swarm entity, multi-selection across editor and scripting, and a large batch of rendering, physics, and editor improvements.</p>
 <p>Download for <strong>Linux</strong> and <strong>Windows</strong>:</p>
 <ul>
@@ -483,11 +523,11 @@ pagination, scroll areas, 9-slice backgrounds, text scaling and the UI Manager e
             <category>Community</category>
         </item>
         <item>
-            <title><![CDATA[Thanks and Roadmap!]]></title>
+            <title><![CDATA[Brakeza3D Roadmap: Stability, Lua API and Documentation]]></title>
             <link>https://brakeza.com/blog/2026-02-21-thanks-and-road-map</link>
             <guid>https://brakeza.com/blog/2026-02-21-thanks-and-road-map</guid>
             <pubDate>Sat, 21 Feb 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[First of all, thank you.]]></description>
+            <description><![CDATA[Brakeza3D roadmap: stabilizing the engine, exposing 100% of its functionality to Lua, documenting the API, then desired mid and long-term features.]]></description>
             <content:encoded><![CDATA[<p>First of all, <strong>thank you</strong>.</p>
 <p>I want to take a moment to thank everyone who has emailed me and shown so much interest after the latest video about the <strong>Brakeza3D 0.26.2</strong> release. The response from the community has been incredibly positive and motivating, and it truly means a lot to see so many people interested, testing the engine, and asking how they can use it or contribute.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="about-the-roadmap">About the roadmap<a href="https://brakeza.com/blog/2026-02-21-thanks-and-road-map#about-the-roadmap" class="hash-link" aria-label="Direct link to About the roadmap" title="Direct link to About the roadmap" translate="no">​</a></h2>
@@ -547,11 +587,11 @@ pagination, scroll areas, 9-slice backgrounds, text scaling and the UI Manager e
             <category>Community</category>
         </item>
         <item>
-            <title><![CDATA[Brakeza3D 0.26.2 released!]]></title>
+            <title><![CDATA[Brakeza3D 0.26.2: Shader Editor, Lua and Editor Improvements]]></title>
             <link>https://brakeza.com/blog/brakeza3d-0-26-2</link>
             <guid>https://brakeza.com/blog/brakeza3d-0-26-2</guid>
             <pubDate>Sat, 07 Feb 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[Brakeza3D 0.26.2 is now available! 🚀]]></description>
+            <description><![CDATA[Brakeza3D 0.26.2 release notes: shader node editor and Mesh3DShaderChain fixes, editor toolbar and shortcuts, Bullet functions in Lua, and unified file browser.]]></description>
             <content:encoded><![CDATA[<p>Brakeza3D <strong>0.26.2</strong> is now available! 🚀<br>
 <!-- -->This release focuses on editor usability, shader workflow improvements, scripting enhancements, and major internal cleanup.</p>
 <p>Download for <strong>Linux</strong> and <strong>Windows</strong>:</p>
@@ -605,15 +645,15 @@ pagination, scroll areas, 9-slice backgrounds, text scaling and the UI Manager e
             <category>Community</category>
         </item>
         <item>
-            <title><![CDATA[Assets Hub Alpha released!]]></title>
+            <title><![CDATA[Assets Hub Alpha: Share Lua Scripts and Shaders for Brakeza3D]]></title>
             <link>https://brakeza.com/blog/assets-hub</link>
             <guid>https://brakeza.com/blog/assets-hub</guid>
             <pubDate>Sun, 01 Feb 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[Assets Hub Alpha Released 🚀]]></description>
+            <description><![CDATA[Assets Hub alpha: a free portal, integrated into the Brakeza3D engine, to share, discover, rate and download community Lua scripts and shaders.]]></description>
             <content:encoded><![CDATA[<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="assets-hub-alpha-released-">Assets Hub Alpha Released 🚀<a href="https://brakeza.com/blog/assets-hub#assets-hub-alpha-released-" class="hash-link" aria-label="Direct link to Assets Hub Alpha Released 🚀" title="Direct link to Assets Hub Alpha Released 🚀" translate="no">​</a></h2>
 <p>We’re excited to announce the <strong>alpha release of Assets Hub</strong>, a new platform designed to expand and strengthen the Brakeza3D ecosystem.</p>
 <p>Assets Hub is an integrated portal where the community can <strong>share, discover, and reuse scripts and shaders</strong> created by other Brakeza3D users. The main goal is to encourage collaboration, learning, and faster development through high-quality community-driven resources.</p>
-<p><img decoding="async" loading="lazy" alt="Assets Hub" src="https://brakeza.com/assets/images/01-d03d894cf735b726d1dce9b881d9cc20.png" width="1040" height="884" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Assets Hub portal: community Lua scripts and shaders for Brakeza3D" src="https://brakeza.com/assets/images/01-bfcf0e894a1de84a8228823da0934948.png" width="1040" height="884" class="img_ev3q"></p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="deep-integration-with-brakeza3d">Deep Integration with Brakeza3D<a href="https://brakeza.com/blog/assets-hub#deep-integration-with-brakeza3d" class="hash-link" aria-label="Direct link to Deep Integration with Brakeza3D" title="Direct link to Deep Integration with Brakeza3D" translate="no">​</a></h2>
 <p>Assets Hub is <strong>directly integrated into the Brakeza3D engine</strong>. The engine now includes a built-in client that allows users to:</p>
 <ul>
@@ -633,25 +673,25 @@ pagination, scroll areas, 9-slice backgrounds, text scaling and the UI Manager e
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="free-and-ad-free">Free and Ad-Free<a href="https://brakeza.com/blog/assets-hub#free-and-ad-free" class="hash-link" aria-label="Direct link to Free and Ad-Free" title="Direct link to Free and Ad-Free" translate="no">​</a></h2>
 <p>Assets Hub is a <strong>free service</strong>, with <strong>no advertisements</strong> and no hidden costs. It is built to support the Brakeza3D community and promote open sharing and collaboration.</p>
 <hr>
-<p><img decoding="async" loading="lazy" alt="Assets Hub" src="https://brakeza.com/assets/images/02-81479319ebd2c0d3138c8dc3131e3e8c.png" width="1920" height="1009" class="img_ev3q"></p>]]></content:encoded>
+<p><img decoding="async" loading="lazy" alt="Assets Hub" src="https://brakeza.com/assets/images/02-0e879c8cf64d310b80d90c6e8e7b905b.png" width="1280" height="673" class="img_ev3q"></p>]]></content:encoded>
             <category>Brakeza3D</category>
-            <category>assets</category>
-            <category>hub</category>
+            <category>Assets</category>
+            <category>Hub</category>
             <category>Community</category>
         </item>
         <item>
-            <title><![CDATA[Welcome to Brakeza3D!]]></title>
+            <title><![CDATA[Welcome to Brakeza3D: An Open Source 2D/3D Game Engine]]></title>
             <link>https://brakeza.com/blog/welcome</link>
             <guid>https://brakeza.com/blog/welcome</guid>
             <pubDate>Wed, 07 Jan 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[The Brakeza3D website has been completely relaunched as a site dedicated to providing solid and up-to-date documentation.]]></description>
+            <description><![CDATA[The Brakeza3D website is relaunched with up-to-date documentation, tutorials, API references and downloads for the open source 2D/3D game engine.]]></description>
             <content:encoded><![CDATA[<p>The <strong>Brakeza3D</strong> website has been completely relaunched as a site dedicated to providing <strong>solid and up-to-date documentation</strong>.</p>
 <p>We’ve redesigned the website from the ground up to make it easier for developers to find tutorials, API references, download links, and more.</p>
 <p>The goal is to help both new and experienced users get the most out of the Brakeza3D engine efficiently.</p>
 <p>Stay tuned for updates, tutorials, and examples that will guide you in creating amazing 2D and 3D games with Brakeza3D!.</p>]]></content:encoded>
             <category>Brakeza3D</category>
-            <category>news</category>
-            <category>welcome</category>
+            <category>News</category>
+            <category>Welcome</category>
         </item>
     </channel>
 </rss>
