@@ -108,8 +108,8 @@ function GalleryItem({title, description, image}) {
 export default function Gallery() {
   return (
     <Layout
-      title="Gallery"
-      description="Games and projects made with Brakeza3D Engine">
+      title="Gallery: Games and Screenshots Made with Brakeza3D"
+      description="Screenshots and videos of 2D and 3D games and projects made with the open source Brakeza3D game engine: deferred lighting, shaders, particles and Lua-scripted gameplay.">
       <main>
         <div className="container" style={{paddingTop: '3rem', paddingBottom: '3rem'}}>
           <div className="row">

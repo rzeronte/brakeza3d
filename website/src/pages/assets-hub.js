@@ -6,7 +6,7 @@ import styles from './assets-hub.module.css';
 export default function AssetsHub() {
     return (
         <Layout
-            title="Assets Hub"
+            title="Assets Hub: Community Lua Scripts and Shaders for Brakeza3D"
             description="Share and discover community-made scripts and shaders compatible with Brakeza3D.">
             <main className={styles.mainContent}>
                 <div className="container">

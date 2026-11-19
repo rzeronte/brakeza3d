@@ -9,7 +9,7 @@ import {themes as prismThemes} from 'prism-react-renderer';
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Brakeza3D Game Engine',
-  tagline: 'Simple and powerful cross-platform 2D/3D game engine',
+  tagline: 'Open source 2D/3D game engine with Lua scripting, deferred OpenGL rendering and a built-in editor',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
@@ -33,6 +33,27 @@ const config = {
     defaultLocale: 'en',
     locales: ['en'],
   },
+
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'SoftwareApplication',
+        name: 'Brakeza3D',
+        applicationCategory: 'DeveloperApplication',
+        applicationSubCategory: 'Game engine',
+        operatingSystem: 'Windows, Linux',
+        description: 'Open source 2D/3D game engine written in C++ with Lua scripting, deferred OpenGL rendering, Bullet physics and an integrated editor.',
+        url: 'https://brakeza.com',
+        license: 'https://www.gnu.org/licenses/gpl-3.0.html',
+        codeRepository: 'https://github.com/rzeronte/brakeza3d',
+        author: {'@type': 'Person', name: 'Eduardo Rodríguez Álvarez'},
+        offers: {'@type': 'Offer', price: '0', priceCurrency: 'USD'},
+      }),
+    },
+  ],
 
   presets: [
     [
@@ -74,7 +95,13 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
-      image: 'img/docusaurus-social-card.jpg',
+      image: 'img/gallery/01.png',
+      metadata: [
+        {name: 'keywords', content: 'game engine, 3D game engine, 2D game engine, open source game engine, C++ game engine, Lua scripting, OpenGL, deferred rendering, GLSL shaders, Bullet physics, indie game development, game editor, AI-friendly game engine'},
+        {name: 'author', content: 'Eduardo Rodríguez Álvarez'},
+        {name: 'twitter:card', content: 'summary_large_image'},
+        {name: 'twitter:site', content: '@brakeza3d'},
+      ],
       navbar: {
         title: 'Brakeza3D',
         logo: {

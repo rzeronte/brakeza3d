@@ -1,6 +1,8 @@
 ---
 slug: rts-editor-tooling
-title: "A strategy game is not made of code alone: the RTS Editor"
+title: "A strategy game is not made of code alone: the RTS Editor"
+description: "The RTS Editor: the HTML tool used to manage quests, NPCs, dialogue, units and translated strings of the Candelabra RTS built on the Brakeza3D engine."
+image: /img/rts-editor/00-overview.jpg
 authors: [eduardo]
 tags: [brakeza3d, candelabra, rts, gamedev]
 ---

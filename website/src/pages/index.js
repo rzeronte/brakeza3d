@@ -60,8 +60,8 @@ function Stats() {
                         <p className={styles.statsLabel}>Intuitive drag & drop, code editor with syntax highlighting</p>
                     </div>
                     <div className="col col--3">
-                        <h2 className={styles.statsValue}>Opensource</h2>
-                        <p className={styles.statsLabel}>C++ / SDL / Bullet / OpenGL / GLM / Assimp / LUA</p>
+                        <h2 className={styles.statsValue}>AI-Friendly</h2>
+                        <p className={styles.statsLabel}>An engine AI can understand, control and build with</p>
                     </div>
                 </div>
             </div>
@@ -94,6 +94,10 @@ const FeatureList = [
         title: '📚 Well Documented',
         description: 'Comprehensive documentation, tutorials, and examples to get you started quickly.',
     },
+    {
+        title: '🔓 Open Source',
+        description: 'GPLv3 and built on C++ / SDL / Bullet / OpenGL / GLM / Assimp / Lua.',
+    },
 ];
 
 function Feature({title, description}) {
@@ -117,7 +121,7 @@ function VideoSection() {
                     <div className={styles.videoWrapper}>
                         <iframe
                             src="https://www.youtube.com/embed/_719nP1fJsY"
-                            title="Video 1"
+                            title="Brakeza3D game engine demo video 1"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -126,7 +130,7 @@ function VideoSection() {
                     <div className={styles.videoWrapper}>
                         <iframe
                             src="https://www.youtube.com/embed/VtCWW-WrppE"
-                            title="Video 2"
+                            title="Brakeza3D game engine demo video 2"
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
@@ -175,7 +179,7 @@ function ProjectShowcase() {
                                 <div className="card__image">
                                     <img
                                         src={useBaseUrl(project.image)}
-                                        alt={project.title}
+                                        alt={`${project.title}: game made with the Brakeza3D engine`}
                                         style={{width: '100%'}}
                                     />
                                 </div>
@@ -236,8 +240,8 @@ export default function Home() {
     const {siteConfig} = useDocusaurusContext();
     return (
         <Layout
-            title={`Brakeza3D Official Website`}
-            description="Build amazing 2D and 3D games with Brakeza3D Game Engine">
+            title="Brakeza3D: Open Source 2D/3D Game Engine with Lua Scripting"
+            description="Brakeza3D is a free, open source C++ game engine for 2D and 3D games: deferred OpenGL rendering, Lua scripting, Bullet physics, GLSL and node-based shaders, and an integrated editor. Windows and Linux.">
             <HomepageHeader />
             <main>
                 <Stats />

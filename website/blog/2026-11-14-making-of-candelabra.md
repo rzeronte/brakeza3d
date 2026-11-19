@@ -1,6 +1,8 @@
 ---
 slug: making-of-candelabra
 title: "Making of Candelabra: a city-scale RTS built with Brakeza3D"
+description: "How Candelabra, a city-scale RTS with civilians, traffic, police and a day/night cycle, was built on Brakeza3D, and which engine features it pushed into existence."
+image: /img/candelabra/global_picture.png
 authors: [eduardo]
 tags: [brakeza3d, candelabra, rts, gamedev, community]
 ---

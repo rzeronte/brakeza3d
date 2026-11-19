@@ -1,6 +1,7 @@
 ---
 slug: 2026-02-21-thanks-and-road-map
-title: Thanks and Roadmap!
+title: "Brakeza3D Roadmap: Stability, Lua API and Documentation"
+description: "Brakeza3D roadmap: stabilizing the engine, exposing 100% of its functionality to Lua, documenting the API, then desired mid and long-term features."
 authors: [eduardo]
 tags: [brakeza3d, roadmap, community]
 ---

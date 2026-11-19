@@ -1,6 +1,7 @@
 ---
 slug: assets-hub
-title: Assets Hub Alpha released!
+title: "Assets Hub Alpha: Share Lua Scripts and Shaders for Brakeza3D"
+description: "Assets Hub alpha: a free portal, integrated into the Brakeza3D engine, to share, discover, rate and download community Lua scripts and shaders."
 authors: [eduardo]
 tags: [brakeza3d, assets, hub, community]
 ---
@@ -11,7 +12,7 @@ We’re excited to announce the **alpha release of Assets Hub**, a new platform 
 
 Assets Hub is an integrated portal where the community can **share, discover, and reuse scripts and shaders** created by other Brakeza3D users. The main goal is to encourage collaboration, learning, and faster development through high-quality community-driven resources.
 
-![Assets Hub](/img/hub/01.png)
+![Assets Hub portal: community Lua scripts and shaders for Brakeza3D](/img/hub/01.png)
 
 <!-- truncate -->
 

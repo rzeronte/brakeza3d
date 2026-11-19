@@ -1,3 +1,8 @@
+---
+title: Keyboard & Mouse Shortcuts
+description: "All Brakeza3D editor keyboard and mouse shortcuts: layouts, windows, selection, transform modes (translate, rotate, scale) and camera snapping."
+---
+
 # Keyboard & Mouse Shortcuts
 
 This section covers all the keyboard and mouse shortcuts available in the Brakeza3D editor to speed up your workflow.
