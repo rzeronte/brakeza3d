@@ -137,6 +137,11 @@ function VideoSection() {
                         ></iframe>
                     </div>
                 </div>
+                <p style={{textAlign: 'center', marginTop: '1rem'}}>
+                    <Link to="/videos/candelabra-preview">Candelabra preview</Link> ·{' '}
+                    <Link to="/videos/engine-demo-tour">Full engine demo tour</Link> ·{' '}
+                    <Link to="/videos">All videos</Link>
+                </p>
             </div>
         </section>
     );
