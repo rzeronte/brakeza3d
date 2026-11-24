@@ -25,6 +25,17 @@ void LUAIntegrationMeshes(sol::state &lua)
         // Ruta del .fbx con el que se creó el objeto (válida nada más crearlo, antes de que termine
         // la carga asíncrona) -- p.ej. RiderAttachment.lua clona el modelo de una unidad montada.
         "getModelFile", [](Mesh3D& m) -> std::string { return m.getModelFile(); },
+        // Shaders de objeto (de codigo o de nodos) desde Lua. loadShader(json) anade el shader a la cadena del mesh
+        // (la primera vez reserva los FBOs de la cadena); getShaderByLabel(nombre) devuelve un ShaderCustom
+        // (setEnabled/isEnabled) o nil. Un shader desactivado no cuesta nada: cargar una vez y alternar con setEnabled.
+        "loadShader", [](Mesh3D& m, const std::string& json) { m.LoadShader(json); },
+        "getShaderByLabel", [](Mesh3D& m, const std::string& label, sol::this_state ts) -> sol::object {
+            for (ShaderBaseCustom* s : m.getCustomShaders()) {
+                if (s != nullptr && s->getLabel() == label) return sol::make_object(ts, s);
+            }
+            return sol::make_object(ts, sol::lua_nil);
+        },
+        "getShadersCount", [](Mesh3D& m) { return static_cast<int>(m.getCustomShaders().size()); },
         // Distancia maxima de dibujo de las instancias (scatter de arboles/rocas): 0 = sin limite.
         "getInstanceMaxDistance", &Mesh3D::getInstanceMaxDistance,
         "setInstanceMaxDistance", &Mesh3D::setInstanceMaxDistance,
