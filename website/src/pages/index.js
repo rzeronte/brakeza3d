@@ -136,10 +136,20 @@ function VideoSection() {
                             allowFullScreen
                         ></iframe>
                     </div>
+                    <div className={styles.videoWrapper}>
+                        <iframe
+                            src="https://www.youtube.com/embed/jVw86U4L6mo"
+                            title="Project DarkHeaZ trailer, built in Lua with Brakeza3D"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    </div>
                 </div>
                 <p style={{textAlign: 'center', marginTop: '1rem'}}>
                     <Link to="/videos/candelabra-preview">Candelabra preview</Link> ·{' '}
                     <Link to="/videos/engine-demo-tour">Full engine demo tour</Link> ·{' '}
+                    <Link to="/videos/darkheaz-trailer">Project DarkHeaZ trailer</Link> ·{' '}
                     <Link to="/videos">All videos</Link>
                 </p>
             </div>

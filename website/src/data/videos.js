@@ -29,6 +29,19 @@ export const videos = [
         uploadDate: '2026-10-22T14:45:46-07:00',
         topics: ['open source game engine', 'C++', 'OpenGL', 'Bullet physics', 'Lua scripting', 'editor'],
     },
+    {
+        id: 'jVw86U4L6mo',
+        slug: 'darkheaz-trailer',
+        name: 'Project DarkHeaZ | Remake built 100% in Lua with Brakeza3D 0.26.10',
+        shortName: 'Project DarkHeaZ — Trailer',
+        description:
+            'Project DarkHeaZ is a fast arcade space shooter rebuilt 100% in Lua on top of the open-source Brakeza3D engine. ' +
+            'Almost four minutes of gameplay across eleven levels, from level 13 to level 48.',
+        duration: 'PT4M17S',
+        durationLabel: '4:17',
+        uploadDate: '2026-11-25T08:00:45-08:00',
+        topics: ['Project DarkHeaZ', 'arcade space shooter', 'Lua scripting', 'Brakeza3D game made with the engine'],
+    },
 ];
 
 export const SITE_URL = 'https://brakeza.com';
