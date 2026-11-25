@@ -2,11 +2,94 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://brakeza.com/blog</id>
     <title>Brakeza3D Game Engine Blog</title>
-    <updated>2026-11-19T00:00:00.000Z</updated>
+    <updated>2026-11-24T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://brakeza.com/blog"/>
     <subtitle>Brakeza3D Game Engine Blog</subtitle>
     <icon>https://brakeza.com/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Project DarkHeaZ Is Back: Rebuilding an Old Shooter on Brakeza3D 0.26.10]]></title>
+        <id>https://brakeza.com/blog/darkheaz-back-on-0-26-10</id>
+        <link href="https://brakeza.com/blog/darkheaz-back-on-0-26-10"/>
+        <updated>2026-11-24T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[How I recovered Project DarkHeaZ, my arcade space shooter, and brought it to Brakeza3D 0.26.10 as a pure Lua project: what changed since the previous version, what it looks like now, and how it performs.]]></summary>
+        <content type="html"><![CDATA[<p>Project DarkHeaZ is my arcade space shooter, built on an earlier version of Brakeza3D. It has always had a special place for me: it was the first game I made with the version of Brakeza that rasterized its pixels in software. That is a big part of why I could not leave it behind.</p>
+<p>It had one big problem: it was welded to that old engine. Its game logic lived inside the engine's C++, so every time the engine moved forward, DarkHeaZ stayed behind.</p>
+<p>This month I brought it back. It now runs on <strong>Brakeza3D 0.26.10</strong> as a regular engine project written <strong>only in Lua</strong>, without touching a single line of the engine. This post covers how that went, what is new compared to the previous version, and how it performs.</p>
+<iframe src="https://www.youtube.com/embed/jVw86U4L6mo" title="Project DarkHeaZ, remake built 100% in Lua with Brakeza3D 0.26.10" style="width:100%;aspect-ratio:16 / 9;margin:1.5rem 0;border:0;border-radius:8px" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<p><em>Can't see it? <a href="https://www.youtube.com/watch?v=jVw86U4L6mo" target="_blank" rel="noopener noreferrer" class="">Watch it on YouTube</a>. A short intro and then almost four minutes of gameplay across eleven levels, from level 13 to level 48. More on how it was recorded below.</em></p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="getting-it-out-of-the-old-engine">Getting it out of the old engine<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#getting-it-out-of-the-old-engine" class="hash-link" aria-label="Direct link to Getting it out of the old engine" title="Direct link to Getting it out of the old engine" translate="no">​</a></h2>
+<p>The first job was understanding the game again. I reverse-engineered the original code into a written specification (weapons, enemy behaviours, level format, the five bosses) and then rebuilt it on top of the current engine's public Lua API:</p>
+<ul>
+<li class=""><strong>Game logic in Lua</strong>, with a fixed 60 Hz simulation so the original "per frame" formulas keep their feel.</li>
+<li class=""><strong>Levels stay as data</strong>: the original JSON level format is kept, and the scenery of each level is a separate scene file.</li>
+<li class=""><strong>Everything else is a project</strong>: scripts, models, sounds and UI live in <code>projects/DarkHeaZ</code>, and the engine is used as it ships.</li>
+<li class=""><strong>It tests itself.</strong> The project accepts command-line parameters (<code>--set dhTest=level</code>, <code>--set dhTest=weapons</code>, ...) that play a level with a virtual keyboard, write a report and take screenshots. A sweep script plays every level and tells me which ones fail.</li>
+</ul>
+<p>That last point is what made the rest of this post possible. Every change below was checked by running levels, not by hoping.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-changed-since-the-previous-version">What changed since the previous version<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#what-changed-since-the-previous-version" class="hash-link" aria-label="Direct link to What changed since the previous version" title="Direct link to What changed since the previous version" translate="no">​</a></h2>
+<p>The first Lua port was faithful but plain. This version is where DarkHeaZ starts to look and feel like a game that belongs on today's engine.</p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="a-new-look">A new look<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#a-new-look" class="hash-link" aria-label="Direct link to A new look" title="Direct link to A new look" translate="no">​</a></h3>
+<ul>
+<li class=""><strong>A new interface</strong> that reuses the <em>Hazard</em> theme slots from Candelabra: nine-sliced buttons and frames, a compact HUD centred at the bottom, a target card and a level card in the top corners, and a top bar that slides in and out.</li>
+<li class=""><strong>A readable typeface</strong>: Barlow Condensed, with lowercase letters, instead of the angular stencil font.</li>
+<li class=""><strong>Film bars and a staged intro</strong>: the letterbox bars retract slowly at the start of a level and the HUD fades in after them. The game now opens with the Brakeza3D intro video, which you skip with two key presses.</li>
+<li class=""><strong>Dynamic lighting</strong>: explosions, impacts, muzzle flashes and your own shots now light up the scenery and the ships around them, using a fixed pool of 14 engine lights plus two soft fill lights.</li>
+<li class=""><strong>Backgrounds and post-processing</strong>: generated nebula backgrounds, a bloom shader that makes the additive beams glow, and a vignette that tightens while you pick a ship.</li>
+<li class=""><strong>Textures that hold up</strong>: mipmaps with trilinear filtering on the 3D models, a much longer draw distance, and a background plane moved far behind the scenery so distant planets and stations are no longer hidden.</li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="The main menu, with the Hazard theme" src="https://brakeza.com/assets/images/menu-a5f91bf9bece06630903b5fe188f8b3f.jpg" width="1280" height="720" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Ship selection with the vignette" src="https://brakeza.com/assets/images/ship-select-0037567dc2bc7464850cdbbcb33a2d86.jpg" width="1280" height="720" class="img_ev3q"></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="a-different-game-to-play">A different game to play<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#a-different-game-to-play" class="hash-link" aria-label="Direct link to A different game to play" title="Direct link to A different game to play" translate="no">​</a></h3>
+<ul>
+<li class=""><strong>Shots that feel like weapons.</strong> Every shot now has a small random spread, and the fast laser behaves like a machine gun: the spread opens the longer you hold the trigger and it fires two projectiles at once.</li>
+<li class=""><strong>Enemy bullets that you can see and understand.</strong> Each enemy family has its own shot colour and its own shape (orbs, rings, stars and diamonds), and none of them is green, because green is yours. Continuous beams and barriers are thicker and pulse like yours do.</li>
+<li class=""><strong>Enemies that move in new ways.</strong> On top of patrol, path and circle patterns there are now figure-eights, zigzags, orbiting the player, lunges that telegraph before they strike, and a <em>kite</em> behaviour that keeps its distance.</li>
+<li class=""><strong>Swarms.</strong> Small ships fly in flocks using the classic boid rules (separation, alignment, cohesion) and scatter when your shots get close. The engine already has a C++ swarm object, but it is not exposed to Lua yet, so these are implemented in Lua with the same rules.</li>
+<li class=""><strong>Ships that look where they fly.</strong> Models were exported with different "front" directions, so some ships fired out of their backs. There is now a per-model heading correction and a test that lays every model out so the wrong ones are easy to spot.</li>
+<li class=""><strong>More room to move.</strong> The camera is pulled back so the playable area is about 15% larger.</li>
+<li class=""><strong>Bullets that disappear when they hit your ship</strong>, instead of crossing the hull.</li>
+</ul>
+<p><img decoding="async" loading="lazy" alt="A swarm on level 13" src="https://brakeza.com/assets/images/swarm-level-13-8105162a4a441cecd70dc830ab57dc46.jpg" width="1280" height="720" class="img_ev3q"></p>
+<p><img decoding="async" loading="lazy" alt="Coloured enemy shots and thicker beams" src="https://brakeza.com/assets/images/beams-level-19-483b65187415e8ecfdc4d0d7a7ac71eb.jpg" width="1280" height="720" class="img_ev3q"></p>
+<h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="sound">Sound<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#sound" class="hash-link" aria-label="Direct link to Sound" title="Direct link to Sound" translate="no">​</a></h3>
+<p>Five new effects fill gaps that were silent: enemy shots, the film bars, the HUD appearing, the countdown and a low-health alarm. They are synthesised by a small script, so they can be regenerated and tuned. An empty-weapon click and sounds that existed but were never played, such as target switching and weapon pickups, are now wired up too.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="performance">Performance<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#performance" class="hash-link" aria-label="Direct link to Performance" title="Direct link to Performance" translate="no">​</a></h2>
+<p>The target is a steady 60 fps at the game's fixed 1280x720 render resolution. I did not benchmark the earlier port, so I will not claim a percentage over it. What I can give are the numbers of this version:</p>
+<ul>
+<li class=""><strong>The 50-level sweep</strong> (nine seconds of autopilot per level) stays between <strong>58.9 and 59.9 fps</strong> on the development machine.</li>
+<li class=""><strong>The heaviest scene I measured</strong>, the swarm level, peaks at <strong>246 enemy projectiles on screen</strong> and still holds <strong>about 59.8 fps</strong>.</li>
+</ul>
+<p>One thing worth knowing: <strong>all of those numbers are with vsync on</strong>, which is why they sit at 60. That is a cap, not the limit of the game. With vsync off, the same swarm level jumps to <strong>about 320 fps</strong>, and a calmer level goes past <strong>500 fps</strong> on the same machine. So the 60 you see above is the monitor's refresh rate, and there is a lot of headroom behind it.</p>
+<p>Why it holds up:</p>
+<ul>
+<li class=""><strong>Almost nothing is created mid-fight.</strong> Ships, projectiles and effects come from pools, and glow and beam quads are reused every frame and hidden when unused instead of being destroyed.</li>
+<li class=""><strong>Level of detail by crowd size.</strong> Past 160 enemy projectiles they lose their trails, past 320 only half keep a halo, there is a hard cap of 600, and impact sparks have a per-frame budget.</li>
+<li class=""><strong>Fewer calls between Lua and the engine.</strong> Each call has a cost, so scale, alpha and rotation are only sent when they actually change.</li>
+<li class=""><strong>The 0.26.10 renderer does the heavy lifting.</strong> Shared GPU geometry and instanced drawing keep many copies of the same model cheap, which is exactly what a bullet-hell level asks for.</li>
+<li class=""><strong>A fixed pool of lights</strong>, so the lighting never adds a surprise cost mid-fight.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="about-the-video">About the video<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#about-the-video" class="hash-link" aria-label="Direct link to About the video" title="Direct link to About the video" translate="no">​</a></h2>
+<p>The video above was not played with a keyboard. It was recorded by a pilot script that plays through the game's virtual input, and I wrote it to play like a person rather than a machine: it wanders between points instead of locking onto optimal positions, reacts to bullets with a delay of about a fifth of a second and sometimes misses one, takes its finger off the trigger now and then, switches between the projectile, laser and beam weapons, uses bombs, and holds the energy shield in tight spots.</p>
+<p>It also uses the shield items the way they are meant to be used: three times it drops <strong>three shield orbs in a row</strong>, which is the most that can be alive at once, to build a wall in front of a barrage.</p>
+<p>The sound effects are rebuilt from the game's own audio log, the real ones mixed at the exact moment they played, and a music track sits underneath them for the whole video.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="what-is-next">What is next<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#what-is-next" class="hash-link" aria-label="Direct link to What is next" title="Direct link to What is next" translate="no">​</a></h2>
+<p>DarkHeaZ now lives in the repository under <code>projects/DarkHeaZ</code> and runs with <code>Brakeza3D -p projects/DarkHeaZ/DarkHeaZProject.json</code>. Next I want to finish turning the remaining image-based screens into real text, expose the engine's swarm to Lua, and keep going through the later levels, which are the ones that still need the most polish.</p>
+<p>If you try it, or if a ship still looks backwards, let me know.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="one-more-thing-the-old-video">One more thing: the old video<a href="https://brakeza.com/blog/darkheaz-back-on-0-26-10#one-more-thing-the-old-video" class="hash-link" aria-label="Direct link to One more thing: the old video" title="Direct link to One more thing: the old video" translate="no">​</a></h2>
+<p>I also wanted to leave the old footage here, from back when DarkHeaZ was running on the previous version of the engine:</p>
+<iframe src="https://www.youtube.com/embed/OUuHocFe7yQ" title="Project DarkHeaZ, the old video" style="width:100%;aspect-ratio:16 / 9;margin:1.5rem 0;border:0;border-radius:8px" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+<p><em>Can't see it? <a href="https://www.youtube.com/watch?v=OUuHocFe7yQ" target="_blank" rel="noopener noreferrer" class="">Watch it on YouTube</a>.</em></p>
+<p>Honestly, it's really nice to watch it now and see how much time has gone by, and how much the game has improved since then. Put the two videos side by side and it's like two different games. I'm pretty happy with how far it's come.</p>]]></content>
+        <author>
+            <name>Eduardo</name>
+            <uri>https://github.com/rzeronte</uri>
+        </author>
+        <category label="Brakeza3D" term="Brakeza3D"/>
+        <category label="DarkHeaZ" term="DarkHeaZ"/>
+        <category label="Gamedev" term="Gamedev"/>
+        <category label="Release" term="Release"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[What You Can Build with Brakeza3D, and Using It with AI Agents]]></title>
         <id>https://brakeza.com/blog/ai-friendly-game-engine</id>
