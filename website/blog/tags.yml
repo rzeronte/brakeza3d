@@ -58,3 +58,8 @@ welcome:
   label: Welcome
   permalink: /welcome
   description: Introductory posts about Brakeza3D
+
+darkheaz:
+  label: DarkHeaZ
+  permalink: /darkheaz
+  description: Project DarkHeaZ, the arcade space shooter built with Brakeza3D
