@@ -85,6 +85,21 @@ void LUAIntegrationComponents(sol::state &lua)
     sol::base_classes, sol::bases<Component>(),
         "setWindowTitle", &ComponentWindow::setWindowTitle,
         "ToggleFullScreen", &ComponentWindow::ToggleFullScreen,
+        // Ajustes de pantalla desde scripts: tamano de ventana (el motor reacciona al evento SDL de cambio de tamano) y pantalla completa
+        "setWindowSize", [](ComponentWindow& w, int width, int height) {
+            if (width <= 0 || height <= 0 || !w.getWindow()) return;
+            // SDL ignora el cambio de tamano con la ventana maximizada: se restaura antes
+            if (SDL_GetWindowFlags(w.getWindow()) & SDL_WINDOW_MAXIMIZED) SDL_RestoreWindow(w.getWindow());
+            SDL_SetWindowSize(w.getWindow(), width, height);
+            SDL_SetWindowPosition(w.getWindow(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
+        },
+        "setFullScreen", [](ComponentWindow& w, bool on) {
+            Config::get()->FULLSCREEN = on;
+            w.ToggleFullScreen();
+        },
+        "isFullScreen", [](const ComponentWindow&) -> bool { return Config::get()->FULLSCREEN; },
+        // Misma funcion nativa que el menu "Render size" del editor: resolucion de render (la ventana la escala)
+        "setRendererSize", &ComponentWindow::setRendererSize,
         "getWidth", &ComponentWindow::getWidth,
         "getHeight", &ComponentWindow::getHeight,
         "getHeightRender", &ComponentWindow::getHeightRender,

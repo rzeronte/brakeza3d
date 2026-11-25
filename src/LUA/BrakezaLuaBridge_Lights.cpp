@@ -191,7 +191,9 @@ void LUAIntegrationLights(sol::state &lua)
         "fillCircle",     &Image::fillCircle,
         "fillCircleGrad", &Image::fillCircleGrad,
         "upload",         &Image::upload,
-        "setClampToEdge", &Image::setClampToEdge
+        "setClampToEdge", &Image::setClampToEdge,
+        "setMipmaps",     &Image::setMipmaps,
+        "isMipmaps",      &Image::isMipmaps
     );
 
 }

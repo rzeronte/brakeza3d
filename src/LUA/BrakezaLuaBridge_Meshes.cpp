@@ -230,7 +230,8 @@ void LUAIntegrationMeshes(sol::state &lua)
     );
 
     lua.new_usertype<Image3D>("Image3D",
-       sol::base_classes, sol::bases<Object3D>()
+       sol::base_classes, sol::bases<Object3D>(),
+       "getImage", &Image3D::getImage         // para activar mipmaps en fondos y planos grandes: img:setMipmaps(true)
     );
 
     lua.new_usertype<LightPoint>("LightPoint3D",
